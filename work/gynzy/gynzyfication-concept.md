@@ -1,21 +1,26 @@
 # Gynzyfication: Concept Overview
 
 *Distilled from internal Gynzy presentation slides, January 2026*
+*Updated: 2026-01-12 (Sprint Day 1)*
 
 ## What is Gynzyfication?
 
-**Gynzyfication** is Gynzy's strategic process for converting schools from having individual activated teachers to becoming fully "penetrated" schools where the platform is institutionally adopted.
+**Gynzyfication** is Gynzy's strategic process for converting schools from initial awareness through to full institutional adoption and expansion.
 
-## The Conversion Journey
+## The Gynzyfication Funnel
 
 ```
-Activated Teacher → Penetrated School
+Attract → Acquire → Activate → Penetrate → Inflate → Convert
 ```
 
-| Stage | Dutch Term | Description |
-|-------|------------|-------------|
-| **Activated Teacher** | Geactiveerde leerkracht | Individual teacher using Gynzy |
-| **Penetrated School** | Penetrated school | School-wide institutional adoption |
+| Stage | Description |
+|-------|-------------|
+| **Attract** | Awareness, website visits, marketing reach |
+| **Acquire** | Account created, teacher signs up |
+| **Activate** | Teacher using the platform regularly |
+| **Penetrate** | Multiple teachers at same school using Gynzy |
+| **Inflate** | Growing usage/adoption within the school |
+| **Convert** | School-wide institutional deal, paying customer |
 
 ## Strategic Goals
 
