@@ -1,0 +1,1791 @@
+fetch("https://app.intercom.com/ember/series/series", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "traceparent": "00-bf127b01396f0806da60e65df96173dd-8faaac92c0582ed1-01",
+    "x-client-device-memory": "8",
+    "x-client-height": "1043",
+    "x-client-width": "1800",
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.index",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"template_id\":null}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/dkim_settings?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"65c6cdce9390075082a1958a934656c9\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-bf127b01396f0806da60e65df96173dd-18869619506737e7-01",
+    "x-client-device-memory": "8",
+    "x-client-height": "1043",
+    "x-client-width": "1800",
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/conversation_attributes/descriptors?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"3f4088a1dfe3b743efc979b5599ffe34\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-bf127b01396f0806da60e65df96173dd-6f42b276a30ad150-01",
+    "x-client-device-memory": "8",
+    "x-client-height": "1043",
+    "x-client-width": "1800",
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/messenger_apps?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4a30f4d56c73fc69952ab5c55fca9e6c\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-bf127b01396f0806da60e65df96173dd-377ca26c647728aa-01",
+    "x-client-device-memory": "8",
+    "x-client-height": "1043",
+    "x-client-width": "1800",
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/exceptions", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"exception\":\"Attempted to change active view while in edit mode\",\"responsible_team\":\"team-proactive-support\",\"route_name\":\"apps.app.outbound.series.series\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4e8ad61c1884a0ec62310c2836d68b16\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"04dfc3f8481f1e86096cc14b0787fd80\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "rKfT2ssFaTlQ1ayrO1ixSiEbJHxS8zHWDih7sh-XQvso5lTm5rlaG8Habrde_zyc9D2LN39v_yG5zOzqjiNAcQ",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/customers/3939143?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-9ad02c83a1760851-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/i18n.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f79ef00e8f442fda993225cfcc6fd29\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-485ef9b9a7b7ea23-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/content_service/insertable_content?app_id=vzzy2jf5&multi_help_center_aware=true", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f53cda18c2baa0c0354bb5f9a3ecbe5\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-eba49bf53ad37266-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/accounts?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f53cda18c2baa0c0354bb5f9a3ecbe5\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-8e53c7b3775973d6-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/user_sources?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f53cda18c2baa0c0354bb5f9a3ecbe5\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-2bdd1c8a1a8258d4-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/email_template_titles?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"71bd9c77d63b0328e0001a336d0cdf9f\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-9dd19568c87df08e-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/sender_emails?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"c39096a3d2afe511e486bb6bcb2f1169\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-a0cc983db82ee549-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/email_template_data?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f53cda18c2baa0c0354bb5f9a3ecbe5\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-1c181b6d41ce0f3f-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admin_pageviews?ra_source=apps_loading&app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f53cda18c2baa0c0354bb5f9a3ecbe5\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-8ada3ca1b0fc1ffc-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/nexus_config/vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"a1578eef41aa31c25563bbc48a36fcd9\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-bea2633b692b2367-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps_loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/apps.json", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"68a042d3e6fbefa73a4c32cc2c430a76\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-9320af5805472ad9-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/inbox/app_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"1f12903cbb449fb3c756f0445f7a6fe0\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-3b7d494cc2f6f058-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"04dfc3f8481f1e86096cc14b0787fd80\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-7c8b25caf57c711b-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/inbox/away_status_reasons?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"89f807ab0fdeb7ce2882d240c9176939\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-1b947584bbef393c-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/pricing_model_daily_app_stats/fetch_for_current_billing_cycle?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"baea1a1b93a9d64d9363515ad92b25ed\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-2aa83eb0e5195f91-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/apps.json", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"68a042d3e6fbefa73a4c32cc2c430a76\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-830d11223bbb28f6-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/onboarding/home/guide?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"bb011612161c454142dc27b1a234c216\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-9391ea5b2990b777-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/fin_usage_limits?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"7524f26d3e93e327d2696516e52af65d\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-97faf723c9f636f1-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/onboarding/lead_profile_survey?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"92c7cf7b1c254caace71cb7e052ec6bd\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-cb039e9fc2a82f2b-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/content_service/saved_views?saved_view_data_format=1&scope=1&app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"066352f8b0085a373e0bc29264d37cc2\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-6d2f8c16f374b23d-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/dkim_settings?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"65c6cdce9390075082a1958a934656c9\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-69835d347a67a77c-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/reporting/metric_service/datasets?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4c130ea5cb8e793b8e83b28e58895993\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-653e5ab175a2c4a9-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/reporting/metric_service/metric_definitions?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"65c19514a737d1265dcc6ef063436737\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-15829ba333105630-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/conversation_attributes/descriptors?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"3f4088a1dfe3b743efc979b5599ffe34\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-3cb8068386c308cd-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/messenger_apps?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4a30f4d56c73fc69952ab5c55fca9e6c\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-5785207a282fea1a-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/workflow_connector/insertable_actions?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f53cda18c2baa0c0354bb5f9a3ecbe5\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-8bc95f4bdd7eb2a4-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/settings/sender_domains?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"b71e9a02ff360a91547f8f688ad1060f\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-400e4a9f6ad71a58-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4e8ad61c1884a0ec62310c2836d68b16\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-c3ee8aa41435d413-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.loading",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4e8ad61c1884a0ec62310c2836d68b16\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-abd4a9aa53a25dba-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/messenger_settings/all/vzzy2jf5?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"2039847fe825131e382b376c3902785d\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-4a8e03855abf581113a48a080480c635-0abfa0556a5bba52-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/intercom_settings.json", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "if-none-match": "W/\"367982ca0885891ea342d6fa2fd20e00\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+    "x-embercom-revision-id": "106692",
+    "x-requested-with": "XMLHttpRequest"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/identity_verification_risk_state?app_id=vzzy2jf5&admin_id=9708226", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"002b5d6006d81c3a2e12cdd433f0d8f2\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/notification_settings/9708226?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"5b5f7a8343701f43921d326c700d71c2\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/me.json?app_id=vzzy2jf5&_=1768426357286", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/apps/vzzy2jf5.json?attribute_denylist=browser_locales,android_os_versions,android_devices,android_app_versions,ios_os_versions,ios_app_versions,plans,subscription_types,admins,segments,attributes,tags,user_sources,content_events_config,custom_object_types", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"c56609577ecf9b9e7777c5a2d9c40a19\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/apps/vzzy2jf5.json?attribute_allowlist=browser_locales,android_os_versions,android_devices,android_app_versions,ios_os_versions,ios_app_versions,plans,subscription_types", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"68529fdd55f7cfa795e0394cbd87091a\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/apps/vzzy2jf5.json?attribute_allowlist=admins", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"ca8c0cd02caac04638a0e708ed4c9bb6\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/apps/vzzy2jf5.json?attribute_allowlist=segments,attributes,tags,user_sources,content_events_config,custom_object_types", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"c53f843fddd73ce84f49f3018c59c573\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/interaction_metrics", {
+  "headers": {
+
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"metrics\":[{\"name\":\"boot_location\",\"location\":\"other\",\"route\":\"apps.app.outbound.series.series\",\"browser\":\"chrome\",\"platform\":\"mac\"},{\"name\":\"page_reload\",\"location\":\"other\"},{\"name\":\"interaction_time\",\"subject\":\"model:app.loadJSON\",\"time\":24.600000143051147,\"sample_rate\":0.01,\"browser\":\"chrome\",\"platform\":\"mac\",\"metadata\":{\"pageVisibilityChanged\":false}},{\"name\":\"model_data_cache\",\"model\":\"admin\",\"status\":\"VALID\"},{\"name\":\"model_data_cache\",\"model\":\"app\",\"status\":\"VALID\"},{\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36\",\"window_height\":1043,\"window_width\":1800,\"screen_height\":1169,\"screen_width\":1800,\"device_pixel_ratio\":2,\"connection_type_effective\":\"4g\",\"connection_rtt\":50,\"timing_dns_end_ms\":2,\"timing_ssl_end_ms\":2,\"timing_response_end_ms\":205,\"timing_dom_interactive_ms\":1252,\"timing_dom_complete_ms\":1980,\"timing_dom_loaded_ms\":1600,\"timing_dns_duration_ms\":0,\"timing_ssl_duration_ms\":0,\"timing_server_duration_ms\":201,\"timing_dom_loaded_duration_ms\":0,\"timing_total_duration_ms\":1978,\"timing_first_paint_ms\":684,\"timing_first_contentful_paint_ms\":1624,\"redirect_count\":0,\"name\":\"page_load_performance\",\"sample_rate\":0.1,\"url\":\"https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit\",\"embercom_route\":\"apps.app.outbound.series.series\",\"embercom_revision_id\":\"106692\",\"platform\":\"mac\"},{\"name\":\"interaction_time\",\"subject\":\"model:app.loadJSON\",\"time\":13.200000047683716,\"sample_rate\":0.01,\"browser\":\"chrome\",\"platform\":\"mac\",\"metadata\":{\"pageVisibilityChanged\":false}}],\"admin_id\":\"9708226\",\"app_id\":\"vzzy2jf5\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/nodes", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"series_id\":\"468332\",\"object_type\":51,\"object_data\":{}}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919138?app_id=vzzy2jf5", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/interaction_metrics", {
+  "headers": {
+
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"metrics\":[{\"name\":\"first_interaction\",\"time\":37424.09999990463,\"location\":\"other\"}],\"admin_id\":\"9708226\",\"app_id\":\"vzzy2jf5\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919138?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"321448e0e82230370ed159762858bcf7\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-2a14f6ccfc8dba0802e045c3f608ef6b-05c7d722b26249c5-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/users/search.json", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "traceparent": "00-2a14f6ccfc8dba0802e045c3f608ef6b-0aac088e091a8f14-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"predicates\":[{\"attribute\":\"role\",\"comparison\":\"in\",\"type\":\"role\",\"value\":[\"user_role\",\"contact_role\",\"visitor_role\"]}],\"page\":1,\"per_page\":10,\"include_count\":true,\"id\":\"56919138\",\"admin_id\":\"9708226\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/messenger_settings/availability/vzzy2jf5?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"610734939906c0706e6ca13fa50e9a43\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-2a14f6ccfc8dba0802e045c3f608ef6b-78dad1f6c6f3c319-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919138", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"id\":\"56919138\",\"match_behavior\":1,\"predicate_group\":{\"predicates\":[]},\"client_predicate_group\":{\"predicates\":[]},\"role_predicate_group\":{\"predicates\":[{\"attribute\":\"role\",\"comparison\":\"in\",\"type\":\"role\",\"value\":[\"contact_role\",\"user_role\",\"visitor_role\"]}]},\"default_predicate_group\":{\"predicates\":[]},\"matching_timetable\":null,\"recurring_schedule\":{\"date_attribute\":\"last_request_at\",\"day_offset\":-30,\"frequency\":0,\"month_offset\":null,\"ruleset_id\":56919138,\"schedule_type\":0},\"scheduled_activation\":null,\"scheduled_deactivation\":null,\"goal\":null,\"utm_settings\":null,\"series_relation\":{\"series_id\":468332,\"series_title\":null,\"node_id\":7661479},\"created_at\":\"2026-01-14T21:33:15.000Z\",\"match_spacing_period\":-1,\"max_match_count\":-1,\"segment_ids\":[],\"environment_ids\":[],\"ruleset_links\":[{\"id\":\"57201042\",\"state\":0,\"type\":\"matching-system/ruleset-links/series-condition\",\"matching_locations\":[],\"object\":{\"id\":\"2810379\"},\"last_state_change\":null,\"content_object\":{\"id\":\"51_56919138\",\"title\":null,\"app_id\":\"vzzy2jf5\",\"content_object_id\":\"56919138\",\"series_id\":\"468332\",\"has_goal\":false},\"content_preview\":{\"id\":\"57201042\",\"content_preview_data\":{\"predicates\":[{\"attribute\":\"role\",\"type\":\"role\",\"comparison\":\"in\",\"value\":[\"user_role\",\"contact_role\",\"visitor_role\"]}]},\"generated_at\":\"2026-01-14T21:33:19.685+00:00\"},\"object_stats\":[]}],\"ruleset_triggers\":[],\"current_version\":null,\"client_data\":{\"id\":\"56919138\",\"title\":null,\"opened_panels\":[null],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919138\",\"messages\":[]},\"tag_ids\":[],\"taggings\":[],\"implicit_predicates\":null,\"app_id\":\"vzzy2jf5\"}",
+  "method": "PUT",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/nodes", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"series_id\":\"468332\",\"object_type\":8,\"object_data\":{}}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919161?app_id=vzzy2jf5", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919138?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"3a303a337f815dc5834dbd7e7c8d6110\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-5d04e7bf15c84b80e3a73e708e4d7289-56b4a1002976c141-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/users/search.json", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "traceparent": "00-5d04e7bf15c84b80e3a73e708e4d7289-2e72331c24a62363-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"predicates\":[{\"attribute\":\"role\",\"comparison\":\"in\",\"type\":\"role\",\"value\":[\"contact_role\",\"user_role\",\"visitor_role\"]}],\"page\":1,\"per_page\":10,\"include_count\":true,\"id\":\"56919138\",\"admin_id\":\"9708226\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/messenger_settings/availability/vzzy2jf5?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"610734939906c0706e6ca13fa50e9a43\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-5d04e7bf15c84b80e3a73e708e4d7289-b0cc1817b482d617-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4e8ad61c1884a0ec62310c2836d68b16\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/ping.json", {
+  "headers": {
+
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"app_id\":\"vzzy2jf5\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/users/search.json", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"predicates\":[{\"attribute\":\"role\",\"comparison\":\"in\",\"type\":\"role\",\"value\":[\"visitor_role\",\"user_role\"]}],\"page\":1,\"per_page\":10,\"include_count\":true,\"id\":\"56919138\",\"admin_id\":\"9708226\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/users/search.json", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"predicates\":[{\"attribute\":\"role\",\"comparison\":\"in\",\"type\":\"role\",\"value\":[\"user_role\"]}],\"page\":1,\"per_page\":10,\"include_count\":true,\"id\":\"56919138\",\"admin_id\":\"9708226\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/users/search.json", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"predicates\":[{\"attribute\":\"role\",\"comparison\":\"in\",\"type\":\"role\",\"value\":[\"user_role\"]}],\"page\":1,\"per_page\":10,\"include_count\":true,\"id\":\"56919138\",\"admin_id\":\"9708226\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919138", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661479",
+  "body": "{\"id\":\"56919138\",\"match_behavior\":1,\"predicate_group\":{\"predicates\":[]},\"client_predicate_group\":{\"predicates\":[]},\"role_predicate_group\":{\"predicates\":[{\"attribute\":\"role\",\"comparison\":\"in\",\"type\":\"role\",\"value\":[\"user_role\"]}]},\"default_predicate_group\":{\"predicates\":[]},\"matching_timetable\":null,\"recurring_schedule\":{\"date_attribute\":\"last_request_at\",\"day_offset\":-30,\"frequency\":0,\"month_offset\":null,\"ruleset_id\":56919138,\"schedule_type\":0},\"scheduled_activation\":null,\"scheduled_deactivation\":null,\"goal\":null,\"utm_settings\":null,\"series_relation\":{\"series_id\":468332,\"series_title\":null,\"node_id\":7661479},\"created_at\":\"2026-01-14T21:33:15.000Z\",\"match_spacing_period\":-1,\"max_match_count\":-1,\"segment_ids\":[],\"environment_ids\":[],\"ruleset_links\":[{\"id\":\"57201042\",\"state\":0,\"type\":\"matching-system/ruleset-links/series-condition\",\"matching_locations\":[],\"object\":{\"id\":\"2810379\"},\"last_state_change\":null,\"content_object\":{\"id\":\"51_56919138\",\"title\":null,\"app_id\":\"vzzy2jf5\",\"content_object_id\":\"56919138\",\"series_id\":\"468332\",\"has_goal\":false},\"content_preview\":{\"id\":\"57201042\",\"content_preview_data\":{\"predicates\":[{\"attribute\":\"role\",\"type\":\"role\",\"comparison\":\"in\",\"value\":[\"contact_role\",\"user_role\",\"visitor_role\"]}]},\"generated_at\":\"2026-01-14T21:33:37.212+00:00\"},\"object_stats\":[]}],\"ruleset_triggers\":[],\"current_version\":null,\"client_data\":{\"id\":\"56919138\",\"title\":null,\"opened_panels\":[],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919138\",\"messages\":[]},\"tag_ids\":[],\"taggings\":[],\"implicit_predicates\":null,\"app_id\":\"vzzy2jf5\"}",
+  "method": "PUT",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919161?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"215dc42578853b1aebbbc3f554e480d9\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cfad8c57cb921beeb6f02410f149ce87-c0e63af6f49b57be-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/brands?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cfad8c57cb921beeb6f02410f149ce87-6cc55504c10feb4a-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.series",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/assignee_emails?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"da44b108f58427835833f971c01eb8cc\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cfad8c57cb921beeb6f02410f149ce87-4813a968aa71b934-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/outbound_subscriptions/subscription_types?app_id=vzzy2jf5", {
+  "headers": {
+
+
+    "traceparent": "00-cfad8c57cb921beeb6f02410f149ce87-c8e98686b3842b2f-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/email_address_for_app?id=9708226&app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4c260f2867b2d490d8c09985e2f3c6ae\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cfad8c57cb921beeb6f02410f149ce87-0217d3439abbf518-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/email_address_for_app?id=9708226&app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4c260f2867b2d490d8c09985e2f3c6ae\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cfad8c57cb921beeb6f02410f149ce87-d7ec35e14bb35a65-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/missing_translations", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"admin_id\":\"9708226\",\"missing\":[{\"key\":\"content-editor.subscription-type.help-text\",\"locale\":\"en-us, en\"}]}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919161", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": "{\"id\":\"56919161\",\"match_behavior\":1,\"predicate_group\":{\"predicates\":[]},\"client_predicate_group\":{\"predicates\":[]},\"role_predicate_group\":{\"predicates\":[]},\"default_predicate_group\":{\"predicates\":[]},\"matching_timetable\":null,\"recurring_schedule\":null,\"scheduled_activation\":null,\"scheduled_deactivation\":null,\"goal\":null,\"utm_settings\":null,\"series_relation\":{\"series_id\":468332,\"series_title\":null,\"node_id\":7661482},\"created_at\":\"2026-01-14T21:33:33.000Z\",\"match_spacing_period\":-1,\"max_match_count\":-1,\"segment_ids\":[],\"environment_ids\":[],\"ruleset_links\":[{\"id\":\"57201065\",\"state\":0,\"type\":\"matching-system/ruleset-links/email\",\"matching_locations\":[],\"object\":{\"id\":\"79748148\",\"send_to_unsubscribed\":false,\"show_unsubscribe_link\":true,\"is_legally_mandated\":false,\"subscription_type_id\":null,\"link_font_weight\":\"\",\"link_font_color\":\"\",\"link_font_style\":\"\",\"content_background_color\":\"\",\"body_background_color\":\"\",\"localized_email_contents\":[{\"id\":\"79747459\",\"blocks\":[{\"responsive\":false,\"container\":true,\"sectionType\":\"content\",\"rows\":[{\"cells\":[{\"content\":[{\"type\":\"paragraph\",\"text\":\"Hi {{first_name|fallback:\\\"there\\\"}}, how are you?\",\"allowEmpty\":true}],\"style\":{\"paddingTop\":\"35px\",\"paddingBottom\":\"30px\",\"paddingLeft\":\"40px\",\"paddingRight\":\"40px\"}}]}],\"style\":null,\"type\":\"table\"}],\"subject_blocks\":[{\"text\":\"Subject here\",\"class\":\"no-margin\",\"type\":\"paragraph\"}],\"subject\":null,\"locale\":\"en\",\"assign_to_id\":\"9708226\",\"assign_to_type\":0,\"email_template_type\":0,\"email_template_id\":\"6\",\"sender_type\":0,\"sender_id\":\"9708226\",\"reply_to_type\":0,\"reply_to_id\":\"0\",\"email\":\"79748148\"}]},\"last_state_change\":null,\"content_object\":{\"id\":\"8_56919161\",\"title\":null,\"app_id\":\"vzzy2jf5\",\"content_object_id\":\"56919161\",\"series_id\":\"468332\",\"has_goal\":false},\"content_preview\":{\"id\":\"57201065\",\"content_preview_data\":{\"content\":\"Hi {{first_name|fallback:\\\"there\\\"}},\"},\"generated_at\":\"2026-01-14T21:33:52.530+00:00\"},\"object_stats\":[{\"id\":\"0_8_79748148\",\"value\":null,\"denominator\":null,\"key\":0,\"type\":0,\"subaggregations\":{}},{\"id\":\"2_8_79748148\",\"value\":null,\"denominator\":null,\"key\":2,\"type\":2,\"subaggregations\":{}},{\"id\":\"1_8_79748148\",\"value\":null,\"denominator\":null,\"key\":1,\"type\":2,\"subaggregations\":{}},{\"id\":\"5_8_79748148\",\"value\":null,\"denominator\":null,\"key\":5,\"type\":2,\"subaggregations\":{}},{\"id\":\"3_8_79748148\",\"value\":null,\"denominator\":null,\"key\":3,\"type\":2,\"subaggregations\":{}},{\"id\":\"6_8_79748148\",\"value\":null,\"denominator\":null,\"key\":6,\"type\":2,\"subaggregations\":{}}]}],\"ruleset_triggers\":[],\"current_version\":null,\"client_data\":{\"id\":\"56919161\",\"title\":\"Email title for flow\",\"opened_panels\":[\"content\"],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[\"57201065\"]},\"ruleset_errors\":{\"id\":\"56919161\",\"messages\":[\"Your subject is empty\"]},\"tag_ids\":[],\"taggings\":[],\"implicit_predicates\":[{\"attribute\":\"email\",\"type\":\"string\",\"comparison\":\"known\",\"value\":\"\"},{\"attribute\":\"marked_email_as_spam\",\"type\":\"string\",\"comparison\":\"ne\",\"value\":\"true\"},{\"attribute\":\"has_hard_bounced\",\"type\":\"string\",\"comparison\":\"ne\",\"value\":\"true\"},{\"attribute\":\"unsubscribed_from_emails\",\"type\":\"boolean\",\"comparison\":\"false\",\"value\":\"\"}],\"app_id\":\"vzzy2jf5\"}",
+  "method": "PUT",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/nodes", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"series_id\":\"468332\",\"object_type\":10,\"object_data\":{}}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919172?app_id=vzzy2jf5", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919161?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"9902f810123046439ec0f33348ab88d0\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-30bf4e0b28bdb9f075131cb87c0bff73-52eee970e4a5f96b-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/brands?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json",
+    "priority": "u=1, i",
+
+    "traceparent": "00-30bf4e0b28bdb9f075131cb87c0bff73-139140be87bc1e7d-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.series",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/assignee_emails?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"da44b108f58427835833f971c01eb8cc\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-30bf4e0b28bdb9f075131cb87c0bff73-46389e3da8e0fe3f-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/outbound_subscriptions/subscription_types?app_id=vzzy2jf5", {
+  "headers": {
+
+
+    "traceparent": "00-30bf4e0b28bdb9f075131cb87c0bff73-3a725bcbbedd1760-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661482",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919172?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"1722670d03ed4ee32328210c1babc429\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cb9b02535bb14326649c84df538c0ed8-1a848985d2047158-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661486",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/messenger_settings/all/vzzy2jf5?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"2039847fe825131e382b376c3902785d\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cb9b02535bb14326649c84df538c0ed8-8863ef71c529971f-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661486",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/content_service/insertable_content?app_id=vzzy2jf5&multi_help_center_aware=true", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4f53cda18c2baa0c0354bb5f9a3ecbe5\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-cb9b02535bb14326649c84df538c0ed8-16c15221114b412f-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661486",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919172", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661486",
+  "body": "{\"id\":\"56919172\",\"match_behavior\":1,\"predicate_group\":{\"predicates\":[]},\"client_predicate_group\":{\"predicates\":[]},\"role_predicate_group\":{\"predicates\":[]},\"default_predicate_group\":{\"predicates\":[]},\"matching_timetable\":null,\"recurring_schedule\":null,\"scheduled_activation\":null,\"scheduled_deactivation\":null,\"goal\":null,\"utm_settings\":null,\"series_relation\":{\"series_id\":468332,\"series_title\":null,\"node_id\":7661486},\"created_at\":\"2026-01-14T21:34:11.000Z\",\"match_spacing_period\":-1,\"max_match_count\":-1,\"segment_ids\":[],\"environment_ids\":[],\"ruleset_links\":[{\"id\":\"57201076\",\"state\":0,\"type\":\"matching-system/ruleset-links/banner\",\"matching_locations\":[],\"object\":{\"id\":\"587004\",\"action\":0,\"action_target\":0,\"color\":\"#0071b2\",\"dismiss_on_action\":false,\"position\":0,\"reaction_set\":[],\"show_dismiss_button\":true,\"style\":0,\"url_button_color\":\"#f0f1ef\",\"localized_banner_contents\":[{\"id\":\"587003\",\"action_content_id\":null,\"action_content_type\":null,\"action_href\":null,\"action_title\":null,\"blocks\":[{\"text\":\"This is the banner\",\"align\":\"left\",\"class\":\"no-margin\",\"type\":\"paragraph\"}],\"from_id\":9708226,\"locale\":\"en\",\"sender_type\":0,\"action_content_title\":null,\"banner\":\"587004\"}]},\"last_state_change\":null,\"content_object\":{\"id\":\"10_56919172\",\"title\":null,\"app_id\":\"vzzy2jf5\",\"content_object_id\":\"56919172\",\"series_id\":\"468332\",\"has_goal\":false},\"content_preview\":{\"id\":\"57201076\",\"content_preview_data\":{\"content\":\"\"},\"generated_at\":\"2026-01-14T21:34:25.796+00:00\"},\"object_stats\":[{\"id\":\"0_10_587004\",\"value\":null,\"denominator\":null,\"key\":0,\"type\":0,\"subaggregations\":{}},{\"id\":\"10_10_587004\",\"value\":null,\"denominator\":null,\"key\":10,\"type\":2,\"subaggregations\":{}},{\"id\":\"5_10_587004\",\"value\":null,\"denominator\":null,\"key\":5,\"type\":2,\"subaggregations\":{}},{\"id\":\"3_10_587004\",\"value\":null,\"denominator\":null,\"key\":3,\"type\":2,\"subaggregations\":{}},{\"id\":\"12_10_587004\",\"value\":null,\"denominator\":null,\"key\":12,\"type\":2,\"subaggregations\":{}}]}],\"ruleset_triggers\":[],\"current_version\":null,\"client_data\":{\"id\":\"56919172\",\"title\":\"Banner title for flow\",\"opened_panels\":[\"content\"],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919172\",\"messages\":[\"Your content is blank\"]},\"tag_ids\":[],\"taggings\":[],\"implicit_predicates\":null,\"app_id\":\"vzzy2jf5\"}",
+  "method": "PUT",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/nodes", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"series_id\":\"468332\",\"object_type\":51,\"object_data\":{},\"predicate_group\":{\"predicates\":[{\"attribute\":\"banner_clicked\",\"type\":\"content_event\",\"comparison\":\"in\",\"value\":56919172}]},\"max_evaluation_time\":259200,\"delay_behavior\":1}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4e8ad61c1884a0ec62310c2836d68b16\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/ping.json", {
+  "headers": {
+
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"app_id\":\"vzzy2jf5\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919183?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "traceparent": "00-273b6486c67286694c9236e3e69e9e0b-edc7bf2f7f96f711-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661489",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/nodes", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"series_id\":\"468332\",\"object_type\":75,\"object_data\":{}}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919204?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "traceparent": "00-3a87e969607ed032882c4150869f7df2-2a387ef0883e0e41-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661491",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919204", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661491",
+  "body": "{\"id\":\"56919204\",\"match_behavior\":1,\"predicate_group\":{\"predicates\":[]},\"client_predicate_group\":{\"predicates\":[]},\"role_predicate_group\":{\"predicates\":[]},\"default_predicate_group\":{\"predicates\":[]},\"matching_timetable\":null,\"recurring_schedule\":null,\"scheduled_activation\":null,\"scheduled_deactivation\":null,\"goal\":null,\"utm_settings\":null,\"series_relation\":{\"series_id\":468332,\"series_title\":null,\"node_id\":7661491},\"created_at\":\"2026-01-14T21:35:17.000Z\",\"match_spacing_period\":-1,\"max_match_count\":-1,\"segment_ids\":[],\"environment_ids\":[],\"ruleset_links\":[{\"id\":\"57201108\",\"state\":0,\"type\":\"matching-system/ruleset-links/webhook\",\"matching_locations\":[],\"object\":{\"id\":\"54257\",\"url\":\"https://example.com/\",\"http_method\":0,\"content_type\":0,\"headers\":{},\"body\":{}},\"last_state_change\":null,\"content_object\":{\"id\":\"75_56919204\",\"title\":null,\"app_id\":\"vzzy2jf5\",\"content_object_id\":\"56919204\",\"series_id\":\"468332\",\"has_goal\":false},\"content_preview\":{\"id\":\"57201108\",\"content_preview_data\":null,\"generated_at\":\"2026-01-14T21:35:19.701+00:00\"},\"object_stats\":[{\"id\":\"0_75_54257\",\"value\":null,\"denominator\":null,\"key\":0,\"type\":0,\"subaggregations\":{}},{\"id\":\"17_75_54257\",\"value\":null,\"denominator\":null,\"key\":17,\"type\":2,\"subaggregations\":{}}]}],\"ruleset_triggers\":[],\"current_version\":null,\"client_data\":{\"id\":\"56919204\",\"title\":null,\"opened_panels\":[null],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919204\",\"messages\":[\"The webhook is missing a URL.\"]},\"tag_ids\":[],\"taggings\":[],\"implicit_predicates\":null,\"app_id\":\"vzzy2jf5\"}",
+  "method": "PUT",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/nodes", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"app_id\":\"vzzy2jf5\",\"series_id\":\"468332\",\"object_type\":8,\"object_data\":{}}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919228?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "priority": "u=1, i",
+
+    "traceparent": "00-c7818f6f3d0aef46f541d58110885688-5d8a3c44bc44c6b1-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/brands?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json",
+    "priority": "u=1, i",
+
+    "traceparent": "00-c7818f6f3d0aef46f541d58110885688-dcfb279ac0b65375-01",
+
+    "x-document-visible": "true",
+    "x-embercom-revision-id": "106692",
+    "x-embercom-route": "apps.app.outbound.series.series",
+    "x-embercom-sha": "39ef03b04c867072ebae7a1256df38c97276f564"
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/assignee_emails?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"da44b108f58427835833f971c01eb8cc\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-c7818f6f3d0aef46f541d58110885688-22c7586087521666-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/outbound_subscriptions/subscription_types?app_id=vzzy2jf5", {
+  "headers": {
+
+
+    "traceparent": "00-c7818f6f3d0aef46f541d58110885688-057ed67359362e5a-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"4e8ad61c1884a0ec62310c2836d68b16\"",
+    "priority": "u=1, i",
+
+    "x-csrf-token": "7fjEKuUQYAfgJ2HFnCt7LnUHk65Zdq7diC7y3eBr0glpuUMWyKxTJXEoo9n5jPb4oCE85XTqYCo_ymWFcd_Qgw",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/ping.json", {
+  "headers": {
+
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": "{\"app_id\":\"vzzy2jf5\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/matching_system/rulesets/56919228", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit&nodeId=7661492",
+  "body": "{\"id\":\"56919228\",\"match_behavior\":1,\"predicate_group\":{\"predicates\":[]},\"client_predicate_group\":{\"predicates\":[]},\"role_predicate_group\":{\"predicates\":[]},\"default_predicate_group\":{\"predicates\":[]},\"matching_timetable\":null,\"recurring_schedule\":null,\"scheduled_activation\":null,\"scheduled_deactivation\":null,\"goal\":null,\"utm_settings\":null,\"series_relation\":{\"series_id\":468332,\"series_title\":null,\"node_id\":7661492},\"created_at\":\"2026-01-14T21:35:33.000Z\",\"match_spacing_period\":-1,\"max_match_count\":-1,\"segment_ids\":[],\"environment_ids\":[],\"ruleset_links\":[{\"id\":\"57201132\",\"state\":0,\"type\":\"matching-system/ruleset-links/email\",\"matching_locations\":[],\"object\":{\"id\":\"79748195\",\"send_to_unsubscribed\":false,\"show_unsubscribe_link\":true,\"is_legally_mandated\":false,\"subscription_type_id\":null,\"link_font_weight\":\"\",\"link_font_color\":\"\",\"link_font_style\":\"\",\"content_background_color\":\"\",\"body_background_color\":\"\",\"localized_email_contents\":[{\"id\":\"79747506\",\"blocks\":[{\"responsive\":false,\"container\":true,\"sectionType\":\"content\",\"rows\":[{\"cells\":[{\"content\":[{\"type\":\"paragraph\",\"text\":\"Hi {{first_name|fallback:\\\"there\\\"}}, don&#x27;t forget!\",\"allowEmpty\":true}],\"style\":{\"paddingTop\":\"35px\",\"paddingBottom\":\"30px\",\"paddingLeft\":\"40px\",\"paddingRight\":\"40px\"}}]}],\"style\":null,\"type\":\"table\"}],\"subject_blocks\":[{\"text\":\"Reminder\",\"class\":\"no-margin\",\"type\":\"paragraph\"}],\"subject\":null,\"locale\":\"en\",\"assign_to_id\":\"9708226\",\"assign_to_type\":0,\"email_template_type\":0,\"email_template_id\":\"6\",\"sender_type\":0,\"sender_id\":\"9708226\",\"reply_to_type\":0,\"reply_to_id\":\"0\",\"email\":\"79748195\"}]},\"last_state_change\":null,\"content_object\":{\"id\":\"8_56919228\",\"title\":null,\"app_id\":\"vzzy2jf5\",\"content_object_id\":\"56919228\",\"series_id\":\"468332\",\"has_goal\":false},\"content_preview\":{\"id\":\"57201132\",\"content_preview_data\":{\"content\":\"Hi {{first_name|fallback:\\\"there\\\"}},\"},\"generated_at\":\"2026-01-14T21:35:36.674+00:00\"},\"object_stats\":[{\"id\":\"0_8_79748195\",\"value\":null,\"denominator\":null,\"key\":0,\"type\":0,\"subaggregations\":{}},{\"id\":\"2_8_79748195\",\"value\":null,\"denominator\":null,\"key\":2,\"type\":2,\"subaggregations\":{}},{\"id\":\"1_8_79748195\",\"value\":null,\"denominator\":null,\"key\":1,\"type\":2,\"subaggregations\":{}},{\"id\":\"5_8_79748195\",\"value\":null,\"denominator\":null,\"key\":5,\"type\":2,\"subaggregations\":{}},{\"id\":\"3_8_79748195\",\"value\":null,\"denominator\":null,\"key\":3,\"type\":2,\"subaggregations\":{}},{\"id\":\"6_8_79748195\",\"value\":null,\"denominator\":null,\"key\":6,\"type\":2,\"subaggregations\":{}}]}],\"ruleset_triggers\":[],\"current_version\":null,\"client_data\":{\"id\":\"56919228\",\"title\":\"Reminder email\",\"opened_panels\":[\"content\"],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[\"57201132\"]},\"ruleset_errors\":{\"id\":\"56919228\",\"messages\":[\"Your subject is empty\"]},\"tag_ids\":[],\"taggings\":[],\"implicit_predicates\":[{\"attribute\":\"email\",\"type\":\"string\",\"comparison\":\"known\",\"value\":\"\"},{\"attribute\":\"marked_email_as_spam\",\"type\":\"string\",\"comparison\":\"ne\",\"value\":\"true\"},{\"attribute\":\"has_hard_bounced\",\"type\":\"string\",\"comparison\":\"ne\",\"value\":\"true\"},{\"attribute\":\"unsubscribed_from_emails\",\"type\":\"boolean\",\"comparison\":\"false\",\"value\":\"\"}],\"app_id\":\"vzzy2jf5\"}",
+  "method": "PUT",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/series/series/468332", {
+  "headers": {
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332?mode=edit",
+  "body": "{\"id\":\"468332\",\"state\":0,\"title\":null,\"goal\":null,\"entry_behavior\":0,\"exit_behavior\":0,\"exit_predicate_group\":{\"predicates\":[]},\"went_live_at\":null,\"created_at\":\"2026-01-14T21:32:17.533Z\",\"duplication_status\":-1,\"company_prioritizer\":null,\"deleted_node_ids\":[],\"deleted_edge_ids\":[],\"last_state_change\":null,\"nodes\":[{\"id\":\"7661479\",\"x_position\":64,\"y_position\":144,\"node_type\":0,\"delay_behavior\":0,\"max_evaluation_time\":-1,\"completed_checkpoint_count\":null,\"completed_count\":null,\"disengaged_count\":null,\"active_checkpoint_count\":null,\"completed_traversed_primary_edges_checkpoint_count\":null,\"completed_traversed_alternative_edges_checkpoint_count\":null,\"completed_traversed_split_edges_checkpoint_count\":null,\"completed_ejected_checkpoint_count\":null,\"completed_finished_checkpoint_count\":null,\"expired_checkpoint_count\":null,\"exited_checkpoint_count\":null,\"ruleset_has_goal\":false,\"object_types\":[51],\"has_ruleset_with_event_trigger_and_metadata\":false,\"has_ruleset_with_checklist\":false,\"ruleset_targets_users\":true,\"ruleset_targets_visitors_or_leads\":true,\"ruleset_id\":56919138,\"series_id\":\"468332\",\"ruleset_client_data\":{\"id\":\"56919138\",\"title\":null,\"opened_panels\":[null],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919138\",\"messages\":[]},\"content_previews\":[{\"id\":\"57201042\",\"content_preview_data\":{\"predicates\":[{\"attribute\":\"role\",\"type\":\"role\",\"comparison\":\"in\",\"value\":[\"user_role\"]}]},\"generated_at\":\"2026-01-14T21:33:48.897+00:00\"}],\"edge_splits\":[]},{\"id\":\"7661482\",\"x_position\":512,\"y_position\":144,\"node_type\":1,\"delay_behavior\":0,\"max_evaluation_time\":-1,\"completed_checkpoint_count\":null,\"completed_count\":null,\"disengaged_count\":null,\"active_checkpoint_count\":null,\"completed_traversed_primary_edges_checkpoint_count\":null,\"completed_traversed_alternative_edges_checkpoint_count\":null,\"completed_traversed_split_edges_checkpoint_count\":null,\"completed_ejected_checkpoint_count\":null,\"completed_finished_checkpoint_count\":null,\"expired_checkpoint_count\":null,\"exited_checkpoint_count\":null,\"ruleset_has_goal\":false,\"object_types\":[8],\"has_ruleset_with_event_trigger_and_metadata\":false,\"has_ruleset_with_checklist\":false,\"ruleset_targets_users\":true,\"ruleset_targets_visitors_or_leads\":false,\"ruleset_id\":56919161,\"series_id\":\"468332\",\"ruleset_client_data\":{\"id\":\"56919161\",\"title\":\"Email title for flow\",\"opened_panels\":[\"content\"],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[\"57201065\"]},\"ruleset_errors\":{\"id\":\"56919161\",\"messages\":[\"Use a custom domain to prevent this email from getting caught in spam filters.\"]},\"content_previews\":[{\"id\":\"57201065\",\"content_preview_data\":{\"content\":\"Subject here - Hi {{first_name|fallback:\\\"there\\\"}}, how ar...\"},\"generated_at\":\"2026-01-14T21:34:15.171+00:00\"}],\"edge_splits\":[]},{\"id\":\"7661486\",\"x_position\":928,\"y_position\":144,\"node_type\":1,\"delay_behavior\":0,\"max_evaluation_time\":-1,\"completed_checkpoint_count\":null,\"completed_count\":null,\"disengaged_count\":null,\"active_checkpoint_count\":null,\"completed_traversed_primary_edges_checkpoint_count\":null,\"completed_traversed_alternative_edges_checkpoint_count\":null,\"completed_traversed_split_edges_checkpoint_count\":null,\"completed_ejected_checkpoint_count\":null,\"completed_finished_checkpoint_count\":null,\"expired_checkpoint_count\":null,\"exited_checkpoint_count\":null,\"ruleset_has_goal\":false,\"object_types\":[10],\"has_ruleset_with_event_trigger_and_metadata\":false,\"has_ruleset_with_checklist\":false,\"ruleset_targets_users\":true,\"ruleset_targets_visitors_or_leads\":false,\"ruleset_id\":56919172,\"series_id\":\"468332\",\"ruleset_client_data\":{\"id\":\"56919172\",\"title\":\"Banner title for flow\",\"opened_panels\":[\"content\"],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919172\",\"messages\":[]},\"content_previews\":[{\"id\":\"57201076\",\"content_preview_data\":{\"content\":\"This is the banner\"},\"generated_at\":\"2026-01-14T21:34:34.547+00:00\"}],\"edge_splits\":[]},{\"id\":\"7661489\",\"x_position\":1344,\"y_position\":144,\"node_type\":1,\"delay_behavior\":1,\"max_evaluation_time\":259200,\"completed_checkpoint_count\":null,\"completed_count\":null,\"disengaged_count\":null,\"active_checkpoint_count\":null,\"completed_traversed_primary_edges_checkpoint_count\":null,\"completed_traversed_alternative_edges_checkpoint_count\":null,\"completed_traversed_split_edges_checkpoint_count\":null,\"completed_ejected_checkpoint_count\":null,\"completed_finished_checkpoint_count\":null,\"expired_checkpoint_count\":null,\"exited_checkpoint_count\":null,\"ruleset_has_goal\":false,\"object_types\":[51],\"has_ruleset_with_event_trigger_and_metadata\":false,\"has_ruleset_with_checklist\":false,\"ruleset_targets_users\":true,\"ruleset_targets_visitors_or_leads\":true,\"ruleset_id\":56919183,\"series_id\":\"468332\",\"ruleset_client_data\":{\"id\":\"56919183\",\"title\":null,\"opened_panels\":[null],\"opened_series_editor\":false,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919183\",\"messages\":[]},\"content_previews\":[{\"id\":\"57201087\",\"content_preview_data\":{\"predicates\":[{\"attribute\":\"role\",\"type\":\"role\",\"comparison\":\"in\",\"value\":[\"user_role\",\"contact_role\",\"visitor_role\"]},{\"attribute\":\"banner_clicked\",\"type\":\"content_event\",\"comparison\":\"in\",\"value\":56919172}]},\"generated_at\":\"2026-01-14T21:34:43.296+00:00\"}],\"edge_splits\":[]},{\"id\":\"7661491\",\"x_position\":1920,\"y_position\":144,\"node_type\":1,\"delay_behavior\":0,\"max_evaluation_time\":-1,\"completed_checkpoint_count\":null,\"completed_count\":null,\"disengaged_count\":null,\"active_checkpoint_count\":null,\"completed_traversed_primary_edges_checkpoint_count\":null,\"completed_traversed_alternative_edges_checkpoint_count\":null,\"completed_traversed_split_edges_checkpoint_count\":null,\"completed_ejected_checkpoint_count\":null,\"completed_finished_checkpoint_count\":null,\"expired_checkpoint_count\":null,\"exited_checkpoint_count\":null,\"ruleset_has_goal\":false,\"object_types\":[75],\"has_ruleset_with_event_trigger_and_metadata\":false,\"has_ruleset_with_checklist\":false,\"ruleset_targets_users\":true,\"ruleset_targets_visitors_or_leads\":false,\"ruleset_id\":56919204,\"series_id\":\"468332\",\"ruleset_client_data\":{\"id\":\"56919204\",\"title\":null,\"opened_panels\":[null],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[]},\"ruleset_errors\":{\"id\":\"56919204\",\"messages\":[]},\"content_previews\":[{\"id\":\"57201108\",\"content_preview_data\":null,\"generated_at\":\"2026-01-14T21:35:27.473+00:00\"}],\"edge_splits\":[]},{\"id\":\"7661492\",\"x_position\":1888,\"y_position\":368,\"node_type\":1,\"delay_behavior\":0,\"max_evaluation_time\":-1,\"completed_checkpoint_count\":null,\"completed_count\":null,\"disengaged_count\":null,\"active_checkpoint_count\":null,\"completed_traversed_primary_edges_checkpoint_count\":null,\"completed_traversed_alternative_edges_checkpoint_count\":null,\"completed_traversed_split_edges_checkpoint_count\":null,\"completed_ejected_checkpoint_count\":null,\"completed_finished_checkpoint_count\":null,\"expired_checkpoint_count\":null,\"exited_checkpoint_count\":null,\"ruleset_has_goal\":false,\"object_types\":[8],\"has_ruleset_with_event_trigger_and_metadata\":false,\"has_ruleset_with_checklist\":false,\"ruleset_targets_users\":true,\"ruleset_targets_visitors_or_leads\":false,\"ruleset_id\":56919228,\"series_id\":\"468332\",\"ruleset_client_data\":{\"id\":\"56919228\",\"title\":\"Reminder email\",\"opened_panels\":[\"content\"],\"opened_series_editor\":true,\"shareable_url\":\"\",\"template_migration_reverted\":[],\"template_migration_accepted\":[\"57201132\"]},\"ruleset_errors\":{\"id\":\"56919228\",\"messages\":[]},\"content_previews\":[{\"id\":\"57201132\",\"content_preview_data\":{\"content\":\"Reminder - Hi {{first_name|fallback:\\\"there\\\"}}, don't forget!\"},\"generated_at\":\"2026-01-14T21:35:46.692+00:00\"}],\"edge_splits\":[]}],\"edges\":[{\"edge_type\":0,\"series_id\":\"468332\",\"predecessor_id\":\"7661479\",\"successor_id\":\"7661482\",\"edge_split_id\":null},{\"edge_type\":0,\"series_id\":\"468332\",\"predecessor_id\":\"7661482\",\"successor_id\":\"7661486\",\"edge_split_id\":null},{\"edge_type\":0,\"series_id\":\"468332\",\"predecessor_id\":\"7661486\",\"successor_id\":\"7661489\",\"edge_split_id\":null},{\"edge_type\":0,\"series_id\":\"468332\",\"predecessor_id\":\"7661489\",\"successor_id\":\"7661491\",\"edge_split_id\":null},{\"edge_type\":1,\"series_id\":\"468332\",\"predecessor_id\":\"7661489\",\"successor_id\":\"7661492\",\"edge_split_id\":null}],\"annotations\":[],\"stats\":[],\"tag_ids\":[],\"taggings\":[],\"latest_changelog\":null,\"created_by_id\":\"9708226\",\"app_id\":\"vzzy2jf5\"}",
+  "method": "PUT",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/messenger_settings/all/vzzy2jf5?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+    "accept-language": "en-US,en;q=0.9",
+    "content-type": "application/json; charset=UTF-8",
+    "if-none-match": "W/\"2039847fe825131e382b376c3902785d\"",
+    "priority": "u=1, i",
+
+    "traceparent": "00-97dcd5b5b9cb509442ffb79d0eff58bd-cfcaf3532b3f2471-01",
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/ping.json", {
+  "headers": {
+
+
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332",
+  "body": "{\"app_id\":\"vzzy2jf5\"}",
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+}); ;
+fetch("https://app.intercom.com/ember/admins/away_settings.json?app_id=vzzy2jf5", {
+  "headers": {
+    "accept": "application/json, text/javascript, */*; q=0.01",
+
+  },
+  "referrer": "https://app.intercom.com/a/apps/vzzy2jf5/outbound/series/468332",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+});

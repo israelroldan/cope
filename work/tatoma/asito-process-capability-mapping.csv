@@ -1,0 +1,33 @@
+Id,Category,Process,Stage,Systems,Integration Point,AI Capability Examples,Gap/Validate
+1,Primair,Lead-to-Order,Capture,Dynamics,—,Lead scoring; intent signal detection,
+2,Primair,Lead-to-Order,Qualify,Dynamics,—,Fit analysis; budget/timeline extraction,
+3,Primair,Lead-to-Order,Calculate,Dynamics; GRIP,Dynamics → GRIP (Klanten; Objecten),m² calculation assist; pricing validation,❓ Confirm GRIP role in calculations
+4,Primair,Lead-to-Order,Propose,Dynamics,—,Proposal drafting; scope estimation,
+5,Primair,Lead-to-Order,Close,Dynamics; AFAS,Dynamics → AFAS (Klanten; Contactpersonen; Debiteurennr),Contract extraction; SLA flagging,
+6,Primair,Order-to-Service,Receive,AFAS; GRIP,GRIP → AFAS (Projecten; Voorcalculatieregels),Order parsing; requirement extraction,
+7,Primair,Order-to-Service,Plan,ORTEC,AFAS → ORTEC (Medewerkers; Verlofsaldi; Projecten),Skill matching; availability optimization,
+8,Primair,Order-to-Service,Assign,ORTEC,AFAS → ORTEC (Voorcalculatieregels),Contract constraint guardrail; shift optimization,🔥 KEY FRICTION POINT
+9,Primair,Order-to-Service,Execute,ORTEC; Appreo,Appreo → ORTEC (Kloktijden),Real-time schedule adjustments; sick leave handling,❓ Confirm Appreo → ORTEC flow
+10,Primair,Order-to-Service,Monitor,ORTEC; Dataplatform,—,Performance alerts; SLA breach prediction,❓ Confirm Dataplatform role
+11,Primair,Service-to-Cash,Track,Appreo; ORTEC,Appreo → ORTEC (Kloktijden),Time capture validation; auto-fill suggestions,
+12,Primair,Service-to-Cash,Reconcile,AFAS; ORTEC,ORTEC → AFAS (Nacalculatieregels; Verlofboekingen),Hour mismatch detection; auto-triage,🔥 KEY FRICTION: 1000+/month
+13,Primair,Service-to-Cash,Invoice,AFAS,GRIP → AFAS (Facturen),Invoice drafting; pass-through cost recovery alert,🔥 KEY FRICTION: €100-200k/mo
+14,Primair,Service-to-Cash,Collect,AFAS,—,Payment reminders; credit risk flagging,❓ Credit manager being phased out — what replaces?
+15,Ondersteunend,Market-to-Lead,Attract,❓ HubSpot? Dynamics?,—,Campaign performance analysis,❓ GAP: Is HubSpot in endstate?
+16,Ondersteunend,Market-to-Lead,Convert,Dynamics,—,Lead handoff automation,❓ Confirm if this is where leads land
+17,Ondersteunend,Hire-to-Retire,Attract,Werken Bij Website; Indeed,Werken Bij → ATS (Sollicitaties),JD optimization; job matching,
+18,Ondersteunend,Hire-to-Retire,Recruit,ATS; Ubeeo,ATS → Werken Bij (Gepubliceerde vacatures),Candidate screening; interview scheduling,
+19,Ondersteunend,Hire-to-Retire,Onboard,AFAS; ATS,ATS → AFAS (Nieuwe medewerkers),Compliance checker; doc completeness alert,🔥 KEY FRICTION: Incomplete docs
+20,Ondersteunend,Hire-to-Retire,Provision,HelloID; AFAS,AFAS → ATS (Autorisaties; Kostenplaatsen),Auto-provisioning; access setup,
+21,Ondersteunend,Hire-to-Retire,Develop,Totara; AFAS,—,Skill gap analysis; training recommendations,❓ Confirm Totara role
+22,Ondersteunend,Hire-to-Retire,Perform,AFAS; .NET-apps (HR Gesprek),—,Review prep; feedback summarization,
+23,Ondersteunend,Hire-to-Retire,Mutate,AFAS; ORTEC,AFAS → ORTEC (Ziek-/betetermeldingen),Event-triggered mutation sync,🔥 KEY FRICTION: BOMA not synced
+24,Ondersteunend,Hire-to-Retire,Offboard,AFAS; HelloID,—,Knowledge capture; access revoke checklist,❓ What system handles offboarding?
+25,Ondersteunend,Procure-to-Pay,Request,❓ GAP,—,Purchase request triage,❓ GAP: SAP Ariba is client-specific — what's standard?
+26,Ondersteunend,Procure-to-Pay,Pay,❓ GAP,—,Payment anomaly detection,❓ GAP: No clear endstate system
+27,Ondersteunend,Oplossen & Verbeteren,Report,❓ TOPdesk? Ebbot?,—,Incident triage; similar ticket lookup,❓ GAP: Service desk not in IT architecture
+28,Ondersteunend,Oplossen & Verbeteren,Resolve,❓ TOPdesk?,—,Resolution template; escalation routing,❓ GAP: Confirm service desk system
+29,Besturend,Record-to-Report,Collect,AFAS; ORTEC; GRIP,Multiple integrations,Data quality alerts; reconciliation flags,
+30,Besturend,Record-to-Report,Aggregate,Dataplatform,—,Auto-aggregation; exception highlighting,❓ Confirm Dataplatform capabilities
+31,Besturend,Record-to-Report,Analyze,Dataplatform,—,Trend detection; anomaly explanation,
+32,Besturend,Record-to-Report,Report,Dataplatform,—,Narrative generation; executive summary drafting,

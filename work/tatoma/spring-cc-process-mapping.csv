@@ -1,0 +1,39 @@
+block,process,stage,systems,domain,ai_capability_examples,session_notes
+Intake & Briefing,Lead-to-Opportunity,Capture,"Dealfront, HubSpot",Customers & Contracts,"Lead scoring, intent signal detection","HubSpot confirmed as CRM - employee driven, no system integrations"
+Intake & Briefing,Lead-to-Opportunity,Qualify,"PipeDrive, HubSpot",Customers & Contracts,"Fit analysis, budget/timeline extraction",
+Intake & Briefing,Lead-to-Opportunity,Propose,"PipeDrive, Penneo",Customers & Contracts,"Brief-to-proposal drafting, scope estimation","Penneo = signatures, dotlegal = compliance/GDPR"
+Intake & Briefing,Lead-to-Opportunity,Close,"Penneo, dotlegal",Customers & Contracts,"Contract extraction, SLA flagging","Sproom moved to Time-to-Cash (invoicing)"
+Intake & Briefing,Brief-to-Kickoff,Receive,"Email, Teams",Communications & Collaboration,"Brief parsing, requirement extraction","Email primary (50/50 Teams). PAIN: Briefing fragmentation - no standard intake"
+Intake & Briefing,Brief-to-Kickoff,Scope,"Encodify, Asana (client-side)",Projects & Innovation,"Effort estimation, similar project lookup","Monday.com downgraded to archive. Encodify is primary PM. PAIN: Manual estimation effort"
+Intake & Briefing,Brief-to-Kickoff,Staff,Float,Workforce & Skills,"Skill matching, availability optimization","Float confirmed for resource allocation. PAIN: Cross-dept holiday blindness"
+Intake & Briefing,Brief-to-Kickoff,Kickoff,"Encodify, Teams",Meetings & Engagements,"Auto-create project from template","Physical kickoffs for complex/new work only"
+Production & Handoffs,Concept-to-Delivery,Ideate,"Figma, Adobe Suite, Firefly, Weave AI",Projects & Innovation,"Reference gathering, mood board assist","Weave AI = container for Runway/Cling/Flux. ComfyUI local testing. Discord/Midjourney NON-COMPLIANT"
+Production & Handoffs,Concept-to-Delivery,Produce,"Adobe Suite, Maya+Vray, GitHub",Projects & Innovation,"Asset generation, render queue management","Guidelines live in Microsoft Loop. Templates on CPI servers"
+Production & Handoffs,Concept-to-Delivery,Review,"Frame.io, Encodify",Meetings & Engagements,"Feedback summarization, version compare","Encodify for internal versioning. Client tools vary (OneDrive, DAM, Workfront)"
+Production & Handoffs,Concept-to-Delivery,Revise,"Adobe Suite, LucidLink",Projects & Innovation,"Change request parsing, conflict alerts","LucidLink = entry layer to Backblaze storage (3 buckets)"
+Production & Handoffs,Concept-to-Delivery,Approve,"Frame.io, Teams, Encodify",Meetings & Engagements,"Approval routing, stakeholder nudging","Client-dependent delivery: Encodify, FTP, OneDrive. WeTransfer being phased out"
+Production & Handoffs,Request-to-Fulfill,Request,"Jira, Teams",Communications & Collaboration,"Request triage, similar ticket lookup","Leo: Tool request friction - fills forms for info he doesn't know"
+Production & Handoffs,Request-to-Fulfill,Evaluate,"Admin by request, MS List (AI tools)",Projects & Innovation,"Security/compliance check, cost estimate","AI compliance tracked in MS List with EU AI Act risk categories"
+Production & Handoffs,Request-to-Fulfill,Provision,"Azure, Snipe-IT, Apple Business Manager",Projects & Innovation,"Auto-provisioning, license management","575K DKK budget approved for MS Agent projects"
+Production & Handoffs,Request-to-Fulfill,Enable,"Extensis, Snipe-IT",Workforce & Skills,"Tool training recommendations","Shadow IT allowed for personal exploration (private accounts only)"
+Delivery & Knowledge,Deliver-to-Archive,Finalize,"Frame.io, Vimeo, Encodify",Projects & Innovation,"Format conversion, delivery checklist",
+Delivery & Knowledge,Deliver-to-Archive,Deliver,"FTP (internal), Encodify, OneDrive",Communications & Collaboration,"Delivery notification, receipt tracking","WeTransfer being phased out. Delivery method is client-driven"
+Delivery & Knowledge,Deliver-to-Archive,Archive,"LucidLink, Backblaze",Projects & Innovation,"Auto-tagging, searchable asset indexing","Hot storage pressure. Need cold storage migration. 2-5yr retention by contract"
+Delivery & Knowledge,Deliver-to-Archive,Reflect,"??? (major gap)",Insights & Analytics,"Retro summarization, lessons learned DB","NO RETROS except major issues. Town hall shares success stories. Kudos system coming"
+Delivery & Knowledge,Time-to-Cash,Track,"Float, Deltek Maconomy Cloud",Insights & Analytics,"Time capture reminders, auto-fill","Maconomy = time registration + budgets"
+Delivery & Knowledge,Time-to-Cash,Validate,"Deltek Maconomy Cloud, Power BI",Insights & Analytics,"Time vs estimate alerts, anomaly detection","PAIN: Project health reactive - discover overruns too late"
+Delivery & Knowledge,Time-to-Cash,Invoice,"Deltek Maconomy Cloud, MediusGo",Insights & Analytics,"Invoice drafting from time entries","Sproom for sending invoices"
+Delivery & Knowledge,Time-to-Cash,Collect,"Sproom, Acubiz",Customers & Contracts,"Payment reminders, reconciliation",
+Operations & Patterns,Hire-to-Retire,Recruit,"Manual (DK), Vietnam Works/Glassdoor (VN)",Workforce & Skills,"JD generation, candidate screening","NO HR SYSTEM - under investigation. Very manual in Denmark"
+Operations & Patterns,Hire-to-Retire,Onboard,"Entra ID, Snipe-IT, Apple Business Manager",Workforce & Skills,"Auto-provisioning, onboarding checklist","Entra ID = source of truth for org structure"
+Operations & Patterns,Hire-to-Retire,Develop,"Zoios",Workforce & Skills,"Skill gap analysis, learning paths","Zoios = pulse surveys monthly"
+Operations & Patterns,Hire-to-Retire,Perform,"Zoios",Workforce & Skills,"Review prep, feedback summarization","Zoios journals for 1:1s and EDPs"
+Operations & Patterns,Hire-to-Retire,Offboard,"??? (gap)",Workforce & Skills,"Knowledge exit interviews, access revoke","PAIN: Knowledge leaves with people"
+Operations & Patterns,Issue-to-Resolution,Report,"Jira, Teams",Communications & Collaboration,"Ticket classification, urgency scoring",
+Operations & Patterns,Issue-to-Resolution,Diagnose,"PRTG, Elasticsearch+Kibana",Projects & Innovation,"Root cause suggestion, runbook lookup",
+Operations & Patterns,Issue-to-Resolution,Resolve,"Splashtop, Azure",Projects & Innovation,"Auto-remediation for known issues",
+Operations & Patterns,Issue-to-Resolution,Document,"??? (gap)",Communications & Collaboration,"Resolution summarization, KB article generation",
+Operations & Patterns,Report-to-Insight,Collect,"SuperMetrics, Meltwater",Insights & Analytics,"Scheduled data pulls, anomaly flagging",
+Operations & Patterns,Report-to-Insight,Aggregate,"Power BI, Fabric, Adaptive",Insights & Analytics,"Dashboard refresh, KPI calculation","Power BI owned by Finance. Used for budget forecasting"
+Operations & Patterns,Report-to-Insight,Interpret,"Power BI",Insights & Analytics,"Narrative generation, trend explanation",
+Operations & Patterns,Report-to-Insight,Act,"Teams, Encodify",Communications & Collaboration,"Insight-to-action recommendations",

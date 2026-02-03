@@ -1,6 +1,6 @@
 # Quick Reference - Financial Numbers
 
-**Last Updated:** 2026-01-11 (after bunq analysis)
+**Last Updated:** 2026-01-22
 
 ---
 
@@ -9,16 +9,48 @@
 | | |
 |---|---:|
 | Monthly budget | €6,508 |
-| Monthly income | €5,719 |
+| Monthly income (new job) | €5,719 |
 | **Monthly deficit** | **€789** |
-| Bridge fund | €20,000 |
+| Bridge fund (arrives Feb 24) | €20,000 |
 | **Runway** | **25 months** |
 
 Target (April 2027 dividend): 15 months away - **covered.**
 
 ---
 
-## Monthly Income
+## Current Position (Jan 23, 2026)
+
+| | |
+|---|---:|
+| Liquid assets | €7,001 |
+| Credit card debt | -€2,304 |
+| **Net liquid** | **€4,697** |
+
+### Bridge Plan: Jan 23 → Feb 24
+
+GH salary (€6,386) already arrived Jan 11. ICS credit limit: €2,500 (charge card).
+
+| Date | Event | Balance |
+|------|-------|-------:|
+| ~Jan 28 | ICS pays €2,304 | ~€4,697 |
+| Feb 1 | Mortgage | ~€1,325 |
+| Feb 1-15 | Insurance | ~€456 |
+| Feb 1-24 | All spending on ICS | €456 buffer |
+| **Feb 24** | **€25,719 arrives** | **Reset** |
+
+**Strategy:** New ICS card activated (kills old subscriptions). Use new card for active purchases only (parking, groceries, fuel). Next bill (~€1,200) due ~Feb 28, after settlement arrives.
+
+---
+
+## Salary Cycle
+
+- **GH final salary:** Arrived Jan 11 (€6,386)
+- **New job pay date:** 24th of each month
+- **Feb 24:** First new salary (€5,719) + €20k settlement
+
+---
+
+## Monthly Income (from Feb 24)
 
 | Source | Amount |
 |--------|-------:|
@@ -28,7 +60,7 @@ Target (April 2027 dividend): 15 months away - **covered.**
 
 ---
 
-## February 2026 Budget
+## Monthly Budget
 
 | Category | Amount |
 |----------|-------:|
@@ -75,6 +107,10 @@ Target (April 2027 dividend): 15 months away - **covered.**
 
 ## Key Dates
 
+- **Jan 11, 2026:** Final GoodHabitz salary (€6,386) - received
+- **~Jan 28, 2026:** ICS payment (€2,304) - card limit frees up
+- **Feb 1, 2026:** Mortgage debit (€3,372)
+- **Feb 24, 2026:** First new salary + €20k settlement
 - **Apr 2026:** 3-month review
 - **Jul 2026:** 6-month review
 - **Jan 2027:** Fiscal year end
@@ -87,6 +123,23 @@ Target (April 2027 dividend): 15 months away - **covered.**
 - Second car: Required
 - Partner income: Not available
 - Mortgage refinance: Not possible
+
+---
+
+## Action Items
+
+### Done (Jan 23)
+- [x] Activate new ICS card (old one killed - subscriptions will fail)
+- [x] Re-register new card: EasyPark, Q-Park, TAP
+
+### To Do
+- [ ] Categorize 61 ICS credit card transactions in YNAB
+- [ ] Minimize debit spending until Jan 28 (old ICS bill debits)
+- [ ] After Jan 28: put ALL spending on new ICS until Feb 24
+- [ ] Keep €456 cash buffer intact (debit accounts)
+- [ ] Do not touch €300 emergency cash
+- [ ] After Feb 24: decide which subscriptions to re-register on new card
+- [ ] Cancel Luxplus (€9/mo) - on ABN direct debit, not ICS
 
 ---
 

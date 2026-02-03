@@ -1,0 +1,32 @@
+{
+  "user": {
+    "segment": "inactive-30d",
+    "teacherDna": {
+      "digivaardigheid": 6,
+      "structuurBehoefte": "hoog",
+      "onderbouwBovenbouw": "onderbouw",
+      "featuresUsed": ["Bord", "Rekenmuur", "Klok"],
+      "lastActive": "2025-12-15"
+    }
+  },
+  "flow": {
+    "name": "Re-engagement Flow",
+    "stage": "activation",
+    "goal": "Bring back teachers who stopped using Gynzy",
+    "previousMessages": [
+      "Welcome back nudge (day 7)",
+      "Feature highlight (day 14)"
+    ]
+  },
+  "goals": {
+    "primary": "Re-activate inactive teachers",
+    "kpis": ["Open rate > 25%", "Click rate > 5%", "Return to product within 7 days"],
+    "constraints": ["No discount offers", "Max 1 email per week"]
+  },
+  "brandVoice": {
+    "tone": "warm and understanding",
+    "avoidWords": ["urgent", "limited time", "don't miss out"],
+    "includeElements": ["Acknowledge they're busy", "Highlight one specific feature benefit"]
+  },
+  "additionalContext": "This is the third touchpoint in the re-engagement sequence. Previous messages had 22% open rate but low click-through. Consider a different angle or stronger CTA."
+}

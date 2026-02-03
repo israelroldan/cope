@@ -1,0 +1,31 @@
+{
+  "user": {
+    "segment": "bord-only-users",
+    "teacherDna": {
+      "digivaardigheid": 8,
+      "structuurBehoefte": "laag",
+      "onderbouwBovenbouw": "bovenbouw",
+      "featuresUsed": ["Bord", "Timer"],
+      "lastActive": "2026-01-13"
+    }
+  },
+  "flow": {
+    "name": "Feature Adoption - Live Lessons",
+    "stage": "penetration",
+    "goal": "Get Bord users to try Live Lessons feature",
+    "previousMessages": []
+  },
+  "goals": {
+    "primary": "Drive Live Lessons trial",
+    "kpis": ["Live Lesson started within 14 days", "Completion of first lesson"],
+    "constraints": ["Focus on one feature only", "Include video link if possible"]
+  },
+  "brandVoice": {
+    "includeElements": [
+      "Social proof (other bovenbouw teachers love this)",
+      "Time-saving angle",
+      "Easy to get started"
+    ]
+  },
+  "additionalContext": "User is digitally proficient and active. They've been using Bord heavily but haven't discovered Live Lessons yet. This is a cross-sell opportunity within the freemium model."
+}

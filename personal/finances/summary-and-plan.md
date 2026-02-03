@@ -1,7 +1,7 @@
 # Financial Summary & Action Plan
 
 **Created:** 2026-01-11
-**Last Updated:** 2026-01-11 (after bunq analysis)
+**Last Updated:** 2026-01-22
 **Situation:** New job with lower salary, €20k settlement as bridge
 **Target:** Dividend payment expected April 2027 (~15 months)
 
@@ -11,28 +11,108 @@
 
 ### The Situation
 - New job salary: €5,719/mo (base €5,519 + €200 travel)
-- Old salary: ~€6,300/mo
+- Old salary: ~€6,300/mo (final payment Jan 24)
 - Income drop: €581/mo
-- Settlement available: €20,000 as bridge
+- Settlement: €20,000 arriving **Feb 24** (not Jan as hoped)
+- Salary cycle: **24th of each month**
 - Second car: Required (not negotiable)
 - Partner income: Not available
 - Mortgage refinance: Not possible (too early)
 
-### The Numbers (After Bunq Analysis)
+### The Numbers
 
 | | Monthly |
 |---|-------:|
-| February budget total | €6,508 |
-| Income | €5,719 |
+| Budget total | €6,508 |
+| New salary (from Feb 24) | €5,719 |
 | **Monthly deficit** | **€789** |
 
-### The Runway
+### The Runway (from Feb 24 onward)
 
 | Scenario | Monthly Deficit | €20k Lasts |
 |----------|---------------:|------------:|
 | Current (after cuts) | €789 | **25 months** |
 
-**Target achieved:** Runway extended well past April 2027 dividend.
+**Target achieved:** Runway extends well past April 2027 dividend.
+
+---
+
+## January 2026 Update (as of Jan 23)
+
+### Current Position
+| Account | Balance |
+|---------|--------:|
+| ABN - 1533 | €6,418.18 |
+| ABN – 7849 | €544.75 |
+| Bunq Vakantie | €34.45 |
+| Bunq Savings | €4.29 |
+| ABN – 5854 | -€1.42 |
+| **Liquid total** | **€7,001** |
+| ICS Credit Card | -€2,304 |
+| **Net liquid** | **€4,697** |
+
+**Note:** GH salary (€6,386 "SALARISBETALING PERIODE 1") arrived Jan 11, not Jan 24 as expected.
+
+### January Spending (Jan 1-23): ~€2,304 on ICS + ~€1,200 on debit
+- 61 ICS transactions (mostly uncategorized)
+- Key ICS spending: Parking ~€420, Apple services ~€275, EV charging €203, OMI hardware €175, Dev tools ~€200
+- Debit spending on track for most categories
+- Overspending: Groceries (+€81), Personal care (+€30)
+
+### Bridge Plan: Jan 23 → Feb 24
+
+**The problem:** Settlement delayed to Feb 24. Need to survive one month on current funds.
+
+**ICS credit limit: €2,500** (charge card - full payment required each cycle)
+
+**Timeline:**
+
+| Date | Event | Bank Balance |
+|------|-------|-------:|
+| Jan 23 | Now | €7,001 |
+| ~Jan 28 | ICS debits €2,304 | ~€4,697 |
+| Feb 1 | Mortgage debits €3,372 | ~€1,325 |
+| Feb 1-15 | Insurance debits ~€869 | ~€456 |
+| Feb 1-24 | **All spending on ICS card** | €456 (safety buffer) |
+| **Feb 24** | **Salary + Settlement arrives** | **+€25,719** |
+| ~Feb 28 | Pay next ICS bill (~€1,300-1,550) | ~€24,200+ |
+
+**Strategy:** Activate NEW ICS card now (kills old card + all subscriptions on it). Use new card for active purchases only during bridge period. Old card bill (€2,304) still debits from ABN on ~Jan 28.
+
+**Card swap (Jan 23):**
+- Activated new ICS card → old card dead
+- All subscriptions on old card number will fail to renew (~€200-300/mo saved)
+- Manually cancelled: LOCALS/Predator Poachers (~€10/mo, billed via Apple)
+- Re-registered new card ONLY with: EasyPark, Q-Park, TAP (EV charging)
+
+**Estimated Feb 1-24 spending (on NEW ICS):**
+
+| Category | Estimate |
+|----------|-------:|
+| Groceries | ~€500-600 |
+| Parking | ~€400-500 |
+| EV charging | ~€150 |
+| Other | ~€100 |
+| **Total** | **~€1,150-1,350** |
+
+**Headroom on card: ~€1,150-1,350** ✅ (better than before - no subscriptions!)
+
+**Rules until Feb 24:**
+- Minimize debit/cash spending (keep €456 buffer intact)
+- Put EVERYTHING possible on new ICS card
+- No large discretionary purchases
+- €300 cash emergency reserve (do not touch)
+- Do NOT re-register subscriptions until after Feb 24
+
+### Feb 24 Reset
+
+| Item | Amount |
+|------|-------:|
+| Feb 24 salary (new job) | €5,719 |
+| Settlement | €20,000 |
+| **Total arriving** | **€25,719** |
+
+After paying ~Feb 28 ICS bill (~€1,500), you'll have ~€24,200+ and the planned €789/month deficit runway begins (25 months to April 2027 dividend).
 
 ---
 
@@ -147,12 +227,18 @@
 
 | Date | Event |
 |------|-------|
-| Jan 2026 | Final old salary, start new job |
-| Feb 2026 | First new salary, budget kicks in |
+| Jan 11, 2026 | Final GoodHabitz salary (€6,386) - received |
+| ~Jan 28, 2026 | ICS payment (€2,304) - card limit resets |
+| Feb 1, 2026 | Mortgage debit (€3,372) |
+| Feb 1-15, 2026 | Insurance debits (~€869) |
+| **Feb 24, 2026** | **First new salary (€5,719) + €20k settlement** |
+| ~Feb 28, 2026 | ICS bill for bridge spending (~€1,500) |
 | Apr 2026 | 3-month review |
 | Jul 2026 | 6-month review |
 | Jan 2027 | Fiscal year end - profit visibility |
 | Apr 2027 | Expected dividend payment |
+
+**New salary cycle:** 24th of each month
 
 ---
 

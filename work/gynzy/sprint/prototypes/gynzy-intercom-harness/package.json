@@ -1,0 +1,41 @@
+{
+  "name": "gynzy-intercom-harness",
+  "version": "0.1.0",
+  "description": "AI-powered content creation for Intercom via internal API",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "gynzy-content": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:contracts": "vitest run tests/contracts",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.0",
+    "inquirer": "^9.2.0",
+    "ora": "^8.0.0",
+    "playwright": "^1.57.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
