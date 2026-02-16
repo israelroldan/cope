@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Company Research Skill — How It Works</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface-2: #1a1a26;
+            --border: #2a2a3a;
+            --text: #e4e4ef;
+            --text-muted: #8888a0;
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.3);
+            --linkedin: #0a66c2;
+            --linkedin-glow: rgba(10, 102, 194, 0.3);
+            --green: #34d399;
+            --green-glow: rgba(52, 211, 153, 0.2);
+            --orange: #f59e0b;
+            --orange-glow: rgba(245, 158, 11, 0.2);
+            --red: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        h1 {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text), var(--linkedin));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main layout */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        /* Architecture Overview */
+        .architecture {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 0;
+            align-items: center;
+            margin-bottom: 60px;
+            padding: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .arch-box {
+            text-align: center;
+            padding: 20px 16px;
+        }
+
+        .arch-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 24px;
+        }
+
+        .arch-icon.user { background: var(--accent-glow); border: 1px solid var(--accent); }
+        .arch-icon.ai { background: var(--green-glow); border: 1px solid var(--green); }
+        .arch-icon.linkedin { background: var(--linkedin-glow); border: 1px solid var(--linkedin); }
+
+        .arch-label {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .arch-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .arch-arrow {
+            color: var(--text-muted);
+            font-size: 20px;
+            opacity: 0.5;
+        }
+
+        /* Steps Section */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 3px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent), var(--linkedin), var(--green));
+            opacity: 0.3;
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.5s ease forwards;
+        }
+
+        .step:nth-child(1) { animation-delay: 0.1s; }
+        .step:nth-child(2) { animation-delay: 0.2s; }
+        .step:nth-child(3) { animation-delay: 0.3s; }
+        .step:nth-child(4) { animation-delay: 0.4s; }
+        .step:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-marker {
+            position: absolute;
+            left: -40px;
+            top: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 1;
+        }
+
+        .step-marker.clarify { background: var(--accent); color: white; }
+        .step-marker.search { background: var(--linkedin); color: white; }
+        .step-marker.extract { background: var(--orange); color: white; }
+        .step-marker.output { background: var(--green); color: white; }
+        .step-marker.deliver { background: #a855f7; color: white; }
+
+        .step-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .step-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .step-tag {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .step-tag.user-input { background: var(--accent-glow); color: var(--accent); }
+        .step-tag.browser { background: var(--linkedin-glow); color: var(--linkedin); }
+        .step-tag.js { background: var(--orange-glow); color: var(--orange); }
+        .step-tag.python { background: var(--green-glow); color: var(--green); }
+        .step-tag.output { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+
+        .step-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .step-details {
+            display: none;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .step-card.expanded .step-details {
+            display: block;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .detail-item {
+            background: var(--surface-2);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .detail-item .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .code-block {
+            background: #0d0d14;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--green);
+            overflow-x: auto;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        .code-block .comment { color: var(--text-muted); }
+        .code-block .string { color: var(--orange); }
+        .code-block .keyword { color: var(--accent); }
+
+        /* Data Flow Diagram */
+        .flow-section {
+            margin-top: 60px;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 32px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow-x: auto;
+        }
+
+        .flow-node {
+            text-align: center;
+            flex-shrink: 0;
+            padding: 16px;
+        }
+
+        .flow-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .flow-icon.active::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 16px;
+            border: 2px solid;
+            animation: ring-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes ring-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .flow-icon.param { background: var(--accent-glow); border: 1px solid var(--accent); }
+        .flow-icon.param.active::after { border-color: var(--accent); }
+        .flow-icon.browse { background: var(--linkedin-glow); border: 1px solid var(--linkedin); }
+        .flow-icon.browse.active::after { border-color: var(--linkedin); }
+        .flow-icon.data { background: var(--orange-glow); border: 1px solid var(--orange); }
+        .flow-icon.data.active::after { border-color: var(--orange); }
+        .flow-icon.file { background: var(--green-glow); border: 1px solid var(--green); }
+        .flow-icon.file.active::after { border-color: var(--green); }
+
+        .flow-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .flow-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .flow-arrow {
+            flex-shrink: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--border);
+            position: relative;
+        }
+
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            border: 5px solid transparent;
+            border-left: 6px solid var(--border);
+        }
+
+        /* Output Preview */
+        .output-section {
+            margin-top: 60px;
+        }
+
+        .spreadsheet-preview {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .spreadsheet-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toolbar-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .toolbar-dot.red { background: #ff5f57; }
+        .toolbar-dot.yellow { background: #febc2e; }
+        .toolbar-dot.green { background: #28c840; }
+
+        .toolbar-title {
+            margin-left: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .spreadsheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .spreadsheet-table th {
+            background: #0a66c2;
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .spreadsheet-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .spreadsheet-table tr:hover td {
+            background: var(--surface-2);
+        }
+
+        .spreadsheet-table .url-cell {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+        .spreadsheet-table .type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .type-badge.post { background: var(--linkedin-glow); color: var(--linkedin); }
+        .type-badge.article { background: var(--green-glow); color: var(--green); }
+        .type-badge.news { background: var(--orange-glow); color: var(--orange); }
+
+        /* Error Handling */
+        .error-section {
+            margin-top: 60px;
+        }
+
+        .error-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .error-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .error-card .error-icon {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .error-card .error-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .error-card .error-fix {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Prerequisites */
+        .prereq-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .prereq-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .prereq-check {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--green-glow);
+            border: 1px solid var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--green);
+        }
+
+        /* Expand indicator */
+        .expand-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .step-card.expanded .expand-hint {
+            display: none;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer .skill-file {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .architecture {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .arch-arrow {
+                transform: rotate(90deg);
+            }
+            .flow-diagram {
+                flex-direction: column;
+            }
+            .flow-arrow {
+                width: 2px;
+                height: 30px;
+            }
+            .flow-arrow::after {
+                right: -4px;
+                top: auto;
+                bottom: 0;
+                border: 5px solid transparent;
+                border-top: 6px solid var(--border);
+                border-left: 5px solid transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="badge">
+            <span class="dot"></span>
+            Claude Code Skill
+        </div>
+        <h1>LinkedIn Company Research</h1>
+        <p class="subtitle">
+            Automated research workflow that gathers company posts, updates, and news from LinkedIn and outputs a structured spreadsheet with clickable links.
+        </p>
+    </div>
+
+    <div class="container">
+
+        <!-- Prerequisites -->
+        <div class="prereq-bar">
+            <div class="prereq-item">
+                <div class="prereq-check">&#10003;</div>
+                Logged into LinkedIn
+            </div>
+            <div class="prereq-item">
+                <div class="prereq-check">&#10003;</div>
+                Claude in Chrome extension active
+            </div>
+            <div class="prereq-item">
+                <div class="prereq-check">&#10003;</div>
+                Browser connected to Claude Code
+            </div>
+        </div>
+
+        <!-- Architecture Overview -->
+        <div class="section-title">High-Level Architecture</div>
+        <div class="architecture">
+            <div class="arch-box">
+                <div class="arch-icon user">&#128100;</div>
+                <div class="arch-label">User</div>
+                <div class="arch-desc">Provides company names,<br>topic focus, time range</div>
+            </div>
+            <div class="arch-arrow">&#8594;</div>
+            <div class="arch-box">
+                <div class="arch-icon ai">&#9889;</div>
+                <div class="arch-label">Claude Code</div>
+                <div class="arch-desc">Orchestrates search,<br>extracts data, builds output</div>
+            </div>
+            <div class="arch-arrow">&#8596;</div>
+            <div class="arch-box">
+                <div class="arch-icon linkedin">in</div>
+                <div class="arch-label">LinkedIn</div>
+                <div class="arch-desc">Content search API,<br>posts, articles, news</div>
+            </div>
+        </div>
+
+        <!-- Step-by-step Workflow -->
+        <div class="section-title">Step-by-Step Workflow</div>
+
+        <div class="timeline">
+
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-marker clarify">1</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Clarify Research Parameters</div>
+                        <span class="step-tag user-input">User Input</span>
+                    </div>
+                    <div class="step-desc">
+                        Ask the user what to research: company names, optional topic focus, and time range.
+                    </div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="label">Company Name(s)</div>
+                                <div class="value">"HubSpot", "Salesforce", "Notion"</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Topic Focus (optional)</div>
+                                <div class="value">"AI features", "product launches", "hiring"</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Time Range</div>
+                                <div class="value">Default: past month</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-marker search">2</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Navigate LinkedIn Search</div>
+                        <span class="step-tag browser">Browser</span>
+                    </div>
+                    <div class="step-desc">
+                        Use LinkedIn's content search with company + topic keywords. Search is preferred over scrolling company pages for speed and filtering.
+                    </div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="code-block">
+                            <span class="comment">// Constructed search URL</span><br>
+                            <span class="string">linkedin.com/search/results/content/<br>&nbsp;&nbsp;?keywords=<span style="color:var(--text)">HubSpot</span>%20<span style="color:var(--text)">AI</span><br>&nbsp;&nbsp;&datePosted=%22past-month%22<br>&nbsp;&nbsp;&origin=FACETED_SEARCH</span>
+                        </div>
+                        <div class="detail-grid" style="margin-top: 12px;">
+                            <div class="detail-item">
+                                <div class="label">Filter: Date</div>
+                                <div class="value">Past 24h / Week / Month</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Filter: Content Type</div>
+                                <div class="value">Posts, Articles, Documents</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Filter: From</div>
+                                <div class="value">Specific people or companies</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-marker extract" style="background: var(--orange);">3</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Extract Post Data &amp; URLs</div>
+                        <span class="step-tag js">JavaScript</span>
+                    </div>
+                    <div class="step-desc">
+                        For each search result, extract author, date, title, content preview, engagement metrics, and the direct post URL using JS injection.
+                    </div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="code-block">
+                            <span class="comment">// Batch-extract post URLs from search results</span><br>
+                            <span class="keyword">document</span>.querySelectorAll(<br>
+                            &nbsp;&nbsp;<span class="string">'a[href*="/posts/"], a[href*="/pulse/"], a[href*="/feed/update/"]'</span><br>
+                            ).forEach(<span class="keyword">link</span> => {<br>
+                            &nbsp;&nbsp;console.log(<span class="keyword">link</span>.href);<br>
+                            });
+                        </div>
+                        <div class="detail-grid" style="margin-top: 12px;">
+                            <div class="detail-item">
+                                <div class="label">Collected Fields</div>
+                                <div class="value">Author, Date, Title, Content (200 chars), Engagement, URL</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Target Volume</div>
+                                <div class="value">10-20 relevant posts per company</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-marker output" style="background: var(--green);">4</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Generate Spreadsheet</div>
+                        <span class="step-tag python">Python</span>
+                    </div>
+                    <div class="step-desc">
+                        Use the bundled Python script (openpyxl) to create a formatted .xlsx file with styled headers, clickable hyperlinks, and auto-sized columns.
+                    </div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="code-block">
+                            <span class="comment"># create_research_spreadsheet.py</span><br>
+                            <span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook<br><br>
+                            <span class="comment"># Styled headers with LinkedIn blue</span><br>
+                            header_fill = PatternFill(<span class="string">"solid"</span>, fgColor=<span class="string">"0066CC"</span>)<br><br>
+                            <span class="comment"># Clickable URL column</span><br>
+                            url_cell.hyperlink = url<br>
+                            url_cell.font = Font(color=<span class="string">"0000FF"</span>, underline=<span class="string">"single"</span>)
+                        </div>
+                        <div class="detail-grid" style="margin-top: 12px;">
+                            <div class="detail-item">
+                                <div class="label">Columns</div>
+                                <div class="value">Company, Type, Date, Title, Content, Engagement, URL</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Features</div>
+                                <div class="value">Frozen header row, clickable URLs, auto-width</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step">
+                <div class="step-marker deliver" style="background: #a855f7;">5</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Deliver Results</div>
+                        <span class="step-tag output">Output</span>
+                    </div>
+                    <div class="step-desc">
+                        Save the spreadsheet to the user's output folder. File is ready to open in Excel or Google Sheets.
+                    </div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="label">Format</div>
+                                <div class="value">.xlsx (Excel compatible)</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Naming</div>
+                                <div class="value">{company}-linkedin-research-{date}.xlsx</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Data Flow -->
+        <div class="flow-section">
+            <div class="section-title">Data Flow</div>
+            <div class="flow-diagram">
+                <div class="flow-node">
+                    <div class="flow-icon param active">&#128172;</div>
+                    <div class="flow-label">Parameters</div>
+                    <div class="flow-sub">Company + Topic</div>
+                </div>
+                <div class="flow-arrow"></div>
+                <div class="flow-node">
+                    <div class="flow-icon browse active">&#127760;</div>
+                    <div class="flow-label">LinkedIn Search</div>
+                    <div class="flow-sub">Navigate &amp; filter</div>
+                </div>
+                <div class="flow-arrow"></div>
+                <div class="flow-node">
+                    <div class="flow-icon data active">&#128196;</div>
+                    <div class="flow-label">Raw Data</div>
+                    <div class="flow-sub">Posts, URLs, metrics</div>
+                </div>
+                <div class="flow-arrow"></div>
+                <div class="flow-node">
+                    <div class="flow-icon file active">&#128202;</div>
+                    <div class="flow-label">Spreadsheet</div>
+                    <div class="flow-sub">.xlsx output</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Preview -->
+        <div class="output-section">
+            <div class="section-title">Output Preview</div>
+            <div class="spreadsheet-preview">
+                <div class="spreadsheet-toolbar">
+                    <div class="toolbar-dot red"></div>
+                    <div class="toolbar-dot yellow"></div>
+                    <div class="toolbar-dot green"></div>
+                    <span class="toolbar-title">hubspot-linkedin-research-2026-02.xlsx</span>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="spreadsheet-table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Title/Summary</th>
+                                <th>Content Preview</th>
+                                <th>Engagement</th>
+                                <th>URL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>HubSpot</td>
+                                <td><span class="type-badge post">Post</span></td>
+                                <td>2026-02-10</td>
+                                <td>Introducing Breeze AI agents</td>
+                                <td>We're excited to announce our new AI-powered agents that help...</td>
+                                <td>1,243 reactions</td>
+                                <td class="url-cell">linkedin.com/posts/...</td>
+                            </tr>
+                            <tr>
+                                <td>HubSpot</td>
+                                <td><span class="type-badge article">Article</span></td>
+                                <td>2026-02-07</td>
+                                <td>The Future of AI in CRM</td>
+                                <td>How artificial intelligence is reshaping customer relationship...</td>
+                                <td>892 reactions</td>
+                                <td class="url-cell">linkedin.com/pulse/...</td>
+                            </tr>
+                            <tr>
+                                <td>HubSpot</td>
+                                <td><span class="type-badge news">News</span></td>
+                                <td>2026-02-03</td>
+                                <td>HubSpot Q4 earnings beat</td>
+                                <td>Revenue grew 22% YoY driven by enterprise adoption of AI...</td>
+                                <td>567 reactions</td>
+                                <td class="url-cell">linkedin.com/feed/...</td>
+                            </tr>
+                            <tr>
+                                <td>HubSpot</td>
+                                <td><span class="type-badge post">Post</span></td>
+                                <td>2026-01-29</td>
+                                <td>AI-powered content strategy</td>
+                                <td>Our latest report shows how marketing teams are using AI to...</td>
+                                <td>2,105 reactions</td>
+                                <td class="url-cell">linkedin.com/posts/...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Handling -->
+        <div class="error-section">
+            <div class="section-title">Error Handling</div>
+            <div class="error-grid">
+                <div class="error-card">
+                    <div class="error-icon">&#128269;</div>
+                    <div class="error-title">No Results</div>
+                    <div class="error-fix">Try broader keywords or remove the topic filter to get a wider set of results.</div>
+                </div>
+                <div class="error-card">
+                    <div class="error-icon">&#128274;</div>
+                    <div class="error-title">Not Logged In</div>
+                    <div class="error-fix">Prompt user to log into LinkedIn in their connected browser before continuing.</div>
+                </div>
+                <div class="error-card">
+                    <div class="error-icon">&#9202;</div>
+                    <div class="error-title">Rate Limiting</div>
+                    <div class="error-fix">Pause 30 seconds between searches if LinkedIn returns errors.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Skill definition</p>
+        <p class="skill-file" style="margin-top: 4px;">linkedin-company-research.skill</p>
+        <p style="margin-top: 8px; opacity: 0.5;">Contains: SKILL.md + scripts/create_research_spreadsheet.py</p>
+    </div>
+
+</body>
+</html>

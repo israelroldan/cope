@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Readiness Research Skill — How It Works</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface-2: #1a1a26;
+            --border: #2a2a3a;
+            --text: #e4e4ef;
+            --text-muted: #8888a0;
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.3);
+            --cyan: #22d3ee;
+            --cyan-glow: rgba(34, 211, 238, 0.2);
+            --green: #34d399;
+            --green-glow: rgba(52, 211, 153, 0.2);
+            --orange: #f59e0b;
+            --orange-glow: rgba(245, 158, 11, 0.2);
+            --pink: #ec4899;
+            --pink-glow: rgba(236, 72, 153, 0.2);
+            --purple: #a855f7;
+            --purple-glow: rgba(168, 85, 247, 0.2);
+            --blue: #3b82f6;
+            --blue-glow: rgba(59, 130, 246, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--cyan);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        h1 {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        /* Prerequisites */
+        .prereq-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .prereq-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .prereq-check {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--green-glow);
+            border: 1px solid var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--green);
+        }
+
+        /* Section title */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 3px;
+            height: 20px;
+            border-radius: 2px;
+        }
+
+        .section-title.cyan::before { background: var(--cyan); }
+        .section-title.purple::before { background: var(--purple); }
+        .section-title.green::before { background: var(--green); }
+        .section-title.orange::before { background: var(--orange); }
+        .section-title.pink::before { background: var(--pink); }
+
+        /* Architecture */
+        .architecture {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+            gap: 0;
+            align-items: center;
+            margin-bottom: 60px;
+            padding: 28px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .arch-box { text-align: center; padding: 16px 8px; }
+
+        .arch-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 22px;
+        }
+
+        .arch-icon.user { background: var(--accent-glow); border: 1px solid var(--accent); }
+        .arch-icon.ai { background: var(--cyan-glow); border: 1px solid var(--cyan); }
+        .arch-icon.web { background: var(--orange-glow); border: 1px solid var(--orange); }
+        .arch-icon.report { background: var(--green-glow); border: 1px solid var(--green); }
+
+        .arch-label { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+        .arch-desc { font-size: 11px; color: var(--text-muted); }
+        .arch-arrow { color: var(--text-muted); font-size: 18px; opacity: 0.5; }
+
+        /* Research Sources Wheel */
+        .sources-section { margin-bottom: 60px; }
+
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .source-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 14px;
+            text-align: center;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+        }
+
+        .source-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .source-card.docs { border-color: var(--cyan); }
+        .source-card.docs:hover { box-shadow: 0 0 20px var(--cyan-glow); }
+        .source-card.reviews { border-color: var(--orange); }
+        .source-card.reviews:hover { box-shadow: 0 0 20px var(--orange-glow); }
+        .source-card.videos { border-color: var(--pink); }
+        .source-card.videos:hover { box-shadow: 0 0 20px var(--pink-glow); }
+        .source-card.community { border-color: var(--purple); }
+        .source-card.community:hover { box-shadow: 0 0 20px var(--purple-glow); }
+
+        .source-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .source-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .source-examples {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent), var(--cyan), var(--orange), var(--pink), var(--green));
+            opacity: 0.3;
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 28px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.5s ease forwards;
+        }
+
+        .step:nth-child(1) { animation-delay: 0.1s; }
+        .step:nth-child(2) { animation-delay: 0.2s; }
+        .step:nth-child(3) { animation-delay: 0.3s; }
+        .step:nth-child(4) { animation-delay: 0.4s; }
+        .step:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-marker {
+            position: absolute;
+            left: -40px;
+            top: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            z-index: 1;
+        }
+
+        .step-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .step-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .step-title { font-size: 16px; font-weight: 600; }
+
+        .step-tag {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .step-tag.input { background: var(--accent-glow); color: var(--accent); }
+        .step-tag.browser { background: var(--cyan-glow); color: var(--cyan); }
+        .step-tag.analysis { background: var(--orange-glow); color: var(--orange); }
+        .step-tag.markdown { background: var(--green-glow); color: var(--green); }
+        .step-tag.check { background: var(--pink-glow); color: var(--pink); }
+
+        .step-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .expand-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .step-card.expanded .expand-hint { display: none; }
+
+        .step-details {
+            display: none;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .step-card.expanded .step-details { display: block; }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .detail-item {
+            background: var(--surface-2);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .detail-item .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-item .value {
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .code-block {
+            background: #0d0d14;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--cyan);
+            overflow-x: auto;
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+
+        .code-block .comment { color: var(--text-muted); }
+        .code-block .string { color: var(--orange); }
+        .code-block .keyword { color: var(--accent); }
+        .code-block .highlight { color: var(--green); }
+
+        /* Sub-steps inside expanded cards */
+        .sub-steps {
+            margin-top: 12px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .sub-step {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            background: var(--surface-2);
+            border-radius: 8px;
+        }
+
+        .sub-step-letter {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .sub-step-content { flex: 1; }
+        .sub-step-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .sub-step-desc { font-size: 12px; color: var(--text-muted); }
+
+        /* Report Structure Preview */
+        .report-section { margin-top: 60px; }
+
+        .report-preview {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .report-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--surface-2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toolbar-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .toolbar-dot.red { background: #ff5f57; }
+        .toolbar-dot.yellow { background: #febc2e; }
+        .toolbar-dot.green { background: #28c840; }
+
+        .toolbar-title {
+            margin-left: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .report-body {
+            padding: 28px 24px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .report-body .md-h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .report-body .md-h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--cyan);
+            margin: 20px 0 8px;
+        }
+
+        .report-body .md-h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--purple);
+            margin: 14px 0 6px;
+        }
+
+        .report-body .md-text {
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .report-body .md-bullet {
+            color: var(--text-muted);
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .report-body .md-bullet::before {
+            content: '-';
+            position: absolute;
+            left: 4px;
+            color: var(--accent);
+        }
+
+        .report-body .md-quote {
+            border-left: 3px solid var(--orange);
+            padding-left: 12px;
+            color: var(--orange);
+            margin: 8px 0;
+            font-style: italic;
+        }
+
+        .report-body .md-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .report-body .md-table th {
+            background: var(--surface-2);
+            padding: 6px 10px;
+            text-align: left;
+            color: var(--text);
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+
+        .report-body .md-table td {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .report-body .md-link {
+            color: var(--cyan);
+            text-decoration: underline;
+        }
+
+        .rating-high { color: var(--green); font-weight: 600; }
+        .rating-med { color: var(--orange); font-weight: 600; }
+        .rating-low { color: var(--pink); font-weight: 600; }
+
+        /* Quality Checklist */
+        .checklist-section { margin-top: 60px; }
+
+        .checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 13px;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+
+        .check-item:hover { border-color: var(--green); }
+
+        .check-item.checked .check-box {
+            background: var(--green);
+            border-color: var(--green);
+        }
+
+        .check-item.checked .check-box::after { opacity: 1; }
+        .check-item.checked { border-color: rgba(52, 211, 153, 0.3); }
+
+        .check-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .check-box::after {
+            content: '\\2713';
+            font-size: 12px;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        /* Known AI Names */
+        .names-section { margin-top: 60px; }
+
+        .names-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .name-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .name-card:hover { border-color: var(--cyan); }
+
+        .name-product {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .name-ai {
+            font-size: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Error Handling */
+        .error-section { margin-top: 60px; }
+
+        .error-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px;
+        }
+
+        .error-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .error-card .error-icon { font-size: 20px; margin-bottom: 8px; }
+        .error-card .error-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .error-card .error-fix { font-size: 13px; color: var(--text-muted); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        .footer p { font-size: 13px; color: var(--text-muted); }
+
+        .footer .skill-file {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .architecture {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .arch-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="badge">
+            <span class="dot"></span>
+            Claude Code Skill
+        </div>
+        <h1>AI Readiness Research</h1>
+        <p class="subtitle">
+            Automated research workflow that evaluates a software product's AI capabilities, customer sentiment, and integration ecosystem — producing a structured Markdown report with demo-ready use cases.
+        </p>
+    </div>
+
+    <div class="container">
+
+        <!-- Prerequisites -->
+        <div class="prereq-bar">
+            <div class="prereq-item">
+                <div class="prereq-check">&#10003;</div>
+                Claude in Chrome extension active
+            </div>
+            <div class="prereq-item">
+                <div class="prereq-check">&#10003;</div>
+                Browser connected to Claude Code
+            </div>
+            <div class="prereq-item">
+                <div class="prereq-check">&#10003;</div>
+                Product name specified
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="section-title cyan">High-Level Architecture</div>
+        <div class="architecture">
+            <div class="arch-box">
+                <div class="arch-icon user">&#128100;</div>
+                <div class="arch-label">User</div>
+                <div class="arch-desc">Product name,<br>focus area</div>
+            </div>
+            <div class="arch-arrow">&#8594;</div>
+            <div class="arch-box">
+                <div class="arch-icon ai">&#9889;</div>
+                <div class="arch-label">Claude Code</div>
+                <div class="arch-desc">Orchestrates multi-source<br>research &amp; analysis</div>
+            </div>
+            <div class="arch-arrow">&#8596;</div>
+            <div class="arch-box">
+                <div class="arch-icon web">&#127760;</div>
+                <div class="arch-label">Web Sources</div>
+                <div class="arch-desc">Docs, reviews,<br>videos, GitHub</div>
+            </div>
+            <div class="arch-arrow">&#8594;</div>
+            <div class="arch-box">
+                <div class="arch-icon report">&#128203;</div>
+                <div class="arch-label">MD Report</div>
+                <div class="arch-desc">Structured AI<br>readiness assessment</div>
+            </div>
+        </div>
+
+        <!-- Research Sources -->
+        <div class="sources-section">
+            <div class="section-title orange">Research Sources</div>
+            <div class="sources-grid">
+                <div class="source-card docs">
+                    <div class="source-icon">&#128214;</div>
+                    <div class="source-name">Official Docs</div>
+                    <div class="source-examples">Vendor site, release notes,<br>API docs, AI feature pages</div>
+                </div>
+                <div class="source-card reviews">
+                    <div class="source-icon">&#11088;</div>
+                    <div class="source-name">Customer Reviews</div>
+                    <div class="source-examples">G2, Capterra, TrustRadius,<br>Reddit user experiences</div>
+                </div>
+                <div class="source-card videos">
+                    <div class="source-icon">&#9654;&#65039;</div>
+                    <div class="source-name">Demo Videos</div>
+                    <div class="source-examples">YouTube demos, tutorials,<br>walkthrough content</div>
+                </div>
+                <div class="source-card community">
+                    <div class="source-icon">&#128279;</div>
+                    <div class="source-name">Integrations</div>
+                    <div class="source-examples">Zapier, Make, n8n,<br>GitHub, marketplace apps</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step-by-step Workflow -->
+        <div class="section-title cyan">Step-by-Step Workflow</div>
+
+        <div class="timeline">
+
+            <!-- Step 1: Clarify -->
+            <div class="step">
+                <div class="step-marker" style="background: var(--accent);">1</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Clarify Research Parameters</div>
+                        <span class="step-tag input">User Input</span>
+                    </div>
+                    <div class="step-desc">Gather the product name, optional client company, and focus area before starting research.</div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="label">Product Name (required)</div>
+                                <div class="value">"HubSpot", "Jira", "AFAS"</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Client Company (optional)</div>
+                                <div class="value">For personalized recommendations</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Focus Area (optional)</div>
+                                <div class="value">"sales automation", "support", "data analysis"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Research -->
+            <div class="step">
+                <div class="step-marker" style="background: var(--cyan);">2</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Multi-Source Research</div>
+                        <span class="step-tag browser">Browser</span>
+                    </div>
+                    <div class="step-desc">Execute a 4-phase web research strategy, collecting findings across official docs, reviews, demos, and integrations.</div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="sub-steps">
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--cyan-glow); color: var(--cyan);">A</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-title">Official Product Documentation</div>
+                                    <div class="sub-step-desc">Search vendor site for AI features, branded assistant name, capabilities list, limitations, and API docs.</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--orange-glow); color: var(--orange);">B</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-title">Customer Reviews &amp; Sentiment</div>
+                                    <div class="sub-step-desc">Search G2, Capterra, TrustRadius, Reddit for real user experiences, praise points, and complaints about AI.</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--pink-glow); color: var(--pink);">C</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-title">Demo Videos &amp; Tutorials</div>
+                                    <div class="sub-step-desc">Find YouTube demos showing real AI workflows, walkthroughs, and capability demonstrations.</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--purple-glow); color: var(--purple);">D</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-title">Community &amp; Third-Party Integrations</div>
+                                    <div class="sub-step-desc">Find Zapier/Make/n8n connectors, marketplace plugins, API-based AI integrations, and GitHub projects.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="code-block" style="margin-top: 14px;">
+                            <span class="comment"># Example search queries per phase</span><br><br>
+                            <span class="comment"># A: Official docs</span><br>
+                            <span class="string">site:hubspot.com AI features</span><br>
+                            <span class="string">HubSpot Breeze capabilities</span><br><br>
+                            <span class="comment"># B: Reviews</span><br>
+                            <span class="string">site:g2.com HubSpot AI review</span><br>
+                            <span class="string">site:reddit.com HubSpot AI experience</span><br><br>
+                            <span class="comment"># C: Demos</span><br>
+                            <span class="string">site:youtube.com HubSpot Breeze demo</span><br><br>
+                            <span class="comment"># D: Integrations</span><br>
+                            <span class="string">HubSpot AI automation Zapier</span><br>
+                            <span class="string">GitHub HubSpot AI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Structure Report -->
+            <div class="step">
+                <div class="step-marker" style="background: var(--green);">3</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Structure the Report</div>
+                        <span class="step-tag markdown">Markdown</span>
+                    </div>
+                    <div class="step-desc">Compile all findings into a structured Markdown report with 10 standardized sections covering capabilities, limitations, use cases, and maturity.</div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="label">Section 1</div>
+                                <div class="value">Executive Summary</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 2</div>
+                                <div class="value">Branded AI Assistant</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 3</div>
+                                <div class="value">AI Capabilities (CAN do)</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 4</div>
+                                <div class="value">AI Limitations (CAN'T do)</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 5</div>
+                                <div class="value">Demo-Ready Use Cases</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 6</div>
+                                <div class="value">Third-Party AI Integrations</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 7</div>
+                                <div class="value">Customer Sentiment</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 8</div>
+                                <div class="value">AI Maturity Assessment</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 9</div>
+                                <div class="value">Recommended Next Steps</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Section 10</div>
+                                <div class="value">Sources with Links</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Quality Check -->
+            <div class="step">
+                <div class="step-marker" style="background: var(--pink);">4</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Quality Checklist</div>
+                        <span class="step-tag check">Validation</span>
+                    </div>
+                    <div class="step-desc">Verify completeness before finalizing: AI name confirmed, use cases sourced, both positives and negatives documented.</div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="sub-steps">
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--green-glow); color: var(--green);">&#10003;</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-desc">Branded AI name correctly identified (or confirmed none exists)</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--green-glow); color: var(--green);">&#10003;</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-desc">At least 3 demo-ready use cases with sources</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--green-glow); color: var(--green);">&#10003;</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-desc">Both capabilities AND limitations documented</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--green-glow); color: var(--green);">&#10003;</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-desc">Customer sentiment includes positives and negatives</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--green-glow); color: var(--green);">&#10003;</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-desc">All claims have source links</div>
+                                </div>
+                            </div>
+                            <div class="sub-step">
+                                <div class="sub-step-letter" style="background: var(--green-glow); color: var(--green);">&#10003;</div>
+                                <div class="sub-step-content">
+                                    <div class="sub-step-desc">Third-party integrations covered (especially if native AI is limited)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Deliver -->
+            <div class="step">
+                <div class="step-marker" style="background: var(--purple);">5</div>
+                <div class="step-card" onclick="this.classList.toggle('expanded')">
+                    <div class="step-header">
+                        <div class="step-title">Deliver Report</div>
+                        <span class="step-tag markdown">Output</span>
+                    </div>
+                    <div class="step-desc">Save the Markdown report with clickable source links throughout. Ready for client presentations or internal review.</div>
+                    <span class="expand-hint">Click to expand</span>
+                    <div class="step-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <div class="label">Format</div>
+                                <div class="value">.md (Markdown)</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Naming</div>
+                                <div class="value">ai-readiness-{product}-{date}.md</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="label">Audience</div>
+                                <div class="value">Client-ready with exec summary</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Report Preview -->
+        <div class="report-section">
+            <div class="section-title green">Output Preview</div>
+            <div class="report-preview">
+                <div class="report-toolbar">
+                    <div class="toolbar-dot red"></div>
+                    <div class="toolbar-dot yellow"></div>
+                    <div class="toolbar-dot green"></div>
+                    <span class="toolbar-title">ai-readiness-hubspot-2026-02-13.md</span>
+                </div>
+                <div class="report-body">
+                    <div class="md-h1">AI Readiness Report: HubSpot</div>
+
+                    <div class="md-h2">Executive Summary</div>
+                    <div class="md-text">HubSpot is a CRM and marketing platform that has invested heavily in AI through its branded assistant "Breeze." The platform offers native AI across marketing, sales, and service hubs with content generation, predictive analytics, and conversation intelligence.</div>
+
+                    <div class="md-h2">Branded AI Assistant</div>
+                    <div class="md-bullet"><strong>Name</strong>: Breeze (formerly ChatSpot)</div>
+                    <div class="md-bullet"><strong>Launch Date</strong>: September 2024</div>
+                    <div class="md-bullet"><strong>Positioning</strong>: AI-powered CRM assistant embedded across all hubs</div>
+
+                    <div class="md-h2">AI Capabilities (What It CAN Do)</div>
+                    <div class="md-h3">Content Generation</div>
+                    <div class="md-bullet">Blog post drafting with SEO optimization</div>
+                    <div class="md-bullet">Email subject line and body generation</div>
+                    <div class="md-bullet">Social media post creation</div>
+                    <div class="md-quote">Demo-ready use case: Generate a full blog post from a topic prompt, including meta description and suggested images.</div>
+
+                    <div class="md-h3">Predictive Analytics</div>
+                    <div class="md-bullet">Lead scoring with AI predictions</div>
+                    <div class="md-bullet">Deal forecasting and pipeline analysis</div>
+
+                    <div class="md-h2">AI Limitations (What It CAN'T Do)</div>
+                    <div class="md-bullet">No custom model training on company data</div>
+                    <div class="md-bullet">Limited multi-language AI support</div>
+                    <div class="md-bullet">Cannot process uploaded documents for analysis</div>
+
+                    <div class="md-h2">AI Maturity Assessment</div>
+                    <table class="md-table">
+                        <thead>
+                            <tr>
+                                <th>Dimension</th>
+                                <th>Rating</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Native AI Features</td>
+                                <td><span class="rating-high">High</span></td>
+                                <td>Comprehensive across all hubs</td>
+                            </tr>
+                            <tr>
+                                <td>Integration Ecosystem</td>
+                                <td><span class="rating-high">High</span></td>
+                                <td>Strong Zapier/Make support</td>
+                            </tr>
+                            <tr>
+                                <td>Documentation Quality</td>
+                                <td><span class="rating-med">Medium</span></td>
+                                <td>Good but scattered across knowledge base</td>
+                            </tr>
+                            <tr>
+                                <td>Customer Adoption</td>
+                                <td><span class="rating-med">Medium</span></td>
+                                <td>Growing; enterprise tiers adopt faster</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="md-h2">Sources</div>
+                    <div class="md-bullet"><span class="md-link">HubSpot Breeze AI Overview</span></div>
+                    <div class="md-bullet"><span class="md-link">G2 HubSpot AI Reviews (2026)</span></div>
+                    <div class="md-bullet"><span class="md-link">YouTube: Breeze AI Demo Walkthrough</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Known AI Names Reference -->
+        <div class="names-section">
+            <div class="section-title purple">Known AI Assistant Names</div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                Built-in reference table the skill uses to identify branded AI assistants before researching.
+            </p>
+            <div class="names-grid">
+                <div class="name-card">
+                    <div class="name-product">HubSpot</div>
+                    <div class="name-ai">Breeze</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">Salesforce</div>
+                    <div class="name-ai">Einstein</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">Atlassian</div>
+                    <div class="name-ai">Rovo</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">Microsoft 365</div>
+                    <div class="name-ai">Copilot</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">Google Workspace</div>
+                    <div class="name-ai">Gemini</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">Notion</div>
+                    <div class="name-ai">Notion AI</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">Slack</div>
+                    <div class="name-ai">Slack AI</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">Zoom</div>
+                    <div class="name-ai">AI Companion</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">AFAS</div>
+                    <div class="name-ai">Jonas</div>
+                </div>
+                <div class="name-card">
+                    <div class="name-product">ServiceNow</div>
+                    <div class="name-ai">Now Assist</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Handling -->
+        <div class="error-section">
+            <div class="section-title pink">Error Handling</div>
+            <div class="error-grid">
+                <div class="error-card">
+                    <div class="error-icon">&#128683;</div>
+                    <div class="error-title">No AI Features Found</div>
+                    <div class="error-fix">Document clearly in the report. Shift focus to the third-party integration section as the primary value.</div>
+                </div>
+                <div class="error-card">
+                    <div class="error-icon">&#128274;</div>
+                    <div class="error-title">Paywalled Content</div>
+                    <div class="error-fix">Note the limitation in the report. Focus on publicly available information and free review platforms.</div>
+                </div>
+                <div class="error-card">
+                    <div class="error-icon">&#128260;</div>
+                    <div class="error-title">Conflicting Information</div>
+                    <div class="error-fix">Priority order: official docs &gt; recent reviews &gt; older content. Note conflicts in the report.</div>
+                </div>
+                <div class="error-card">
+                    <div class="error-icon">&#9202;</div>
+                    <div class="error-title">Rate Limiting</div>
+                    <div class="error-fix">Pause 30 seconds between searches if the browser encounters errors from search engines.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips -->
+        <div style="margin-top: 60px;">
+            <div class="section-title orange">Research Tips</div>
+            <div class="detail-grid">
+                <div class="detail-item" style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                    <div class="label">Verify AI Name</div>
+                    <div class="value">Vendors rename AI features frequently. Always search for the current branded name.</div>
+                </div>
+                <div class="detail-item" style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                    <div class="label">GA vs Beta</div>
+                    <div class="value">Note if AI features are generally available or still in preview/beta.</div>
+                </div>
+                <div class="detail-item" style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                    <div class="label">Regional Availability</div>
+                    <div class="value">Some AI features are US/EU only. Flag this when found.</div>
+                </div>
+                <div class="detail-item" style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                    <div class="label">Pricing Tiers</div>
+                    <div class="value">Note if AI requires specific subscription levels (e.g., Enterprise only).</div>
+                </div>
+                <div class="detail-item" style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px;">
+                    <div class="label">Recency Matters</div>
+                    <div class="value">AI evolves fast. Prioritize sources from the last 12 months.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Skill definition</p>
+        <p class="skill-file" style="margin-top: 4px;">ai-readiness-research.skill</p>
+        <p style="margin-top: 8px; opacity: 0.5;">Contains: SKILL.md (no bundled scripts — report is pure Markdown)</p>
+    </div>
+
+</body>
+</html>
