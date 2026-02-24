@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompoundWay — PRD v1 MVP</title>
+<style>
+  :root {
+    --primary: #2D5F8A;
+    --primary-light: #3A7CB8;
+    --primary-bg: #EDF4FA;
+    --accent: #E8913A;
+    --accent-bg: #FFF6ED;
+    --dark: #1A1A2E;
+    --muted: #6B7280;
+    --light-gray: #F3F4F6;
+    --border: #E5E7EB;
+    --white: #FFFFFF;
+    --success: #34D399;
+    --success-bg: #ECFDF5;
+    --warning: #FBBF24;
+    --warning-bg: #FFFBEB;
+    --danger: #F87171;
+    --danger-bg: #FEF2F2;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+    color: var(--dark);
+    background: var(--light-gray);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAVIGATION ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 24px 0;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-brand {
+    padding: 0 24px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-brand h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -0.3px;
+  }
+
+  .sidebar-brand span {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-section {
+    padding: 8px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 8px 24px;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-link:hover { color: var(--primary); background: var(--primary-bg); }
+  .nav-link.active { color: var(--primary); background: var(--primary-bg); border-left-color: var(--primary); font-weight: 600; }
+
+  /* ── MAIN CONTENT ── */
+  .main { margin-left: 260px; padding: 40px 48px; max-width: 1100px; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #1E3F5C 100%);
+    border-radius: 16px;
+    padding: 48px;
+    color: white;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(232,145,58,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; }
+  .hero .subtitle { font-size: 18px; opacity: 0.85; margin-bottom: 24px; position: relative; z-index: 1; }
+
+  .hero-meta {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 36px;
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .section-icon.blue { background: var(--primary-bg); }
+  .section-icon.orange { background: var(--accent-bg); }
+  .section-icon.green { background: var(--success-bg); }
+  .section-icon.red { background: var(--danger-bg); }
+  .section-icon.yellow { background: var(--warning-bg); }
+
+  .section-header h2 { font-size: 20px; font-weight: 700; color: var(--dark); }
+
+  h3 {
+    font-size: 16px; font-weight: 700; color: var(--primary);
+    margin: 24px 0 12px;
+  }
+
+  h3:first-of-type { margin-top: 0; }
+
+  p { font-size: 14px; color: #374151; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .callout.insight { background: var(--primary-bg); border-left: 3px solid var(--primary); }
+  .callout.warning { background: var(--warning-bg); border-left: 3px solid var(--warning); }
+  .callout.accent { background: var(--accent-bg); border-left: 3px solid var(--accent); }
+
+  .callout strong { font-weight: 700; }
+
+  /* ── TABLES ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: #374151;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--light-gray); }
+
+  /* ── FLOW DIAGRAMS ── */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 20px 0;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 24px;
+  }
+
+  .flow-step:last-child { padding-bottom: 0; }
+
+  .flow-step::before {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 36px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .flow-step:last-child::before { display: none; }
+
+  .flow-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .flow-content h4 {
+    font-size: 14px; font-weight: 700; color: var(--dark);
+    margin-bottom: 4px; margin-top: 7px;
+  }
+
+  .flow-content p { font-size: 13px; color: var(--muted); margin-bottom: 0; }
+
+  /* ── TAGS / BADGES ── */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .tag.v1 { background: var(--success-bg); color: #059669; }
+  .tag.v2 { background: var(--light-gray); color: var(--muted); }
+  .tag.required { background: var(--accent-bg); color: #C2702B; }
+  .tag.optional { background: var(--light-gray); color: var(--muted); }
+
+  /* ── FEATURE CARDS ── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  .feature-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .feature-card:hover { box-shadow: var(--shadow-md); }
+
+  .feature-card h4 {
+    font-size: 14px; font-weight: 700; color: var(--dark);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .feature-card p { font-size: 13px; color: var(--muted); margin-bottom: 0; }
+
+  /* ── SCREEN MAP ── */
+  .screen-map {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .screen-tab {
+    flex: 1;
+    min-width: 200px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .screen-tab-header {
+    background: var(--primary);
+    color: white;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .screen-tab-body { padding: 12px 16px; }
+
+  .screen-tab-body li {
+    font-size: 13px;
+    color: #374151;
+    padding: 4px 0;
+    list-style: none;
+    position: relative;
+    padding-left: 16px;
+  }
+
+  .screen-tab-body li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline { margin: 20px 0; }
+
+  .timeline-phase {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 12px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .timeline-bar {
+    width: 8px;
+    flex-shrink: 0;
+  }
+
+  .timeline-bar.p1 { background: var(--primary); }
+  .timeline-bar.p2 { background: var(--accent); }
+  .timeline-bar.p3 { background: var(--success); }
+  .timeline-bar.p4 { background: #8B5CF6; }
+
+  .timeline-content {
+    padding: 14px 20px;
+    flex: 1;
+  }
+
+  .timeline-content h4 {
+    font-size: 14px; font-weight: 700; color: var(--dark);
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .timeline-content .weeks {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--light-gray);
+    color: var(--muted);
+  }
+
+  .timeline-content p { font-size: 13px; color: var(--muted); margin-bottom: 0; }
+
+  /* ── DATA MODEL ── */
+  .entity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  .entity-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .entity-card-header {
+    background: var(--dark);
+    color: white;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .entity-card-body { padding: 10px 16px; }
+
+  .entity-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 12px;
+    border-bottom: 1px solid var(--light-gray);
+  }
+
+  .entity-field:last-child { border-bottom: none; }
+
+  .entity-field .name {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .entity-field .type {
+    color: var(--muted);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+  }
+
+  /* ── RISK TABLE ── */
+  .risk-row {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .risk-row:last-child { border-bottom: none; }
+
+  .risk-indicator {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .risk-indicator.high { background: var(--danger); }
+  .risk-indicator.med { background: var(--warning); }
+  .risk-indicator.low { background: var(--success); }
+
+  .risk-content { flex: 1; }
+  .risk-content h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 2px; }
+  .risk-content p { font-size: 12px; color: var(--muted); margin-bottom: 0; }
+
+  /* ── SCOPE LISTS ── */
+  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+
+  .scope-list h4 {
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .scope-list.in h4 { color: #059669; }
+  .scope-list.out h4 { color: var(--muted); }
+
+  .scope-list li {
+    font-size: 13px;
+    color: #374151;
+    padding: 4px 0;
+    list-style: none;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .scope-list.in li::before { content: '✓'; position: absolute; left: 0; color: #059669; font-weight: 700; }
+  .scope-list.out li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+
+  /* ── MATRIX ── */
+  .matrix-container { margin: 16px 0; }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: 80px repeat(3, 1fr);
+    gap: 2px;
+    max-width: 460px;
+  }
+
+  .matrix-header {
+    background: var(--primary);
+    color: white;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .matrix-header:first-child { background: transparent; }
+
+  .matrix-label {
+    background: var(--primary-bg);
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex; align-items: center;
+  }
+
+  .matrix-cell {
+    background: var(--white);
+    border: 1px solid var(--border);
+    padding: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* ── METRICS GRID ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  .metric-card {
+    background: var(--light-gray);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+  }
+
+  .metric-card .value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.1;
+  }
+
+  .metric-card .label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── MOBILE NAV ── */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 12px; left: 12px;
+    z-index: 200;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+
+  @media (max-width: 860px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+    .main { margin-left: 0; padding: 24px 20px; padding-top: 56px; }
+    .mobile-toggle { display: block; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 28px; }
+    .scope-grid { grid-template-columns: 1fr; }
+    .screen-map { flex-direction: column; }
+    .entity-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <h1>CompoundWay</h1>
+    <span>PRD v1 MVP</span>
+  </div>
+
+  <div class="nav-section">Overview</div>
+  <a href="#overview" class="nav-link active">Product Overview</a>
+  <a href="#metrics" class="nav-link">Success Metrics</a>
+
+  <div class="nav-section">User Flows</div>
+  <a href="#onboarding" class="nav-link">Onboarding</a>
+  <a href="#daily" class="nav-link">Daily Engagement</a>
+  <a href="#tracks-flow" class="nav-link">Track Management</a>
+  <a href="#streaks" class="nav-link">Streaks & Passes</a>
+
+  <div class="nav-section">Features</div>
+  <a href="#refinement" class="nav-link">AI Refinement Engine</a>
+  <a href="#resources" class="nav-link">Resource Pipeline</a>
+  <a href="#execution" class="nav-link">Mission Execution</a>
+  <a href="#proof" class="nav-link">Proof & Reflection</a>
+  <a href="#streak-system" class="nav-link">Streak System</a>
+  <a href="#orchestration" class="nav-link">Track Orchestration</a>
+
+  <div class="nav-section">Design & Tech</div>
+  <a href="#screens" class="nav-link">Screens & Navigation</a>
+  <a href="#architecture" class="nav-link">Technical Architecture</a>
+  <a href="#data-model" class="nav-link">Data Model</a>
+  <a href="#notifications" class="nav-link">Notifications</a>
+
+  <div class="nav-section">Planning</div>
+  <a href="#scope" class="nav-link">MVP Scope</a>
+  <a href="#timeline" class="nav-link">Launch Timeline</a>
+  <a href="#risks" class="nav-link">Risks & Mitigations</a>
+</nav>
+
+<main class="main">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <h1>CompoundWay</h1>
+    <div class="subtitle">An AI-powered habits app that bridges the gap between "I want to improve" and actually doing it — every single day.</div>
+    <div class="hero-meta">
+      <div class="hero-tag">📱 Native iOS (SwiftUI)</div>
+      <div class="hero-tag">🧠 Guided Achievement Engine</div>
+      <div class="hero-tag">🏗️ Fresh Codebase</div>
+      <div class="hero-tag">📅 February 2026</div>
+    </div>
+  </div>
+
+  <!-- ── OVERVIEW ── -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon blue">📋</div>
+      <h2>Product Overview</h2>
+    </div>
+    <p>CompoundWay takes a vague desire to improve — "I want to get more fit," "I want to be more creative," "I want to be a better partner" — and transforms it into a structured, adaptive, forgiving system of daily practice missions.</p>
+    <p>Unlike existing habit trackers that assume users already know what to do, CompoundWay solves the upstream problem: it figures out <strong>what</strong> the user should do, designs complementary practice tracks, generates scaffolded daily missions, guides execution, captures proof and reflection, and sustains engagement through streaks with built-in forgiveness.</p>
+
+    <h3>MVP Scope: Two of Three Layers</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4><span class="tag v1">v1</span> Habit Tracks</h4>
+        <p>AI-generated systems of complementary practice tracks based on user input. Cadence management, load balancing, progressive mission generation.</p>
+      </div>
+      <div class="feature-card">
+        <h4><span class="tag v1">v1</span> Missions</h4>
+        <p>Individual practice sessions powered by the Guided Achievement Engine's five-phase pipeline: refinement, scaffolding, execution, reflection, engagement.</p>
+      </div>
+      <div class="feature-card">
+        <h4><span class="tag v2">v2</span> Identity Layer</h4>
+        <p>Earned identity narrative, "you're becoming" milestones. v1 collects the data (completion history, 3×3 matrix); v2 surfaces the story.</p>
+      </div>
+    </div>
+
+    <h3>Target User</h3>
+    <p>Adults who want to improve in some area of their life but struggle to convert that intention into consistent action. They may have tried other habit apps and churned because those apps assumed they already knew what to do and just needed reminders.</p>
+  </div>
+
+  <!-- ── METRICS ── -->
+  <div class="section" id="metrics">
+    <div class="section-header">
+      <div class="section-icon green">📊</div>
+      <h2>Success Metrics</h2>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="value">&gt;60%</div>
+        <div class="label">Day 1 Retention</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">&gt;30%</div>
+        <div class="label">Day 7 Retention</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">&gt;15%</div>
+        <div class="label">Day 30 Retention</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">&gt;80%</div>
+        <div class="label">Onboarding Completion</div>
+      </div>
+      <div class="metric-card">
+        <div class="value">&gt;4/wk</div>
+        <div class="label">Avg Missions (Active)</div>
+      </div>
+    </div>
+    <table>
+      <tr><th>Metric</th><th>Target</th><th>Rationale</th></tr>
+      <tr><td>Day 1 retention</td><td>&gt; 60%</td><td>User completes onboarding AND first mission</td></tr>
+      <tr><td>Day 7 retention</td><td>&gt; 30%</td><td>User completes at least 3 missions in first week</td></tr>
+      <tr><td>Day 30 retention</td><td>&gt; 15%</td><td>User has active streak or used weekly pass</td></tr>
+      <tr><td>Onboarding completion</td><td>&gt; 80%</td><td>From app open to first mission completion</td></tr>
+      <tr><td>Avg missions/week</td><td>&gt; 4</td><td>Indicates habit formation, not just exploration</td></tr>
+    </table>
+  </div>
+
+  <!-- ── ONBOARDING ── -->
+  <div class="section" id="onboarding">
+    <div class="section-header">
+      <div class="section-icon orange">🚀</div>
+      <h2>Onboarding Flow</h2>
+    </div>
+    <p>The onboarding is the product's first impression and primary differentiator. It must feel warm, conversational, and radically different from typical "set up your habits" workflows.</p>
+    <div class="callout accent"><strong>Design reference:</strong> <em>Her</em> (film) energy — not a chat UI, but card-and-bubble interactions that feel like a conversation.</div>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-content">
+          <h4>Welcome Screen</h4>
+          <p>Warm greeting, no sign-up wall. Single soft prompt: "What would you like to spend more time on?" Free text input + "Inspire me" button.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-content">
+          <h4>Refinement Loop</h4>
+          <p>Verb + object detection determines specificity. If vague: progressive narrowing via tappable option bubbles. Max 3 rounds (server-enforced). Context preserved via selectionPath.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-content">
+          <h4>Track Presentation</h4>
+          <p>System generates 2–3 complementary tracks as cards. Shows track name, frequency, time per session. Recommends a starting subset. User picks all, some, or just one.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-content">
+          <h4>First Mission (Immediate)</h4>
+          <p>"Want to try your first one right now?" Full scaffolding: tinyStart, materials, doneLooksLike. Timer, completion, proof, confetti celebration.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div class="flow-content">
+          <h4>Dashboard Reveal</h4>
+          <p>After first mission, show the main dashboard with tracks laid out. Prove the value before showing the system.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">6</div>
+        <div class="flow-content">
+          <h4>Account Creation</h4>
+          <p>Prompted after first mission (not before). Apple Sign-In + email. Anonymous session data migrated to account.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DAILY ENGAGEMENT ── -->
+  <div class="section" id="daily">
+    <div class="section-header">
+      <div class="section-icon blue">☀️</div>
+      <h2>Daily Engagement Flow</h2>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-content">
+          <h4>App Open → Today's Missions</h4>
+          <p>Dashboard shows today's scheduled missions (max 1–2 per day, load balanced). Card preview: track name, title, duration, difficulty.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-content">
+          <h4>Mission Expansion</h4>
+          <p>Tap to expand. Full scaffolding visible: tinyStart, doneLooksLike, obstaclePlan. Materials checklist, helper resources, challenge level selection with contextual labels, duration picker.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-content">
+          <h4>Execution</h4>
+          <p>Elapsed timer (counts up). Scaffolding board always visible. Materials checkable. Helpers tappable. Pause/resume with state preservation. Explicit "I'm Done!" button.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-content">
+          <h4>Proof & Reflection</h4>
+          <p>Photo (optional), note (optional), difficulty rating (required), feeling rating (required). Confetti celebration.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div class="flow-content">
+          <h4>Return to Dashboard</h4>
+          <p>Updated streak visualization. Next mission preview. Trophy wall updated.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TRACK MANAGEMENT ── -->
+  <div class="section" id="tracks-flow">
+    <div class="section-header">
+      <div class="section-icon green">🎯</div>
+      <h2>Track Management</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Add New Area</h4>
+        <p>Same refinement flow as onboarding. "What else would you like to work on?" Generates new complementary tracks. User selects which to activate.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Track Detail View</h4>
+        <p>Name, description, cadence. Completion history calendar. 3×3 assessment distribution. Current challenge level. Pause / resume / archive controls.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Modify Cadence</h4>
+        <p>Adjust frequency (e.g., 3x/week → 2x/week). System re-balances daily load across all active tracks automatically.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STREAKS ── -->
+  <div class="section" id="streaks">
+    <div class="section-header">
+      <div class="section-icon orange">🔥</div>
+      <h2>Streaks & Weekly Pass</h2>
+    </div>
+    <p>The streak tracks consecutive days with at least one completed mission. The weekly pass is the critical retention mechanism — it lets users restore a broken streak once per week, solving the "I missed one day and now my 30-day streak is gone" churn cliff.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>🔥 Streak Display</h4>
+        <p>Calendar view with consecutive days forming connected "pills." Current streak count and best streak (all-time high watermark) prominently displayed.</p>
+      </div>
+      <div class="feature-card">
+        <h4>🎟️ Weekly Pass</h4>
+        <p>One per ISO week, auto-resets each Monday. Offered when streak breaks and there's a streak worth saving. Restores previous streak value. Visual availability indicator.</p>
+      </div>
+      <div class="feature-card">
+        <h4>💔 Streak Break</h4>
+        <p>If user misses a day: show last streak value, offer weekly pass if available. If declined or unavailable: streak resets to 1 on next completion. No guilt messaging.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AI REFINEMENT ── -->
+  <div class="section" id="refinement">
+    <div class="section-header">
+      <div class="section-icon blue">🧠</div>
+      <h2>AI Refinement Engine</h2>
+    </div>
+    <p>The engine converts vague user input into specific, actionable habit tracks with missions. It operates at two levels:</p>
+
+    <h3>Two-Level Refinement</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Track-Level</h4>
+        <p>Takes broad input ("I want to get fit") and produces a set of 2–3 complementary habit tracks with cadences and session lengths.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Mission-Level</h4>
+        <p>Takes a track's context and generates a specific mission card for today's session, with full scaffolding fields.</p>
+      </div>
+    </div>
+
+    <h3>Discriminated Response Types</h3>
+    <p>Every AI call returns exactly one of three shapes: <strong>TrackPlan</strong> (set of complementary tracks), <strong>Refinement</strong> (narrowing question with 2–4 tappable options), or <strong>Card</strong> (fully scaffolded mission). The branching rule is verb + object detection.</p>
+
+    <h3>Server-Side Guardrails</h3>
+    <div class="callout insight">
+      <strong>Round 3+ forces output</strong> regardless of model response. Fallback track plan / card built from raw input if model fails. Input sanitized against injection. Rate limits per user.
+    </div>
+
+    <h3>Special Behaviors</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>🔄 Passive → Active</h4>
+        <p>"Watch TikTok" → "Film a 30-second tutorial." The system redirects passive consumption toward active skill-building creation.</p>
+      </div>
+      <div class="feature-card">
+        <h4>🎯 Natural Filter</h4>
+        <p>Unscaffoldable goals ("win the lottery") get gently redirected: "That's a great goal — what skills would help you get there?"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RESOURCE PIPELINE ── -->
+  <div class="section" id="resources">
+    <div class="section-header">
+      <div class="section-icon green">🔗</div>
+      <h2>Resource Search & Validation</h2>
+    </div>
+    <p>Provides real, working helper links — never hallucinated URLs.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-content">
+          <h4>Search Agent</h4>
+          <p>Grounded web search tool returns 4–5 candidate resources. Agent explicitly prohibited from fabricating URLs.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-content">
+          <h4>Server-Side Validation</h4>
+          <p>Extract URLs, resolve redirects, validate liveness (YouTube via oembed, others via HEAD with 3s timeout). SSRF protection: reject localhost, private IPs, non-HTTPS.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-content">
+          <h4>Trim & Deliver</h4>
+          <p>Trim to 3 verified resources. Delivered async — card appears first, resources follow. If ALL validations fail, return originals (graceful degradation).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EXECUTION ── -->
+  <div class="section" id="execution">
+    <div class="section-header">
+      <div class="section-icon orange">⏱️</div>
+      <h2>Mission Execution Environment</h2>
+    </div>
+    <table>
+      <tr><th>Element</th><th>Specification</th></tr>
+      <tr><td><strong>Timer</strong></td><td>Elapsed (counts up), not countdown. Visual progress bar toward suggested duration. No auto-stop.</td></tr>
+      <tr><td><strong>"Done looks like"</strong></td><td>Always visible during execution. Prominent card.</td></tr>
+      <tr><td><strong>Materials checklist</strong></td><td>Interactive checkboxes with strike-through on check.</td></tr>
+      <tr><td><strong>Helpers / Resources</strong></td><td>Tappable links opening in-app or system browser.</td></tr>
+      <tr><td><strong>"If stuck"</strong></td><td>Always visible. Rescue hatch for frustration moments.</td></tr>
+      <tr><td><strong>"Tiny start"</strong></td><td>Displayed prominently at session start.</td></tr>
+      <tr><td><strong>Pause / Resume</strong></td><td>Full state preservation. Scaffolding visible during pause. Timer pauses.</td></tr>
+      <tr><td><strong>Completion</strong></td><td>Explicit "I'm Done!" button. No auto-completion at timer end.</td></tr>
+    </table>
+    <div class="callout insight"><strong>Design choice:</strong> A countdown timer creates anxiety and rushes people. An elapsed timer creates awareness without pressure. The user controls when they're done — the duration is a guide, not a constraint.</div>
+  </div>
+
+  <!-- ── PROOF ── -->
+  <div class="section" id="proof">
+    <div class="section-header">
+      <div class="section-icon green">📸</div>
+      <h2>Proof & Reflection</h2>
+    </div>
+
+    <h3>Capture</h3>
+    <table>
+      <tr><th>Field</th><th>Required</th><th>Details</th></tr>
+      <tr><td>Photo</td><td><span class="tag optional">Optional</span></td><td>Device camera or photo library. Cloud upload.</td></tr>
+      <tr><td>Note</td><td><span class="tag optional">Optional</span></td><td>Freeform text, up to 2000 characters.</td></tr>
+      <tr><td>Self-rating</td><td><span class="tag required">Required</span></td><td>Easy | Ok | Hard (difficulty axis)</td></tr>
+      <tr><td>Feeling</td><td><span class="tag required">Required</span></td><td>Great | Okay | Tough (emotional axis)</td></tr>
+    </table>
+
+    <h3>3×3 Assessment Matrix</h3>
+    <div class="matrix-container">
+      <div class="matrix">
+        <div class="matrix-header"></div>
+        <div class="matrix-header">Easy</div>
+        <div class="matrix-header">Ok</div>
+        <div class="matrix-header">Hard</div>
+        <div class="matrix-label">Great</div>
+        <div class="matrix-cell">Comfort win</div>
+        <div class="matrix-cell">Solid session</div>
+        <div class="matrix-cell" style="background: var(--success-bg); font-weight: 600;">Flow state 🎯</div>
+        <div class="matrix-label">Okay</div>
+        <div class="matrix-cell">Coasting</div>
+        <div class="matrix-cell">Neutral</div>
+        <div class="matrix-cell">Stretched</div>
+        <div class="matrix-label">Tough</div>
+        <div class="matrix-cell" style="background: var(--warning-bg);">Off day</div>
+        <div class="matrix-cell">Struggling</div>
+        <div class="matrix-cell" style="background: var(--danger-bg); font-weight: 600;">Overwhelm ⚠️</div>
+      </div>
+    </div>
+    <p>Data stored per completion and aggregated per track. v1 collects and stores; v2 uses it for automatic difficulty adjustment.</p>
+
+    <h3>Celebration</h3>
+    <p>Confetti animation on completion (2–3 seconds). Psychologically grounded in the <strong>peak-end rule</strong> — creating an emotional peak at the end of the experience to make the entire session feel more positive in retrospect.</p>
+  </div>
+
+  <!-- ── STREAK SYSTEM ── -->
+  <div class="section" id="streak-system">
+    <div class="section-header">
+      <div class="section-icon orange">🔥</div>
+      <h2>Streak System — Logic</h2>
+    </div>
+
+    <h3>Core Streak Calculation (Server-Side)</h3>
+    <div class="callout insight">
+      <strong>On mission completion:</strong> If yesterday has a completion → streak = old + 1. Otherwise → save last streak, reset to 1. Best streak = max(best, current). All dates in ISO format (YYYY-MM-DD). Computed server-side to avoid timezone drift.
+    </div>
+
+    <h3>Weekly Pass Logic</h3>
+    <table>
+      <tr><th>Condition</th><th>Detail</th></tr>
+      <tr><td>Eligibility</td><td>weeklyPassAvailable === true AND lastStreakBeforeReset > 0</td></tr>
+      <tr><td>Effect</td><td>Streak restored to lastStreakBeforeReset + 1 (restored + today)</td></tr>
+      <tr><td>Consumption</td><td>weeklyPassAvailable set to false</td></tr>
+      <tr><td>Reset</td><td>Auto-resets to true each new ISO week (Monday)</td></tr>
+    </table>
+
+    <h3>Visualization</h3>
+    <p>Calendar view with consecutive days forming connected visual "pills." Colored dots per completed mission on each date (using track color). Current and best streak prominently displayed. Weekly pass availability indicator visible.</p>
+  </div>
+
+  <!-- ── TRACK ORCHESTRATION ── -->
+  <div class="section" id="orchestration">
+    <div class="section-header">
+      <div class="section-icon blue">🎼</div>
+      <h2>Track Orchestration</h2>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>📅 Cadence Management</h4>
+        <p>Distributes missions across the week. Avoids scheduling same-category tracks on consecutive days. Respects user-defined rest days. Even distribution across available days.</p>
+      </div>
+      <div class="feature-card">
+        <h4>⚖️ Load Balancing</h4>
+        <p>Max 2 missions per day across all active tracks. Rotates which tracks fire each day. User can always manually trigger additional missions.</p>
+      </div>
+      <div class="feature-card">
+        <h4>📈 Progressive Generation</h4>
+        <p>When a track fires: pull track context → call mission AI → generate Card. Difficulty informed by completion count (v1) and 3×3 matrix (v2).</p>
+      </div>
+    </div>
+
+    <div class="callout warning"><strong>Critical design rule:</strong> Completion is never reverted on server failure. The user's sense of accomplishment is protected even if the network is unreliable.</div>
+  </div>
+
+  <!-- ── SCREENS ── -->
+  <div class="section" id="screens">
+    <div class="section-header">
+      <div class="section-icon green">📱</div>
+      <h2>Screens & Navigation</h2>
+    </div>
+
+    <h3>Tab Bar (3 Tabs)</h3>
+    <div class="screen-map">
+      <div class="screen-tab">
+        <div class="screen-tab-header">☀️ Today (Default)</div>
+        <div class="screen-tab-body">
+          <ul>
+            <li>Today's mission card(s)</li>
+            <li>Streak display</li>
+            <li>Quick stats (missions this week, active tracks)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="screen-tab">
+        <div class="screen-tab-header">🎯 Tracks</div>
+        <div class="screen-tab-body">
+          <ul>
+            <li>Active tracks list</li>
+            <li>Track detail → history, cadence, controls</li>
+            <li>"Add new area" button</li>
+            <li>Archived tracks</li>
+          </ul>
+        </div>
+      </div>
+      <div class="screen-tab">
+        <div class="screen-tab-header">📊 Progress</div>
+        <div class="screen-tab-body">
+          <ul>
+            <li>Calendar view (all tracks, colored dots)</li>
+            <li>Trophy wall (completion history)</li>
+            <li>Streak stats (current, best, pass status)</li>
+            <li>Summary stats (totals)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>Modal Flows</h3>
+    <table>
+      <tr><th>Modal</th><th>Trigger</th><th>Behavior</th></tr>
+      <tr><td>Onboarding</td><td>First launch</td><td>Full-screen, before tab bar</td></tr>
+      <tr><td>Mission execution</td><td>Tap mission from Today</td><td>Full-screen: timer, scaffolding, completion</td></tr>
+      <tr><td>Proof & reflection</td><td>"I'm Done!" button</td><td>Slides up within mission modal</td></tr>
+      <tr><td>Refinement</td><td>"Add new area"</td><td>Full-screen refinement flow</td></tr>
+      <tr><td>Weekly pass</td><td>Streak break detected</td><td>Alert/sheet on app open</td></tr>
+      <tr><td>Settings</td><td>Profile icon</td><td>Account, notifications, rest days, data export</td></tr>
+    </table>
+
+    <h3>Design Direction</h3>
+    <div class="callout accent">
+      <strong>Warm, not clinical.</strong> Rounded corners, soft shadows, approachable typography. <strong>Card-based.</strong> Missions, tracks, completions — all cards. <strong>Minimal chrome.</strong> Let content breathe. <strong>Color per track.</strong> System-assigned from curated palette. <strong>Conversational tone.</strong> "Nice work" not "Task completed."
+    </div>
+  </div>
+
+  <!-- ── ARCHITECTURE ── -->
+  <div class="section" id="architecture">
+    <div class="section-header">
+      <div class="section-icon blue">⚙️</div>
+      <h2>Technical Architecture</h2>
+    </div>
+
+    <h3>Client (iOS)</h3>
+    <table>
+      <tr><th>Component</th><th>Technology</th></tr>
+      <tr><td>Language</td><td>Swift</td></tr>
+      <tr><td>UI Framework</td><td>SwiftUI</td></tr>
+      <tr><td>Architecture</td><td>MVVM with lightweight coordinator</td></tr>
+      <tr><td>Local Persistence</td><td>SwiftData</td></tr>
+      <tr><td>Networking</td><td>URLSession with async/await</td></tr>
+      <tr><td>State Management</td><td>Combine + @Observable (iOS 17+)</td></tr>
+      <tr><td>Min Deployment</td><td>iOS 17.0</td></tr>
+    </table>
+
+    <h3>Backend</h3>
+    <table>
+      <tr><th>Component</th><th>Technology</th></tr>
+      <tr><td>API</td><td>REST with JSON</td></tr>
+      <tr><td>Database</td><td>PostgreSQL</td></tr>
+      <tr><td>Auth</td><td>Apple Sign-In, email/password</td></tr>
+      <tr><td>AI</td><td>Server-side prompt management with model routing</td></tr>
+      <tr><td>File Storage</td><td>Cloud object storage (S3-compatible)</td></tr>
+    </table>
+
+    <h3>AI Model Routing</h3>
+    <table>
+      <tr><th>Task</th><th>Model Type</th><th>Priority</th></tr>
+      <tr><td>Track plan generation</td><td>Language model (structured output)</td><td>Quality over speed</td></tr>
+      <tr><td>Mission card generation</td><td>Language model (structured output)</td><td>Balance quality / speed</td></tr>
+      <tr><td>Resource search</td><td>Model with grounded web search</td><td>Factual accuracy</td></tr>
+      <tr><td>Inspiration generation</td><td>Language model (high temperature)</td><td>Creativity / diversity</td></tr>
+    </table>
+
+    <h3>Key Client Patterns</h3>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Optimistic Updates</h4>
+        <p>All changes applied immediately with temp- IDs. Server reconciliation async. Completion is never reverted on failure.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Offline Support</h4>
+        <p>Missions cached for offline execution. Timer and scaffolding work offline. Photos queued for upload on reconnect.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DATA MODEL ── -->
+  <div class="section" id="data-model">
+    <div class="section-header">
+      <div class="section-icon orange">🗃️</div>
+      <h2>Data Model</h2>
+    </div>
+
+    <div class="entity-grid">
+      <div class="entity-card">
+        <div class="entity-card-header">User</div>
+        <div class="entity-card-body">
+          <div class="entity-field"><span class="name">id</span><span class="type">UUID</span></div>
+          <div class="entity-field"><span class="name">email</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">displayName</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">streak</span><span class="type">number</span></div>
+          <div class="entity-field"><span class="name">bestStreak</span><span class="type">number</span></div>
+          <div class="entity-field"><span class="name">weeklyPassAvailable</span><span class="type">boolean</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-card-header">ImprovementArea</div>
+        <div class="entity-card-body">
+          <div class="entity-field"><span class="name">id</span><span class="type">UUID</span></div>
+          <div class="entity-field"><span class="name">userId</span><span class="type">UUID (FK)</span></div>
+          <div class="entity-field"><span class="name">rawInput</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">selectionPath</span><span class="type">string[]</span></div>
+          <div class="entity-field"><span class="name">status</span><span class="type">enum</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-card-header">Track</div>
+        <div class="entity-card-body">
+          <div class="entity-field"><span class="name">id</span><span class="type">UUID</span></div>
+          <div class="entity-field"><span class="name">improvementAreaId</span><span class="type">UUID (FK)</span></div>
+          <div class="entity-field"><span class="name">name</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">category</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">frequency</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">color</span><span class="type">hex string</span></div>
+          <div class="entity-field"><span class="name">challengeLevel</span><span class="type">enum</span></div>
+          <div class="entity-field"><span class="name">completionCount</span><span class="type">number</span></div>
+          <div class="entity-field"><span class="name">status</span><span class="type">enum</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-card-header">Mission</div>
+        <div class="entity-card-body">
+          <div class="entity-field"><span class="name">id</span><span class="type">UUID</span></div>
+          <div class="entity-field"><span class="name">trackId</span><span class="type">UUID (FK)</span></div>
+          <div class="entity-field"><span class="name">title</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">challengeLabels</span><span class="type">string[3]</span></div>
+          <div class="entity-field"><span class="name">tinyStart</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">doneLooksLike</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">obstaclePlan</span><span class="type">string</span></div>
+          <div class="entity-field"><span class="name">materials</span><span class="type">string[]</span></div>
+          <div class="entity-field"><span class="name">helpers</span><span class="type">object[]</span></div>
+          <div class="entity-field"><span class="name">scheduledDate</span><span class="type">ISO date</span></div>
+          <div class="entity-field"><span class="name">status</span><span class="type">enum</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-card-header">Completion</div>
+        <div class="entity-card-body">
+          <div class="entity-field"><span class="name">id</span><span class="type">UUID</span></div>
+          <div class="entity-field"><span class="name">missionId</span><span class="type">UUID (FK)</span></div>
+          <div class="entity-field"><span class="name">elapsedSeconds</span><span class="type">number</span></div>
+          <div class="entity-field"><span class="name">difficultyRating</span><span class="type">enum</span></div>
+          <div class="entity-field"><span class="name">feelingRating</span><span class="type">enum</span></div>
+          <div class="entity-field"><span class="name">note</span><span class="type">string?</span></div>
+          <div class="entity-field"><span class="name">photoUrl</span><span class="type">string?</span></div>
+          <div class="entity-field"><span class="name">completedAt</span><span class="type">timestamp</span></div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-card-header">CompletedDate</div>
+        <div class="entity-card-body">
+          <div class="entity-field"><span class="name">userId</span><span class="type">UUID (FK)</span></div>
+          <div class="entity-field"><span class="name">date</span><span class="type">ISO date</span></div>
+          <div class="entity-field"><span class="name">missionCount</span><span class="type">number</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NOTIFICATIONS ── -->
+  <div class="section" id="notifications">
+    <div class="section-header">
+      <div class="section-icon yellow">🔔</div>
+      <h2>Notifications</h2>
+    </div>
+    <p>Notifications are opt-in, requested after first week of use (not during onboarding).</p>
+    <table>
+      <tr><th>Notification</th><th>Timing</th><th>Copy Style</th></tr>
+      <tr><td>Daily mission reminder</td><td>User-configured (default 9am)</td><td>"Your [track] mission is ready. Today: [title]"</td></tr>
+      <tr><td>Streak at risk</td><td>8pm if no mission today & streak > 3</td><td>"You've got a [N]-day streak going. Still time."</td></tr>
+      <tr><td>Weekly pass refresh</td><td>Monday morning</td><td>"Your weekly pass just refreshed."</td></tr>
+      <tr><td>Milestone</td><td>After 7, 14, 30, 60, 100 days</td><td>"That's [N] days. You're building something real."</td></tr>
+    </table>
+    <div class="callout warning"><strong>What we don't send:</strong> No "you haven't opened the app" guilt notifications. No marketing or upsell in v1. No more than 1 notification per day.</div>
+  </div>
+
+  <!-- ── SCOPE ── -->
+  <div class="section" id="scope">
+    <div class="section-header">
+      <div class="section-icon green">✅</div>
+      <h2>MVP Scope Boundaries</h2>
+    </div>
+
+    <div class="scope-grid">
+      <div class="scope-list in">
+        <h4>✅ In Scope (v1)</h4>
+        <ul>
+          <li>Conversational onboarding with refinement</li>
+          <li>AI-generated complementary habit tracks</li>
+          <li>AI-generated scaffolded mission cards</li>
+          <li>Mission execution environment</li>
+          <li>Proof capture (photo, note)</li>
+          <li>3×3 self-assessment (data collected)</li>
+          <li>Streak system with weekly pass</li>
+          <li>Trophy wall / completion history</li>
+          <li>Calendar visualization</li>
+          <li>Track management (add, pause, archive)</li>
+          <li>"Inspire me" flow</li>
+          <li>Passive-to-active redirection</li>
+          <li>Offline mission execution</li>
+          <li>Push notifications (opt-in)</li>
+          <li>Apple Sign-In authentication</li>
+        </ul>
+      </div>
+      <div class="scope-list out">
+        <h4>— Out of Scope (v2+)</h4>
+        <ul>
+          <li>Identity layer & milestones</li>
+          <li>Adaptive difficulty (auto-adjust)</li>
+          <li>Social features & accountability</li>
+          <li>Therapist/coach integration</li>
+          <li>Android</li>
+          <li>Apple Watch companion</li>
+          <li>Audio-first experience</li>
+          <li>Advanced track interdependency</li>
+          <li>Monetization / subscriptions</li>
+          <li>iOS widgets</li>
+          <li>Siri integration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TIMELINE ── -->
+  <div class="section" id="timeline">
+    <div class="section-header">
+      <div class="section-icon blue">📅</div>
+      <h2>Launch Timeline</h2>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-phase">
+        <div class="timeline-bar p1"></div>
+        <div class="timeline-content">
+          <h4>Phase 1: Foundation <span class="weeks">Weeks 1–4</span></h4>
+          <p>Data model, authentication, basic API. AI integration: refinement engine, card generation, resource search. Prompt authoring and testing.</p>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-bar p2"></div>
+        <div class="timeline-content">
+          <h4>Phase 2: Core Loop <span class="weeks">Weeks 5–8</span></h4>
+          <p>Onboarding flow. Mission execution environment. Proof & reflection. Streak system with weekly pass.</p>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-bar p3"></div>
+        <div class="timeline-content">
+          <h4>Phase 3: Track Layer <span class="weeks">Weeks 9–11</span></h4>
+          <p>Track generation from refinement. Cadence management and load balancing. Track management UI. Progressive mission generation.</p>
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="timeline-bar p4"></div>
+        <div class="timeline-content">
+          <h4>Phase 4: Polish & Launch <span class="weeks">Weeks 12–14</span></h4>
+          <p>Trophy wall, calendar views, notifications, offline support, performance optimization. TestFlight beta (50–100 users, 2 weeks). App Store submission.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RISKS ── -->
+  <div class="section" id="risks">
+    <div class="section-header">
+      <div class="section-icon red">⚠️</div>
+      <h2>Risks & Mitigations</h2>
+    </div>
+
+    <div class="risk-row">
+      <div class="risk-indicator high"></div>
+      <div class="risk-content">
+        <h4>AI generates low-quality tracks or missions</h4>
+        <p>Core value prop fails, users churn. <strong>Mitigation:</strong> Extensive prompt engineering, server-side validation, fallback cards, beta testing with rapid prompt iteration.</p>
+      </div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-indicator med"></div>
+      <div class="risk-content">
+        <h4>Resource URLs are broken or irrelevant</h4>
+        <p>Erodes trust. <strong>Mitigation:</strong> Validation pipeline with liveness checks, SSRF protection, graceful degradation.</p>
+      </div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-indicator high"></div>
+      <div class="risk-content">
+        <h4>Onboarding feels too long</h4>
+        <p>Users drop off before first mission. <strong>Mitigation:</strong> Hard stop at 3 refinement rounds, immediate mission after track selection, measure and optimize funnel.</p>
+      </div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-indicator med"></div>
+      <div class="risk-content">
+        <h4>Users create too many tracks → overwhelm</h4>
+        <p>Burnout, churn. <strong>Mitigation:</strong> Load balancing (max 2/day), system recommends starting subset, progressive track addition.</p>
+      </div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-indicator med"></div>
+      <div class="risk-content">
+        <h4>Streak break causes churn despite weekly pass</h4>
+        <p>Lose users after bad week. <strong>Mitigation:</strong> Weekly pass, no guilt notifications, soft re-engagement messaging.</p>
+      </div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-indicator low"></div>
+      <div class="risk-content">
+        <h4>AI API latency affects UX</h4>
+        <p>Mission generation feels slow. <strong>Mitigation:</strong> Cache missions ahead of schedule, async resource loading, optimistic UI.</p>
+      </div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-indicator low"></div>
+      <div class="risk-content">
+        <h4>Offline edge cases break streak calculation</h4>
+        <p>Frustration, data inconsistency. <strong>Mitigation:</strong> Server-side streak logic with ISO dates, client sync on reconnect, completion never reverted.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; padding: 40px 0 20px; color: var(--muted); font-size: 13px;">
+    <em>CompoundWay — PRD v1 MVP — Living document, February 2026</em>
+  </div>
+
+</main>
+
+<script>
+  // Active nav tracking
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -75% 0px' });
+
+  sections.forEach(section => observer.observe(section));
+
+  // Mobile sidebar close on link click
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      document.querySelector('.sidebar').classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
