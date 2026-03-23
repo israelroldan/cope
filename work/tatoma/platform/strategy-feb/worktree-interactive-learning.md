@@ -4,4 +4,4 @@ This worktree has been merged into **[worktree-academy-learning.md](./worktree-a
 
 The interactive learning engine and academy content are now a single document for Sprint 3 handoff.
 
-**Archived version:** worktree-academy-content-v2.md
+**Archived version:** worktree-interactive-learning-v3.md
