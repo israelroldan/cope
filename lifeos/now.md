@@ -13,7 +13,7 @@
 ### Personal
 - [ ] **Health.** Lose some weight. Be less stressed. Protect energy, don't just manage time.
 - [ ] **Stop hemorrhaging money.** Get YNAB fully operational. Know the numbers. Plug the leaks.
-- [ ] **Save for Spain trip.** ~EUR 3,927 needed by August (flights, hotel, car, food, activities). Book soon — 90%+ of eclipse path accommodation is already sold out.
+- [ ] **Build financial buffer.** The EUR 3,927 that would have gone to Spain stays as breathing room. Use it to stop the bleeding and start saving.
 - [ ] **More time with kids.** Not just present — actually available. Apply the same principle you built into Pimpi: show up, no guilt.
 
 ### Pimpi
@@ -44,7 +44,7 @@
 
 | Item | Waiting On | Since | Priority |
 |------|-----------|-------|----------|
-| Spain trip booking (hotel, flights) | Budget clarity + booking action | 2026-03-21 | **High** — prices rising, 90% sold out |
+| ~~Spain trip~~ | Decided not to go (financially responsible) | 2026-03-23 | Closed |
 | Pimpi Sparks active user count | Israel checking analytics | 2026-03-23 | **High** — determines Phase 1 approach |
 | YNAB full setup | Israel configuring categories | Ongoing | **High** — can't stop hemorrhaging without visibility |
 | Tatoma equity / management agreement status | Needs honest review | Ongoing | **Medium** — see for-your-eyes-only.md |
@@ -75,10 +75,7 @@
 - Specialist agents: ics-sync, finance, school, email, Slack
 
 ### Personal
-- Spain eclipse trip: Aug 10-14, 2026 (Israel's birthday is eclipse day!)
-  - Bilbao base, drive south for totality near Burgos
-  - Budget: ~EUR 3,927 (Transavia flights EUR 1,639 + Spirit Hotel EUR 1,368 + car EUR 470 + food/activities EUR 450)
-  - Booking checklist: hotel first, then flights, then car, then glasses
+- ~~Spain eclipse trip~~ — decided against, not financially responsible right now. Redirect that energy into making Pimpi revenue real.
 - YNAB: in setup phase. Banks: Bunq (daily), ABN AMRO (savings), ICS (credit)
 - Health: needs a concrete plan (not just "be healthier")
 
@@ -88,7 +85,7 @@
 
 | Commitment | To Whom | Due | Status |
 |-----------|---------|-----|--------|
-| Book Spain trip (hotel + flights) | Family | ASAP — selling out | Open |
+| ~~Book Spain trip~~ | Family | — | Decided against — not financially smart |
 | Answer Pimpi scratchpad open questions | Self | 2026-03-31 | Open |
 | Pimpi+ paywall implementation | Self / Pimpi users | Q2 2026 | Open |
 | Review Tatoma equity assumptions honestly | Self | Q2 2026 | Open |
@@ -101,7 +98,7 @@
 - Pimpi universe strategy defined — four products, phased rollout, revenue model
 - TLOM → Pimpi Learn pivot decided — reduces venture count, eliminates team dependency
 - Passive income strategy structured — clear tiers, sequenced, open questions identified
-- Eclipse trip researched and budgeted — ready to book
+- Spain trip: made the hard call to skip it — financially responsible decision as a family
 
 ---
 
@@ -110,7 +107,7 @@
 *Track the things that matter, not just the things that ship.*
 
 - [ ] First EUR from Pimpi+ → buy wife rings and shoes
-- [ ] Spain trip fully booked and paid
+- [ ] One full month with positive cashflow (not hemorrhaging)
 - [ ] YNAB running for 1 full month with all accounts synced
 - [ ] One full week where afternoons with kids feel unhurried
 - [ ] Tatoma platform demo'd to a non-client and they understand it
