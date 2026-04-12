@@ -1,0 +1,808 @@
+{
+  "version": "1.0",
+  "description": "Master index of 32 canonical micro-learning activity mechanics. Source of truth for implementation status.",
+  "statuses": {
+    "spec-complete": "JSON spec and markdown description written. Ready to prototype.",
+    "in-progress": "Prototype actively being built.",
+    "prototype-done": "Working prototype exists. Needs review.",
+    "reviewed": "Prototype reviewed and approved.",
+    "blocked": "Cannot proceed \u2014 see notes for reason."
+  },
+  "priorities": {
+    "p0-must-have": "Core mechanics. Build first.",
+    "p1-important": "Strong evidence + high AI generability. Build second.",
+    "p2-nice-to-have": "Valuable but not essential for MVP.",
+    "p3-future": "Requires multiplayer, pre-built game shells, or complex assets."
+  },
+  "mechanics": [
+    {
+      "number": 1,
+      "id": "multiple-choice",
+      "name": "Multiple Choice (Single Answer)",
+      "slug": "multiple-choice",
+      "tier": {
+        "bloom": "remember",
+        "level": 1,
+        "label": "Remember \u2014 Factual Recall"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "fundamental",
+        "single-select",
+        "fact-recall",
+        "assessment"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 2,
+      "id": "true-false",
+      "name": "True/False (Binary Judgment)",
+      "slug": "true-false",
+      "tier": {
+        "bloom": "remember",
+        "level": 1,
+        "label": "Remember \u2014 Factual Recall"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "fundamental",
+        "binary-select",
+        "fact-recall",
+        "rapid-fire",
+        "assessment"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 3,
+      "id": "flashcard",
+      "name": "Flashcard (Self-Assessed Recall)",
+      "slug": "flashcard",
+      "tier": {
+        "bloom": "remember",
+        "level": 1,
+        "label": "Remember \u2014 Factual Recall"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 5,
+      "tags": [
+        "fundamental",
+        "self-paced",
+        "recall-practice",
+        "vocabulary",
+        "memorization"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 4,
+      "id": "image-recognition",
+      "name": "Image Recognition (Visual Identification)",
+      "slug": "image-recognition",
+      "tier": {
+        "bloom": "remember",
+        "level": 1,
+        "label": "Remember \u2014 Factual Recall"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 4,
+      "tags": [
+        "visual-learning",
+        "visual-identification",
+        "single-select",
+        "recognition"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 5,
+      "id": "audio-recognition",
+      "name": "Audio Recognition (Listen and Identify)",
+      "slug": "audio-recognition",
+      "tier": {
+        "bloom": "remember",
+        "level": 1,
+        "label": "Remember \u2014 Factual Recall"
+      },
+      "priority": "p2-nice-to-have",
+      "aiGenerability": 3,
+      "tags": [
+        "auditory-learning",
+        "listening-comprehension",
+        "pronunciation",
+        "language-learning",
+        "music"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 6,
+      "id": "matching-pairs",
+      "name": "Matching Pairs (Association)",
+      "slug": "matching-pairs",
+      "tier": {
+        "bloom": "understand",
+        "level": 2,
+        "label": "Understand \u2014 Conceptual Relationships"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "association",
+        "relationship-building",
+        "paired-recall",
+        "vocabulary"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 7,
+      "id": "categorization",
+      "name": "Categorization/Sorting",
+      "slug": "categorization",
+      "tier": {
+        "bloom": "understand",
+        "level": 2,
+        "label": "Understand \u2014 Conceptual Relationships"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "classification",
+        "grouping",
+        "conceptual-understanding",
+        "taxonomy"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 8,
+      "id": "fill-in-blank-wordbank",
+      "name": "Fill in the Blank (Word Bank)",
+      "slug": "fill-in-blank-wordbank",
+      "tier": {
+        "bloom": "understand",
+        "level": 2,
+        "label": "Understand \u2014 Contextual Application"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "cloze-procedure",
+        "contextual-vocabulary",
+        "reading-comprehension",
+        "grammar"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 9,
+      "id": "sequence-reorder",
+      "name": "Sentence/Sequence Reordering",
+      "slug": "sequence-reorder",
+      "tier": {
+        "bloom": "understand",
+        "level": 2,
+        "label": "Understand \u2014 Conceptual Comprehension"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "sequencing",
+        "procedure",
+        "timeline",
+        "understand",
+        "mobile-first"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 10,
+      "id": "memory-game",
+      "name": "Memory/Concentration Game",
+      "slug": "memory-game",
+      "tier": {
+        "bloom": "understand",
+        "level": 2,
+        "label": "Understand \u2014 Conceptual Comprehension"
+      },
+      "priority": "p2-nice-to-have",
+      "aiGenerability": 5,
+      "tags": [
+        "memory",
+        "recall",
+        "concentration",
+        "matching",
+        "gamification",
+        "timed"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 11,
+      "id": "fill-in-blank-free",
+      "name": "Free Recall Fill-in-the-Blank (No Word Bank)",
+      "slug": "fill-in-blank-free",
+      "tier": {
+        "bloom": "apply",
+        "level": 3,
+        "label": "Apply \u2014 Using Information in New Contexts"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "free-recall",
+        "retrieval-practice",
+        "spelling",
+        "vocabulary",
+        "apply"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 12,
+      "id": "numerical-slider",
+      "name": "Numerical Estimation/Slider",
+      "slug": "numerical-slider",
+      "tier": {
+        "bloom": "apply",
+        "level": 3,
+        "label": "Apply \u2014 Using Information in New Contexts"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "estimation",
+        "quantitative",
+        "numerical",
+        "apply",
+        "slider"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 13,
+      "id": "spatial-hotspot",
+      "name": "Spatial Pin/Hotspot (Tap on Image)",
+      "slug": "spatial-hotspot",
+      "tier": {
+        "bloom": "apply",
+        "level": 3,
+        "label": "Apply \u2014 Using Information in New Contexts"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 4,
+      "tags": [
+        "spatial",
+        "geography",
+        "anatomy",
+        "mapping",
+        "apply"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 14,
+      "id": "labeling",
+      "name": "Labeling (Drag Labels onto Image)",
+      "slug": "labeling",
+      "tier": {
+        "bloom": "apply",
+        "level": 3,
+        "label": "Apply \u2014 Using Information in New Contexts"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 4,
+      "tags": [
+        "labeling",
+        "anatomy",
+        "diagram",
+        "drag-drop",
+        "apply"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 15,
+      "id": "scenario-question",
+      "name": "Scenario-Based Question",
+      "slug": "scenario-question",
+      "tier": {
+        "bloom": "apply",
+        "level": 3,
+        "label": "Apply \u2014 Using Information in New Contexts"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "comprehension",
+        "reading",
+        "inference",
+        "scenario",
+        "apply"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 16,
+      "id": "compare-contrast",
+      "name": "Compare and Contrast",
+      "slug": "compare-contrast",
+      "tier": {
+        "bloom": "analyze",
+        "level": 4,
+        "label": "Analyze \u2014 Breaking Down Information"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 4,
+      "tags": [
+        "comparison",
+        "analysis",
+        "critical-thinking",
+        "analyze"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 17,
+      "id": "find-the-error",
+      "name": "Find the Error / Odd One Out",
+      "slug": "find-the-error",
+      "tier": {
+        "bloom": "analyze",
+        "level": 4,
+        "label": "Analyze \u2014 Critical Examination"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "analysis",
+        "critical-thinking",
+        "error-detection",
+        "odd-one-out",
+        "puzzle",
+        "bloom-4"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 18,
+      "id": "cause-effect",
+      "name": "Cause and Effect / Connection Mapping",
+      "slug": "cause-effect",
+      "tier": {
+        "bloom": "analyze",
+        "level": 4,
+        "label": "Analyze \u2014 Critical Examination"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 4,
+      "tags": [
+        "analysis",
+        "connections",
+        "cause-effect",
+        "matching",
+        "bloom-4",
+        "critical-thinking"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 19,
+      "id": "hot-text",
+      "name": "Hot Text (Textual Analysis)",
+      "slug": "hot-text",
+      "tier": {
+        "bloom": "analyze",
+        "level": 4,
+        "label": "Analyze \u2014 Critical Examination"
+      },
+      "priority": "p2-nice-to-have",
+      "aiGenerability": 4,
+      "tags": [
+        "analysis",
+        "textual-analysis",
+        "close-reading",
+        "evidence-finding",
+        "bloom-4"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 20,
+      "id": "ranking",
+      "name": "Ranking / Prioritization",
+      "slug": "ranking",
+      "tier": {
+        "bloom": "evaluate",
+        "level": 5,
+        "label": "Evaluate \u2014 Making Judgments"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 5,
+      "tags": [
+        "evaluation",
+        "prioritization",
+        "ranking",
+        "ordering",
+        "bloom-5",
+        "decision-making"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 21,
+      "id": "poll",
+      "name": "Poll / Opinion Vote",
+      "slug": "poll",
+      "tier": {
+        "bloom": "evaluate",
+        "level": 5,
+        "label": "Evaluate \u2014 Making Judgments"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "evaluation",
+        "opinion",
+        "reflection",
+        "no-grading",
+        "engagement",
+        "peer-learning",
+        "bloom-5"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 22,
+      "id": "confidence-rating",
+      "name": "Confidence Rating (Metacognitive)",
+      "slug": "confidence-rating",
+      "tier": {
+        "bloom": "evaluate",
+        "level": 5,
+        "label": "Evaluate \u2014 Making Judgments"
+      },
+      "priority": "p0-must-have",
+      "aiGenerability": 5,
+      "tags": [
+        "metacognition",
+        "confidence",
+        "self-assessment",
+        "reflection",
+        "bloom-5",
+        "overlay"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 23,
+      "id": "open-ended",
+      "name": "Open-Ended Text Response",
+      "slug": "open-ended",
+      "tier": {
+        "bloom": "create",
+        "level": 6,
+        "label": "Create \u2014 Original Production"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 4,
+      "tags": [
+        "creation",
+        "writing",
+        "synthesis",
+        "reflection",
+        "bloom-6",
+        "rubric-based"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 24,
+      "id": "drawing",
+      "name": "Drawing / Sketching",
+      "slug": "drawing",
+      "tier": {
+        "bloom": "create",
+        "level": 6,
+        "label": "Create \u2014 Original Production"
+      },
+      "priority": "p3-future",
+      "aiGenerability": 3,
+      "tags": [
+        "creation",
+        "drawing",
+        "visual-expression",
+        "peer-assessment",
+        "creativity",
+        "bloom-6"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 25,
+      "id": "brainstorm",
+      "name": "Brainstorm/Ideation",
+      "slug": "brainstorm",
+      "tier": {
+        "bloom": "create",
+        "level": 6,
+        "label": "Create \u2014 Divergent Thinking & Ideation"
+      },
+      "priority": "p2-nice-to-have",
+      "aiGenerability": 4,
+      "tags": [
+        "divergent-thinking",
+        "creativity",
+        "collaborative",
+        "peer-voting",
+        "ai-clustering"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 26,
+      "id": "timed-speed",
+      "name": "Timed Speed Challenge",
+      "slug": "timed-speed",
+      "tier": {
+        "bloom": "gamification",
+        "level": 7,
+        "label": "Gamification \u2014 Cross-Tier Wrapper"
+      },
+      "priority": "p1-important",
+      "aiGenerability": 5,
+      "tags": [
+        "gamification",
+        "timer",
+        "speed",
+        "automaticity",
+        "urgency",
+        "wrapper"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 27,
+      "id": "strategy-game",
+      "name": "Strategy Game Wrapper",
+      "slug": "strategy-game",
+      "tier": {
+        "bloom": "gamification",
+        "level": 7,
+        "label": "Gamification \u2014 Cross-Tier Wrapper"
+      },
+      "priority": "p3-future",
+      "aiGenerability": 4,
+      "tags": [
+        "gamification",
+        "strategy",
+        "resource-management",
+        "upgrade-tree",
+        "wrapper",
+        "economic-game",
+        "engagement"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 28,
+      "id": "collection-gacha",
+      "name": "Collection/Gacha Reward",
+      "slug": "collection-gacha",
+      "tier": {
+        "bloom": "gamification",
+        "level": 7,
+        "label": "Gamification \u2014 Cross-Tier Wrapper"
+      },
+      "priority": "p2-nice-to-have",
+      "aiGenerability": 4,
+      "tags": [
+        "gamification",
+        "randomization",
+        "rarity",
+        "collection",
+        "loot",
+        "gacha",
+        "engagement",
+        "luck"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 29,
+      "id": "pvp-competition",
+      "name": "PvP Competition (Player vs Player)",
+      "slug": "pvp-competition",
+      "tier": {
+        "bloom": "gamification",
+        "level": 7,
+        "label": "Gamification \u2014 Cross-Tier Wrapper"
+      },
+      "priority": "p3-future",
+      "aiGenerability": 5,
+      "tags": [
+        "gamification",
+        "competitive",
+        "pvp",
+        "multiplayer",
+        "social",
+        "real-time",
+        "wrapper",
+        "engagement"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 30,
+      "id": "cooperative-challenge",
+      "name": "Cooperative/Team Challenge",
+      "slug": "cooperative-challenge",
+      "tier": {
+        "bloom": "gamification",
+        "level": 7,
+        "label": "Gamification \u2014 Cross-Tier Wrapper"
+      },
+      "priority": "p3-future",
+      "aiGenerability": 5,
+      "tags": [
+        "gamification",
+        "cooperative",
+        "team",
+        "multiplayer",
+        "shared-goal",
+        "wrapper",
+        "social-cohesion"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 31,
+      "id": "social-deduction",
+      "name": "Social Deduction",
+      "slug": "social-deduction",
+      "tier": {
+        "bloom": "gamification",
+        "level": 7,
+        "label": "Gamification \u2014 Cross-Tier Wrapper"
+      },
+      "priority": "p3-future",
+      "aiGenerability": 5,
+      "tags": [
+        "gamification",
+        "social",
+        "deduction",
+        "discussion",
+        "voting",
+        "role-play",
+        "multiplayer",
+        "engagement",
+        "meta-game"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    },
+    {
+      "number": 32,
+      "id": "creative-expression",
+      "name": "Creative Expression (Pictionary/Audio/Video)",
+      "slug": "creative-expression",
+      "tier": {
+        "bloom": "create",
+        "level": 6,
+        "label": "Create \u2014 Divergent Expression & Communication"
+      },
+      "priority": "p3-future",
+      "aiGenerability": 3,
+      "tags": [
+        "creativity",
+        "expression",
+        "drawing",
+        "audio",
+        "video",
+        "peer-assessment",
+        "communication",
+        "multimodal"
+      ],
+      "status": "spec-complete",
+      "prototypeFile": null,
+      "prototypeRoute": null,
+      "notes": ""
+    }
+  ]
+}

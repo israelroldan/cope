@@ -1,0 +1,107 @@
+{
+  "id": "matching-pairs",
+  "number": 6,
+  "name": "Matching Pairs (Association)",
+  "slug": "matching-pairs",
+  "tier": {
+    "bloom": "understand",
+    "level": 2,
+    "label": "Understand — Conceptual Relationships"
+  },
+  "summary": "Grid of 6-12 items; connect related pairs. Matched pairs disappear. Often timed.",
+  "platforms": [
+    "Duolingo",
+    "Quizlet",
+    "Quizizz",
+    "Nearpod",
+    "Memrise"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "Any topic with paired facts generates matching sets trivially. AI can create countries-capitals, inventors-inventions, definitions-terms, flags-countries, historical figures-events, etc. Shuffling and pairing is automatic."
+  },
+  "interaction": {
+    "type": "matching",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "pairs": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of item pairs to match (3-6 pairs typical, up to 12 for advanced).",
+      "minItems": 3,
+      "maxItems": 12,
+      "itemSchema": {
+        "left": {
+          "type": "string",
+          "description": "Text of left-column item."
+        },
+        "right": {
+          "type": "string",
+          "description": "Text of right-column item. This item should match/relate to the left item."
+        }
+      }
+    },
+    "shuffled": {
+      "type": "boolean",
+      "required": false,
+      "default": true,
+      "description": "Whether the right column should be randomly shuffled before display."
+    },
+    "explanation": {
+      "type": "string",
+      "required": false,
+      "description": "Optional explanation of the topic or relationships after all pairs are matched."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": false,
+      "description": "Difficulty based on association strength.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Topic tags for curriculum mapping."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "grid-2x3",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "30-60s",
+    "animation": "tap-highlight, pair-snap-to-matching-zone with fade-out for correct pairs",
+    "mobileNotes": "Two columns on mobile: left column (fixed) and right column (scrollable or grid). Tap left item, then tap right item. Matched pairs disappear with fade animation. On small screens, may use sequential tap (item A → item B → confirm) to avoid occlusion."
+  },
+  "lessonPlacement": [
+    "post-content",
+    "core-practice",
+    "deep-engagement"
+  ],
+  "ageAdaptations": {
+    "8-10": "Maximum 3 pairs (6 items total). Large text (16pt+), simple associations (animal-habitat, color-word). Visual icons or small images alongside text. No time pressure. Feedback celebratory and encouraging.",
+    "11-13": "4-5 pairs (8-10 items). Standard text size. Associations are conceptual (country-capital, inventor-invention, definition-term). Optional timer (60-90s). Immediate per-pair feedback.",
+    "14-16": "6+ pairs (12+ items). Complex associations (historical figure-event, chemical element-property, literary work-author). Timed variant (90-120s countdown). Leaderboard-based scoring. Can include images on both sides of matching grid."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": [
+    "categorization",
+    "fill-in-blank-wordbank",
+    "multiple-choice"
+  ],
+  "tags": [
+    "association",
+    "relationship-building",
+    "paired-recall",
+    "vocabulary"
+  ]
+}

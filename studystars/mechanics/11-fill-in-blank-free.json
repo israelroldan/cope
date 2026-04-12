@@ -1,0 +1,80 @@
+{
+  "id": "fill-in-blank-free",
+  "number": 11,
+  "name": "Free Recall Fill-in-the-Blank (No Word Bank)",
+  "slug": "fill-in-blank-free",
+  "tier": {
+    "bloom": "apply",
+    "level": 3,
+    "label": "Apply — Using Information in New Contexts"
+  },
+  "summary": "Type an answer from memory to complete a sentence or question with no word bank. Validated with fuzzy matching for spelling variants.",
+  "platforms": ["Kahoot", "Quizizz", "Duolingo", "Quizlet", "SoloLearn"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates fill-in-the-blank questions and defines acceptable answer variants. AI applies fuzzy matching rules (e.g., accept 'colour' and 'color', minor typos) to make grading lenient yet accurate."
+  },
+  "interaction": {
+    "type": "freetext",
+    "input": "type",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "text": {
+      "type": "string",
+      "required": true,
+      "description": "Question or sentence with blank indicated by {{blank}} placeholder. Should be clear and unambiguous."
+    },
+    "acceptedAnswers": {
+      "type": "string[]",
+      "required": true,
+      "description": "Array of acceptable answers including spelling variants, synonyms, and abbreviations. First item is canonical. Examples: ['Australia', 'australia', 'AU', 'AUSTRALIA']",
+      "minItems": 1
+    },
+    "hint": {
+      "type": "string",
+      "required": false,
+      "description": "Optional character-by-character hint revealed progressively. Format: 'C_____' (capital C, 5 blanks) or 'first letter: C'."
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "Explanation of the correct answer, shown after submission."
+    },
+    "answerLength": {
+      "type": "integer",
+      "required": false,
+      "description": "Expected length of answer in characters. Helps with input validation (e.g., answer is ~7 characters)."
+    },
+    "acceptableSpellingVariants": {
+      "type": "boolean",
+      "required": false,
+      "description": "If true, AI applies fuzzy matching (Levenshtein distance) to accept minor typos."
+    }
+  },
+  "scoring": {
+    "type": "binary",
+    "partialCredit": false,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "show-correct-answer"
+  },
+  "ux": {
+    "layout": "text-passage",
+    "minTouchTarget": "44x44px",
+    "estimatedDuration": "15-30s",
+    "animation": "none",
+    "mobileNotes": "On-screen keyboard appears automatically. Input field is at least 36px tall. Placeholder text shows expected length ('e.g., _____'). After submission, correct answer appears in a subtle highlight color."
+  },
+  "lessonPlacement": ["core-practice", "spaced-review"],
+  "ageAdaptations": {
+    "8-10": "Simple, concrete fill-in questions (animal names, body parts, colors). Character hints available on demand. Hints show full word spelled out if learner taps 'Show hint'. Accepted answers include obvious variations ('the capital of Australia is Australia' or 'Canberra' both wrong—expect full answer).",
+    "11-13": "Standard difficulty (facts, simple definitions, dates). Character-by-character hint available ('_y_h_g_r__'). Fuzzy matching enabled (accept 'occured' for 'occurred'). Explanation references the source material.",
+    "14-16": "Higher cognitive demand (definitions, quotes, technical terms). No hints. Strict character matching (minor typos only; no phonetic variants). Explanation includes deeper context or cause-and-effect reasoning."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["fill-in-blank-wordbank", "short-answer"],
+  "tags": ["free-recall", "retrieval-practice", "spelling", "vocabulary", "apply"]
+}

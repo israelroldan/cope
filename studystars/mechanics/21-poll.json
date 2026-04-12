@@ -1,0 +1,66 @@
+{
+  "id": "poll",
+  "number": 21,
+  "name": "Poll / Opinion Vote",
+  "slug": "poll",
+  "tier": {
+    "bloom": "evaluate",
+    "level": 5,
+    "label": "Evaluate — Making Judgments"
+  },
+  "summary": "No correct answer. Learners select from options or type a short response; results are visualized as a chart or word cloud.",
+  "platforms": ["Kahoot", "Quizizz", "Nearpod", "StudyStars"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates opinion prompts easily. No grading or evaluation needed—pure mechanic. Can generate multiple-choice opinion options or open-ended prompts. Trivial to implement; high engagement."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "vote",
+    "multiStep": false,
+    "peerInteraction": true,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The opinion/reflection question. e.g., 'Which invention changed the world most?' or 'What surprised you today?' or 'Which would you choose: more time or more money?'"
+    },
+    "options": {
+      "type": "string[]",
+      "required": false,
+      "description": "For closed variant: array of 3-5 opinion options. For open variant (word cloud), omit this.",
+      "minItems": 3,
+      "maxItems": 5
+    },
+    "displayType": {
+      "type": "enum",
+      "required": true,
+      "description": "How results are visualized.",
+      "values": ["bar-chart", "pie-chart", "word-cloud"]
+    }
+  },
+  "scoring": {
+    "type": "ungraded",
+    "partialCredit": false,
+    "feedback": "none",
+    "feedbackContent": "none"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "10-20s",
+    "animation": "tap-highlight, result-reveal-animate, bar-grow, word-cloud-scatter",
+    "mobileNotes": "Fast tap interaction. Show poll options as large, tappable buttons. Results should appear instantly or with a satisfying animation (bars grow, words scatter into cloud). Can show live results (updating as other learners vote) or reveal all at once after learner votes. Mobile-friendly display of charts (no small legends, large fonts)."
+  },
+  "lessonPlacement": ["hook", "reflection"],
+  "ageAdaptations": {
+    "8-10": "Fun, engaging opinion questions with 3-4 clear options. Topics are lighthearted or personally relevant ('What's your favorite animal?', 'Would you rather...?', 'Which season is best?'). Results shown as a simple bar chart with large numbers or emoji. No open-ended text variant.",
+    "11-13": "More reflective opinion questions that prompt thinking about the lesson ('Which character made the best choice?', 'What do you think will happen next?', 'Which source is most trustworthy?'). 4-5 options or open-ended word cloud variant. Results shown as bar chart or pie chart with percentages.",
+    "14-16": "Sophisticated opinion and meta-cognitive questions ('Which of these arguments is most compelling?', 'What is your biggest takeaway?'). Often open-ended (word cloud) to allow complex responses. Results can include filtering, sorting, or thematic tagging (e.g., showing common themes in responses). Encourages class discussion about divergent opinions."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["21-poll", "22-confidence-rating"],
+  "tags": ["evaluation", "opinion", "reflection", "no-grading", "engagement", "peer-learning", "bloom-5"]
+}

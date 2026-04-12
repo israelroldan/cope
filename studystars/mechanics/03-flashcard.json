@@ -1,0 +1,116 @@
+{
+  "id": "flashcard",
+  "number": 3,
+  "name": "Flashcard (Self-Assessed Recall)",
+  "slug": "flashcard",
+  "tier": {
+    "bloom": "remember",
+    "level": 1,
+    "label": "Remember — Factual Recall"
+  },
+  "summary": "Card shows prompt on front. User attempts recall, flips to check. Self-sorts into 'Know' / 'Still Learning.'",
+  "platforms": [
+    "Quizlet",
+    "Duolingo",
+    "Kahoot",
+    "Memrise"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "Direct fact-to-card conversion. AI excels at generating front/back pairs from any knowledge base, including multilingual (translation pairs) and visual (definition → image)."
+  },
+  "interaction": {
+    "type": "flip",
+    "input": "tap or swipe",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "front": {
+      "type": "string",
+      "required": true,
+      "description": "The prompt or question shown on the front of the card."
+    },
+    "back": {
+      "type": "object",
+      "required": true,
+      "description": "Structured content for the back of the card.",
+      "itemSchema": {
+        "title": {
+          "type": "string",
+          "required": true,
+          "description": "The key concept or answer being recalled. Displayed prominently as the heading of the back side. This is the thing the learner is trying to retrieve — e.g. 'Photosynthesis', 'Brasília', '1912'."
+        },
+        "detail": {
+          "type": "string",
+          "required": true,
+          "description": "A concise explanation or definition that reinforces the title. Displayed below the title in smaller text. 1-2 sentences max. e.g. 'The process by which plants convert light energy, water, and CO₂ into glucose and oxygen.'"
+        },
+        "category": {
+          "type": "string",
+          "required": false,
+          "description": "A short label shown as a tag or chip on the back. Groups the card thematically. e.g. 'Biology', 'Geography', 'Ancient Egypt'. Helps learners build mental models across cards."
+        }
+      }
+    },
+    "hint": {
+      "type": "string",
+      "required": false,
+      "description": "Optional hint displayed before flipping, for scaffolding."
+    },
+    "topic": {
+      "type": "string",
+      "required": true,
+      "description": "The lesson topic this card belongs to. Used for deck organization and displayed as context in the card UI. e.g. 'Ancient Egypt', 'The Solar System'."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": false,
+      "description": "Difficulty level based on recall distance.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Tags for filtering and organizing cards."
+    }
+  },
+  "scoring": {
+    "type": "self-assessed",
+    "partialCredit": false,
+    "speedBonus": false,
+    "feedback": "self-check",
+    "feedbackContent": "show-correct-answer"
+  },
+  "ux": {
+    "layout": "card-flip",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "5-15s per card",
+    "animation": "card-flip 3D rotation with easing, swipe-left/right for navigation",
+    "mobileNotes": "Full-screen card centered. Tap to flip or swipe to advance. Support one-handed use. Show progress (N/M cards). Soft edge-to-edge design on small screens."
+  },
+  "lessonPlacement": [
+    "spaced-review",
+    "warm-up",
+    "core-practice"
+  ],
+  "ageAdaptations": {
+    "8-10": "Larger cards (90% viewport width) with bigger text (18-20pt front, 16pt back). Simplified language. Large hint text. No time pressure. Swipe-based navigation is optional; tap-to-flip primary. Emoji or icons on cards for visual interest.",
+    "11-13": "Standard card layout. Swipe to navigate. Optional timer for speed mode. Longer, more complex definitions allowed. Progress counter visible (e.g., '7 / 20'). Hint optional.",
+    "14-16": "Speed mode with timer (10-30s per card). Swipe-only navigation with velocity-based interactions. Option to mark card for review without flipping. Spaced repetition algorithm (show hard cards more often). Keyboard support on desktop (arrow keys, space to flip)."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": [
+    "multiple-choice",
+    "true-false",
+    "spaced-repetition-algorithm"
+  ],
+  "tags": [
+    "fundamental",
+    "self-paced",
+    "recall-practice",
+    "vocabulary",
+    "memorization"
+  ]
+}

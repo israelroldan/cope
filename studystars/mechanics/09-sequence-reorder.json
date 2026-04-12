@@ -1,0 +1,84 @@
+{
+  "id": "sequence-reorder",
+  "number": 9,
+  "name": "Sentence/Sequence Reordering",
+  "slug": "sequence-reorder",
+  "tier": {
+    "bloom": "understand",
+    "level": 2,
+    "label": "Understand — Conceptual Comprehension"
+  },
+  "summary": "Drag scrambled items into the correct sequence based on chronological, procedural, or logical order.",
+  "platforms": ["Kahoot Puzzle", "Quizizz", "Duolingo", "SoloLearn"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "Any process, timeline, or sequence generates reorder activities. AI produces the canonical sequence and shuffles items for presentation."
+  },
+  "interaction": {
+    "type": "ordering",
+    "input": "long-press-drag",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "Question or instruction asking learner to arrange items in correct order. Must clearly state the ordering principle (chronological, procedural, logical)."
+    },
+    "items": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of items in correct order. AI will shuffle these for presentation.",
+      "minItems": 3,
+      "maxItems": 6,
+      "itemSchema": {
+        "label": {
+          "type": "string",
+          "required": true,
+          "description": "A short identifier for the step or event — a concise name or keyword. Displayed prominently on the draggable card. e.g. 'Condensation', 'Natron Salt', 'Linen Wrapping'. CONSTRAINT: Must NOT contain ordinal clues that reveal the correct sequence — no step numbers ('Step 1'), no sequential dates ('1440', '1769') unless the learning objective IS reading dates, no positional words ('first', 'then', 'finally'). The label should name WHAT happens, not WHEN it happens."
+        },
+        "text": {
+          "type": "string",
+          "required": true,
+          "description": "A 1-2 sentence description of this step or event. Displayed below the label in smaller text. e.g. 'Water vapor rises into the atmosphere and cools, losing energy.'"
+        }
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "required": false,
+      "description": "Optional explanation of why this sequence is correct. Shown after submission."
+    },
+    "orderingType": {
+      "type": "enum",
+      "required": true,
+      "description": "The principle governing the correct order.",
+      "values": ["chronological", "procedural", "logical", "numerical", "hierarchical"]
+    }
+  },
+  "scoring": {
+    "type": "binary",
+    "partialCredit": false,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "20-40s",
+    "animation": "snap-to-position",
+    "mobileNotes": "Long-press to activate drag mode. Items snap into slots with haptic feedback. Visual reordering indicator (e.g., subtle highlight) shows target slot during drag."
+  },
+  "lessonPlacement": ["post-content", "core-practice"],
+  "ageAdaptations": {
+    "8-10": "3 items max, simple everyday processes (morning routine, seasons). Large touch targets. After submission, show visual timeline or step-by-step breakdown.",
+    "11-13": "4-5 items, mixed complexity (water cycle, historical periods, multi-step procedures). Standard touch targets. Hint available: show first or last item.",
+    "14-16": "Up to 6 items, complex processes (chemical reactions, historical eras, argument structure). No hints. Feedback includes detailed causal explanation."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["multiple-choice", "matching-pairs"],
+  "tags": ["sequencing", "procedure", "timeline", "understand", "mobile-first"]
+}

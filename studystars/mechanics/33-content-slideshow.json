@@ -1,0 +1,84 @@
+{
+  "id": "content-slideshow",
+  "number": 33,
+  "name": "Content Slideshow",
+  "slug": "content-slideshow",
+  "tier": {
+    "bloom": "remember",
+    "level": 1,
+    "label": "Remember — Content Delivery"
+  },
+  "summary": "A swipeable sequence of 1-5 narrated content cards that teach concepts before an activity tests them. Like a Scenario (#15) without the questions — pure storytelling.",
+  "platforms": ["Duolingo Stories", "Nearpod", "Google Arts & Culture", "Grej of the Day"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates both narration and image prompts. Core Grej-style format. The Spark generator writes each slide's narration specifically to set up the activity that follows — this is not generic prose, it's pedagogically sequenced storytelling."
+  },
+  "interaction": {
+    "type": "flip",
+    "input": "swipe",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "slides": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of narrated slides. Each slide teaches ONE concept in 1-3 sentences of conversational storytelling. The kid swipes or taps to advance.",
+      "minItems": 1,
+      "maxItems": 5,
+      "itemSchema": {
+        "title": {
+          "type": "string",
+          "required": true,
+          "description": "Short card title (2-6 words). Displayed as heading above narration."
+        },
+        "narration": {
+          "type": "string",
+          "required": true,
+          "description": "1-3 sentences of conversational, wonder-driven storytelling. NOT encyclopedic prose — this should feel like a friend telling you something cool. Max ~80 words per slide."
+        },
+        "imagePrompt": {
+          "type": "string",
+          "required": true,
+          "description": "Vivid image description for AI image generation. Following Grej of the Day rules: images only, no text overlaid on image. Should be specific, atmospheric, and evocative."
+        },
+        "factIds": {
+          "type": "string[]",
+          "required": true,
+          "description": "IDs of facts from the fact sheet that this slide teaches. The activity that follows this slideshow MUST share at least one of these factIds in its _factRefs."
+        }
+      }
+    },
+    "transition": {
+      "type": "enum",
+      "required": false,
+      "description": "Visual transition between slides.",
+      "values": ["swipe-left", "fade", "push-up", "none"]
+    }
+  },
+  "scoring": {
+    "type": "ungraded",
+    "partialCredit": false,
+    "speedBonus": false,
+    "feedback": "none",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "text-passage",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "10-45s",
+    "animation": "swipe-horizontal",
+    "mobileNotes": "Full-width cards with narration below image area. Swipe left/right or tap arrow to advance. Dot indicator at bottom shows slide position. Last slide's 'Next' button fires onComplete. On small screens, image occupies top 40%, narration bottom 60%."
+  },
+  "lessonPlacement": ["hook", "warm-up", "core-practice"],
+  "ageAdaptations": {
+    "8-10": "Max 2-3 slides per slideshow. Short narration (1-2 sentences, ~40 words per slide). Large text (18px body). Vivid, playful image prompts. 'Got it!' button instead of arrow.",
+    "11-13": "2-4 slides. Standard narration (2-3 sentences, ~60 words). 16px body. Mix of atmospheric and explanatory images.",
+    "14-16": "2-5 slides. Denser narration allowed (2-3 sentences, ~80 words). 16px body. More sophisticated imagery. May include brief quotes or data points in narration."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["scenario-question", "flashcard"],
+  "tags": ["content-delivery", "narration", "storytelling", "grej", "slideshow", "passive"]
+}

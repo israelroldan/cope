@@ -1,0 +1,101 @@
+{
+  "id": "brainstorm",
+  "number": 25,
+  "name": "Brainstorm/Ideation",
+  "slug": "brainstorm",
+  "tier": {
+    "bloom": "create",
+    "level": 6,
+    "label": "Create — Divergent Thinking & Ideation"
+  },
+  "summary": "Users submit multiple ideas to an open prompt, which are then AI-grouped by theme and peer-voted on for quality and relevance.",
+  "platforms": [
+    "Kahoot Brainstorm",
+    "Nearpod Collaborate Board"
+  ],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI generates brainstorm prompts and can cluster/categorize submitted responses by theme and quality. Cannot reliably assess creativity or depth without rubric."
+  },
+  "interaction": {
+    "type": "freetext",
+    "input": "type",
+    "multiStep": true,
+    "peerInteraction": true,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The open-ended brainstorm prompt that learners will generate ideas for."
+    },
+    "maxEntries": {
+      "type": "integer",
+      "required": true,
+      "description": "Maximum number of ideas each learner can submit (typically 3-5)."
+    },
+    "votingEnabled": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether peers vote on submitted ideas after entry phase."
+    },
+    "aiGrouping": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether AI automatically groups ideas by theme/category before voting."
+    },
+    "sampleIdeas": {
+      "type": "string[]",
+      "required": false,
+      "minItems": 2,
+      "maxItems": 5,
+      "description": "Optional inspiration ideas shown to learners to prime the brainstorm."
+    },
+    "timeLimit": {
+      "type": "integer",
+      "required": false,
+      "description": "Time limit in seconds for idea submission phase (optional, 60-180s typical)."
+    },
+    "rubric": {
+      "type": "object",
+      "required": false,
+      "description": "Optional peer-voting rubric criteria (e.g., 'originality', 'feasibility', 'impact')."
+    }
+  },
+  "scoring": {
+    "type": "ungraded",
+    "partialCredit": false,
+    "feedback": "peer-review",
+    "feedbackContent": "peer-comparison"
+  },
+  "ux": {
+    "layout": "chat-style",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "60-120s",
+    "animation": "fade-stagger",
+    "mobileNotes": "Text input field with submit button. Ideas appear as cards in a scrollable feed. Voting interface uses large tap targets (buttons or reactions below each grouped idea)."
+  },
+  "lessonPlacement": [
+    "extension",
+    "reflection"
+  ],
+  "ageAdaptations": {
+    "8-10": "Simple, concrete prompts (1-3 ideas max). Visual examples or images to inspire. No voting complexity—just ideas and teacher review.",
+    "11-13": "Open-ended prompts (3-5 ideas). AI grouping shown visually. Peer voting with simple criteria (1-2 dimensions). Discussion optional.",
+    "14-16": "Complex prompts with constraints. Full AI clustering with thematic labels. Multi-criteria peer voting (4+ dimensions). Discussion and synthesis of best ideas."
+  },
+  "implementationPriority": "p2-nice-to-have",
+  "relatedMechanics": [
+    "open-response",
+    "peer-review",
+    "discussion"
+  ],
+  "tags": [
+    "divergent-thinking",
+    "creativity",
+    "collaborative",
+    "peer-voting",
+    "ai-clustering"
+  ]
+}

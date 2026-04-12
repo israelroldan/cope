@@ -1,0 +1,104 @@
+{
+  "id": "audio-recognition",
+  "number": 5,
+  "name": "Audio Recognition (Listen and Identify)",
+  "slug": "audio-recognition",
+  "tier": {
+    "bloom": "remember",
+    "level": 1,
+    "label": "Remember — Factual Recall"
+  },
+  "summary": "Audio plays. User selects correct identification from options.",
+  "platforms": [
+    "Duolingo",
+    "Kahoot",
+    "Memrise"
+  ],
+  "aiGenerability": {
+    "rating": 3,
+    "notes": "Requires audio asset library. AI designs questions and identifies which audio to pair, but sourcing or synthesizing audio requires external tools (text-to-speech, audio databases, or licensed recordings). Can auto-generate audio from text using TTS for pronunciation practice."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "Text instruction describing what the learner should listen for (e.g., 'Which instrument is playing?')."
+    },
+    "audioUrl": {
+      "type": "string",
+      "required": true,
+      "description": "URL or path to the audio file (MP3, WAV, OGG)."
+    },
+    "options": {
+      "type": "string[]",
+      "required": true,
+      "description": "Array of answer options (2-4 items) for the learner to choose from.",
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "correctIndex": {
+      "type": "integer",
+      "required": true,
+      "description": "0-based index of the correct answer in the options array."
+    },
+    "explanation": {
+      "type": "string",
+      "required": false,
+      "description": "Optional explanation of the correct answer and how to distinguish it."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": true,
+      "description": "Difficulty level based on audio distinctiveness.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Topic tags for curriculum mapping."
+    }
+  },
+  "scoring": {
+    "type": "binary",
+    "partialCredit": false,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "15-30s",
+    "animation": "play-button ripple, answer buttons highlight on tap",
+    "mobileNotes": "Large play button (64x64px) centered at top. Audio controls (play, replay, volume) easily accessible. Answer options stacked below as full-width buttons."
+  },
+  "lessonPlacement": [
+    "warm-up",
+    "post-content",
+    "core-practice"
+  ],
+  "ageAdaptations": {
+    "8-10": "Simple, distinct sounds (animal calls, instruments, voice). 2-3 options only. Large play button with speaker icon. Unlimited replays encouraged. Longer audio clips (5-10 seconds) to allow processing. Clear, labeled options.",
+    "11-13": "More subtle audio distinctions (similar instruments, accents in speech). 3 options. Standard play button. Limited replays (3-5 allowed, counter visible). Audio shorter (3-7 seconds).",
+    "14-16": "Challenging audio (similar languages, musical style distinctions, subtle pronunciation differences). 3-4 options. Timed variant (15-20s per item). Single or limited replay. Expert-level explanation with linguistic or musical detail."
+  },
+  "implementationPriority": "p2-nice-to-have",
+  "relatedMechanics": [
+    "multiple-choice",
+    "image-recognition"
+  ],
+  "tags": [
+    "auditory-learning",
+    "listening-comprehension",
+    "pronunciation",
+    "language-learning",
+    "music"
+  ]
+}

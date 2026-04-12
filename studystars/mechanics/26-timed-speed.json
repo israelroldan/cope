@@ -1,0 +1,109 @@
+{
+  "id": "timed-speed",
+  "number": 26,
+  "name": "Timed Speed Challenge",
+  "slug": "timed-speed",
+  "tier": {
+    "bloom": "gamification",
+    "level": 7,
+    "label": "Gamification — Cross-Tier Wrapper"
+  },
+  "summary": "Standard questions with a countdown timer. Speed and accuracy combine to create a score, testing automaticity and quick recall.",
+  "platforms": [
+    "Memrise Speed Review",
+    "Quizlet Match (timed)",
+    "Duolingo Match Madness",
+    "Quizizz Classic"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "Timer is a pure mechanic overlay on any question set. AI generates the wrapped questions (any type). Speed weighting is deterministic. Full AI generability."
+  },
+  "interaction": {
+    "type": "meta-overlay",
+    "input": "tap",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "core"
+  },
+  "contentSchema": {
+    "duration": {
+      "type": "integer",
+      "required": true,
+      "description": "Time limit in seconds (typical 30-90s for sets of 5-15 questions)."
+    },
+    "questionMechanic": {
+      "type": "string",
+      "required": true,
+      "description": "ID of the wrapped question mechanic (e.g., 'multiple-choice', 'matching', 'sequence')."
+    },
+    "questionCount": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of questions in the challenge (5-20 typical)."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of question objects conforming to the wrapped mechanic's schema."
+    },
+    "streakThreshold": {
+      "type": "integer",
+      "required": false,
+      "description": "Consecutive correct answers needed to trigger streak animation/bonus (optional, e.g., 3)."
+    },
+    "speedWeighting": {
+      "type": "object",
+      "required": false,
+      "description": "Optional multiplier rules (e.g., 1s bonus for first 10 seconds, 0.5x after 60s)."
+    },
+    "failureCondition": {
+      "type": "enum",
+      "required": false,
+      "values": [
+        "time-runs-out",
+        "miss-count",
+        "instant-fail"
+      ],
+      "description": "What ends the challenge: time expires, N incorrect answers, or first miss."
+    }
+  },
+  "scoring": {
+    "type": "speed-weighted",
+    "partialCredit": false,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "64x64px",
+    "estimatedDuration": "30-90s",
+    "animation": "snap-to-position, countdown-pulse, streak-particle-burst",
+    "mobileNotes": "Large countdown timer at top (36+ font). Big, tappable question area with clear tap feedback. Streak counter pulses on correct consecutive answers. Rapid micro-feedback (checkmark, color change) for each response."
+  },
+  "lessonPlacement": [
+    "warm-up",
+    "spaced-review"
+  ],
+  "ageAdaptations": {
+    "8-10": "Generous time limit (60-90s) for 5-8 simple questions. Colorful countdown timer. Celebration animation on correct answers.",
+    "11-13": "Moderate time (45-60s) for 8-12 questions. Standard countdown. Streak counter visible. Speed multiplier (e.g., 2x points for sub-10s answers).",
+    "14-16": "Tight time (30-45s) for 12-15 complex questions. Advanced mechanics: difficulty scaling, progressive multiplier, leaderboard integration."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": [
+    "multiple-choice",
+    "matching",
+    "sequence",
+    "pvp-competition"
+  ],
+  "tags": [
+    "gamification",
+    "timer",
+    "speed",
+    "automaticity",
+    "urgency",
+    "wrapper"
+  ]
+}

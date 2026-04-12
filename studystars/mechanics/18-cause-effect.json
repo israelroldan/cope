@@ -1,0 +1,82 @@
+{
+  "id": "cause-effect",
+  "number": 18,
+  "name": "Cause and Effect / Connection Mapping",
+  "slug": "cause-effect",
+  "tier": {
+    "bloom": "analyze",
+    "level": 4,
+    "label": "Analyze — Critical Examination"
+  },
+  "summary": "Match causes to effects or find connections between seemingly unrelated facts.",
+  "platforms": ["Quizizz", "Nearpod", "StudyStars"],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI generates cause-effect pairs well for factual/historical content. Connection challenges (open-ended synthesis) require curated topic networks and are harder to auto-generate reliably. Structured matching is easier than open variants."
+  },
+  "interaction": {
+    "type": "matching",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The overarching question. e.g., 'Match each cause to its effect' or 'What connects these three concepts?'"
+    },
+    "pairs": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of cause-effect pairs to match.",
+      "minItems": 3,
+      "maxItems": 5,
+      "itemSchema": {
+        "cause": {
+          "type": "string",
+          "required": true,
+          "description": "The cause, trigger, or first concept."
+        },
+        "effect": {
+          "type": "string",
+          "required": true,
+          "description": "The resulting effect, consequence, or connected concept."
+        }
+      }
+    },
+    "connectionPrompt": {
+      "type": "string",
+      "required": false,
+      "description": "For open variants: a prompt asking learners to articulate the connection verbally or in writing. e.g., 'What connects Marie Curie, uranium, and the Berlin Wall?'"
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "After matching (or attempting the connection prompt), reveal how each pair connects and why, or what the deeper connection is."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "30-60s",
+    "animation": "snap-to-position, connection-line-draw, highlight-match",
+    "mobileNotes": "For matching, use a two-column layout on tablet; single column with carousel swipe on phone. Draw connection lines on tap (visual feedback). Ensure tap targets for each item are generous (48x48px minimum). Connection line animations should be smooth and not laggy on older devices."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "3 simple cause-effect pairs. Concrete, direct causes and effects (e.g., 'plant a seed' → 'flower grows', 'rain falls' → 'ground gets wet'). Obvious, immediate consequences. Tap-to-match, no drawing required.",
+    "11-13": "4 cause-effect pairs with slightly more abstraction (e.g., 'invention of printing press' → 'spread of ideas', 'Industrial Revolution' → 'migration to cities'). Learners see cause-and-effect across time or social systems. Optional: ask learner to identify a connection after matching.",
+    "14-16": "5 pairs with complex, multi-step causation or subtle connections. Or: skip the structured pairs and give an open-ended connection challenge (e.g., 'What connects Marie Curie, uranium, and the Berlin Wall?'). Learners synthesize across domains. May include ambiguity (multiple valid connections)."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": ["01-multiple-choice", "17-find-the-error", "20-ranking"],
+  "tags": ["analysis", "connections", "cause-effect", "matching", "bloom-4", "critical-thinking"]
+}

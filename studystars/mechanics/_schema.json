@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "studystars-mechanic-v1",
+  "title": "StudyStars Activity Mechanic Spec",
+  "description": "Schema for defining interactive micro-learning activity mechanics. Each mechanic is one of the 32 canonical archetypes derived from 150+ implementations across 10+ educational platforms.",
+  "type": "object",
+  "required": ["id", "number", "name", "slug", "tier", "summary", "platforms", "aiGenerability", "interaction", "contentSchema", "scoring", "ux", "lessonPlacement", "ageAdaptations"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique kebab-case identifier. Used as filename and reference key."
+    },
+    "number": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 99,
+      "description": "Canonical archetype number from the master taxonomy. 1-32 are the original archetypes, 33+ are structural mechanics (content delivery, wow moments, etc.)."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name of the activity mechanic."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "URL-safe slug, matches id."
+    },
+    "tier": {
+      "type": "object",
+      "required": ["bloom", "level", "label"],
+      "properties": {
+        "bloom": {
+          "type": "string",
+          "enum": ["remember", "understand", "apply", "analyze", "evaluate", "create", "gamification"],
+          "description": "Bloom's taxonomy level this mechanic primarily targets."
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7,
+          "description": "Numeric tier (1=Remember through 6=Create, 7=Gamification wrapper)."
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label for the tier, e.g. 'Remember — Factual Recall'."
+        }
+      }
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-sentence description of the core mechanic."
+    },
+    "platforms": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Platforms where this mechanic is found in production."
+    },
+    "aiGenerability": {
+      "type": "object",
+      "required": ["rating", "notes"],
+      "properties": {
+        "rating": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "AI content generation feasibility (1-5 stars)."
+        },
+        "notes": {
+          "type": "string",
+          "description": "What the AI can and cannot generate for this mechanic."
+        }
+      }
+    },
+    "interaction": {
+      "type": "object",
+      "required": ["type", "input"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["selection", "ordering", "matching", "freetext", "spatial", "drag-drop", "slider", "binary", "flip", "drawing", "audio", "video", "meta-overlay", "game-wrapper"],
+          "description": "Core interaction pattern."
+        },
+        "input": {
+          "type": "string",
+          "enum": ["tap", "drag", "type", "swipe", "slide", "draw", "speak", "record", "tap-on-image", "long-press-drag", "flip", "vote"],
+          "description": "Primary touch/input gesture."
+        },
+        "multiStep": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the activity requires multiple sequential interactions."
+        },
+        "peerInteraction": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether other players/peers are part of the mechanic."
+        },
+        "timePressure": {
+          "type": "string",
+          "enum": ["none", "optional", "core"],
+          "default": "none",
+          "description": "Whether time pressure is part of the mechanic."
+        }
+      }
+    },
+    "contentSchema": {
+      "type": "object",
+      "description": "Defines the data shape that the AI must generate for this mechanic. Each key is a field name with type, required, and description.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type", "required", "description"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string", "string[]", "number", "integer", "boolean", "object", "object[]", "enum"],
+            "description": "Data type of this field."
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "For enum types, the allowed values."
+          },
+          "minItems": {
+            "type": "integer",
+            "description": "For array types, minimum item count."
+          },
+          "maxItems": {
+            "type": "integer",
+            "description": "For array types, maximum item count."
+          },
+          "itemSchema": {
+            "type": "object",
+            "description": "For object[] types, the shape of each item."
+          }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "required": ["type", "partialCredit", "feedback"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["binary", "partial", "proximity", "speed-weighted", "self-assessed", "peer-assessed", "ungraded", "meta-overlay"],
+          "description": "How the response is scored."
+        },
+        "partialCredit": {
+          "type": "boolean",
+          "description": "Whether partial credit is possible."
+        },
+        "speedBonus": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether faster correct answers earn more points."
+        },
+        "feedback": {
+          "type": "string",
+          "enum": ["immediate", "end-of-set", "self-check", "peer-review", "none"],
+          "description": "When feedback is delivered."
+        },
+        "feedbackContent": {
+          "type": "string",
+          "enum": ["correct-incorrect", "correct-with-explanation", "show-correct-answer", "model-answer", "peer-comparison", "confidence-calibration"],
+          "description": "What the feedback contains."
+        }
+      }
+    },
+    "ux": {
+      "type": "object",
+      "required": ["layout", "minTouchTarget", "estimatedDuration"],
+      "properties": {
+        "layout": {
+          "type": "string",
+          "enum": ["vertical-stack", "grid-2x2", "grid-2x3", "grid-3x4", "horizontal-row", "canvas", "split-screen", "card-flip", "slider-track", "image-overlay", "text-passage", "chat-style", "game-viewport"],
+          "description": "Primary layout pattern for this mechanic."
+        },
+        "minTouchTarget": {
+          "type": "string",
+          "default": "48x48px",
+          "description": "Minimum touch target size per WCAG / child-friendly guidelines."
+        },
+        "estimatedDuration": {
+          "type": "string",
+          "description": "How long a single instance of this activity typically takes, e.g. '10-20s', '30-60s'."
+        },
+        "animation": {
+          "type": "string",
+          "description": "Key animation used in this mechanic, e.g. 'card-flip', 'snap-to-position', 'fade-stagger'."
+        },
+        "mobileNotes": {
+          "type": "string",
+          "description": "Special considerations for phone-sized screens."
+        }
+      }
+    },
+    "lessonPlacement": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["hook", "warm-up", "post-content", "core-practice", "deep-engagement", "reflection", "spaced-review", "extension"]
+      },
+      "description": "Where in a Grej-style lesson flow this mechanic fits best."
+    },
+    "ageAdaptations": {
+      "type": "object",
+      "required": ["8-10", "11-13", "14-16"],
+      "properties": {
+        "8-10": { "type": "string", "description": "Adaptations for youngest learners." },
+        "11-13": { "type": "string", "description": "Adaptations for middle group." },
+        "14-16": { "type": "string", "description": "Adaptations for oldest learners." }
+      }
+    },
+    "implementationPriority": {
+      "type": "string",
+      "enum": ["p0-must-have", "p1-important", "p2-nice-to-have", "p3-future"],
+      "description": "Build priority based on research evidence and AI generability."
+    },
+    "relatedMechanics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDs of mechanics that are related (can be combined, share content, or are variants)."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Freeform tags for filtering and grouping."
+    }
+  }
+}

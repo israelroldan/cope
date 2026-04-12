@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Kletkamp Agreement — Tatoma 2026</title>
+<style>
+@import url('https://hub.tatoma.eu/fonts/canela/stylesheet.css');
+@import url('https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css');
+
+:root {
+  --background: #F6FAEB;
+  --foreground: #1D021F;
+  --card: #FFFFFF;
+  --card-foreground: #1D021F;
+  --primary: #FF8E7D;
+  --primary-foreground: #1D021F;
+  --secondary: #4F2035;
+  --secondary-foreground: #F6FAEB;
+  --muted: #A397A3;
+  --muted-foreground: #4C3C47;
+  --accent: #FF8E7D;
+  --border: #A397A3;
+  --dark-magenta: #1E001E;
+  --salmon-100: oklch(0.969 0.015 22.5);
+  --salmon-200: oklch(0.94 0.03 27.8);
+  --salmon-600: oklch(0.834 0.092 27.43);
+  --salmon-700: oklch(0.808 0.109 27.98);
+  --radius: 0.75rem;
+  --font-serif: "Canela", Georgia, serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 { font-family: var(--font-serif); font-weight: 100; }
+
+/* Navigation */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(246,250,235,0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(163,151,163,0.3);
+  padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--secondary); }
+.nav-links { display: flex; gap: 0.25rem; }
+.nav-link {
+  font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 0.4rem 0.8rem; border-radius: 999px; text-decoration: none; color: var(--muted-foreground);
+  transition: all 0.2s;
+}
+.nav-link:hover { background: rgba(255,142,125,0.15); color: var(--foreground); }
+.nav-link.active { background: var(--secondary); color: var(--secondary-foreground); }
+
+/* Hero */
+.hero {
+  padding: 8rem 2rem 4rem; max-width: 900px; margin: 0 auto; text-align: center;
+  opacity: 0; animation: fadeUp 0.6s ease forwards;
+}
+.hero-badge {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.7rem;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  background: var(--dark-magenta); color: var(--primary); padding: 0.35rem 1rem; border-radius: 999px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 { font-size: clamp(2.5rem, 5vw, 3.75rem); line-height: 1.15; margin-bottom: 1rem; }
+.hero p { font-size: 1.1rem; color: var(--muted-foreground); max-width: 600px; margin: 0 auto; }
+
+/* Content */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem 4rem; }
+
+/* Revenue Timeline */
+.revenue-section { margin-bottom: 4rem; opacity: 0; animation: fadeUp 0.6s ease 0.15s forwards; }
+.section-label {
+  font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--muted); margin-bottom: 0.75rem;
+}
+.section-title { font-size: 2rem; margin-bottom: 2rem; }
+
+.revenue-track {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+}
+.quarter-card {
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 1.5rem; transition: transform 0.2s, box-shadow 0.2s; cursor: default;
+  position: relative; overflow: hidden;
+}
+.quarter-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(29,2,31,0.08); }
+.quarter-card .q-label {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--muted);
+}
+.quarter-card .q-amount { font-family: var(--font-serif); font-size: 2rem; font-weight: 100; margin: 0.5rem 0; }
+.quarter-card .q-bar {
+  height: 4px; border-radius: 2px; background: rgba(163,151,163,0.2); margin-top: 0.75rem;
+}
+.quarter-card .q-bar-fill {
+  height: 100%; border-radius: 2px; background: var(--primary);
+  transition: width 1s ease;
+}
+.quarter-card.past .q-bar-fill { background: var(--secondary); }
+.quarter-card.current { border-color: var(--primary); }
+.quarter-card.current::after {
+  content: "NOW"; position: absolute; top: 0.75rem; right: 0.75rem;
+  font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em;
+  background: var(--primary); color: var(--primary-foreground); padding: 0.15rem 0.5rem; border-radius: 999px;
+}
+
+.revenue-totals {
+  display: flex; gap: 2rem; margin-top: 1.5rem; padding: 1.25rem 1.5rem;
+  background: var(--dark-magenta); color: var(--secondary-foreground); border-radius: var(--radius);
+}
+.revenue-totals .total-item { flex: 1; }
+.revenue-totals .total-label {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--primary); opacity: 0.8;
+}
+.revenue-totals .total-value { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 100; }
+
+/* Strategy Columns */
+.strategy-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+  margin-bottom: 4rem; opacity: 0; animation: fadeUp 0.6s ease 0.3s forwards;
+}
+.strat-card {
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 1.75rem; transition: transform 0.2s, box-shadow 0.2s;
+}
+.strat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(29,2,31,0.08); }
+.strat-card .strat-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.strat-card h3 { font-size: 1.35rem; margin-bottom: 0.5rem; }
+.strat-card p { font-size: 0.9rem; color: var(--muted-foreground); line-height: 1.5; }
+.strat-card .strat-tag {
+  display: inline-block; margin-top: 1rem;
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em;
+  background: var(--salmon-100); color: var(--secondary); padding: 0.25rem 0.6rem; border-radius: 999px;
+}
+
+/* Team Section */
+.team-section { margin-bottom: 4rem; opacity: 0; animation: fadeUp 0.6s ease 0.45s forwards; }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.person-card {
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 1.75rem; text-align: center; transition: transform 0.2s, box-shadow 0.2s;
+}
+.person-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(29,2,31,0.08); }
+.person-avatar {
+  width: 56px; height: 56px; border-radius: 50%; background: var(--secondary);
+  color: var(--secondary-foreground); display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif); font-size: 1.25rem; margin: 0 auto 1rem;
+}
+.person-card h3 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+.person-card .person-roles { list-style: none; margin-top: 0.75rem; }
+.person-card .person-roles li {
+  font-size: 0.8rem; color: var(--muted-foreground); padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(163,151,163,0.15);
+}
+.person-card .person-roles li:last-child { border: none; }
+
+/* Product Roadmap */
+.roadmap-section { margin-bottom: 4rem; opacity: 0; animation: fadeUp 0.6s ease 0.55s forwards; }
+.roadmap-track { position: relative; padding-left: 2rem; }
+.roadmap-track::before {
+  content: ""; position: absolute; left: 0.5rem; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, var(--primary), var(--secondary));
+}
+.roadmap-item { position: relative; margin-bottom: 1.5rem; padding-left: 1.5rem; }
+.roadmap-item::before {
+  content: ""; position: absolute; left: -1.65rem; top: 0.6rem;
+  width: 10px; height: 10px; border-radius: 50%; background: var(--primary);
+  border: 2px solid var(--background);
+}
+.roadmap-item h4 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+.roadmap-item p { font-size: 0.85rem; color: var(--muted-foreground); }
+
+/* Scalability */
+.scale-banner {
+  background: var(--dark-magenta); color: var(--secondary-foreground);
+  border-radius: var(--radius); padding: 2.5rem; text-align: center;
+  margin-bottom: 4rem; opacity: 0; animation: fadeUp 0.6s ease 0.65s forwards;
+}
+.scale-banner h2 { font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--secondary-foreground); }
+.scale-banner p { color: var(--primary); font-size: 1rem; max-width: 550px; margin: 0 auto 1.5rem; }
+.scale-pills { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+.scale-pill {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+  background: rgba(255,142,125,0.15); color: var(--primary); padding: 0.35rem 0.9rem; border-radius: 999px;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .revenue-track { grid-template-columns: repeat(2, 1fr); }
+  .strategy-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr; }
+  .revenue-totals { flex-direction: column; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">Tatoma / Q2 OKR Session</div>
+  <div class="nav-links">
+    <a href="1-kletkamp-vision.html" class="nav-link active">Vision</a>
+    <a href="2-session-guide.html" class="nav-link">Session</a>
+    <a href="3-agreements.html" class="nav-link">Agreements</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">Rotterdam — December 17, 2025</div>
+  <h1>The Kletkamp Agreement</h1>
+  <p>Tatoma's strategic blueprint for 2026 and beyond. From consulting to Transformation OS.</p>
+</section>
+
+<div class="container">
+
+  <!-- Revenue -->
+  <section class="revenue-section">
+    <div class="section-label">Financial Targets 2026</div>
+    <h2 class="section-title">Quarterly Revenue Roadmap</h2>
+    <div class="revenue-track">
+      <div class="quarter-card past">
+        <div class="q-label">Q1 2026</div>
+        <div class="q-amount">&euro;200k</div>
+        <div class="q-bar"><div class="q-bar-fill" style="width:40%"></div></div>
+      </div>
+      <div class="quarter-card current">
+        <div class="q-label">Q2 2026</div>
+        <div class="q-amount">&gt;&euro;300k</div>
+        <div class="q-bar"><div class="q-bar-fill" style="width:60%"></div></div>
+      </div>
+      <div class="quarter-card">
+        <div class="q-label">Q3 2026</div>
+        <div class="q-amount">&gt;&euro;400k</div>
+        <div class="q-bar"><div class="q-bar-fill" style="width:80%"></div></div>
+      </div>
+      <div class="quarter-card">
+        <div class="q-label">Q4 2026</div>
+        <div class="q-amount">&gt;&euro;500k</div>
+        <div class="q-bar"><div class="q-bar-fill" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div class="revenue-totals">
+      <div class="total-item">
+        <div class="total-label">Core Goal</div>
+        <div class="total-value">&euro;1.0M + Scalable Product</div>
+      </div>
+      <div class="total-item">
+        <div class="total-label">Stretch Target</div>
+        <div class="total-value">&gt;&euro;1.4M Revenue</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Strategy -->
+  <section>
+    <div class="section-label">Market Strategy</div>
+    <h2 class="section-title">Two Focus Domains</h2>
+    <div class="strategy-grid">
+      <div class="strat-card">
+        <div class="strat-icon">&#9670;</div>
+        <h3>Direct Sales — Group Companies</h3>
+        <p>Private Circles for ADG &amp; Crowe. Manage transformation across multiple subsidiaries within holding groups.</p>
+        <span class="strat-tag">Sander &amp; Maarten</span>
+      </div>
+      <div class="strat-card">
+        <div class="strat-icon">&#9711;</div>
+        <h3>The Circle Approach</h3>
+        <p>Agency Circle via Business Developers (Henrik &amp; Duncan). Accountancy Circle via Partnership model — test outsourced Circle Operations.</p>
+        <span class="strat-tag">Circle Lead by April 1</span>
+      </div>
+      <div class="strat-card">
+        <div class="strat-icon">&#9651;</div>
+        <h3>Software with a Service</h3>
+        <p>50/50 blend in 2026, moving to 20% human / 80% software by 2030. The platform is the Transformation OS.</p>
+        <span class="strat-tag">Core Model</span>
+      </div>
+      <div class="strat-card">
+        <div class="strat-icon">&#9724;</div>
+        <h3>The Industrial Lens</h3>
+        <p>Industry-specific AI intelligence — tailored prompts, agentic workflows, and scorecards for Finance, Agencies, and Manufacturing.</p>
+        <span class="strat-tag">Killer USP</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team-section">
+    <div class="section-label">Team &amp; Responsibilities</div>
+    <h2 class="section-title">The Cofounders</h2>
+    <div class="team-grid">
+      <div class="person-card">
+        <div class="person-avatar">S</div>
+        <h3>Sander</h3>
+        <ul class="person-roles">
+          <li>Group Companies Sales</li>
+          <li>Agency Circle Support</li>
+          <li>Kriton Partnership</li>
+          <li>Head of Finance</li>
+          <li>Foundation Delivery</li>
+        </ul>
+      </div>
+      <div class="person-card">
+        <div class="person-avatar">M</div>
+        <h3>Maarten</h3>
+        <ul class="person-roles">
+          <li>Group Companies Sales</li>
+          <li>Product Lead (Concepts)</li>
+          <li>Node 1 Partnership</li>
+          <li>Circle Delivery &amp; Webinars</li>
+          <li>GoWeekly Transition</li>
+        </ul>
+      </div>
+      <div class="person-card">
+        <div class="person-avatar">I</div>
+        <h3>Israel</h3>
+        <ul class="person-roles">
+          <li>Engineering Lead</li>
+          <li>Build Product &amp; Scalability</li>
+          <li>Head of IT</li>
+          <li>WBSO Management</li>
+          <li>Domain Migration</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Roadmap -->
+  <section class="roadmap-section">
+    <div class="section-label">Product Roadmap</div>
+    <h2 class="section-title">Key Features</h2>
+    <div class="roadmap-track">
+      <div class="roadmap-item">
+        <h4>V2.0 Portal</h4>
+        <p>From "list of apps" to a Visual Transformation Timeline — Align, Activate, Adopt. Cross Miro / Invoicing / Platform.</p>
+      </div>
+      <div class="roadmap-item">
+        <h4>The Creator Hub</h4>
+        <p>Centralized space to build and standardize Cards and Prompts across an organization.</p>
+      </div>
+      <div class="roadmap-item">
+        <h4>Knowledge Retention</h4>
+        <p>Store workshop insights and generated IP directly into the platform — building Tatoma's "AI Memory."</p>
+      </div>
+      <div class="roadmap-item">
+        <h4>MCP Context Layer</h4>
+        <p>Tatoma as the intelligent context layer. Clients use their own LLM interface; Tatoma plugs in via MCP with specialized data and guardrails.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scale Banner -->
+  <section class="scale-banner">
+    <h2>5,000 Companies</h2>
+    <p>The 5-year vision: scale to 5,000 European companies through the Transformation OS and MCP protocol.</p>
+    <div class="scale-pills">
+      <span class="scale-pill">Context Layer</span>
+      <span class="scale-pill">Industrial Lens</span>
+      <span class="scale-pill">MCP Protocol</span>
+      <span class="scale-pill">AI Memory</span>
+      <span class="scale-pill">Circle Model</span>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

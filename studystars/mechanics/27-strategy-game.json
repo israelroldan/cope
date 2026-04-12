@@ -1,0 +1,117 @@
+{
+  "id": "strategy-game",
+  "number": 27,
+  "name": "Strategy Game Wrapper",
+  "slug": "strategy-game",
+  "tier": {
+    "bloom": "gamification",
+    "level": 7,
+    "label": "Gamification — Cross-Tier Wrapper"
+  },
+  "summary": "Correct answers earn in-game currency/resources that players invest strategically (towers, upgrades, inventory, crops) to progress through a game world.",
+  "platforms": [
+    "Blooket Tower Defense",
+    "Blooket Factory",
+    "Blooket Café",
+    "Gimkit Tycoon",
+    "Gimkit Farmchain",
+    "Blooket Crazy Kingdom"
+  ],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI generates questions excellently. Game shells are pre-built; AI fills them with thematic questions. Game design (upgrade trees, economies) must be hand-authored but are reusable templates."
+  },
+  "interaction": {
+    "type": "game-wrapper",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": true,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "gameTheme": {
+      "type": "string",
+      "required": true,
+      "description": "Theme of the game world (e.g., 'castle-defense', 'restaurant-tycoon', 'farm', 'kingdom-building')."
+    },
+    "currencyName": {
+      "type": "string",
+      "required": true,
+      "description": "Name of the in-game currency (e.g., 'gold', 'coins', 'harvest', 'customers')."
+    },
+    "currencyPerQuestion": {
+      "type": "integer",
+      "required": true,
+      "description": "Base amount of currency earned per correct question (e.g., 10)."
+    },
+    "questionMechanic": {
+      "type": "string",
+      "required": true,
+      "description": "ID of the wrapped question mechanic (e.g., 'multiple-choice', 'short-answer')."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of question objects conforming to the wrapped mechanic's schema."
+    },
+    "upgradeTree": {
+      "type": "object[]",
+      "required": true,
+      "description": "Pre-defined upgrade/resource options players can purchase (towers, crops, decorations, etc.). Each has: id, name, cost (currency), effect (descriptive), icon."
+    },
+    "questionsPerRound": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of questions before player can make strategic purchases/upgrades (typical 2-5)."
+    },
+    "roundCount": {
+      "type": "integer",
+      "required": true,
+      "description": "Total number of rounds in a session (typical 5-10 for 5-10 min gameplay)."
+    },
+    "winCondition": {
+      "type": "object",
+      "required": true,
+      "description": "What constitutes a win (e.g., 'accumulate 500 gold', 'defend 10 waves', 'fill all farm plots')."
+    }
+  },
+  "scoring": {
+    "type": "speed-weighted",
+    "partialCredit": false,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "game-viewport",
+    "minTouchTarget": "56x56px",
+    "estimatedDuration": "300-600s",
+    "animation": "currency-pop, tower-place, upgrade-glow, wave-progress",
+    "mobileNotes": "Split-screen: game world (top 60%) with interactive upgrade targets. Question pop-up overlay (bottom 40%). Currency/score HUD sticky at top. Tap to answer question, tap to purchase/place upgrade. Large upgrade icons with tap/hold to preview."
+  },
+  "lessonPlacement": [
+    "extension",
+    "deep-engagement"
+  ],
+  "ageAdaptations": {
+    "8-10": "Simple 1-resource economy (just gold). 3-5 easy upgrades (walls, trees). 2-3 question rounds per purchase opportunity. Abundant currency to encourage exploration.",
+    "11-13": "Multi-resource economy (gold + special resources). 5-10 upgrades with cost tiers. 3-5 question rounds per opportunity. Optional synergies (e.g., towers boost each other).",
+    "14-16": "Complex economy with resource conversion. 15+ upgrades with dependencies. 5-10 question rounds; optional time gates. Advanced: leaderboard, prestige mechanics, asymmetric strategies."
+  },
+  "implementationPriority": "p3-future",
+  "relatedMechanics": [
+    "pvp-competition",
+    "cooperative-challenge",
+    "collection-gacha",
+    "timed-speed"
+  ],
+  "tags": [
+    "gamification",
+    "strategy",
+    "resource-management",
+    "upgrade-tree",
+    "wrapper",
+    "economic-game",
+    "engagement"
+  ]
+}

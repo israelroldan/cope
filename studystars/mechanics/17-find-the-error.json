@@ -1,0 +1,75 @@
+{
+  "id": "find-the-error",
+  "number": 17,
+  "name": "Find the Error / Odd One Out",
+  "slug": "find-the-error",
+  "tier": {
+    "bloom": "analyze",
+    "level": 4,
+    "label": "Analyze — Critical Examination"
+  },
+  "summary": "Examine a set of items and identify which one is incorrect, doesn't belong, or is the odd one out.",
+  "platforms": ["Custom implementations", "StudyStars"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates sets with one intentional error. Works well for factual identification tasks. Detective/puzzle feel engages learners. Requires clear criterion for the error."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "tap",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The question or challenge. e.g., 'Which of these is NOT a planet?' or 'One of these facts is false — which one?'"
+    },
+    "items": {
+      "type": "string[]",
+      "required": true,
+      "description": "The set of options/statements to examine.",
+      "minItems": 3,
+      "maxItems": 5
+    },
+    "errorIndex": {
+      "type": "integer",
+      "required": true,
+      "description": "Zero-based index of the incorrect/odd item in the items array."
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "Why the identified item is wrong/odd. Explains the error or why others belong together."
+    },
+    "criterion": {
+      "type": "string",
+      "required": false,
+      "description": "The hidden rule or category that unites the correct items (for AI generation)."
+    }
+  },
+  "scoring": {
+    "type": "binary",
+    "partialCredit": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "15-30s",
+    "animation": "highlight-selected, fade-reveal-explanation",
+    "mobileNotes": "Keep items concise so they fit single-column layout. Use clear visual highlight on selection. Consider emoji/icons for very young learners to reduce reading load."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "3 items with obvious error. Use simple, concrete subjects (animals, colors, objects). Visual support recommended.",
+    "11-13": "4 items with subtle error. More abstract topics (facts, concepts). Error is within 1-2 details, not completely wrong.",
+    "14-16": "5 items with plausible errors. Sophisticated topics (historical events, scientific concepts). Multiple items could plausibly be wrong; learner must analyze deeply."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["01-multiple-choice", "02-true-false", "10-memory-game"],
+  "tags": ["analysis", "critical-thinking", "error-detection", "odd-one-out", "puzzle", "bloom-4"]
+}

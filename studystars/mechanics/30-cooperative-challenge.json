@@ -1,0 +1,127 @@
+{
+  "id": "cooperative-challenge",
+  "number": 30,
+  "name": "Cooperative/Team Challenge",
+  "slug": "cooperative-challenge",
+  "tier": {
+    "bloom": "gamification",
+    "level": 7,
+    "label": "Gamification — Cross-Tier Wrapper"
+  },
+  "summary": "Teams work together against an environmental challenge (rising lava, escaping ship, building farm). Individual correct answers contribute to shared progress; collective failure reinforces interdependence.",
+  "platforms": [
+    "Gimkit Floor is Lava",
+    "Gimkit One Way Out",
+    "Gimkit Farmchain",
+    "Kahoot Submarine Squad",
+    "Quizlet Live"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates questions excellently. Cooperative shells are pre-built templates. AI fills with thematic narrative and questions. Progress tracking and collective scoring are deterministic."
+  },
+  "interaction": {
+    "type": "game-wrapper",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": true,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "questionMechanic": {
+      "type": "string",
+      "required": true,
+      "description": "ID of the wrapped question mechanic (e.g., 'multiple-choice', 'short-answer')."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of question objects conforming to the wrapped mechanic's schema."
+    },
+    "narrative": {
+      "type": "string",
+      "required": true,
+      "description": "Story framing (e.g., 'Your submarine is sinking. Answer questions to pump water out before we hit the ocean floor.', 'Lava is rising. Answer to raise the platform.')."
+    },
+    "targetScore": {
+      "type": "integer",
+      "required": true,
+      "description": "Total points/progress needed to win (e.g., 50 questions answered, 500 progress points)."
+    },
+    "teamSize": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of players per team (typical 3-8)."
+    },
+    "timeLimit": {
+      "type": "integer",
+      "required": true,
+      "description": "Time limit in seconds for the entire challenge (typical 300-600s for 5-10 min sessions)."
+    },
+    "progressVisualization": {
+      "type": "enum",
+      "required": true,
+      "values": [
+        "progress-bar",
+        "meter-fill",
+        "rising-lava",
+        "elevator-climb",
+        "farm-growth"
+      ],
+      "description": "Visual representation of collective progress."
+    },
+    "penaltyForWrongAnswer": {
+      "type": "integer",
+      "required": false,
+      "description": "Optional penalty (e.g., lose 5 points or 10 seconds) on incorrect answer (can reduce team health/time)."
+    },
+    "reviveOrCheckpoint": {
+      "type": "boolean",
+      "required": false,
+      "description": "Whether team gets a revival/checkpoint mechanic on collective failure (optional)."
+    },
+    "participationTracking": {
+      "type": "boolean",
+      "required": false,
+      "description": "Whether individual contribution is visible to team (can motivate but also pressure)."
+    }
+  },
+  "scoring": {
+    "type": "speed-weighted",
+    "partialCredit": false,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "game-viewport",
+    "minTouchTarget": "56x56px",
+    "estimatedDuration": "300-600s",
+    "animation": "progress-bar-surge, lava-rise, time-drain, team-cheer",
+    "mobileNotes": "Large shared progress visualization (top 50%): animated bar, lava rising, or avatar climbing. Question in center (30%). Individual contribution meter visible but not overwhelming (bottom 20%). Team member count/names in status bar. Real-time collective score updates with celebratory particle effects on milestones."
+  },
+  "lessonPlacement": [
+    "extension",
+    "deep-engagement"
+  ],
+  "ageAdaptations": {
+    "8-10": "Small teams (3-4 players). Simple narrative (e.g., 'Save the animals!'). Generous time (300s+) and low target score (25-30 questions). No penalty for wrong answers. Encouraging tone; focus on collaboration.",
+    "11-13": "Medium teams (4-6 players). Moderate narrative complexity (e.g., 'Escape the cave before the earthquake'). Standard time (300s) and target (40-50 questions). Small penalty for wrong (lose 5 points). Individual participation visible but de-emphasized.",
+    "14-16": "Larger teams (6-8 players). Complex, branching narrative (e.g., 'Multi-stage farm survival'). Tight time (180-300s) and ambitious target (60+ questions). Penalties for wrong answers. Full participation transparency and optional discussion chat. Leaderboard for team completion times."
+  },
+  "implementationPriority": "p3-future",
+  "relatedMechanics": [
+    "pvp-competition",
+    "strategy-game",
+    "social-deduction"
+  ],
+  "tags": [
+    "gamification",
+    "cooperative",
+    "team",
+    "multiplayer",
+    "shared-goal",
+    "wrapper",
+    "social-cohesion"
+  ]
+}

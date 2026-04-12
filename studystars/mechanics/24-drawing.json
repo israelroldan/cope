@@ -1,0 +1,96 @@
+{
+  "id": "drawing",
+  "number": 24,
+  "name": "Drawing / Sketching",
+  "slug": "drawing",
+  "tier": {
+    "bloom": "create",
+    "level": 6,
+    "label": "Create — Original Production"
+  },
+  "summary": "Learners draw, sketch, or annotate on a digital canvas with pen, highlighter, and colors; responses are peer-assessed or self-assessed.",
+  "platforms": ["Quizizz Draw", "Nearpod Draw It", "StudyStars"],
+  "aiGenerability": {
+    "rating": 3,
+    "notes": "AI can generate drawing prompts and provide reference images easily. Cannot auto-grade drawings (no meaningful computer vision for educational drawings). Best use: AI-generated prompt + reference image, with peer or teacher assessment. Sketch-based learning (label a diagram) can be rubric-scored if criteria are explicit (all parts labeled, colors correct, etc.)."
+  },
+  "interaction": {
+    "type": "drawing",
+    "input": "draw",
+    "multiStep": true,
+    "peerInteraction": true,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The drawing task. e.g., 'Draw the water cycle' or 'Sketch what a Viking longship looked like' or 'Label the parts of a plant cell.'"
+    },
+    "backgroundImageUrl": {
+      "type": "string",
+      "required": false,
+      "description": "Optional background image for the canvas (e.g., an outline to fill in, or a diagram to label)."
+    },
+    "referenceImageUrl": {
+      "type": "string",
+      "required": false,
+      "description": "Optional reference image shown alongside the canvas (e.g., a photo of a Viking ship for inspiration)."
+    },
+    "toolConfig": {
+      "type": "object",
+      "required": true,
+      "description": "Drawing tool configuration.",
+      "properties": {
+        "colors": {
+          "type": "string[]",
+          "required": true,
+          "description": "Available colors. e.g., ['black', 'red', 'blue', 'green', 'yellow']. Ages 8-10: 5 colors. Ages 11+: 10+ colors."
+        },
+        "brushSizes": {
+          "type": "integer[]",
+          "required": true,
+          "description": "Available brush widths in pixels. e.g., [2, 5, 10, 20]."
+        },
+        "tools": {
+          "type": "string[]",
+          "required": true,
+          "description": "Available tools. e.g., ['pen', 'highlighter', 'eraser']. Ages 8-10: pen + eraser. Ages 11+: pen, highlighter, eraser, shapes."
+        }
+      }
+    },
+    "assessmentMode": {
+      "type": "enum",
+      "required": true,
+      "description": "How responses are assessed.",
+      "values": ["peer-review", "self-assessment", "rubric-based", "ungraded"]
+    },
+    "rubric": {
+      "type": "object[]",
+      "required": false,
+      "description": "Optional rubric for rubric-based or self-assessment modes. e.g., [{'criterion': 'All parts labeled', 'maxPoints': 5}]"
+    }
+  },
+  "scoring": {
+    "type": "peer-assessed",
+    "partialCredit": false,
+    "feedback": "peer-review",
+    "feedbackContent": "peer-comparison"
+  },
+  "ux": {
+    "layout": "canvas",
+    "minTouchTarget": "5px brush width minimum",
+    "estimatedDuration": "60-180s",
+    "animation": "brush-stroke-live, color-swatch-tap-feedback, undo-animation",
+    "mobileNotes": "Canvas must be large and responsive. Full-screen or near-full-screen canvas on mobile (tablet ideal). Tools should be accessible (palette + brush size at bottom or side). Undo button essential (many accidental strokes). Finger drawing is imprecise on phones but fun for kids. Consider stylus support for detailed work. Save drawing as image for sharing/export."
+  },
+  "lessonPlacement": ["extension", "reflection"],
+  "ageAdaptations": {
+    "8-10": "Free drawing with simple prompts. Canvas background is blank or a simple outline (e.g., circle to draw a face inside). 5 colors, 2-3 brush sizes. Tools: pen + eraser only. No rubric; celebration of creativity. Prompt: 'Draw your favorite scene from the story' or 'Draw what the sun looks like.' Peer feedback is fun and positive ('I like your colors!'). Estimated time: 60-90s.",
+    "11-13": "Labeling and annotating. Canvas may have a background diagram (e.g., unlabeled plant cell). Learner draws labels and colors structures. 8 colors, 3-4 brush sizes. Tools: pen, highlighter, eraser. Simple rubric: 'All parts labeled', 'Colors are accurate', 'Labels are clear.' Prompt: 'Label the parts of a plant cell and color each part differently.' Peer feedback focuses on accuracy ('Your labels are in the right places!'). Estimated time: 90-120s.",
+    "14-16": "Detailed annotation and creation. Canvas may be blank or have a detailed reference (e.g., historical map). Learner draws, labels, color-codes, and annotates. 12+ colors, 4+ brush sizes. Tools: pen, highlighter, eraser, shapes (rectangles, circles). Rubric: 'Accuracy', 'Detail and labeling', 'Use of color for clarity', 'Organization.' Prompt: 'Sketch and label the major trade routes of the Silk Road, using colors to show different regions.' Peer feedback is substantive and critical ('Your route is accurate; consider adding...</p>more detail about...'). Estimated time: 120-180s."
+  },
+  "implementationPriority": "p3-future",
+  "relatedMechanics": ["23-open-ended", "24-drawing"],
+  "tags": ["creation", "drawing", "visual-expression", "peer-assessment", "creativity", "bloom-6"]
+}

@@ -1,0 +1,106 @@
+{
+  "id": "image-recognition",
+  "number": 4,
+  "name": "Image Recognition (Visual Identification)",
+  "slug": "image-recognition",
+  "tier": {
+    "bloom": "remember",
+    "level": 1,
+    "label": "Remember — Factual Recall"
+  },
+  "summary": "3-4 images, select one matching text prompt. Visual association.",
+  "platforms": [
+    "Duolingo",
+    "Nearpod"
+  ],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "Requires image sourcing or generation. AI can identify which images to pair with prompts and design distractor images. Image generation tools (DALL-E, Midjourney) can create plausible distractors for free-use educational content."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "tap",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "Text description or label to match against images (e.g., 'Which of these is the Colosseum?')."
+    },
+    "images": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of image objects (3-4 items).",
+      "minItems": 3,
+      "maxItems": 4,
+      "itemSchema": {
+        "url": {
+          "type": "string",
+          "description": "URL or path to the image file."
+        },
+        "alt": {
+          "type": "string",
+          "description": "Accessibility alt-text describing the image."
+        }
+      }
+    },
+    "correctIndex": {
+      "type": "integer",
+      "required": true,
+      "description": "0-based index of the correct image in the images array (before randomization)."
+    },
+    "explanation": {
+      "type": "string",
+      "required": false,
+      "description": "Optional explanation of the correct image and why the distractors are not correct."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": true,
+      "description": "Difficulty level based on visual distinctiveness.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Topic tags for curriculum mapping."
+    }
+  },
+  "scoring": {
+    "type": "binary",
+    "partialCredit": false,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "grid-2x2",
+    "minTouchTarget": "120x120px",
+    "estimatedDuration": "10-20s",
+    "animation": "tap-scale and border-highlight on selection",
+    "mobileNotes": "2x2 grid of images on portrait mobile. Each image tile is a large tap target with rounded corners. Ensure images are high-quality and centered. On tablets, images may be larger or arranged in 1x3 layout."
+  },
+  "lessonPlacement": [
+    "warm-up",
+    "post-content"
+  ],
+  "ageAdaptations": {
+    "8-10": "3 large clear images (high contrast, distinct objects). 2x1 or 2x2 layout. Distractors should be visually different (e.g., different animals, not similar birds). Large 150x150px touch targets. Include label text below each image for extra clarity.",
+    "11-13": "3-4 images with more subtle distractors (e.g., different monuments from same region, different flag designs). Standard 120x120px targets. Images need not have text labels.",
+    "14-16": "4 images with challenging distractors (e.g., architectural styles that look similar, nearly identical animals). Can include optional zoom on tap to examine details. Timed variant (15-20s countdown)."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": [
+    "multiple-choice",
+    "audio-recognition"
+  ],
+  "tags": [
+    "visual-learning",
+    "visual-identification",
+    "single-select",
+    "recognition"
+  ]
+}

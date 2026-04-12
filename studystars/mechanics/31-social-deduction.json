@@ -1,0 +1,121 @@
+{
+  "id": "social-deduction",
+  "number": 31,
+  "name": "Social Deduction",
+  "slug": "social-deduction",
+  "tier": {
+    "bloom": "gamification",
+    "level": 7,
+    "label": "Gamification — Cross-Tier Wrapper"
+  },
+  "summary": "Among Us-style social deduction: one or more hidden impostors sabotage while others complete questions. Discuss, investigate anomalies, vote to eject. High social engagement.",
+  "platforms": [
+    "Gimkit Trust No One",
+    "Blooket Deceptive Dinos"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates questions and anomaly clues excellently. Social deduction game shell is pre-built. Role assignment and voting are deterministic. Full AI generability."
+  },
+  "interaction": {
+    "type": "game-wrapper",
+    "input": "vote",
+    "multiStep": true,
+    "peerInteraction": true,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "questionMechanic": {
+      "type": "string",
+      "required": true,
+      "description": "ID of the wrapped question mechanic (e.g., 'multiple-choice', 'true-false'). Questions are the core activity backdrop."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of question objects conforming to the wrapped mechanic's schema."
+    },
+    "playerCount": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of concurrent players (typical 4-12 for social deduction; balance vs overhead)."
+    },
+    "impostorCount": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of hidden impostors (typical 1-3 depending on playerCount; often 1/3 of group)."
+    },
+    "discussionDuration": {
+      "type": "integer",
+      "required": true,
+      "description": "Time in seconds for discussion phase between question rounds (typical 30-60s)."
+    },
+    "votingDuration": {
+      "type": "integer",
+      "required": true,
+      "description": "Time in seconds for voting phase (typical 20-30s)."
+    },
+    "roundCount": {
+      "type": "integer",
+      "required": true,
+      "description": "Total rounds before game ends (typical 3-5)."
+    },
+    "questionsPerRound": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of questions answered before discussion (typical 2-3 per round)."
+    },
+    "impostorAbilities": {
+      "type": "object[]",
+      "required": false,
+      "description": "Optional sabotage actions impostors can take (e.g., 'provide wrong answer clue', 'cause brief blackout', 'false accusation'). Each with cooldown and name."
+    },
+    "anomalyClues": {
+      "type": "object[]",
+      "required": false,
+      "description": "Suspicious behaviors or patterns that help crewmates identify impostors (e.g., 'always answers fastest', 'often wrong on specific topics')."
+    },
+    "winConditions": {
+      "type": "object",
+      "required": true,
+      "description": "Define wins for 'crewmates' (eject all impostors) and 'impostors' (eject all crewmates or reach game end)."
+    }
+  },
+  "scoring": {
+    "type": "ungraded",
+    "partialCredit": false,
+    "feedback": "none",
+    "feedbackContent": "peer-comparison"
+  },
+  "ux": {
+    "layout": "game-viewport",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "600-900s",
+    "animation": "role-reveal, eject-animation, vote-counter-surge, deduction-highlight",
+    "mobileNotes": "Game viewport (60%). Discussion chat panel (scrollable, bottom 40%). Voting interface: tap player portrait to vote, countdown timer. Roles hidden until eject or game end. Discussion uses light text overlays on portraits (who's speaking). Tap to expand player 'profile' for past answers/anomalies. Eject animation: player spinning away with 'crewmate' or 'impostor' label revealed."
+  },
+  "lessonPlacement": [
+    "extension"
+  ],
+  "ageAdaptations": {
+    "8-10": "Not recommended (too complex and social pressure). If adapted: 4-6 players, 1 impostor max, simplified discussion (text options vs free chat), 2-3 very short rounds. Emphasis on fun vs winning.",
+    "11-13": "Simplified version: 6-8 players, 1-2 impostors, moderated discussion (teacher filters), 3-4 rounds. Anomaly clues given as hints. Training round before real game. Safe from excessive social pressure.",
+    "14-16": "Full game: 8-12 players, 2-3 impostors, free discussion with moderation, 4-5 complex rounds. Impostor abilities enabled (limited). Role assignment randomized. Post-game analysis. Optional leaderboard (wins per role)."
+  },
+  "implementationPriority": "p3-future",
+  "relatedMechanics": [
+    "pvp-competition",
+    "cooperative-challenge"
+  ],
+  "tags": [
+    "gamification",
+    "social",
+    "deduction",
+    "discussion",
+    "voting",
+    "role-play",
+    "multiplayer",
+    "engagement",
+    "meta-game"
+  ]
+}

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Scan Intake — Draaijer-Heyday Group</title>
+<style>
+  @font-face { font-family: 'Canela'; src: url('https://hub.tatoma.eu/fonts/Canela-Thin.woff2') format('woff2'); font-weight: 100; font-style: normal; }
+  @font-face { font-family: 'Canela'; src: url('https://hub.tatoma.eu/fonts/Canela-ThinItalic.woff2') format('woff2'); font-weight: 100; font-style: italic; }
+  @font-face { font-family: 'Canela'; src: url('https://hub.tatoma.eu/fonts/Canela-Light.woff2') format('woff2'); font-weight: 300; font-style: normal; }
+  @font-face { font-family: 'Canela'; src: url('https://hub.tatoma.eu/fonts/Canela-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+  @font-face { font-family: 'TSTARMonoRound'; src: url('https://hub.tatoma.eu/fonts/TSTARMonoRound-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+  @font-face { font-family: 'TSTARMonoRound'; src: url('https://hub.tatoma.eu/fonts/TSTARMonoRound-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+
+  :root {
+    --ivory: #F6FAEB;
+    --fg: #1D021F;
+    --fg-muted: #4F2035;
+    --fg-subtle: #7A5068;
+    --salmon: #FF8E7D;
+    --salmon-light: #FFB8AD;
+    --dark: #1E001E;
+    --dark-card: #2A0E2A;
+    --magenta: #4F2035;
+    --warm-gray: #EDE8E3;
+    --border: rgba(79, 32, 53, 0.1);
+    --green: #3D8B6E;
+    --orange: #D4762C;
+    --amber: #C4952A;
+    --font-serif: 'Canela', 'Georgia', serif;
+    --font-sans: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    --font-mono: 'TSTARMonoRound', 'SF Mono', 'Monaco', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
+
+  /* ---- Slide container ---- */
+  .slide {
+    width: 960px; height: 540px;
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(var(--scale, 1));
+    transform-origin: center center;
+    overflow: hidden;
+    display: none;
+  }
+  .slide.active { display: block; }
+
+  /* ---- Accent bar ---- */
+  .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--salmon), var(--salmon-light)); }
+
+  /* ---- Typography ---- */
+  .t-heading { font-family: var(--font-serif); font-weight: 100; letter-spacing: -0.02em; line-height: 1.1; }
+  .t-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; }
+  .t-body { font-family: var(--font-sans); font-weight: 300; line-height: 1.5; }
+  .t-mono { font-family: var(--font-mono); }
+
+  /* ---- Block number ---- */
+  .block-nr { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--salmon); color: var(--dark); font-family: var(--font-mono); font-size: 16px; font-weight: 700; flex-shrink: 0; }
+
+  /* ---- Themes ---- */
+  .slide--light { background: var(--ivory); color: var(--fg); }
+  .slide--dark { background: var(--dark); color: var(--ivory); }
+
+  /* ---- Cards ---- */
+  .card { border-radius: 4px; padding: 20px; }
+  .card--light { background: white; border: 1px solid var(--border); }
+  .card--dark { background: var(--dark-card); border: 1px solid rgba(255,142,125,0.1); }
+  .card--accent-left { border-left: 3px solid var(--salmon); }
+  .card--accent-top-green { border-top: 3px solid var(--green); }
+  .card--accent-top-orange { border-top: 3px solid var(--orange); }
+  .card--accent-top-amber { border-top: 3px solid var(--amber); }
+  .card--accent-top-salmon { border-top: 3px solid var(--salmon); }
+
+  /* ---- Badge ---- */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+  .badge--muted { background: rgba(79, 32, 53, 0.08); color: var(--fg-subtle); }
+  .badge--salmon { background: rgba(255, 142, 125, 0.15); color: var(--salmon); }
+
+  /* ---- Placeholder ---- */
+  .placeholder { border: 2px dashed rgba(79, 32, 53, 0.2); border-radius: 6px; background: rgba(79, 32, 53, 0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; }
+
+  /* ---- Table ---- */
+  .scope-table { width: 100%; border-collapse: collapse; }
+  .scope-table th { background: var(--dark); color: var(--ivory); font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding: 10px 16px; text-align: left; }
+  .scope-table td { padding: 10px 16px; font-size: 13px; font-weight: 300; border-bottom: 1px solid var(--border); }
+  .scope-table tr:nth-child(even) td { background: rgba(79,32,53,0.03); }
+
+  /* ---- Slide counter ---- */
+  .slide-counter { position: fixed; bottom: 20px; right: 28px; font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 1px; z-index: 50; pointer-events: none; }
+
+  /* ---- Nav (minimal) ---- */
+  .nav-hint { position: fixed; bottom: 20px; left: 28px; font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.15); letter-spacing: 1px; z-index: 50; }
+
+  @media print {
+    body { background: white; overflow: visible; }
+    .slide { position: relative; display: block !important; transform: none !important; top: auto; left: auto; margin: 0 auto; page-break-after: always; box-shadow: none; }
+    .slide-counter, .nav-hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide slide--dark active" data-slide="1">
+  <div class="accent-bar"></div>
+  <div style="padding: 100px 80px 40px;">
+    <div class="t-label" style="color: var(--salmon); margin-bottom: 40px;">Tech Scan</div>
+    <h1 class="t-heading" style="font-size: 56px; color: var(--ivory); margin-bottom: 14px;">Intake gesprek</h1>
+    <h2 class="t-heading" style="font-size: 30px; color: var(--salmon-light); font-weight: 300;">Draaijer — HEYDAY Group B.V.</h2>
+    <div style="width: 80px; height: 2px; background: var(--salmon); margin: 40px 0 20px;"></div>
+    <p style="font-weight: 300; font-size: 14px; color: rgba(246,250,235,0.45);">~60 minuten</p>
+  </div>
+  <div style="position: absolute; bottom: 40px; left: 80px;">
+    <span class="t-mono" style="font-size: 13px; color: rgba(246,250,235,0.3); letter-spacing: 4px;">TATOMA</span>
+  </div>
+  <div style="position: absolute; bottom: 0; right: 0; width: 240px; height: 240px; background: radial-gradient(circle at bottom right, rgba(255,142,125,0.07), transparent 70%);"></div>
+</div>
+
+<!-- SLIDE 2: Agenda -->
+<div class="slide slide--light" data-slide="2">
+  <div class="accent-bar"></div>
+  <div style="padding: 48px 80px 0;">
+    <h2 class="t-heading" style="font-size: 40px; color: var(--fg); margin-bottom: 6px;">Agenda</h2>
+    <p class="t-body" style="font-size: 13px; color: var(--fg-subtle); font-style: italic; margin-bottom: 28px;">Samen het applicatielandschap doorlopen — gericht op jullie situatie.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; align-items: center; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+        <span class="block-nr" style="width: 32px; height: 32px; font-size: 13px;">1</span>
+        <div style="flex: 1;"><div style="font-weight: 500; font-size: 15px;">Opening & aanpak</div></div>
+        <span class="badge badge--muted">5 min</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+        <span class="block-nr" style="width: 32px; height: 32px; font-size: 13px;">2</span>
+        <div style="flex: 1;"><div style="font-weight: 500; font-size: 15px;">Jullie operatie</div><div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Van klantcontract tot facturatie</div></div>
+        <span class="badge badge--muted">15 min</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+        <span class="block-nr" style="width: 32px; height: 32px; font-size: 13px;">3</span>
+        <div style="flex: 1;"><div style="font-weight: 500; font-size: 15px;">AI-verkenning tot nu toe</div><div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Wat is al onderzocht of geactiveerd?</div></div>
+        <span class="badge badge--muted">10 min</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+        <span class="block-nr" style="width: 32px; height: 32px; font-size: 13px;">4</span>
+        <div style="flex: 1;"><div style="font-weight: 500; font-size: 15px;">Aandachtspunten & no-go's</div><div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Migraties, scope, contractwijzigingen</div></div>
+        <span class="badge badge--muted">10 min</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+        <span class="block-nr" style="width: 32px; height: 32px; font-size: 13px;">5</span>
+        <div style="flex: 1;"><div style="font-weight: 500; font-size: 15px;">Technische verdieping</div><div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Koppelingen, versies, licenties</div></div>
+        <span class="badge badge--muted">15 min</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 18px; padding: 12px 0;">
+        <span class="block-nr" style="width: 32px; height: 32px; font-size: 13px;">6</span>
+        <div style="flex: 1;"><div style="font-weight: 500; font-size: 15px;">Scope & vervolgstappen</div><div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Welke applicaties, wie spreken we, planning</div></div>
+        <span class="badge badge--muted">5 min</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: Block 1 — Opening & Context -->
+<div class="slide slide--dark" data-slide="3">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
+      <span class="block-nr">1</span>
+      <h2 class="t-heading" style="font-size: 36px; color: var(--ivory);">Aanpak Tech Scan</h2>
+    </div>
+
+    <div style="display: flex; gap: 20px;">
+      <div class="card card--dark card--accent-left" style="flex: 1;">
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 12px;">Ontvangen documentatie</div>
+        <ul style="list-style: none; font-size: 13px; color: rgba(246,250,235,0.7); font-weight: 300; line-height: 2;">
+          <li>IT Landschap document (v2025.3)</li>
+          <li>Basisprocesoverzicht administraties</li>
+          <li>Target IT Architectuur rapport</li>
+        </ul>
+      </div>
+      <div class="card card--dark card--accent-left" style="flex: 1;">
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 12px;">Wat we vandaag doen</div>
+        <p style="font-size: 13px; color: rgba(246,250,235,0.7); font-weight: 300; line-height: 1.8;">Per applicatie in kaart brengen welke AI-mogelijkheden beschikbaar zijn, wat al geactiveerd is, en waar de meeste waarde zit.</p>
+      </div>
+      <div class="card card--dark card--accent-left" style="flex: 1;">
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 12px;">Resultaat</div>
+        <p style="font-size: 13px; color: rgba(246,250,235,0.7); font-weight: 300; line-height: 1.8;">Concreet rapport met per tool een beoordeling en aanbevelingen — van "direct activeren" tot "later uitwerken."</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Block 2 — Jullie operatie -->
+<div class="slide slide--light" data-slide="4">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 28px;">
+      <span class="block-nr">2</span>
+      <h2 class="t-heading" style="font-size: 36px; color: var(--fg);">Jullie operatie</h2>
+    </div>
+
+    <div style="background: var(--dark); border-radius: 4px; padding: 28px 36px; border-left: 3px solid var(--salmon); margin-bottom: 28px;">
+      <p style="font-family: var(--font-serif); font-weight: 300; font-size: 18px; color: var(--ivory); line-height: 1.6; font-style: italic;">Van contractondertekening tot maandfactuur — welke systemen worden geraakt en in welke volgorde?</p>
+    </div>
+
+    <div class="t-label" style="color: var(--fg-subtle); margin-bottom: 14px;">Specifieke onderwerpen</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="card card--light card--accent-left" style="padding: 14px 20px;">
+        <div style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Facilitor</div>
+        <div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Verschillende configuraties — hoe centraal?</div>
+      </div>
+      <div class="card card--light card--accent-left" style="padding: 14px 20px;">
+        <div style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Planning & scheduling</div>
+        <div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Planbition, ShiftBase, PURE — rol per divisie</div>
+      </div>
+      <div class="card card--light card--accent-left" style="padding: 14px 20px;">
+        <div style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Custom tooling</div>
+        <div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Ontrafelaar, CWS — functie en scope</div>
+      </div>
+      <div class="card card--light card--accent-left" style="padding: 14px 20px;">
+        <div style="font-weight: 500; font-size: 14px; margin-bottom: 3px;">Handoffs & knelpunten</div>
+        <div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Waar zitten de overdrachtsmomenten?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Placeholder — Applicatielandschap -->
+<div class="slide slide--light" data-slide="5">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 28px;">
+      <span class="block-nr">2</span>
+      <h2 class="t-heading" style="font-size: 32px; color: var(--fg);">Applicatielandschap</h2>
+    </div>
+
+    <div class="placeholder" style="height: 360px;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7A5068" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      <div style="font-weight: 400; font-size: 15px; color: var(--fg-muted);">IT Landschap diagram</div>
+      <div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">Applicatie- en integratielandschap</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: Block 3 — AI-verkenning -->
+<div class="slide slide--light" data-slide="6">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+      <span class="block-nr">3</span>
+      <h2 class="t-heading" style="font-size: 36px; color: var(--fg);">AI-verkenning</h2>
+    </div>
+
+    <div class="t-label" style="color: var(--fg-subtle); margin-bottom: 14px;">Gespreksonderwerpen</div>
+
+    <div style="display: flex; gap: 14px; margin-bottom: 20px;">
+      <div class="card card--light card--accent-top-green" style="flex: 1; padding: 16px;">
+        <div class="t-label" style="color: var(--green); margin-bottom: 10px;">Al actief</div>
+        <p class="t-body" style="font-size: 12px; color: var(--fg);">Welke AI-features zijn al geactiveerd of in pilot? Wat zijn de eerste ervaringen?</p>
+      </div>
+      <div class="card card--light card--accent-top-orange" style="flex: 1; padding: 16px;">
+        <div class="t-label" style="color: var(--orange); margin-bottom: 10px;">In ontwikkeling</div>
+        <p class="t-body" style="font-size: 12px; color: var(--fg);">Welke AI-initiatieven zijn in de maak? Hoe ver zijn die en wat is de aanpak?</p>
+      </div>
+      <div class="card card--light card--accent-top-amber" style="flex: 1; padding: 16px;">
+        <div class="t-label" style="color: var(--amber); margin-bottom: 10px;">Op de roadmap</div>
+        <p class="t-body" style="font-size: 12px; color: var(--fg);">Welke ideeën zijn er voor de komende periode? Waar zit de meeste ambitie?</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="card card--light" style="padding: 14px 20px; border-left: 3px solid var(--salmon);">
+        <div style="font-weight: 500; font-size: 13px;">Vendor AI-features</div>
+        <div class="t-body" style="font-size: 11px; color: var(--fg-subtle);">AFAS Jonas, M365 Copilot, Facilitor AI, HubSpot Breeze</div>
+      </div>
+      <div class="card card--light" style="padding: 14px 20px; border-left: 3px solid var(--salmon);">
+        <div style="font-weight: 500; font-size: 13px;">Agent platforms</div>
+        <div class="t-body" style="font-size: 11px; color: var(--fg-subtle);">Copilot Studio, Flowmatic, overige — welk platform voor welk doel?</div>
+      </div>
+      <div class="card card--light" style="padding: 14px 20px; border-left: 3px solid var(--salmon);">
+        <div style="font-weight: 500; font-size: 13px;">Innovatieproces</div>
+        <div class="t-body" style="font-size: 11px; color: var(--fg-subtle);">Hoe worden AI-ideeën geëvalueerd en geprioriteerd?</div>
+      </div>
+      <div class="card card--light" style="padding: 14px 20px; border-left: 3px solid var(--salmon);">
+        <div style="font-weight: 500; font-size: 13px;">Ervaringen & blokkades</div>
+        <div class="t-body" style="font-size: 11px; color: var(--fg-subtle);">Wat werkt goed, wat loopt vast? Licenties, adoptie, data?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Block 4 — Aandachtspunten -->
+<div class="slide slide--dark" data-slide="7">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 28px;">
+      <span class="block-nr">4</span>
+      <h2 class="t-heading" style="font-size: 36px; color: var(--ivory);">Aandachtspunten</h2>
+    </div>
+
+    <p class="t-body" style="font-size: 14px; color: rgba(246,250,235,0.6); margin-bottom: 24px;">Zijn er gebieden in het landschap waar we rekening mee moeten houden?</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+      <div class="card card--dark card--accent-left" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 8px;">Lopende migraties</div>
+        <p class="t-body" style="font-size: 12px; color: rgba(246,250,235,0.65);">Systemen die worden uitgefaseerd of vervangen — wat is nog in beweging?</p>
+      </div>
+      <div class="card card--dark card--accent-left" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 8px;">Contractwijzigingen</div>
+        <p class="t-body" style="font-size: 12px; color: rgba(246,250,235,0.65);">Verlengingen, heronderhandelingen, of besluiten die de scope beïnvloeden</p>
+      </div>
+      <div class="card card--dark card--accent-left" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 8px;">Scope-uitsluitingen</div>
+        <p class="t-body" style="font-size: 12px; color: rgba(246,250,235,0.65);">Gebieden die buiten de Tech Scan moeten vallen</p>
+      </div>
+      <div class="card card--dark card--accent-left" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 8px;">Tijdshorizon</div>
+        <p class="t-body" style="font-size: 12px; color: rgba(246,250,235,0.65);">Hoe ver kijken we vooruit? 6 maanden, 12 maanden, langer?</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Block 5 — Technische verdieping -->
+<div class="slide slide--light" data-slide="8">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+      <span class="block-nr">5</span>
+      <h2 class="t-heading" style="font-size: 36px; color: var(--fg);">Technische verdieping</h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+      <div class="card card--light card--accent-top-salmon" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--fg-muted); margin-bottom: 10px;">Koppelingen & integratie</div>
+        <p class="t-body" style="font-size: 12px; color: var(--fg);">Hoe spreken de systemen met elkaar? Middleware, API's, batch-processen? Wie onderhoudt de interfaces?</p>
+      </div>
+      <div class="card card--light card--accent-top-salmon" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--fg-muted); margin-bottom: 10px;">Authenticatie & identiteit</div>
+        <p class="t-body" style="font-size: 12px; color: var(--fg);">Entra ID overal? SSO/MFA-dekking? Hoe loggen buitendienstmedewerkers in?</p>
+      </div>
+      <div class="card card--light card--accent-top-salmon" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--fg-muted); margin-bottom: 10px;">Versies & licenties</div>
+        <p class="t-body" style="font-size: 12px; color: var(--fg);">Welke edities/tiers draaien er? Welke AI-features zijn beschikbaar in de huidige licenties?</p>
+      </div>
+      <div class="card card--light card--accent-top-salmon" style="padding: 18px 22px;">
+        <div class="t-label" style="color: var(--fg-muted); margin-bottom: 10px;">AFAS-migratie status</div>
+        <p class="t-body" style="font-size: 12px; color: var(--fg);">Hoe landt de implementatie? Datakwaliteit? Openstaande items?</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; gap: 14px;">
+      <div class="card card--light" style="flex: 1; padding: 14px 20px; border-left: 3px solid var(--salmon);">
+        <div style="font-weight: 500; font-size: 13px;">BI & Data</div>
+        <div class="t-body" style="font-size: 11px; color: var(--fg-subtle);">Data Warehouse, PowerBI, Tagetik — governance en AI/ML</div>
+      </div>
+      <div class="card card--light" style="flex: 1; padding: 14px 20px; border-left: 3px solid var(--salmon);">
+        <div style="font-weight: 500; font-size: 13px;">Bijzonderheden</div>
+        <div class="t-body" style="font-size: 11px; color: var(--fg-subtle);">Shadow IT, compliance-eisen, tools buiten het diagram</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: Placeholder — Target Architecture -->
+<div class="slide slide--light" data-slide="9">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 28px;">
+      <span class="block-nr">5</span>
+      <h2 class="t-heading" style="font-size: 32px; color: var(--fg);">Target IT Architectuur</h2>
+    </div>
+
+    <div class="placeholder" style="height: 360px;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7A5068" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <div style="font-weight: 400; font-size: 15px; color: var(--fg-muted);">Target architectuur diagram</div>
+      <div class="t-body" style="font-size: 12px; color: var(--fg-subtle);">AFAS core met aanpalende applicaties en externe diensten</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: Block 6 — Scope voorstel -->
+<div class="slide slide--light" data-slide="10">
+  <div class="accent-bar"></div>
+  <div style="padding: 44px 80px 0;">
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+      <span class="block-nr">6</span>
+      <h2 class="t-heading" style="font-size: 36px; color: var(--fg);">Scope voorstel</h2>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+      <div class="card card--light" style="flex: 1; padding: 0; overflow: hidden;">
+        <div style="background: var(--dark); padding: 12px 18px;">
+          <span class="t-label" style="color: var(--ivory); letter-spacing: 3px;">Diepgaand</span>
+        </div>
+        <div style="padding: 16px 18px; font-size: 14px; font-weight: 300; line-height: 2.2;">
+          AFAS (excl. Jonas)<br>M365 (incl. Copilot)<br>Facilitor
+        </div>
+      </div>
+      <div class="card card--light" style="flex: 1; padding: 0; overflow: hidden;">
+        <div style="background: var(--salmon); padding: 12px 18px;">
+          <span class="t-label" style="color: var(--dark); letter-spacing: 3px;">Middenniveau</span>
+        </div>
+        <div style="padding: 16px 18px; font-size: 14px; font-weight: 300; line-height: 2.2;">
+          Planbition + ShiftBase<br>PowerBI / Tagetik / DW<br>Whitevision
+        </div>
+      </div>
+      <div class="card card--light" style="flex: 1; padding: 0; overflow: hidden;">
+        <div style="background: var(--fg-subtle); padding: 12px 18px;">
+          <span class="t-label" style="color: var(--ivory); letter-spacing: 3px;">Lichter</span>
+        </div>
+        <div style="padding: 16px 18px; font-size: 14px; font-weight: 300; line-height: 2.2;">
+          Recruitee<br>StudyTube<br>InSocial / PURE
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+      <div class="t-label" style="color: var(--fg-muted); margin-bottom: 10px;">Open vragen</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div style="font-size: 13px; font-weight: 300; color: var(--fg); padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--salmon);">→</span>Multiline-specifieke tools in scope?</div>
+        <div style="font-size: 13px; font-weight: 300; color: var(--fg); padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--salmon);">→</span>AI agents / automation platforms?</div>
+        <div style="font-size: 13px; font-weight: 300; color: var(--fg); padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: var(--salmon);">→</span>Marketing tooling meenemen?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: Vervolgstappen -->
+<div class="slide slide--dark" data-slide="11">
+  <div class="accent-bar"></div>
+  <div style="padding: 56px 80px 0;">
+    <h2 class="t-heading" style="font-size: 42px; color: var(--ivory); margin-bottom: 8px;">Vervolgstappen</h2>
+    <div style="width: 80px; height: 2px; background: var(--salmon); margin-bottom: 40px;"></div>
+
+    <div style="display: flex; gap: 20px;">
+      <div style="flex: 1; text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--dark-card); border: 1px solid rgba(255,142,125,0.2); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+          <span class="t-mono" style="color: var(--salmon); font-size: 18px; font-weight: 700;">1</span>
+        </div>
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 8px;">Scope bevestigen</div>
+        <p class="t-body" style="font-size: 12px; color: rgba(246,250,235,0.55);">Definitieve applicatielijst op basis van dit gesprek</p>
+      </div>
+      <div style="flex: 1; text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--dark-card); border: 1px solid rgba(255,142,125,0.2); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+          <span class="t-mono" style="color: var(--salmon); font-size: 18px; font-weight: 700;">2</span>
+        </div>
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 8px;">Verdieping</div>
+        <p class="t-body" style="font-size: 12px; color: rgba(246,250,235,0.55);">Gesprekken met applicatie-eigenaren en power users</p>
+      </div>
+      <div style="flex: 1; text-align: center;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--dark-card); border: 1px solid rgba(255,142,125,0.2); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+          <span class="t-mono" style="color: var(--salmon); font-size: 18px; font-weight: 700;">3</span>
+        </div>
+        <div class="t-label" style="color: var(--salmon); margin-bottom: 8px;">Tech Scan rapport</div>
+        <p class="t-body" style="font-size: 12px; color: rgba(246,250,235,0.55);">Per applicatie: beoordeling, AI-mogelijkheden, aanbevelingen</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 48px; text-align: center;">
+      <p class="t-heading" style="font-size: 16px; font-weight: 300; color: var(--salmon); font-style: italic;">Geen standaard checklist, maar afgestemd op jullie situatie.</p>
+    </div>
+  </div>
+  <div style="position: absolute; bottom: 28px; left: 80px;">
+    <span class="t-mono" style="font-size: 12px; color: rgba(246,250,235,0.2); letter-spacing: 4px;">TATOMA</span>
+  </div>
+  <div style="position: absolute; bottom: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle at bottom right, rgba(255,142,125,0.06), transparent 70%);"></div>
+</div>
+
+<!-- Slide counter -->
+<div class="slide-counter"><span id="current">1</span> / <span id="total">11</span></div>
+<div class="nav-hint">← → &nbsp; navigate &nbsp; | &nbsp; F &nbsp; fullscreen</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function updateScale() {
+    const sx = window.innerWidth / 960;
+    const sy = window.innerHeight / 540;
+    document.documentElement.style.setProperty('--scale', Math.min(sx, sy));
+  }
+
+  function go(idx) {
+    current = Math.max(0, Math.min(slides.length - 1, idx));
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    document.getElementById('current').textContent = current + 1;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(current + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(current - 1); }
+  });
+
+  // Click to advance
+  document.addEventListener('click', e => {
+    if (e.clientX > window.innerWidth / 2) go(current + 1);
+    else go(current - 1);
+  });
+
+  window.addEventListener('resize', updateScale);
+  updateScale();
+  go(0);
+</script>
+</body>
+</html>

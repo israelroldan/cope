@@ -1,0 +1,109 @@
+{
+  "id": "fill-in-blank-wordbank",
+  "number": 8,
+  "name": "Fill in the Blank (Word Bank)",
+  "slug": "fill-in-blank-wordbank",
+  "tier": {
+    "bloom": "understand",
+    "level": 2,
+    "label": "Understand — Contextual Application"
+  },
+  "summary": "Sentence with blanks + word bank. Tap/drag words into blanks. Cloze with scaffolding.",
+  "platforms": [
+    "Duolingo",
+    "Quizizz",
+    "Nearpod",
+    "Kahoot"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates sentences, identifies key terms, creates distractors. Given a content passage or topic, AI can create cloze sentences with word banks automatically. Distractors should be semantically or syntactically plausible but contextually incorrect."
+  },
+  "interaction": {
+    "type": "drag-drop",
+    "input": "tap or drag",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "text": {
+      "type": "string",
+      "required": true,
+      "description": "Sentence or passage with {{blank}} placeholders indicating where words should be inserted."
+    },
+    "blanks": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of blank specifications.",
+      "minItems": 1,
+      "maxItems": 5,
+      "itemSchema": {
+        "correctAnswer": {
+          "type": "string",
+          "description": "The correct word to fill this blank."
+        },
+        "position": {
+          "type": "integer",
+          "description": "0-based position of this blank in the text (for tracking)."
+        }
+      }
+    },
+    "wordBank": {
+      "type": "string[]",
+      "required": true,
+      "description": "Array of word options including correct answers and distractors. Count should be number of blanks + 2-3 distractors."
+    },
+    "explanation": {
+      "type": "string",
+      "required": false,
+      "description": "Optional explanation of the context and correct answers after completion."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": false,
+      "description": "Difficulty based on context clues and distractor plausibility.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Topic tags for curriculum mapping."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "text-passage",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "20-40s",
+    "animation": "word-snap-into-blank with color highlight, shake on incorrect placement, fade-out for used words",
+    "mobileNotes": "Text passage displayed prominently, blanks shown as underlines or boxes. Word bank below as draggable/tappable tiles. Words are initially all available; when placed, they may gray-out or disappear from bank. Tap blank to remove placed word."
+  },
+  "lessonPlacement": [
+    "post-content",
+    "core-practice"
+  ],
+  "ageAdaptations": {
+    "8-10": "1 blank maximum, 2-3 words in bank. Simple, short sentence (10-15 words total). Very obvious context clues. Words in bank are visually distinct from each other. Large text (16-18pt). Tap-to-fill interaction (less drag dexterity required).",
+    "11-13": "2 blanks, 4-5 words in bank. Longer sentences (15-25 words). Context clues present but require reading comprehension. Standard 14-16pt text. Drag-and-drop or tap interaction both supported. Immediate per-blank feedback.",
+    "14-16": "3+ blanks, 6-8 words in bank. Complex passages (25-50 words). Minimal context clues; requires vocabulary knowledge and syntactic awareness. Distractors are semantically similar (synonyms, near-misses). Small, compact text. Drag interaction required. Can include multiple-sentence passages."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": [
+    "matching-pairs",
+    "categorization",
+    "multiple-choice"
+  ],
+  "tags": [
+    "cloze-procedure",
+    "contextual-vocabulary",
+    "reading-comprehension",
+    "grammar"
+  ]
+}

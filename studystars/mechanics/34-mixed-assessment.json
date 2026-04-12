@@ -1,0 +1,88 @@
+{
+  "id": "mixed-assessment",
+  "number": 34,
+  "name": "Mixed Assessment",
+  "slug": "mixed-assessment",
+  "tier": {
+    "bloom": "understand",
+    "level": 2,
+    "label": "Understand — Cross-Mechanic Recall & Comprehension"
+  },
+  "summary": "A mini-quiz of 2-6 questions drawn from different mechanic types. Each question uses a different interaction pattern (tap, drag, type, slide), testing the same topic from multiple angles.",
+  "platforms": ["Kahoot", "Quizizz", "Google Forms", "Duolingo Checkpoints"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates the full question set by picking eligible mechanics and producing content that conforms to each sub-mechanic's contentSchema. High generability since it composes existing well-defined schemas rather than inventing new formats."
+  },
+  "interaction": {
+    "type": "meta-overlay",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "title": {
+      "type": "string",
+      "required": false,
+      "description": "Optional title for the assessment (e.g., 'Quick Recap', 'Check Your Knowledge'). If omitted, defaults to 'Quick Check'."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of 2-6 questions. Each question specifies its mechanic type and content conforming to that mechanic's contentSchema.",
+      "minItems": 2,
+      "maxItems": 6,
+      "itemSchema": {
+        "mechanicId": {
+          "type": "string",
+          "required": true,
+          "description": "Slug of the sub-mechanic for this question. Must be one of the eligible individual mechanics: true-false, fill-in-blank, multiple-choice, image-recognition, matching-pairs, word-builder, sequence-reorder, timeline, categorization, numerical-slider, labeling, scenario-question, odd-one-out, find-the-error, cause-effect, hot-text, ranking, pros-cons, comparison-table, flashcard."
+        },
+        "content": {
+          "type": "object",
+          "required": true,
+          "description": "Content object conforming to the specified mechanic's contentSchema. E.g., if mechanicId is 'multiple-choice', this must have question, options, correctIndex, explanation."
+        },
+        "_factRefs": {
+          "type": "string[]",
+          "required": false,
+          "description": "Fact IDs this question tests (for traceability to fact sheet)."
+        }
+      }
+    },
+    "showProgress": {
+      "type": "boolean",
+      "required": false,
+      "description": "Whether to show 'Question 1 of 4' progress indicator. Defaults to true."
+    },
+    "shuffleOrder": {
+      "type": "boolean",
+      "required": false,
+      "description": "Whether to randomize question order at runtime. Defaults to false (preserve authored order for Bloom's progression)."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "30-120s",
+    "animation": "slide-left",
+    "mobileNotes": "Questions presented one at a time, full-width. Each question renders its sub-mechanic's native UI (e.g., MC renders option buttons, sequence-reorder renders draggable list). Progress bar at top. After answering, feedback shows briefly, then auto-advances to next question. Summary screen at end with score and per-question results."
+  },
+  "lessonPlacement": ["spaced-review", "warm-up", "extension"],
+  "ageAdaptations": {
+    "8-10": "2-3 questions max. Only use simple mechanics: true-false, multiple-choice, numerical-slider, matching-pairs (3-4 pairs). Large touch targets. Big, encouraging feedback between questions. Summary uses stars or emoji, not percentages.",
+    "11-13": "3-5 questions. Can include sequence-reorder, categorization, fill-in-blank. Standard feedback. Summary shows score as fraction (3/5) and brief per-question review.",
+    "14-16": "4-6 questions. Full range of eligible mechanics. Concise feedback. Summary shows percentage, per-question breakdown, and links to relevant content for missed questions."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": ["speed-challenge", "boss-battle", "scenario-question"],
+  "tags": ["meta", "assessment", "review", "recap", "mixed", "quiz", "checkpoint"]
+}

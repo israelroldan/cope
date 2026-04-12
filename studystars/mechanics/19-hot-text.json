@@ -1,0 +1,87 @@
+{
+  "id": "hot-text",
+  "number": 19,
+  "name": "Hot Text (Textual Analysis)",
+  "slug": "hot-text",
+  "tier": {
+    "bloom": "analyze",
+    "level": 4,
+    "label": "Analyze — Critical Examination"
+  },
+  "summary": "Learners read a passage and tap or highlight specific words, phrases, or sentences that answer a question.",
+  "platforms": ["Quizizz", "StudyStars"],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI generates passages easily and can identify correct highlight zones. Requires precise definition of start/end character indices for each correct segment. Works best when passages are curated by humans; AI passages may lack nuance for complex analytical questions."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "passage": {
+      "type": "string",
+      "required": true,
+      "description": "The full text passage that learners will read and analyze."
+    },
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The question asking learners to identify text. e.g., 'Highlight the sentence that explains why volcanoes erupt' or 'Select the phrase that shows the character's emotion.'"
+    },
+    "correctSegments": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of correct text segments that answer the prompt.",
+      "minItems": 1,
+      "maxItems": 3,
+      "itemSchema": {
+        "startIndex": {
+          "type": "integer",
+          "required": true,
+          "description": "Zero-based character index where this segment begins in the passage."
+        },
+        "endIndex": {
+          "type": "integer",
+          "required": true,
+          "description": "Zero-based character index where this segment ends (exclusive)."
+        },
+        "text": {
+          "type": "string",
+          "required": false,
+          "description": "The actual text of the segment (for validation/reference)."
+        }
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "Why the identified segments are correct. Explains how they answer the prompt and what makes them significant."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "text-passage",
+    "minTouchTarget": "24px line-height",
+    "estimatedDuration": "30-60s",
+    "animation": "highlight-on-tap, fade-stagger-feedback",
+    "mobileNotes": "On small screens, text must be large enough to read (14px+) and tap targets must be substantial. Consider auto-adjusting font size based on device width. Highlighting should be obvious (color + opacity). Allow multi-tap to select a range, or implement swipe-to-select if technical feasibility is high."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "Short passage (50-100 words). 1 obvious correct segment (a full sentence). Prompt is very clear ('Highlight the sentence about...'). Simple, concrete topics. Large font (16px+). Highlighting is immediate and unambiguous.",
+    "11-13": "Longer passage (150-250 words). 1-2 correct segments (may span multiple sentences or be a phrase within a sentence). Prompt requires inference ('Highlight the part that shows the character's fear'). More complex topics. Standard font (14px). Learner must identify nuanced language.",
+    "14-16": "Complex passage (300-500 words). 2-3 correct segments. Prompt is analytical ('Highlight the evidence that supports the author's claim'). Abstract topics (literary analysis, historical interpretation). Learner must synthesize across the passage and distinguish between supporting evidence and tangential details."
+  },
+  "implementationPriority": "p2-nice-to-have",
+  "relatedMechanics": ["01-multiple-choice", "17-find-the-error", "23-open-ended"],
+  "tags": ["analysis", "textual-analysis", "close-reading", "evidence-finding", "bloom-4"]
+}

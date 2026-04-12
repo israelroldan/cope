@@ -1,0 +1,92 @@
+{
+  "id": "true-false",
+  "number": 2,
+  "name": "True/False (Binary Judgment)",
+  "slug": "true-false",
+  "tier": {
+    "bloom": "remember",
+    "level": 1,
+    "label": "Remember — Factual Recall"
+  },
+  "summary": "Statement displayed; select True or False. Ultra-fast decision cycle.",
+  "platforms": [
+    "Kahoot",
+    "Quizizz",
+    "SoloLearn",
+    "Quizlet"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "Trivial to generate. Create a true statement, then flip for false variant. Best when false statements are plausibly close to truth (e.g., 'Mars has 3 moons' vs. 'Mars has 2 moons'), not absurd."
+  },
+  "interaction": {
+    "type": "binary",
+    "input": "tap",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "statement": {
+      "type": "string",
+      "required": true,
+      "description": "A declarative statement to be judged as true or false."
+    },
+    "isTrue": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether the statement is actually true (used for grading)."
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "Brief explanation of the correct answer and why the statement is true or false."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": true,
+      "description": "Difficulty level based on how obvious the answer is.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Topic tags for curriculum mapping."
+    }
+  },
+  "scoring": {
+    "type": "binary",
+    "partialCredit": false,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "56x56px",
+    "estimatedDuration": "5-10s",
+    "animation": "button-highlight with color-fill",
+    "mobileNotes": "Two large side-by-side buttons (True | False) or stacked vertically on very small screens. Clear visual distinction between buttons. Large font (18-20pt) for statement text."
+  },
+  "lessonPlacement": [
+    "warm-up",
+    "spaced-review"
+  ],
+  "ageAdaptations": {
+    "8-10": "Bigger visual buttons (64x64px). True button green, False button red. Large icons (checkmark, X) in addition to text. Simple, unambiguous statements. No trick statements. Positive feedback tone.",
+    "11-13": "Standard 56x56px buttons. Statements can be more nuanced. False statements should be plausibly close to truth. Constructive feedback explaining the trap.",
+    "14-16": "Timed rapid-fire variant (5-8s per statement). Challenging statements requiring careful reading (e.g., 'Most of the Earth's oxygen is produced by trees' — False, it's ocean plankton). High-speed scoring with leaderboards."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": [
+    "multiple-choice",
+    "binary-selection"
+  ],
+  "tags": [
+    "fundamental",
+    "binary-select",
+    "fact-recall",
+    "rapid-fire",
+    "assessment"
+  ]
+}

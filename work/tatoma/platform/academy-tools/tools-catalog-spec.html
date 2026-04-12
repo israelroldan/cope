@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Tools Catalog — Feature Specification</title>
+<style>
+@import url("https://hub.tatoma.eu/fonts/canela/stylesheet.css");
+@import url("https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css");
+</style>
+<style>
+:root {
+  --background: 246 250 235;
+  --foreground: 29 2 31;
+  --card: 255 255 255;
+  --card-foreground: 29 2 31;
+  --primary: 255 142 125;
+  --primary-foreground: 29 2 31;
+  --secondary: 79 32 53;
+  --secondary-foreground: 246 250 235;
+  --muted: 163 151 163;
+  --muted-foreground: 76 60 71;
+  --accent: 255 142 125;
+  --border: 163 151 163;
+  --radius: 0.75rem;
+  --font-serif: "Canela", Georgia, serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 100;
+  line-height: 1.2;
+}
+
+/* === LAYOUT === */
+.page { max-width: 920px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+/* === COVER === */
+.cover {
+  padding: 4rem 0 3rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.25);
+  margin-bottom: 3rem;
+}
+.cover-meta {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgb(var(--muted-foreground));
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.cover h1 {
+  font-size: clamp(2.6rem, 5vw, 3.8rem);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+.cover-subtitle {
+  font-size: 1.15rem;
+  color: rgb(var(--muted-foreground));
+  max-width: 640px;
+  line-height: 1.6;
+}
+.cover-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  padding: 0.35rem 0.9rem;
+  border-radius: 100px;
+  background: rgb(var(--primary) / 0.12);
+  color: rgb(var(--secondary));
+}
+
+/* === TOC === */
+.toc {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 1.75rem 2rem;
+  margin-bottom: 3.5rem;
+}
+.toc-title {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgb(var(--muted));
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+  columns: 2;
+  column-gap: 2rem;
+}
+@media (max-width: 600px) { .toc ol { columns: 1; } }
+.toc li {
+  counter-increment: toc;
+  margin-bottom: 0.5rem;
+  break-inside: avoid;
+}
+.toc li a {
+  color: rgb(var(--foreground));
+  text-decoration: none;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  transition: color 0.15s;
+}
+.toc li a:hover { color: rgb(var(--primary)); }
+.toc li a::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgb(var(--muted));
+  flex-shrink: 0;
+}
+
+/* === SECTIONS === */
+.section {
+  margin-bottom: 3.5rem;
+  scroll-margin-top: 2rem;
+}
+.section-number {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgb(var(--primary));
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+.section > h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.2);
+}
+.section > h3 {
+  font-size: 1.35rem;
+  margin: 2rem 0 0.75rem;
+}
+.section p {
+  margin-bottom: 1rem;
+  color: rgb(var(--foreground));
+}
+.section p + p { margin-top: 0; }
+
+/* === CALLOUT CARDS === */
+.callout {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  margin: 1.5rem 0;
+}
+.callout-accent {
+  border-left: 4px solid rgb(var(--primary));
+}
+.callout-dark {
+  background: rgb(var(--secondary));
+  color: rgb(var(--secondary-foreground));
+  border: none;
+}
+.callout-dark .callout-label { color: rgb(var(--primary)); }
+.callout-dark p { color: rgb(var(--secondary-foreground)); }
+.callout-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgb(var(--muted-foreground));
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.callout strong { font-weight: 600; }
+
+/* === PRINCIPLES === */
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.principle-card {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+}
+.principle-card .principle-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 100;
+  margin-bottom: 0.4rem;
+}
+.principle-card p {
+  font-size: 0.88rem;
+  color: rgb(var(--muted-foreground));
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* === COMPARISON TABLE === */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.88rem;
+}
+.comparison-table th {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--muted-foreground));
+  font-weight: 700;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid rgb(var(--border) / 0.3);
+  background: rgb(var(--card));
+}
+.comparison-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.12);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.comparison-table tr:hover td { background: rgb(var(--card) / 0.6); }
+.comparison-table td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cell-old { color: rgb(var(--muted)); font-size: 0.84rem; }
+.cell-new { color: rgb(var(--foreground)); }
+
+/* === WIREFRAME DIAGRAM === */
+.wireframe {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: rgb(var(--muted-foreground));
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* === DOMAIN TILES (illustrative) === */
+.domain-tiles-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+@media (max-width: 600px) { .domain-tiles-demo { grid-template-columns: repeat(2, 1fr); } }
+.domain-tile-demo {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.domain-tile-demo .dt-icon { font-size: 1.5rem; }
+.domain-tile-demo .dt-text .dt-name {
+  font-family: var(--font-serif);
+  font-weight: 100;
+  font-size: 0.92rem;
+  line-height: 1.2;
+}
+.domain-tile-demo .dt-text .dt-examples {
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+  margin-top: 0.15rem;
+}
+
+/* === CARD ANATOMY === */
+.card-anatomy {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin: 1.5rem 0;
+  max-width: 460px;
+}
+.ca-header { display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 0.75rem; }
+.ca-logo {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: rgb(var(--secondary) / 0.08);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ca-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
+.ca-name {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 100;
+  line-height: 1.2;
+}
+.ca-vendor { font-size: 0.78rem; color: rgb(var(--muted)); }
+.ca-bookmark { margin-left: auto; color: rgb(var(--muted)); }
+.ca-desc {
+  font-size: 0.87rem;
+  color: rgb(var(--muted-foreground));
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+.ca-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.65rem; }
+.badge-sm {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  padding: 0.2rem 0.6rem; border-radius: 100px;
+  font-size: 0.7rem; font-weight: 500;
+}
+.badge-org-sm { background: rgb(var(--secondary) / 0.1); color: rgb(var(--secondary)); font-weight: 600; }
+.badge-domain-sm { background: rgb(var(--primary) / 0.1); color: rgb(var(--foreground)); }
+.badge-industry-sm { background: #e8f0d8; color: #4a6e24; }
+.ca-meta {
+  display: flex; gap: 1rem; font-size: 0.78rem; color: rgb(var(--muted-foreground)); margin-bottom: 0.65rem;
+}
+.badge-maturity {
+  display: inline-flex; padding: 0.15rem 0.5rem; border-radius: 100px; font-size: 0.7rem; font-weight: 500;
+}
+.badge-mat-high { background: #d4edda; color: #256e3a; }
+.badge-mat-med { background: #fff3cd; color: #856404; }
+.badge-mat-low { background: #f8d7da; color: #893a40; }
+.ca-progress { margin-bottom: 0.65rem; }
+.ca-progress-header {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.05em; color: rgb(var(--muted-foreground)); font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.ca-track {
+  height: 6px; background: rgb(var(--border) / 0.2); border-radius: 100px; overflow: hidden;
+}
+.ca-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, rgb(var(--primary)), rgb(var(--secondary)));
+}
+.ca-tags { display: flex; gap: 0.3rem; }
+.tag-sm {
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 0.15rem 0.5rem; border-radius: 100px;
+  background: rgb(var(--foreground) / 0.04); color: rgb(var(--muted-foreground));
+}
+
+/* Annotation labels on card anatomy */
+.ca-annotation {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--primary));
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+/* === DETAIL PAGE WIREFRAME === */
+.detail-wire {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.dw-hero {
+  background: rgb(var(--background));
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.15);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.dw-logo {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: rgb(var(--secondary) / 0.08);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.dw-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 14px; }
+.dw-hero-text h4 { font-size: 1.3rem; margin-bottom: 0.1rem; }
+.dw-hero-text .dw-vendor { font-size: 0.8rem; color: rgb(var(--muted)); }
+.dw-hero-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+.dw-cta {
+  margin-left: auto;
+  padding: 0.5rem 1.2rem;
+  border-radius: calc(var(--radius) - 2px);
+  background: rgb(var(--primary));
+  color: rgb(var(--primary-foreground));
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.dw-sections { padding: 1.5rem 2rem; }
+.dw-section-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgb(var(--muted));
+  font-weight: 700;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgb(var(--border) / 0.12);
+  margin-bottom: 0.6rem;
+  margin-top: 1.25rem;
+}
+.dw-section-label:first-child { margin-top: 0; }
+.dw-placeholder {
+  background: rgb(var(--background));
+  border: 1px dashed rgb(var(--border) / 0.3);
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  color: rgb(var(--muted-foreground));
+  margin-bottom: 0.5rem;
+}
+
+/* === FILTER TABLE === */
+.filter-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.88rem;
+}
+.filter-table th {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--muted-foreground));
+  font-weight: 700;
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 2px solid rgb(var(--border) / 0.25);
+  background: rgb(var(--card));
+}
+.filter-table td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.1);
+  vertical-align: top;
+}
+
+/* === PROFICIENCY STAGES === */
+.prof-stages {
+  display: flex;
+  gap: 0;
+  margin: 1.5rem 0;
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.prof-stage {
+  flex: 1;
+  text-align: center;
+  padding: 1.25rem 0.75rem;
+  border-right: 1px solid rgb(var(--border) / 0.15);
+}
+.prof-stage:last-child { border-right: none; }
+.prof-stage .ps-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  margin: 0 auto 0.5rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+  border: 2px solid rgb(var(--border) / 0.3);
+  color: rgb(var(--muted));
+}
+.prof-stage.active .ps-dot {
+  background: rgb(var(--primary));
+  border-color: rgb(var(--primary));
+  color: rgb(var(--primary-foreground));
+}
+.prof-stage .ps-name {
+  font-family: var(--font-serif);
+  font-weight: 100;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+.prof-stage .ps-desc {
+  font-size: 0.76rem;
+  color: rgb(var(--muted-foreground));
+  line-height: 1.4;
+}
+.prof-stage .ps-how {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(var(--muted));
+  margin-top: 0.5rem;
+  display: block;
+}
+
+/* === REQUEST TIERS === */
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+@media (max-width: 700px) { .tiers { grid-template-columns: 1fr; } }
+.tier-card {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+}
+.tier-card .tier-num {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgb(var(--primary));
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.tier-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+.tier-card p { font-size: 0.85rem; color: rgb(var(--muted-foreground)); margin: 0; line-height: 1.5; }
+.tier-card .tier-friction {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.75rem;
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+}
+.friction-zero { background: #d4edda; color: #256e3a; }
+.friction-low { background: #fff3cd; color: #856404; }
+.friction-full { background: rgb(var(--secondary) / 0.1); color: rgb(var(--secondary)); }
+
+/* === ACCEPTANCE CRITERIA === */
+.ac-list {
+  margin: 1rem 0;
+  list-style: none;
+}
+.ac-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgb(var(--border) / 0.1);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.ac-checkbox {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  border: 2px solid rgb(var(--border) / 0.4);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* === CONTENT MAP TABLE === */
+.content-map {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.85rem;
+}
+.content-map th {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--muted-foreground));
+  font-weight: 700;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid rgb(var(--border) / 0.25);
+  background: rgb(var(--card));
+}
+.content-map td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.1);
+  vertical-align: top;
+}
+
+/* === TECH CODE BLOCK === */
+.code-block {
+  background: rgb(var(--secondary));
+  color: rgb(var(--secondary-foreground));
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
+.code-block .code-comment { color: rgb(var(--muted)); }
+.code-block .code-route { color: rgb(var(--primary)); }
+
+/* === DESIGN REF TABLE === */
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.85rem;
+}
+.ref-table th {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--muted-foreground));
+  font-weight: 700;
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 2px solid rgb(var(--border) / 0.25);
+  background: rgb(var(--card));
+}
+.ref-table td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.1);
+  vertical-align: top;
+  line-height: 1.45;
+}
+
+/* Maturity appendix */
+.maturity-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+@media (max-width: 600px) { .maturity-cards { grid-template-columns: 1fr; } }
+.maturity-card {
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  border: 1px solid rgb(var(--border) / 0.15);
+}
+.mat-low { background: #fdf0f1; }
+.mat-med { background: #fef9e7; }
+.mat-high { background: #edf7ee; }
+.maturity-card .mat-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+.mat-low .mat-label { color: #893a40; }
+.mat-med .mat-label { color: #856404; }
+.mat-high .mat-label { color: #256e3a; }
+.maturity-card p { font-size: 0.84rem; color: rgb(var(--muted-foreground)); margin: 0; line-height: 1.5; }
+
+/* === NAV DOTS (side) === */
+.side-nav {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 100;
+}
+@media (max-width: 1100px) { .side-nav { display: none; } }
+.side-nav a {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgb(var(--border) / 0.35);
+  display: block;
+  transition: all 0.2s;
+}
+.side-nav a:hover, .side-nav a.active {
+  background: rgb(var(--primary));
+  transform: scale(1.3);
+}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgb(var(--border) / 0.4); border-radius: 100px; }
+
+/* Inline emphasis */
+strong { font-weight: 600; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: rgb(var(--foreground) / 0.05);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+}
+em { font-style: italic; color: rgb(var(--muted-foreground)); }
+
+/* Horizontal rule */
+hr {
+  border: none;
+  border-top: 1px solid rgb(var(--border) / 0.2);
+  margin: 3rem 0;
+}
+</style>
+</head>
+<body>
+
+<!-- Side navigation dots -->
+<nav class="side-nav" id="sideNav">
+  <a href="#problem" title="Problem"></a>
+  <a href="#principles" title="Principles"></a>
+  <a href="#changes" title="Changes"></a>
+  <a href="#ia" title="IA"></a>
+  <a href="#card" title="Card"></a>
+  <a href="#detail" title="Detail"></a>
+  <a href="#search" title="Search"></a>
+  <a href="#learning" title="Learning"></a>
+  <a href="#request" title="Request"></a>
+  <a href="#personalisation" title="Personalisation"></a>
+  <a href="#tech" title="Technical"></a>
+  <a href="#ac" title="Acceptance"></a>
+  <a href="#refs" title="References"></a>
+</nav>
+
+<div class="page">
+
+  <!-- =============== COVER =============== -->
+  <header class="cover">
+    <div class="cover-meta">
+      <span>TATOMA Studio</span>
+      <span>Academy Learn Page</span>
+      <span>2026-03-30</span>
+    </div>
+    <h1>Studio Tools Catalog</h1>
+    <p class="cover-subtitle">Feature specification for a browsable, learning-integrated tool catalog that connects employees to the AI capabilities in their organisation's tech stack.</p>
+    <span class="cover-badge">Draft v2 — replaces initial GitHub issue</span>
+  </header>
+
+  <!-- =============== TOC =============== -->
+  <nav class="toc">
+    <span class="toc-title">Contents</span>
+    <ol>
+      <li><a href="#problem">Problem Statement</a></li>
+      <li><a href="#principles">Design Principles</a></li>
+      <li><a href="#changes">What Changes from v1</a></li>
+      <li><a href="#ia">Information Architecture</a></li>
+      <li><a href="#card">Tool Card Design</a></li>
+      <li><a href="#detail">Tool Detail Page</a></li>
+      <li><a href="#search">Search & Filtering</a></li>
+      <li><a href="#learning">Learning Integration</a></li>
+      <li><a href="#request">Request-a-Tool Flow</a></li>
+      <li><a href="#personalisation">Personalisation Layers</a></li>
+      <li><a href="#tech">Technical Notes</a></li>
+      <li><a href="#ac">Acceptance Criteria</a></li>
+      <li><a href="#refs">Design References</a></li>
+    </ol>
+  </nav>
+
+
+  <!-- =============== 1. PROBLEM =============== -->
+  <section class="section" id="problem">
+    <span class="section-number">Section 01</span>
+    <h2>Problem Statement</h2>
+
+    <p>The current Tool Catalog is a flat grid of cards showing tool name, vendor, one category tag, and an AI maturity label (Low/Medium/High). It has three critical failures:</p>
+
+    <div class="callout callout-accent">
+      <span class="callout-label">Failure 1 — No discovery</span>
+      <p>Tools are dumped in a grid with only category chip filters. There's no search, no CIB domain navigation, no "recommended for you," no way to explore by work context. Employees scroll through 55+ identical-looking cards with no guidance.</p>
+    </div>
+
+    <div class="callout callout-accent">
+      <span class="callout-label">Failure 2 — Empty cards</span>
+      <p>Each card shows a letter avatar (no real logos), the tool name, the vendor name, a single category badge, and an AI maturity colour label. There's no description of what the tool does with AI, no learning content hooks, no org adoption context beyond a small "Used by your org" tag on some cards, and no progress indicators.</p>
+    </div>
+
+    <div class="callout callout-accent">
+      <span class="callout-label">Failure 3 — No connection to learning</span>
+      <p>The catalog exists in isolation. There's no link from a tool to Academy courses, no proficiency tracking, no reason for an employee to come back. It's a reference list, not a learning surface.</p>
+    </div>
+
+    <div class="callout callout-dark">
+      <span class="callout-label">The goal</span>
+      <p>The catalog needs to become a place where employees discover what AI can do in the tools they already use, and have a clear path to learn more.</p>
+    </div>
+  </section>
+
+
+  <!-- =============== 2. PRINCIPLES =============== -->
+  <section class="section" id="principles">
+    <span class="section-number">Section 02</span>
+    <h2>Design Principles</h2>
+    <p>These five principles should guide every design decision:</p>
+
+    <div class="principles-grid">
+      <div class="principle-card">
+        <div class="principle-name">Adoption over discovery</div>
+        <p>Employees don't need 4,000 tools — they need the 15–30 tools their org uses and what AI can do inside them. Default to "My Org's Stack."</p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-name">Work context first</div>
+        <p>Navigate by CIB domain (how employees think), not by tool type (how developers categorise). "Help with customer contracts?" before "show me CRM tools."</p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-name">Bidirectional learning</div>
+        <p>Every tool page surfaces related courses. Every course surfaces related tools. The catalog and Academy are two views of the same learning journey.</p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-name">Show, don't require clicks</div>
+        <p>Card-level information density matters. Scanning the grid should teach something useful without clicking into a detail page.</p>
+      </div>
+      <div class="principle-card">
+        <div class="principle-name">Professional, not gamified</div>
+        <p>Progress tracking uses "proficiency levels" and clean progress bars — not XP, confetti, or cartoon badges. Frame everything as career development.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============== 3. CHANGES =============== -->
+  <section class="section" id="changes">
+    <span class="section-number">Section 03</span>
+    <h2>What Changes from v1</h2>
+
+    <table class="comparison-table">
+      <thead>
+        <tr><th>Aspect</th><th>Current (v1)</th><th>Target (v2)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Card content</td><td class="cell-old">Letter avatar, name, vendor, 1 category tag, AI maturity label</td><td class="cell-new">Real logo, name, AI-focused description, CIB domain, org badge, course count, proficiency bar, tags</td></tr>
+        <tr><td>Navigation</td><td class="cell-old">Category chip filters only</td><td class="cell-new">CIB domain tiles + search + filters panel + "My Stack" / "Explore" toggle</td></tr>
+        <tr><td>Taxonomy</td><td class="cell-old">Tool-type categories (Analytics & BI, Collaboration…)</td><td class="cell-new">CIB domains as primary axis, tool types as secondary filter</td></tr>
+        <tr><td>Org context</td><td class="cell-old">Small "Used by your org" tag</td><td class="cell-new">Default view shows org's tools; team adoption counts on detail pages</td></tr>
+        <tr><td>Resources</td><td class="cell-old">None</td><td class="cell-new">Curated external resources with "I have tried this" tracking; full Academy course integration in v2+</td></tr>
+        <tr><td>Detail pages</td><td class="cell-old">None</td><td class="cell-new">Full tool profile: AI capabilities, curated resources, use cases, comments, comparison</td></tr>
+        <tr><td>Search</td><td class="cell-old">None</td><td class="cell-new">Full-text with typeahead, grouped by CIB domain</td></tr>
+        <tr><td>Views</td><td class="cell-old">Grid only</td><td class="cell-new">Grid (default) + List (dense/comparison mode)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- =============== 4. IA =============== -->
+  <section class="section" id="ia">
+    <span class="section-number">Section 04</span>
+    <h2>Information Architecture</h2>
+
+    <h3>4.1 Page structure</h3>
+    <div class="wireframe">Academy Learn page
+├── Courses <span style="color:rgb(var(--muted));">(existing)</span>
+└── <strong>Tools Catalog</strong> <span style="color:rgb(var(--primary));">(new — tabbed or sectioned)</span>
+    ├── Hero / intro area
+    │   ├── Title + subtitle
+    │   ├── Search bar <span style="color:rgb(var(--primary));">(prominent)</span>
+    │   └── "My Org's Stack" / "Explore All Tools" toggle
+    ├── CIB Domain navigation <span style="color:rgb(var(--primary));">(6 domain tiles)</span>
+    ├── Filter panel <span style="color:rgb(var(--muted));">(left sidebar desktop, slide-out mobile)</span>
+    ├── Results area
+    │   ├── Active filter pills + result count
+    │   ├── Sort dropdown + Grid/List view toggle
+    │   └── Tool cards
+    └── Tool Detail Page <span style="color:rgb(var(--muted));">(navigated to from card click)</span></div>
+
+    <h3>4.2 CIB domain navigation</h3>
+    <p>The six CIB domains are the primary navigation axis. They appear as visual tiles with icons and tool counts above the grid, replacing the current flat category chips.</p>
+
+    <div class="domain-tiles-demo">
+      <div class="domain-tile-demo"><span class="dt-icon">👥</span><div class="dt-text"><div class="dt-name">Workforce & Skills</div><div class="dt-examples">LinkedIn, Workday, BambooHR</div></div></div>
+      <div class="domain-tile-demo"><span class="dt-icon">🚀</span><div class="dt-text"><div class="dt-name">Projects & Innovation</div><div class="dt-examples">Notion, Jira, Miro, GitHub Copilot</div></div></div>
+      <div class="domain-tile-demo"><span class="dt-icon">🤝</span><div class="dt-text"><div class="dt-name">Customers & Contracts</div><div class="dt-examples">Salesforce, HubSpot, DocuSign</div></div></div>
+      <div class="domain-tile-demo"><span class="dt-icon">💬</span><div class="dt-text"><div class="dt-name">Comms & Collaboration</div><div class="dt-examples">Slack, Teams, Zoom, Grammarly</div></div></div>
+      <div class="domain-tile-demo"><span class="dt-icon">📅</span><div class="dt-text"><div class="dt-name">Meetings & Engagements</div><div class="dt-examples">Otter.ai, Fireflies, Calendly</div></div></div>
+      <div class="domain-tile-demo"><span class="dt-icon">📊</span><div class="dt-text"><div class="dt-name">Insights & Analytics</div><div class="dt-examples">Tableau, Power BI, Looker, ChatGPT</div></div></div>
+    </div>
+
+    <div class="callout callout-accent">
+      <span class="callout-label">Why this change</span>
+      <p>Employees asking "How can AI help me with my customer work?" think in domain terms. The current category-first taxonomy (Analytics & BI, Collaboration, Communication…) is a developer's view of the world, not an employee's.</p>
+    </div>
+
+    <h3>4.3 "My Org's Stack" vs. "Explore All Tools"</h3>
+    <p>A prominent toggle at the top switches between two views. <strong>"My Org's Stack" is the default</strong> — showing only tools linked to the org via <code>landscape_tools</code>. "Explore All Tools" shows the full catalog (55+ tools) where org-adopted tools get a "Used by your org" badge and non-adopted tools show "Request access."</p>
+
+    <div class="callout callout-accent">
+      <span class="callout-label">Why default to org stack</span>
+      <p>The competitive research and Mathijs feedback both confirm that employees want to work with tools they already have. Showing 55+ tools by default creates the same choice paralysis that consumer directories suffer from.</p>
+    </div>
+  </section>
+
+
+  <!-- =============== 5. CARD =============== -->
+  <section class="section" id="card">
+    <span class="section-number">Section 05</span>
+    <h2>Tool Card Design</h2>
+
+    <h3>5.1 Grid card — annotated anatomy</h3>
+    <p>Each card carries 9 information elements. Here is the target card with annotations:</p>
+
+    <div class="card-anatomy">
+      <span class="ca-annotation">Logo + Name + Vendor + Bookmark</span>
+      <div class="ca-header">
+        <div class="ca-logo"><img src="https://logo.clearbit.com/slack.com" alt="Slack"></div>
+        <div><div class="ca-name">Slack</div><div class="ca-vendor">Slack Technologies</div></div>
+        <span class="ca-bookmark">♡</span>
+      </div>
+      <span class="ca-annotation">AI capability description (max 120 chars)</span>
+      <div class="ca-desc">AI-generated channel summaries, thread digests, and intelligent search answers across your workspace</div>
+      <span class="ca-annotation">Org badge + Industry badge + CIB domain</span>
+      <div class="ca-badges">
+        <span class="badge-sm badge-org-sm">🏢 Used by your org</span>
+        <span class="badge-sm badge-industry-sm">🌍 82% in your industry</span>
+        <span class="badge-sm badge-domain-sm">💬 Comms & Collaboration</span>
+      </div>
+      <span class="ca-annotation">Resource count + AI maturity</span>
+      <div class="ca-meta">
+        <span>📎 5 resources</span>
+        <span><span class="badge-maturity badge-mat-high">High AI</span></span>
+        <span style="margin-left:auto;font-weight:600;">14 teams</span>
+      </div>
+      <span class="ca-annotation">Exploration counter (driven by "I have tried this")</span>
+      <div class="ca-progress">
+        <div class="ca-progress-header"><span>3 of 5 explored</span><span style="color:rgb(var(--primary));">✓✓✓○○</span></div>
+      </div>
+      <span class="ca-annotation">Hashtag tags (max 3, clickable)</span>
+      <div class="ca-tags">
+        <span class="tag-sm">#messaging</span>
+        <span class="tag-sm">#ai-search</span>
+        <span class="tag-sm">#automation</span>
+      </div>
+    </div>
+
+    <p>The <strong>AI capability description</strong> is the single most important addition. It answers "what can AI do in this tool?" — not what the tool itself does. Employees already know what Slack is; they need to know what Slack's AI features do.</p>
+
+    <p>The <strong>exploration counter</strong> ("3 of 5 explored") is driven by users marking resources as "I have tried this" on the detail page. When nothing has been explored, this area shows an <strong>"Explore resources →" CTA</strong> instead. This is a lightweight v1 proxy for learning progress — the full proficiency model (Aware → Expert) with Academy courses is deferred to v2+.</p>
+
+    <h3>5.2 List card (dense comparison view)</h3>
+    <p>For evaluation workflows, a denser row format accessible via a Grid/List toggle. It surfaces all comparison-relevant data (domain, maturity, level, org status, courses) without requiring click-through.</p>
+
+    <h3>5.3 "Common in your industry" badge</h3>
+    <p>Instead of a generic badge, show specific data: <em>"Used by 73% of Professional Services orgs"</em> — based on aggregated <code>landscape_tools</code> data across orgs in the same <code>context_org_profiles.industry</code>.</p>
+  </section>
+
+
+  <!-- =============== 6. DETAIL =============== -->
+  <section class="section" id="detail">
+    <span class="section-number">Section 06</span>
+    <h2>Tool Detail Page</h2>
+    <p>Clicking a tool card opens a full detail page. This is entirely new — v1 has no detail view. The page has five content sections plus a sidebar:</p>
+
+    <div class="detail-wire">
+      <div class="dw-hero">
+        <div class="dw-logo"><img src="https://logo.clearbit.com/slack.com" alt="Slack"></div>
+        <div class="dw-hero-text">
+          <h4>Slack</h4>
+          <div class="dw-vendor">Slack Technologies</div>
+          <div class="dw-hero-badges">
+            <span class="badge-sm badge-org-sm">🏢 14 teams</span>
+            <span class="badge-sm badge-industry-sm">🌍 82%</span>
+            <span class="badge-sm badge-domain-sm">💬 Comms</span>
+            <span class="badge-maturity badge-mat-high" style="font-size:0.65rem;">High AI</span>
+          </div>
+        </div>
+        <span class="dw-cta">Explore Resources →</span>
+      </div>
+      <div class="dw-sections">
+        <div class="dw-section-label">Section 1 — AI Capabilities in This Tool</div>
+        <div class="dw-placeholder">3–5 "Ideal for" use cases in gerund form + balanced Pros/Cons + AI maturity assessment (production-ready vs. beta vs. limited)</div>
+
+        <div class="dw-section-label">Section 2 — Resources</div>
+        <div class="dw-placeholder">TATOMA-curated external links (articles, videos, vendor docs) with "I have tried this" toggle per resource. Org admins can add/override resources. Employees can suggest new resources (moderated).</div>
+
+        <div class="dw-section-label">Section 3 — Use Cases</div>
+        <div class="dw-placeholder">Linked use cases from Academy discovery feature. Each shows title, description, CIB domain. Employees can mark "I've done this" to build their personal use case portfolio.</div>
+
+        <div class="dw-section-label">Section 4 — Comments & Tips</div>
+        <div class="dw-placeholder">Org-scoped comment thread. Employees share tips, experiences, questions. Chronological order, no voting in v1.</div>
+
+        <div class="dw-section-label">Section 5 — Evaluate & Compare</div>
+        <div class="dw-placeholder">"Compare with alternatives" CTA (pre-filtered to same CIB domain) + pricing + security notes + industry benchmark</div>
+
+        <div class="dw-section-label" style="color: rgb(var(--primary));">Sidebar</div>
+        <div class="dw-placeholder">"Popular in your org" related tools + "Also used by [Team]" social proof + "Suggest a resource" CTA + "Recommend to a colleague" CTA</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============== 7. SEARCH =============== -->
+  <section class="section" id="search">
+    <span class="section-number">Section 07</span>
+    <h2>Search & Filtering</h2>
+
+    <h3>7.1 Search</h3>
+    <p>Full-text search across tool names, vendor names, AI capability descriptions, use-case examples, and tags. The search bar must be <strong>prominent at the top of the catalog</strong> — not hidden behind filters. Typeahead results should be grouped by CIB domain. Search must be reliable — Futurepedia and Insidr.ai both fail here.</p>
+
+    <h3>7.2 Filter panel</h3>
+    <p>Left-panel on desktop, slide-out on mobile. Real-time result counts on each filter option.</p>
+
+    <table class="filter-table">
+      <thead><tr><th>Filter</th><th>Type</th><th>Options</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CIB Domain</strong></td><td>Multi-select chips</td><td>6 domains</td></tr>
+        <tr><td><strong>Tool Type</strong></td><td>Multi-select chips</td><td>Writing, Image, Video, Data, Automation, Communication, Code, Project Mgmt</td></tr>
+        <tr><td><strong>Org Status</strong></td><td>Radio buttons</td><td>My org uses · Available to request · All tools</td></tr>
+        <tr><td><strong>AI Maturity</strong></td><td>Multi-select</td><td>Low · Medium · High</td></tr>
+        <tr><td><strong>My Progress</strong></td><td>Multi-select</td><td>Not explored · Partially explored · Fully explored</td></tr>
+        <tr><td><strong>Resources</strong></td><td>Toggle</td><td>Has curated resources</td></tr>
+      </tbody>
+    </table>
+
+    <h3>7.3 Sort options</h3>
+    <p><strong>Recommended</strong> (default, personalised) · Most adopted in org · Most resources · AI maturity (High → Low) · Recently added · Alphabetical</p>
+  </section>
+
+
+  <!-- =============== 8. LEARNING =============== -->
+  <section class="section" id="learning">
+    <span class="section-number">Section 08</span>
+    <h2>Resources, Use Cases & Progress (v1)</h2>
+
+    <div class="callout callout-dark">
+      <span class="callout-label">V1 reality check</span>
+      <p>TATOMA doesn't yet have its own Academy learning content per tool. In v1, the catalog provides <strong>curated external resources</strong> and connects tools to <strong>Academy discovery use cases</strong>. Full bidirectional learning integration with Academy courses, proficiency levels, and certification is deferred to v2+.</p>
+    </div>
+
+    <h3>8.1 Curated resources — three management layers</h3>
+
+    <div class="tiers">
+      <div class="tier-card">
+        <span class="tier-num">Layer 1</span>
+        <h4>Global defaults</h4>
+        <p>TATOMA-curated: 3–5 resources per tool (vendor docs, YouTube tutorials, blog posts). Stored on <code>landscape_tools_catalog</code>. Baseline for all orgs.</p>
+        <span class="tier-friction friction-zero">TATOMA-managed</span>
+      </div>
+      <div class="tier-card">
+        <span class="tier-num">Layer 2</span>
+        <h4>Org overrides</h4>
+        <p>Admins add, remove, or reorder resources for their org via Admin/Workbench. Example: adding an internal "How we use Power BI" guide.</p>
+        <span class="tier-friction friction-low">Admin-managed</span>
+      </div>
+      <div class="tier-card">
+        <span class="tier-num">Layer 3</span>
+        <h4>User suggestions</h4>
+        <p>Employees submit useful links via "Suggest a resource." Enters moderation queue in Admin/Workbench. Approved = becomes org resource.</p>
+        <span class="tier-friction friction-full">Moderated</span>
+      </div>
+    </div>
+
+    <p>Each resource on a detail page shows: title, source name (e.g., "Microsoft Learn"), type icon (📄 article, 🎥 video, 📘 docs), and an <strong>"I have tried this"</strong> button.</p>
+
+    <h3>8.2 "I have tried this" tracking</h3>
+
+    <div class="callout callout-accent">
+      <span class="callout-label">How it works</span>
+      <p>Each resource has a toggle. When marked, it increments the user's exploration count for that tool. This drives the <strong>"3 of 5 explored"</strong> counter on tool cards. It's a lightweight, honest proxy for learning progress — the user self-reports having engaged, not that they've mastered anything. Sets the foundation for the full proficiency model in v2+.</p>
+    </div>
+
+    <table class="content-map">
+      <thead><tr><th>Card state</th><th>Display</th></tr></thead>
+      <tbody>
+        <tr><td>No resources explored</td><td><strong>"Explore resources →"</strong> CTA</td></tr>
+        <tr><td>Partially explored</td><td><strong>"2 of 5 explored"</strong></td></tr>
+        <tr><td>All explored</td><td><strong>"✓ All resources explored"</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>8.3 Tool ↔ Use case connection</h3>
+    <p>Tools connect to <strong>personal use cases from the Academy discovery feature</strong>. This is the bridge between "what tools exist" (catalog) and "what can I do with AI" (discovery). The tool detail page shows linked use cases; employees can mark "I've done this" to build their personal use case portfolio in the Academy. The connection is bidirectional — the discovery feature can also surface which tools support a given use case.</p>
+
+    <h3>8.4 Comments on tools</h3>
+    <p>Employees can leave org-scoped comments on tool pages — tips, experiences, questions. Chronological order, no voting in v1. This is a lightweight community layer; formal peer use-case examples with structured templates and helpfulness voting are deferred to v2+.</p>
+
+    <h3>8.5 What's deferred to v2+</h3>
+    <div class="callout" style="border-left: 4px solid rgb(var(--muted)); opacity: 0.65;">
+      <span class="callout-label">Full learning integration (requires Academy content per tool)</span>
+      <p><strong>Bidirectional Academy course integration</strong> · <strong>Proficiency model</strong> (Aware → Familiar → Proficient → Expert) · Academy-authored courses, assessments, certifications per tool · Learning path sequencing · Team proficiency dashboards · Industry benchmarking on proficiency</p>
+    </div>
+  </section>
+
+
+  <!-- =============== 9. REQUEST =============== -->
+  <section class="section" id="request">
+    <span class="section-number">Section 09</span>
+    <h2>Request-a-Tool Flow</h2>
+    <p>Three tiers based on tool status, with friction calibrated to risk:</p>
+
+    <div class="tiers">
+      <div class="tier-card">
+        <span class="tier-num">Tier 1</span>
+        <h4>Self-serve</h4>
+        <p>Tool already licensed by org. Employee clicks "Start learning" and immediately accesses Academy content.</p>
+        <span class="tier-friction friction-zero">Zero friction</span>
+      </div>
+      <div class="tier-card">
+        <span class="tier-num">Tier 2</span>
+        <h4>Lightweight request</h4>
+        <p>Tool in catalog but not adopted by org. Pre-populated form (name, team, CIB domain auto-filled, use case). 2-click submission. Creates <code>landscape_tool_review_requests</code> entry.</p>
+        <span class="tier-friction friction-low">Low friction</span>
+      </div>
+      <div class="tier-card">
+        <span class="tier-num">Tier 3</span>
+        <h4>Suggest a new tool</h4>
+        <p>Tool not in catalog at all. Form: tool name, vendor, URL, CIB domain, justification. Admin can add to catalog if appropriate.</p>
+        <span class="tier-friction friction-full">Full form</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =============== 10. PERSONALISATION =============== -->
+  <section class="section" id="personalisation">
+    <span class="section-number">Section 10</span>
+    <h2>Personalisation Layers</h2>
+    <p>For the initial build, implement two of the four personalisation layers:</p>
+
+    <div class="callout">
+      <span class="callout-label">Layer 1 — Organisation (v1)</span>
+      <p>"My Org's Stack" default view showing tools from <code>landscape_tools</code>. Industry context for "Common in your industry" badges from <code>context_org_profiles.industry</code>. Org-level resource overrides managed in Admin/Workbench.</p>
+    </div>
+    <div class="callout">
+      <span class="callout-label">Layer 2 — Individual (v1, lightweight)</span>
+      <p>"I have tried this" resource exploration tracking. Bookmark/favourites for personal collections. Comments on tool pages. "Continue where you left off" on the catalog homepage.</p>
+    </div>
+    <div class="callout" style="border-left: 4px solid rgb(var(--muted)); opacity: 0.7;">
+      <span class="callout-label">Deferred to v2</span>
+      <p><strong>Full proficiency tracking</strong> (Aware → Expert, requires Academy content). <strong>Team/Department layer:</strong> Team-specific recommendations, team proficiency dashboards. <strong>Role layer:</strong> Role-based CIB domain weighting, recommended learning paths. <strong>Onboarding flow:</strong> 3-step personalisation wizard.</p>
+    </div>
+  </section>
+
+
+  <!-- =============== 11. TECHNICAL =============== -->
+  <section class="section" id="tech">
+    <span class="section-number">Section 11</span>
+    <h2>Technical Notes</h2>
+
+    <h3>Data model enrichment</h3>
+    <p><code>landscape_tools_catalog</code> needs new fields:</p>
+    <div class="code-block"><span class="code-comment">-- New fields on landscape_tools_catalog</span>
+ai_description     TEXT       <span class="code-comment">-- 120-char AI-focused description for cards</span>
+ai_capabilities    JSONB      <span class="code-comment">-- Structured AI feature list for detail pages</span>
+ideal_for          TEXT[]     <span class="code-comment">-- 3–5 use cases in gerund form</span>
+pros_cons          JSONB      <span class="code-comment">-- Balanced editorial assessment</span>
+logo_url           TEXT       <span class="code-comment">-- Real logo URL (ensure populated)</span>
+
+<span class="code-comment">-- Curated resources per tool</span>
+landscape_tool_resources (
+  id              UUID PRIMARY KEY,
+  tool_catalog_id UUID REFERENCES landscape_tools_catalog(id),
+  org_id          UUID <span class="code-comment">-- nullable: null = global, set = org override</span>,
+  title           TEXT,
+  url             TEXT,
+  source          TEXT <span class="code-comment">-- e.g. "Microsoft Learn", "YouTube"</span>,
+  type            TEXT <span class="code-comment">-- article / video / docs / guide / tutorial</span>,
+  "order"         INT,
+  suggested_by    UUID <span class="code-comment">-- nullable: set when user-suggested</span>,
+  status          TEXT <span class="code-comment">-- approved / pending (moderation)</span>
+)
+
+<span class="code-comment">-- "I have tried this" tracking</span>
+landscape_tool_resource_interactions (
+  user_id         UUID,
+  resource_id     UUID REFERENCES landscape_tool_resources(id),
+  tried_at        TIMESTAMPTZ
+)
+
+<span class="code-comment">-- Comments on tools (org-scoped)</span>
+landscape_tool_comments (
+  id              UUID PRIMARY KEY,
+  tool_catalog_id UUID,
+  org_id          UUID,
+  user_id         UUID,
+  content         TEXT,
+  created_at      TIMESTAMPTZ
+)
+
+<span class="code-comment">-- Tool ↔ use case connection (Academy discovery)</span>
+landscape_tool_use_cases (
+  tool_catalog_id UUID,
+  use_case_id     UUID <span class="code-comment">-- FK to Academy discovery feature</span>
+)</div>
+
+    <h3>API endpoints</h3>
+    <div class="code-block"><span class="code-route">GET  /api/tools/catalog</span>              <span class="code-comment">-- List all tools with filters</span>
+<span class="code-route">GET  /api/tools/catalog/:id</span>          <span class="code-comment">-- Tool detail + AI caps + resources + comments</span>
+<span class="code-route">GET  /api/tools/org</span>                  <span class="code-comment">-- Tools adopted by current org</span>
+<span class="code-route">POST /api/tools/request</span>              <span class="code-comment">-- Create tool review request</span>
+<span class="code-route">GET  /api/tools/industry-benchmarks</span>  <span class="code-comment">-- Aggregated adoption by industry</span>
+<span class="code-route">GET  /api/tools/:id/resources</span>        <span class="code-comment">-- Curated resources (global + org merged)</span>
+<span class="code-route">POST /api/tools/:id/resources/suggest</span> <span class="code-comment">-- User suggests a resource (moderated)</span>
+<span class="code-route">POST /api/tools/resources/:id/tried</span>  <span class="code-comment">-- Toggle "I have tried this"</span>
+<span class="code-route">GET  /api/tools/:id/use-cases</span>        <span class="code-comment">-- Linked use cases from Academy discovery</span>
+<span class="code-route">GET  /api/tools/:id/comments</span>         <span class="code-comment">-- Org-scoped comments</span>
+<span class="code-route">POST /api/tools/:id/comments</span>         <span class="code-comment">-- Add a comment</span>
+<span class="code-route">POST /api/tools/:id/bookmark</span>         <span class="code-comment">-- Toggle personal bookmark</span>
+<span class="code-route">GET  /api/tools/my-progress</span>          <span class="code-comment">-- User's exploration progress</span></div>
+
+    <h3>CIB domains reference</h3>
+    <div class="code-block">workforce_and_skills
+projects_and_innovation
+customers_and_contracts
+communications_and_collaboration
+meetings_and_engagements
+insights_and_analytics</div>
+  </section>
+
+
+  <!-- =============== 12. AC =============== -->
+  <section class="section" id="ac">
+    <span class="section-number">Section 12</span>
+    <h2>Acceptance Criteria</h2>
+
+    <h3>Must have (v1)</h3>
+    <ul class="ac-list">
+      <li><span class="ac-checkbox"></span>Tool cards show: real logo, name, vendor, AI capability description (120 chars), CIB domain badge, AI maturity level, org badge, resource count, exploration counter ("X of Y explored") or "Explore resources →" CTA, up to 3 tags</li>
+      <li><span class="ac-checkbox"></span>CIB domain tiles as primary navigation (6 domains with tool counts)</li>
+      <li><span class="ac-checkbox"></span>"My Org's Stack" / "Explore All Tools" toggle, defaulting to org stack</li>
+      <li><span class="ac-checkbox"></span>Search bar with full-text search across tool names, vendors, descriptions, tags</li>
+      <li><span class="ac-checkbox"></span>Filter panel: CIB domain, tool type, org status, AI maturity, learning progress</li>
+      <li><span class="ac-checkbox"></span>Sort options: recommended, most adopted, most resources, AI maturity, recently added, alphabetical</li>
+      <li><span class="ac-checkbox"></span>Grid view (default) and List view toggle</li>
+      <li><span class="ac-checkbox"></span>Tool detail page with: hero, AI capabilities, curated resources, use cases, comments, evaluate/compare</li>
+      <li><span class="ac-checkbox"></span>"Used by your org" badge on cards for tools in the org's <code>landscape_tools</code></li>
+      <li><span class="ac-checkbox"></span>"Common in your industry" badge with percentage based on cross-org aggregation</li>
+      <li><span class="ac-checkbox"></span>Curated resources per tool: TATOMA global defaults (3–5 per tool), org-level overrides in Admin/Workbench</li>
+      <li><span class="ac-checkbox"></span>"I have tried this" toggle on resources, driving card-level "X of Y explored" counter</li>
+      <li><span class="ac-checkbox"></span>User-suggested resources with moderation queue in Admin/Workbench</li>
+      <li><span class="ac-checkbox"></span>Use cases from Academy discovery feature linked to tools on detail pages</li>
+      <li><span class="ac-checkbox"></span>Org-scoped comments on tool detail pages</li>
+      <li><span class="ac-checkbox"></span>Request-a-tool flow (Tier 2 and Tier 3) creating <code>landscape_tool_review_requests</code> entries</li>
+      <li><span class="ac-checkbox"></span>Accessible to all Academy users (read-only catalog, write for requests and bookmarks)</li>
+    </ul>
+
+    <h3>Should have (v1 stretch)</h3>
+    <ul class="ac-list">
+      <li><span class="ac-checkbox"></span>Bookmark/favourites system for personal tool collections</li>
+      <li><span class="ac-checkbox"></span>"Ideal for" use cases on detail pages</li>
+      <li><span class="ac-checkbox"></span>Balanced Pros/Cons on detail pages</li>
+      <li><span class="ac-checkbox"></span>Clickable hashtag tags that filter the catalog</li>
+    </ul>
+
+    <h3>Deferred (v2+)</h3>
+    <ul class="ac-list" style="opacity: 0.6;">
+      <li><span class="ac-checkbox"></span><strong>Bidirectional Academy course integration</strong> (tool pages ↔ Academy courses)</li>
+      <li><span class="ac-checkbox"></span><strong>Proficiency model</strong> (Aware → Familiar → Proficient → Expert) replacing exploration counter</li>
+      <li><span class="ac-checkbox"></span><strong>Academy-authored learning content per tool</strong>: courses, assessments, certifications</li>
+      <li><span class="ac-checkbox"></span>Side-by-side tool comparison (2–3 tools in same CIB domain)</li>
+      <li><span class="ac-checkbox"></span>Structured peer use-case examples with templates + helpfulness voting</li>
+      <li><span class="ac-checkbox"></span>Team proficiency dashboards</li>
+      <li><span class="ac-checkbox"></span>Industry benchmarking dashboards for org admins</li>
+      <li><span class="ac-checkbox"></span>Role-based personalisation + onboarding wizard</li>
+      <li><span class="ac-checkbox"></span>"Recommended for you" feed + "Trending in your org"</li>
+    </ul>
+  </section>
+
+
+  <!-- =============== 13. REFS =============== -->
+  <section class="section" id="refs">
+    <span class="section-number">Section 13</span>
+    <h2>Design References</h2>
+
+    <table class="ref-table">
+      <thead><tr><th>Pattern</th><th>Source</th><th>Adapted for TATOMA</th></tr></thead>
+      <tbody>
+        <tr><td>Business-function navigation tabs</td><td>Futurepedia</td><td>→ CIB domain tiles as primary nav</td></tr>
+        <tr><td>7-element card design</td><td>Futurepedia</td><td>→ Our 9-element card</td></tr>
+        <tr><td>"Ideal for" use cases (gerund form)</td><td>AI Catalog</td><td>→ On detail pages, AI-focused</td></tr>
+        <tr><td>Balanced Pros/Cons</td><td>AI Catalog</td><td>→ On detail pages, AI capabilities</td></tr>
+        <tr><td>Education-first positioning</td><td>Insidr.ai</td><td>→ Bidirectional learning model</td></tr>
+        <tr><td>Structured learning roadmap</td><td>Insidr.ai</td><td>→ Proficiency levels with content types</td></tr>
+        <tr><td>Emoji-coded categories</td><td>AI Catalog</td><td>→ Icons for CIB domains</td></tr>
+        <tr><td>Dense list view for evaluation</td><td>G2 / Capterra</td><td>→ List view with comparison columns</td></tr>
+        <tr><td>Professional achievement system</td><td>Salesforce Trailhead</td><td>→ Proficiency levels (Aware → Expert)</td></tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h3>Appendix: what "AI maturity" means</h3>
+    <div class="maturity-cards">
+      <div class="maturity-card mat-low">
+        <span class="mat-label">Low</span>
+        <p>Announced or beta-testing AI features, limited in scope or not yet production-ready.</p>
+      </div>
+      <div class="maturity-card mat-med">
+        <span class="mat-label">Medium</span>
+        <p>Shipped production AI features covering some workflows, but significant manual work remains.</p>
+      </div>
+      <div class="maturity-card mat-high">
+        <span class="mat-label">High</span>
+        <p>Deeply integrated AI across core workflows, meaningfully reducing manual effort for most users.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// Side nav active state on scroll
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.side-nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach((link, i) => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

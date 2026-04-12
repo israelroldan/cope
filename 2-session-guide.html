@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q2 OKR Session — Tatoma</title>
+<style>
+@import url('https://hub.tatoma.eu/fonts/canela/stylesheet.css');
+@import url('https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css');
+
+:root {
+  --background: #F6FAEB;
+  --foreground: #1D021F;
+  --card: #FFFFFF;
+  --primary: #FF8E7D;
+  --primary-foreground: #1D021F;
+  --secondary: #4F2035;
+  --secondary-foreground: #F6FAEB;
+  --muted: #A397A3;
+  --muted-foreground: #4C3C47;
+  --dark-magenta: #1E001E;
+  --border: #A397A3;
+  --radius: 0.75rem;
+  --font-serif: "Canela", Georgia, serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); -webkit-font-smoothing: antialiased; line-height: 1.6;
+}
+h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; }
+
+/* Nav */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(246,250,235,0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(163,151,163,0.3);
+  padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--secondary); }
+.nav-links { display: flex; gap: 0.25rem; }
+.nav-link {
+  font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 0.4rem 0.8rem; border-radius: 999px; text-decoration: none; color: var(--muted-foreground); transition: all 0.2s;
+}
+.nav-link:hover { background: rgba(255,142,125,0.15); color: var(--foreground); }
+.nav-link.active { background: var(--secondary); color: var(--secondary-foreground); }
+
+/* Progress bar */
+.progress-bar {
+  position: fixed; top: 52px; left: 0; right: 0; z-index: 99; height: 3px;
+  background: rgba(163,151,163,0.2);
+}
+.progress-fill {
+  height: 100%; background: var(--primary); transition: width 0.4s ease; width: 0%;
+}
+
+/* Step navigation */
+.step-nav {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 100;
+  display: flex; align-items: center; gap: 0.75rem;
+  background: var(--dark-magenta); padding: 0.6rem 1.25rem; border-radius: 999px;
+  box-shadow: 0 8px 32px rgba(29,2,31,0.2);
+}
+.step-dots { display: flex; gap: 0.4rem; }
+.step-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: rgba(255,142,125,0.3);
+  cursor: pointer; transition: all 0.2s; border: none;
+}
+.step-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
+.step-dot.done { background: var(--primary); opacity: 0.6; }
+.step-btn {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+  background: var(--primary); color: var(--primary-foreground); border: none;
+  padding: 0.4rem 1rem; border-radius: 999px; cursor: pointer; transition: opacity 0.2s;
+}
+.step-btn:hover { opacity: 0.85; }
+.step-btn:disabled { opacity: 0.3; cursor: default; }
+.step-label {
+  font-family: var(--font-mono); font-size: 0.6rem; color: var(--primary);
+  text-transform: uppercase; letter-spacing: 0.1em; min-width: 60px; text-align: center;
+}
+
+/* Slides */
+.slide {
+  display: none; min-height: 100vh; padding: 6rem 2rem 6rem;
+  max-width: 1000px; margin: 0 auto;
+}
+.slide.visible { display: block; animation: fadeUp 0.5s ease; }
+
+.slide-badge {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  background: var(--dark-magenta); color: var(--primary);
+  padding: 0.3rem 0.8rem; border-radius: 999px; margin-bottom: 1.25rem;
+}
+.slide h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
+.slide .subtitle { font-size: 1.05rem; color: var(--muted-foreground); margin-bottom: 2.5rem; max-width: 650px; }
+
+/* Timer */
+.timer-bar {
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 0.75rem 1.25rem;
+}
+.timer-display {
+  font-family: var(--font-mono); font-size: 1.5rem; color: var(--secondary); min-width: 80px;
+}
+.timer-display.warning { color: var(--primary); }
+.timer-label { font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.timer-actions { margin-left: auto; display: flex; gap: 0.5rem; }
+.timer-btn {
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em;
+  border: 1px solid rgba(163,151,163,0.3); background: var(--background); color: var(--foreground);
+  padding: 0.35rem 0.7rem; border-radius: 999px; cursor: pointer; transition: all 0.2s;
+}
+.timer-btn:hover { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+
+/* Retro table */
+.retro-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.retro-table th, .retro-table td {
+  text-align: left; padding: 0.85rem 1rem; border-bottom: 1px solid rgba(163,151,163,0.2);
+}
+.retro-table th {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--muted); font-weight: normal;
+}
+.retro-table td { font-size: 0.9rem; }
+.retro-table .owner { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-foreground); }
+.status-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 0.3rem 0.7rem; border-radius: 999px; cursor: pointer; border: none; transition: all 0.2s;
+  background: rgba(163,151,163,0.15); color: var(--muted-foreground);
+}
+.status-btn.green { background: rgba(76,175,80,0.15); color: #2e7d32; }
+.status-btn.yellow { background: rgba(255,193,7,0.2); color: #f57f17; }
+.status-btn.red { background: rgba(244,67,54,0.15); color: #c62828; }
+
+/* OKR cards */
+.okr-block { margin-bottom: 2.5rem; }
+.okr-block h3 { font-size: 1.5rem; margin-bottom: 0.35rem; }
+.okr-theme {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--muted); margin-bottom: 1.25rem;
+}
+.kr-list { list-style: none; }
+.kr-item {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.85rem 0; border-bottom: 1px solid rgba(163,151,163,0.15);
+}
+.kr-num {
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--primary);
+  background: rgba(255,142,125,0.12); width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem;
+}
+.kr-text { font-size: 0.9rem; flex: 1; }
+.kr-owner {
+  font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted-foreground);
+  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
+}
+
+/* Commit cards */
+.commit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+.commit-card {
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 1.5rem; text-align: center;
+}
+.commit-card .person { font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 0.5rem; }
+.commit-card .commit-label {
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.35rem;
+}
+.commit-card .commit-answer { font-size: 0.9rem; color: var(--muted-foreground); min-height: 2.5rem; }
+
+/* Context card */
+.context-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+.context-card {
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 1.75rem;
+}
+.context-card .big-num { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 100; margin-bottom: 0.25rem; }
+.context-card .context-label {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--muted);
+}
+
+/* Logistics list */
+.logistics-list { list-style: none; }
+.logistics-list li {
+  display: flex; align-items: center; gap: 0.75rem; padding: 1rem 0;
+  border-bottom: 1px solid rgba(163,151,163,0.15); font-size: 0.95rem;
+}
+.logistics-list .log-icon {
+  width: 36px; height: 36px; border-radius: 50%; background: rgba(255,142,125,0.12);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .commit-grid { grid-template-columns: 1fr; }
+  .context-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">Tatoma / Q2 OKR Session</div>
+  <div class="nav-links">
+    <a href="1-kletkamp-vision.html" class="nav-link">Vision</a>
+    <a href="2-session-guide.html" class="nav-link active">Session</a>
+    <a href="3-agreements.html" class="nav-link">Agreements</a>
+  </div>
+</nav>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- SLIDE 0: Welcome -->
+<div class="slide visible" data-step="0">
+  <div class="slide-badge">March 31, 2026 &bull; 90 min</div>
+  <h2>Q2 OKR Session</h2>
+  <p class="subtitle">Sander, Maarten, Israel — let's review Q1, set our Q2 objectives, and commit to what matters most.</p>
+
+  <div style="display:grid; grid-template-columns: repeat(5,1fr); gap:0.75rem; margin-top:2rem;">
+    <div style="background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius); padding:1.25rem; text-align:center; cursor:pointer;" onclick="goToStep(1)">
+      <div style="font-family:var(--font-serif); font-size:1.5rem;">1</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-top:0.35rem;">Q1 Retro</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; color:var(--primary);">25 min</div>
+    </div>
+    <div style="background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius); padding:1.25rem; text-align:center; cursor:pointer;" onclick="goToStep(2)">
+      <div style="font-family:var(--font-serif); font-size:1.5rem;">2</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-top:0.35rem;">Context</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; color:var(--primary);">5 min</div>
+    </div>
+    <div style="background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius); padding:1.25rem; text-align:center; cursor:pointer;" onclick="goToStep(3)">
+      <div style="font-family:var(--font-serif); font-size:1.5rem;">3</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-top:0.35rem;">Set OKRs</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; color:var(--primary);">45 min</div>
+    </div>
+    <div style="background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius); padding:1.25rem; text-align:center; cursor:pointer;" onclick="goToStep(4)">
+      <div style="font-family:var(--font-serif); font-size:1.5rem;">4</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-top:0.35rem;">Commit</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; color:var(--primary);">10 min</div>
+    </div>
+    <div style="background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius); padding:1.25rem; text-align:center; cursor:pointer;" onclick="goToStep(5)">
+      <div style="font-family:var(--font-serif); font-size:1.5rem;">5</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-top:0.35rem;">Close</div>
+      <div style="font-family:var(--font-mono); font-size:0.6rem; color:var(--primary);">5 min</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 1: Q1 Retro -->
+<div class="slide" data-step="1">
+  <div class="slide-badge">Step 1 &bull; 25 minutes</div>
+  <h2>Q1 Retrospective</h2>
+  <p class="subtitle">Score each Kletkamp action item. Click to cycle: neutral &rarr; green &rarr; yellow &rarr; red.</p>
+
+  <div class="timer-bar">
+    <div>
+      <div class="timer-display" id="timer1">25:00</div>
+      <div class="timer-label">Time remaining</div>
+    </div>
+    <div class="timer-actions">
+      <button class="timer-btn" onclick="startTimer('timer1', 25)">Start</button>
+      <button class="timer-btn" onclick="stopTimer('timer1')">Pause</button>
+    </div>
+  </div>
+
+  <table class="retro-table">
+    <thead>
+      <tr><th>Action Item</th><th>Owner</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Launch V2.0 &amp; migrate all clients to Portal</td><td class="owner">Maarten / Israel</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+      <tr><td>Pitch ADG/Crowe Private Circles; design Partner Model</td><td class="owner">Sander / Maarten</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+      <tr><td>Hire Tech Intern &amp; Data Consultant</td><td class="owner">Israel / Sander / Maarten</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+      <tr><td>Setup tax reservations &amp; insurance</td><td class="owner">Sander / Maarten</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+      <tr><td>Finalize WBSO application &amp; test MCP push</td><td class="owner">Israel</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+      <tr><td>Launch "Movement" comms for existing clients</td><td class="owner">All</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+      <tr><td>Hire Overall Circle Lead (by April 1st)</td><td class="owner">Sander</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+      <tr><td>3x LinkedIn visibility per cofounder</td><td class="owner">All</td><td><button class="status-btn" onclick="cycleStatus(this)">&#9679; Click</button></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- SLIDE 2: Context -->
+<div class="slide" data-step="2">
+  <div class="slide-badge">Step 2 &bull; 5 minutes</div>
+  <h2>Where Are We?</h2>
+  <p class="subtitle">Quick numbers check against our annual trajectory.</p>
+
+  <div class="context-row">
+    <div class="context-card">
+      <div class="context-label">Q1 Target</div>
+      <div class="big-num">&euro;200k</div>
+    </div>
+    <div class="context-card">
+      <div class="context-label">Q1 Actual</div>
+      <div class="big-num" style="color:var(--primary);">&euro; ___</div>
+      <div style="font-size:0.8rem; color:var(--muted-foreground); margin-top:0.25rem;">Fill in together</div>
+    </div>
+  </div>
+  <div class="context-row">
+    <div class="context-card">
+      <div class="context-label">Q2 Target</div>
+      <div class="big-num">&gt;&euro;300k</div>
+    </div>
+    <div class="context-card">
+      <div class="context-label">Annual Goal</div>
+      <div class="big-num">&euro;1.0M</div>
+      <div style="font-size:0.8rem; color:var(--muted-foreground); margin-top:0.25rem;">Stretch: &gt;&euro;1.4M</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: Set OKRs -->
+<div class="slide" data-step="3">
+  <div class="slide-badge">Step 3 &bull; 45 minutes</div>
+  <h2>Q2 Objectives &amp; Key Results</h2>
+  <p class="subtitle">Company-level objectives, individual key results. Discuss each, agree on targets.</p>
+
+  <div class="timer-bar">
+    <div>
+      <div class="timer-display" id="timer3">45:00</div>
+      <div class="timer-label">Time remaining</div>
+    </div>
+    <div class="timer-actions">
+      <button class="timer-btn" onclick="startTimer('timer3', 45)">Start</button>
+      <button class="timer-btn" onclick="stopTimer('timer3')">Pause</button>
+    </div>
+  </div>
+
+  <div class="okr-block">
+    <h3>Objective 1: Accelerate Revenue to &gt;&euro;300k</h3>
+    <div class="okr-theme">Commercial / Sales</div>
+    <ul class="kr-list">
+      <li class="kr-item"><span class="kr-num">1</span><span class="kr-text">Close &euro;___k in Group Company deals (ADG / Crowe Private Circles)</span><span class="kr-owner">Sander / Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">2</span><span class="kr-text">Agency Circle generates &euro;___k through BD model</span><span class="kr-owner">Sander</span></li>
+      <li class="kr-item"><span class="kr-num">3</span><span class="kr-text">Accountancy Circle: model designed &amp; first pilot running</span><span class="kr-owner">Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">4</span><span class="kr-text">Partnership revenue (Kriton / Node 1) reaches &euro;___k</span><span class="kr-owner">Sander / Maarten</span></li>
+    </ul>
+  </div>
+
+  <div class="okr-block">
+    <h3>Objective 2: Ship a Product That Sells Itself</h3>
+    <div class="okr-theme">Product &amp; Engineering</div>
+    <ul class="kr-list">
+      <li class="kr-item"><span class="kr-num">1</span><span class="kr-text">V2.0 Portal live with Visual Transformation Timeline</span><span class="kr-owner">Israel / Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">2</span><span class="kr-text">100% of active clients on the Portal</span><span class="kr-owner">Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">3</span><span class="kr-text">Creator Hub MVP launched</span><span class="kr-owner">Israel</span></li>
+      <li class="kr-item"><span class="kr-num">4</span><span class="kr-text">Knowledge Retention: workshop insights auto-stored in AI Memory</span><span class="kr-owner">Israel</span></li>
+      <li class="kr-item"><span class="kr-num">5</span><span class="kr-text">MCP context-layer: first client pilot running</span><span class="kr-owner">Israel</span></li>
+    </ul>
+  </div>
+
+  <div class="okr-block">
+    <h3>Objective 3: Prove the "Software with a Service" Model</h3>
+    <div class="okr-theme">Delivery &amp; Scalability</div>
+    <ul class="kr-list">
+      <li class="kr-item"><span class="kr-num">1</span><span class="kr-text">First expert webinars executed; cross-circle sharing live</span><span class="kr-owner">Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">2</span><span class="kr-text">External learning partner onboarded for Work Better</span><span class="kr-owner">Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">3</span><span class="kr-text">Delivery playbook documented for independent leads</span><span class="kr-owner">Sander / Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">4</span><span class="kr-text">Test outsourced Circle Operations for Accountancy</span><span class="kr-owner">Maarten</span></li>
+    </ul>
+  </div>
+
+  <div class="okr-block">
+    <h3>Objective 4: Build the Team &amp; Brand for Scale</h3>
+    <div class="okr-theme">People, Marketing &amp; Ops</div>
+    <ul class="kr-list">
+      <li class="kr-item"><span class="kr-num">1</span><span class="kr-text">Tech intern productive and contributing to backlog</span><span class="kr-owner">Israel</span></li>
+      <li class="kr-item"><span class="kr-num">2</span><span class="kr-text">Data consultant onboarded</span><span class="kr-owner">Sander</span></li>
+      <li class="kr-item"><span class="kr-num">3</span><span class="kr-text">Each cofounder publishes &ge;6 LinkedIn posts in Q2</span><span class="kr-owner">All</span></li>
+      <li class="kr-item"><span class="kr-num">4</span><span class="kr-text">"Movement" community: ___ active client participants</span><span class="kr-owner">Maarten</span></li>
+      <li class="kr-item"><span class="kr-num">5</span><span class="kr-text">WBSO approved and R&amp;D tracking in place</span><span class="kr-owner">Israel</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- SLIDE 4: Commit -->
+<div class="slide" data-step="4">
+  <div class="slide-badge">Step 4 &bull; 10 minutes</div>
+  <h2>Prioritize &amp; Commit</h2>
+  <p class="subtitle">If Q2 gets tight, what's the one thing that makes it a success?</p>
+
+  <div class="timer-bar">
+    <div>
+      <div class="timer-display" id="timer4">10:00</div>
+      <div class="timer-label">Time remaining</div>
+    </div>
+    <div class="timer-actions">
+      <button class="timer-btn" onclick="startTimer('timer4', 10)">Start</button>
+      <button class="timer-btn" onclick="stopTimer('timer4')">Pause</button>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:1.5rem;">My #1 Key Result for Q2</h3>
+  <div class="commit-grid">
+    <div class="commit-card">
+      <div class="person">Sander</div>
+      <div class="commit-label">Single most important KR</div>
+      <div class="commit-answer">&mdash;</div>
+    </div>
+    <div class="commit-card">
+      <div class="person">Maarten</div>
+      <div class="commit-label">Single most important KR</div>
+      <div class="commit-answer">&mdash;</div>
+    </div>
+    <div class="commit-card">
+      <div class="person">Israel</div>
+      <div class="commit-label">Single most important KR</div>
+      <div class="commit-answer">&mdash;</div>
+    </div>
+  </div>
+
+  <div style="margin-top:2.5rem;">
+    <h3 style="margin-bottom:1rem;">Company Priority Stack</h3>
+    <div style="display:flex; flex-direction:column; gap:0.5rem;">
+      <div style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem; background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius);">
+        <span style="font-family:var(--font-mono); font-size:1.25rem; color:var(--primary); width:2rem;">#1</span>
+        <span style="font-size:0.95rem;">&mdash;</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem; background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius);">
+        <span style="font-family:var(--font-mono); font-size:1.25rem; color:var(--primary); width:2rem;">#2</span>
+        <span style="font-size:0.95rem;">&mdash;</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem; background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius);">
+        <span style="font-family:var(--font-mono); font-size:1.25rem; color:var(--primary); width:2rem;">#3</span>
+        <span style="font-size:0.95rem;">&mdash;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Close -->
+<div class="slide" data-step="5">
+  <div class="slide-badge">Step 5 &bull; 5 minutes</div>
+  <h2>Logistics &amp; Close</h2>
+  <p class="subtitle">Agree on how we track and when we check in.</p>
+
+  <ul class="logistics-list">
+    <li>
+      <span class="log-icon">&#128337;</span>
+      <div><strong>Check-in cadence</strong><br><span style="font-size:0.85rem; color:var(--muted-foreground);">Weekly? Biweekly? Async updates?</span></div>
+    </li>
+    <li>
+      <span class="log-icon">&#128203;</span>
+      <div><strong>Tracking tool</strong><br><span style="font-size:0.85rem; color:var(--muted-foreground);">Notion? The Portal itself? Shared doc?</span></div>
+    </li>
+    <li>
+      <span class="log-icon">&#128197;</span>
+      <div><strong>Next OKR review date</strong><br><span style="font-size:0.85rem; color:var(--muted-foreground);">Mid-quarter check or end of Q2?</span></div>
+    </li>
+    <li>
+      <span class="log-icon">&#9989;</span>
+      <div><strong>Capture agreements</strong><br><span style="font-size:0.85rem; color:var(--muted-foreground);"><a href="3-agreements.html" style="color:var(--primary);">Open the Agreements view &rarr;</a> to document decisions.</span></div>
+    </li>
+  </ul>
+</div>
+
+<!-- Step Nav -->
+<div class="step-nav">
+  <button class="step-btn" id="prevBtn" onclick="prevStep()" disabled>&larr;</button>
+  <div class="step-dots" id="stepDots"></div>
+  <div class="step-label" id="stepLabel">Welcome</div>
+  <button class="step-btn" id="nextBtn" onclick="nextStep()">&rarr;</button>
+</div>
+
+<script>
+const STEPS = ['Welcome', 'Q1 Retro', 'Context', 'Set OKRs', 'Commit', 'Close'];
+let currentStep = 0;
+const timers = {};
+
+function renderDots() {
+  const c = document.getElementById('stepDots');
+  c.innerHTML = '';
+  STEPS.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'step-dot' + (i === currentStep ? ' active' : i < currentStep ? ' done' : '');
+    d.onclick = () => goToStep(i);
+    c.appendChild(d);
+  });
+}
+
+function updateView() {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('visible'));
+  document.querySelector(`[data-step="${currentStep}"]`).classList.add('visible');
+  document.getElementById('prevBtn').disabled = currentStep === 0;
+  document.getElementById('nextBtn').disabled = currentStep === STEPS.length - 1;
+  document.getElementById('stepLabel').textContent = STEPS[currentStep];
+  document.getElementById('progressFill').style.width = ((currentStep / (STEPS.length - 1)) * 100) + '%';
+  renderDots();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goToStep(n) { currentStep = n; updateView(); }
+function nextStep() { if (currentStep < STEPS.length - 1) { currentStep++; updateView(); } }
+function prevStep() { if (currentStep > 0) { currentStep--; updateView(); } }
+
+// Status cycling
+function cycleStatus(btn) {
+  const states = [
+    { cls: '', label: '\u25CF Click' },
+    { cls: 'green', label: '\u25CF Green' },
+    { cls: 'yellow', label: '\u25CF Yellow' },
+    { cls: 'red', label: '\u25CF Red' },
+  ];
+  let idx = states.findIndex(s => s.cls === (btn.dataset.state || ''));
+  idx = (idx + 1) % states.length;
+  btn.dataset.state = states[idx].cls;
+  btn.className = 'status-btn ' + states[idx].cls;
+  btn.innerHTML = states[idx].label;
+}
+
+// Timers
+function startTimer(id, minutes) {
+  if (timers[id]) clearInterval(timers[id].interval);
+  const el = document.getElementById(id);
+  let secs = (timers[id] && timers[id].remaining) ? timers[id].remaining : minutes * 60;
+  timers[id] = { remaining: secs };
+  timers[id].interval = setInterval(() => {
+    secs--;
+    timers[id].remaining = secs;
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    el.className = secs < 120 ? 'timer-display warning' : 'timer-display';
+    if (secs <= 0) { clearInterval(timers[id].interval); el.textContent = "00:00"; }
+  }, 1000);
+}
+function stopTimer(id) { if (timers[id]) clearInterval(timers[id].interval); }
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextStep();
+  if (e.key === 'ArrowLeft') prevStep();
+});
+
+renderDots();
+</script>
+
+</body>
+</html>

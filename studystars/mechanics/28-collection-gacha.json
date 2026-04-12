@@ -1,0 +1,115 @@
+{
+  "id": "collection-gacha",
+  "number": 28,
+  "name": "Collection/Gacha Reward",
+  "slug": "collection-gacha",
+  "tier": {
+    "bloom": "gamification",
+    "level": 7,
+    "label": "Gamification — Cross-Tier Wrapper"
+  },
+  "summary": "Correct answers unlock randomized reward reveals with rarity tiers (common, rare, epic, legendary), creating excitement through luck-based collection mechanics.",
+  "platforms": [
+    "Blooket Gold Quest",
+    "Blooket Fishing Frenzy",
+    "Gimkit Fishtopia"
+  ],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI generates questions and reward metadata excellently. Pre-built game shells (chest opens, fishing animation). AI fills reward pools with thematic items. Rarity weighting and probability calculations are deterministic."
+  },
+  "interaction": {
+    "type": "game-wrapper",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "questionMechanic": {
+      "type": "string",
+      "required": true,
+      "description": "ID of the wrapped question mechanic (e.g., 'multiple-choice', 'true-false')."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of question objects conforming to the wrapped mechanic's schema."
+    },
+    "collectionTheme": {
+      "type": "string",
+      "required": true,
+      "description": "Theme of rewards (e.g., 'fantasy-creatures', 'sea-life', 'historical-artifacts', 'space-objects')."
+    },
+    "rarityTiers": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of rarity tier definitions. Each tier has: name (string), probability (float 0-1), color (hex), items (string[], 3-8 possible items), animation (e.g., 'sparkle', 'burst')."
+    },
+    "questionsToUnlock": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of consecutive correct answers needed to unlock one reward reveal (typical 1-3)."
+    },
+    "rewardPool": {
+      "type": "object[]",
+      "required": true,
+      "description": "Complete list of possible items across all tiers, with rarity assignment and metadata."
+    },
+    "duplicateHandling": {
+      "type": "enum",
+      "required": false,
+      "values": [
+        "allow",
+        "track-copies",
+        "trade-for-currency"
+      ],
+      "description": "What happens when a learner gets a duplicate reward."
+    },
+    "showcaseEnabled": {
+      "type": "boolean",
+      "required": false,
+      "description": "Whether learners can view and share their collection (optional gallery feature)."
+    }
+  },
+  "scoring": {
+    "type": "speed-weighted",
+    "partialCredit": false,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "64x64px",
+    "estimatedDuration": "120-300s",
+    "animation": "reward-reveal, rarity-sparkle, item-bounce, collection-ping",
+    "mobileNotes": "Question at top (40%). Large reward-reveal button (e.g., treasure chest, fish hook) occupies center. Tap to answer, tap chest to reveal. Rarity animations: common items fade in, rare items sparkle/burst. Collection counter/preview at bottom (sticky). Option to view full collection overlay."
+  },
+  "lessonPlacement": [
+    "spaced-review",
+    "extension"
+  ],
+  "ageAdaptations": {
+    "8-10": "Simple 3-tier rarity (common, rare, legendary). Cute reward items (animals, plants, toys). Unlocked after every correct answer. No trading. Basic collection view.",
+    "11-13": "4-5 rarity tiers with skill-based probability (harder questions = better drops). Thematic item sets. Unlock after 2 correct answers. Track duplicate counts (badge notifications).",
+    "14-16": "6+ rarity tiers with weighted probabilities. Themed item variants (e.g., 'Ancient Egypt' collection). Trading system: exchange duplicates for currency/crafting. Full collection showcase with rarity percentages and trading leaderboard."
+  },
+  "implementationPriority": "p2-nice-to-have",
+  "relatedMechanics": [
+    "strategy-game",
+    "pvp-competition",
+    "multiple-choice",
+    "true-false"
+  ],
+  "tags": [
+    "gamification",
+    "randomization",
+    "rarity",
+    "collection",
+    "loot",
+    "gacha",
+    "engagement",
+    "luck"
+  ]
+}

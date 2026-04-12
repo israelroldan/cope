@@ -1,0 +1,93 @@
+{
+  "id": "scenario-question",
+  "number": 15,
+  "name": "Scenario-Based Question",
+  "slug": "scenario-question",
+  "tier": {
+    "bloom": "apply",
+    "level": 3,
+    "label": "Apply — Using Information in New Contexts"
+  },
+  "summary": "Read a short passage or watch content, then answer embedded comprehension questions. Tests understanding of presented material.",
+  "platforms": ["Duolingo Stories", "Quizizz", "Nearpod"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates both passage and comprehension questions. Core Grej-style format. Highly suitable for procedural explanation, narrative comprehension, cause-and-effect reasoning."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "passage": {
+      "type": "string",
+      "required": true,
+      "description": "Prose passage (50–150 words) introducing context, process, narrative, or scenario. Can include quoted dialogue or procedural steps."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of comprehension questions embedded after or within the passage.",
+      "minItems": 1,
+      "maxItems": 4,
+      "itemSchema": {
+        "question": {
+          "type": "string",
+          "required": true,
+          "description": "Comprehension question testing understanding of the passage (inference, recall, cause-and-effect, vocabulary)."
+        },
+        "options": {
+          "type": "string[]",
+          "required": true,
+          "description": "Multiple choice options (2–4 options, depending on age group)."
+        },
+        "correctIndex": {
+          "type": "integer",
+          "required": true,
+          "description": "Index (0-based) of the correct option in the options array."
+        },
+        "explanation": {
+          "type": "string",
+          "required": true,
+          "description": "Explanation of why the correct answer is right, with reference to the passage."
+        },
+        "distractorNotes": {
+          "type": "string",
+          "required": false,
+          "description": "Brief notes on why each distractor is plausible but incorrect (optional, for teacher reference)."
+        }
+      }
+    },
+    "context": {
+      "type": "string",
+      "required": false,
+      "description": "Optional context label (e.g., 'science: water cycle', 'history: American Revolution', 'language: Spanish conversation'). Helps with content categorization."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "text-passage",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "60-120s",
+    "animation": "fade-stagger",
+    "mobileNotes": "Passage displays in scrollable container. Questions appear one at a time after passage or interspersed. Answer options are large, tappable buttons. Questions fade in with staggered timing (200ms apart) for visual clarity."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "Short passage (50 words). 1–2 simple comprehension questions (literal recall, obvious inference). 2 answer options per question. No complex vocabulary. Explanation uses simple language.",
+    "11-13": "Passage (100 words). 2–3 questions (recall, inference, cause-and-effect). 3 answer options per question. Standard vocabulary with occasional context clues. Explanation references specific phrases from passage.",
+    "14-16": "Longer passage (150 words). 3–4 questions (inference, analysis, vocabulary in context, implicit meaning). 3–4 answer options per question. Advanced vocabulary and complex syntax. Explanation may draw connections to broader concepts."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["multiple-choice"],
+  "tags": ["comprehension", "reading", "inference", "scenario", "apply"]
+}

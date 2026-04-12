@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TATOMA Studio — Tool Catalog</title>
+
+<!-- Tatoma fonts -->
+<style>
+@import url("https://hub.tatoma.eu/fonts/canela/stylesheet.css");
+@import url("https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css");
+</style>
+
+<style>
+/* ===== TATOMA DESIGN TOKENS ===== */
+:root {
+  --background: 246 250 235;
+  --foreground: 29 2 31;
+  --card: 255 255 255;
+  --card-foreground: 29 2 31;
+  --popover: 255 255 255;
+  --popover-foreground: 29 2 31;
+  --primary: 255 142 125;
+  --primary-foreground: 29 2 31;
+  --secondary: 79 32 53;
+  --secondary-foreground: 246 250 235;
+  --muted: 163 151 163;
+  --muted-foreground: 76 60 71;
+  --accent: 255 142 125;
+  --accent-foreground: 29 2 31;
+  --destructive: 163 83 89;
+  --destructive-foreground: 246 250 235;
+  --border: 163 151 163;
+  --input: 246 250 235;
+  --ring: 255 142 125;
+  --radius: 0.75rem;
+  --font-serif: "Canela", Georgia, serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+  --dark-magenta: #1E001E;
+  --salmon: #FF8C7D;
+  --salmon-100: #f9e4e1;
+  --salmon-200: #f4cbc5;
+  --salmon-600: #e87568;
+  --salmon-700: #db6254;
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  font-size: 15px;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 100;
+  line-height: 1.2;
+}
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input { font-family: inherit; }
+
+/* ===== LAYOUT ===== */
+.page-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: fadeSlideUp 0.5s ease-out both;
+}
+.animate-in-delay-1 { animation-delay: 0.06s; }
+.animate-in-delay-2 { animation-delay: 0.12s; }
+.animate-in-delay-3 { animation-delay: 0.18s; }
+.animate-in-delay-4 { animation-delay: 0.24s; }
+.animate-in-delay-5 { animation-delay: 0.30s; }
+
+/* ===== MONO LABEL ===== */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--muted-foreground));
+  font-weight: 700;
+}
+
+/* ===== HERO ===== */
+.hero { margin-bottom: 3rem; }
+.hero h1 {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  margin-bottom: 0.5rem;
+  color: rgb(var(--foreground));
+}
+.hero p {
+  font-size: 1.1rem;
+  color: rgb(var(--muted-foreground));
+  max-width: 600px;
+}
+
+/* ===== TOP BAR (toggle + search) ===== */
+.top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.scope-toggle {
+  display: inline-flex;
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.35);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.scope-toggle button {
+  padding: 0.55rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgb(var(--muted-foreground));
+  transition: all 0.2s;
+  border-right: 1px solid rgb(var(--border) / 0.25);
+}
+.scope-toggle button:last-child { border-right: none; }
+.scope-toggle button.active {
+  background: rgb(var(--secondary));
+  color: rgb(var(--secondary-foreground));
+}
+.scope-toggle button:not(.active):hover {
+  background: rgb(var(--accent) / 0.12);
+}
+
+.search-box {
+  flex: 1;
+  min-width: 260px;
+  max-width: 480px;
+  position: relative;
+}
+.search-box svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(var(--muted));
+  width: 18px;
+  height: 18px;
+}
+.search-box input {
+  width: 100%;
+  height: 42px;
+  border-radius: var(--radius);
+  border: 1px solid rgb(var(--border) / 0.35);
+  background: rgb(var(--card));
+  padding: 0 1rem 0 2.6rem;
+  font-size: 0.9rem;
+  color: rgb(var(--foreground));
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-box input::placeholder { color: rgb(var(--muted)); }
+.search-box input:focus {
+  outline: none;
+  border-color: rgb(var(--ring));
+  box-shadow: 0 0 0 3px rgb(var(--ring) / 0.18);
+}
+
+.view-toggles {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+.view-toggle-btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--radius) - 2px);
+  color: rgb(var(--muted));
+  transition: all 0.2s;
+}
+.view-toggle-btn.active {
+  background: rgb(var(--secondary));
+  color: rgb(var(--secondary-foreground));
+}
+.view-toggle-btn:not(.active):hover { background: rgb(var(--border) / 0.2); }
+
+/* ===== CIB DOMAIN TILES ===== */
+.domain-nav {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 900px) { .domain-nav { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .domain-nav { grid-template-columns: repeat(2, 1fr); } }
+
+.domain-tile {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.25);
+  border-radius: var(--radius);
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.22s;
+  position: relative;
+  overflow: hidden;
+}
+.domain-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgb(var(--foreground) / 0.08);
+  border-color: rgb(var(--primary) / 0.4);
+}
+.domain-tile.active {
+  border-color: rgb(var(--primary));
+  background: rgb(var(--primary) / 0.08);
+  box-shadow: 0 0 0 2px rgb(var(--primary) / 0.2);
+}
+.domain-tile .icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+.domain-tile .label {
+  font-family: var(--font-serif);
+  font-weight: 100;
+  font-size: 0.85rem;
+  display: block;
+  color: rgb(var(--foreground));
+  line-height: 1.25;
+}
+.domain-tile .count {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgb(var(--muted));
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+/* ===== FILTER BAR ===== */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.2);
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid rgb(var(--border) / 0.35);
+  background: rgb(var(--card));
+  color: rgb(var(--muted-foreground));
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.filter-chip:hover {
+  border-color: rgb(var(--primary) / 0.5);
+  color: rgb(var(--foreground));
+}
+.filter-chip.active {
+  background: rgb(var(--secondary));
+  color: rgb(var(--secondary-foreground));
+  border-color: rgb(var(--secondary));
+}
+.filter-chip .remove {
+  width: 14px;
+  height: 14px;
+  display: none;
+}
+.filter-chip.active .remove { display: inline; }
+
+.results-meta {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgb(var(--muted));
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sort-select {
+  padding: 0.35rem 0.65rem;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid rgb(var(--border) / 0.35);
+  background: rgb(var(--card));
+  font-size: 0.78rem;
+  color: rgb(var(--muted-foreground));
+  font-family: var(--font-sans);
+}
+
+/* ===== TOOL GRID ===== */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.25rem;
+}
+@media (max-width: 480px) { .tool-grid { grid-template-columns: 1fr; } }
+
+/* ===== TOOL CARD ===== */
+.tool-card {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.22s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.tool-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgb(var(--foreground) / 0.08);
+  border-color: rgb(var(--border) / 0.5);
+}
+
+.tool-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+.tool-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.tool-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.tool-logo-fallback {
+  background: rgb(var(--secondary) / 0.08);
+  color: rgb(var(--secondary));
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.tool-header-text { flex: 1; min-width: 0; }
+.tool-name {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 100;
+  line-height: 1.2;
+}
+.tool-vendor {
+  font-size: 0.78rem;
+  color: rgb(var(--muted));
+}
+.bookmark-btn {
+  color: rgb(var(--muted));
+  transition: color 0.18s;
+  padding: 0.2rem;
+  flex-shrink: 0;
+}
+.bookmark-btn:hover, .bookmark-btn.bookmarked {
+  color: rgb(var(--primary));
+}
+
+.tool-description {
+  font-size: 0.87rem;
+  color: rgb(var(--muted-foreground));
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tool-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.65rem;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge-org {
+  background: rgb(var(--secondary) / 0.1);
+  color: rgb(var(--secondary));
+  font-weight: 600;
+}
+.badge-industry {
+  background: #e8f0d8;
+  color: #4a6e24;
+}
+.badge-domain {
+  background: rgb(var(--primary) / 0.1);
+  color: rgb(var(--accent-foreground));
+}
+.badge-maturity-high {
+  background: #d4edda;
+  color: #256e3a;
+}
+.badge-maturity-medium {
+  background: #fff3cd;
+  color: #856404;
+}
+.badge-maturity-low {
+  background: #f8d7da;
+  color: #893a40;
+}
+
+.tool-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: rgb(var(--muted-foreground));
+}
+.tool-meta-row .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.tool-meta-row svg { width: 14px; height: 14px; }
+
+/* Exploration progress bar */
+.exploration-bar {
+  width: 100%;
+}
+.exploration-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+.exploration-status {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(var(--muted-foreground));
+  font-weight: 600;
+}
+.exploration-count {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgb(var(--muted));
+}
+.progress-track {
+  height: 6px;
+  background: rgb(var(--border) / 0.2);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, rgb(var(--primary)), rgb(var(--secondary)));
+  transition: width 0.6s ease;
+}
+
+/* Explore CTA (when nothing explored) */
+.explore-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgb(var(--primary));
+  transition: gap 0.18s;
+}
+.explore-cta:hover { gap: 0.7rem; }
+
+/* Tags */
+.tool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.18rem 0.55rem;
+  border-radius: 100px;
+  background: rgb(var(--foreground) / 0.04);
+  color: rgb(var(--muted-foreground));
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tag:hover {
+  background: rgb(var(--primary) / 0.12);
+  color: rgb(var(--foreground));
+}
+
+/* ===== LIST VIEW ===== */
+.tool-list { display: none; }
+.tool-list.active { display: block; }
+.tool-grid.hidden { display: none; }
+
+.list-header {
+  display: grid;
+  grid-template-columns: 2.5fr 1.2fr 0.9fr 1fr 1fr 0.8fr 1fr;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgb(var(--muted));
+  font-weight: 700;
+  border-bottom: 1px solid rgb(var(--border) / 0.25);
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: 2.5fr 1.2fr 0.9fr 1fr 1fr 0.8fr 1fr;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  align-items: center;
+  border-bottom: 1px solid rgb(var(--border) / 0.12);
+  transition: background 0.15s;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.list-row:hover {
+  background: rgb(var(--card));
+}
+.list-row .list-tool-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.list-row .list-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.list-row .list-logo img { width: 100%; height: 100%; object-fit: contain; }
+.list-row .list-logo-fallback {
+  background: rgb(var(--secondary) / 0.08);
+  color: rgb(var(--secondary));
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.list-row .list-tool-name {
+  font-family: var(--font-serif);
+  font-weight: 100;
+  font-size: 0.95rem;
+}
+.list-row .list-tool-vendor {
+  font-size: 0.72rem;
+  color: rgb(var(--muted));
+}
+.list-cell {
+  font-size: 0.8rem;
+  color: rgb(var(--muted-foreground));
+}
+.list-cell .badge { font-size: 0.65rem; }
+
+.list-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.list-action-btn {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgb(var(--primary));
+  padding: 0.25rem 0.6rem;
+  border-radius: calc(var(--radius) - 4px);
+  transition: background 0.15s;
+}
+.list-action-btn:hover {
+  background: rgb(var(--primary) / 0.1);
+}
+
+/* ===== DETAIL MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(var(--foreground) / 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3rem 1rem;
+  overflow-y: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal-content {
+  background: rgb(var(--background));
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 860px;
+  border: 1px solid rgb(var(--border) / 0.25);
+  box-shadow: 0 24px 64px rgb(var(--foreground) / 0.15);
+  transform: translateY(20px);
+  transition: transform 0.35s ease;
+  overflow: hidden;
+}
+.modal-overlay.open .modal-content { transform: translateY(0); }
+
+.detail-hero {
+  background: rgb(var(--card));
+  padding: 2rem 2.5rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.15);
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.detail-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.detail-logo img { width: 100%; height: 100%; object-fit: contain; }
+.detail-logo-fallback {
+  background: rgb(var(--secondary) / 0.08);
+  color: rgb(var(--secondary));
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+.detail-hero-text { flex: 1; }
+.detail-hero-text h2 {
+  font-size: 2rem;
+  margin-bottom: 0.15rem;
+}
+.detail-hero-text .vendor-line {
+  font-size: 0.9rem;
+  color: rgb(var(--muted));
+  margin-bottom: 0.75rem;
+}
+.detail-hero-text .hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.detail-hero-text .hero-desc {
+  font-size: 0.95rem;
+  color: rgb(var(--muted-foreground));
+  line-height: 1.55;
+}
+.detail-hero .hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+.close-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: rgb(var(--muted));
+  transition: all 0.18s;
+  margin-bottom: 0.5rem;
+}
+.close-btn:hover {
+  background: rgb(var(--border) / 0.2);
+  color: rgb(var(--foreground));
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  background: rgb(var(--primary));
+  color: rgb(var(--primary-foreground));
+  transition: all 0.18s;
+}
+.btn-primary:hover { filter: brightness(0.92); }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  background: rgb(var(--secondary));
+  color: rgb(var(--secondary-foreground));
+  transition: all 0.18s;
+}
+.btn-secondary:hover { opacity: 0.85; }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid rgb(var(--border) / 0.4);
+  background: rgb(var(--background));
+  color: rgb(var(--muted-foreground));
+  transition: all 0.18s;
+}
+.btn-outline:hover {
+  border-color: rgb(var(--primary) / 0.5);
+  color: rgb(var(--foreground));
+}
+
+.detail-body { padding: 2rem 2.5rem; }
+
+.detail-section {
+  margin-bottom: 2.5rem;
+}
+.detail-section-title {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgb(var(--border) / 0.15);
+}
+
+/* Ideal-for cards */
+.ideal-for-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+.ideal-for-card {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.15);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 1rem;
+  font-size: 0.88rem;
+  color: rgb(var(--muted-foreground));
+  line-height: 1.45;
+}
+.ideal-for-card .use-icon {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+/* Pros / Cons */
+.pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+@media (max-width: 560px) { .pros-cons { grid-template-columns: 1fr; } }
+.pros-cons h4 {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  color: rgb(var(--muted-foreground));
+}
+.pros-cons ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.pros-cons li {
+  font-size: 0.88rem;
+  color: rgb(var(--muted-foreground));
+  padding-left: 1.4rem;
+  position: relative;
+  line-height: 1.45;
+}
+.pros-cons li::before {
+  position: absolute;
+  left: 0;
+  font-size: 0.85rem;
+}
+.pros li::before { content: "✓"; color: #4a9e5c; }
+.cons li::before { content: "✗"; color: #c25a5a; }
+
+/* Resources section */
+.resource-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.resource-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.15);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 1rem 1.25rem;
+  transition: all 0.18s;
+  cursor: pointer;
+}
+.resource-card:hover {
+  border-color: rgb(var(--primary) / 0.35);
+}
+.resource-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgb(var(--primary) / 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+.resource-info { flex: 1; }
+.resource-info .resource-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
+}
+.resource-info .resource-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(var(--muted));
+}
+.resource-tried-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  padding: 0.22rem 0.65rem;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+.resource-tried-badge.tried {
+  background: #d4edda;
+  color: #256e3a;
+}
+.resource-tried-badge.not-tried {
+  background: rgb(var(--foreground) / 0.05);
+  color: rgb(var(--muted));
+}
+
+/* Use cases section */
+.use-case-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.use-case-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.15);
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.9rem;
+}
+.use-case-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgb(var(--secondary) / 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+}
+
+/* Comments section */
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.comment-card {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.15);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 1rem 1.25rem;
+}
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+.comment-user {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.comment-time {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgb(var(--muted));
+}
+.comment-text {
+  font-size: 0.88rem;
+  color: rgb(var(--muted-foreground));
+  line-height: 1.5;
+}
+
+/* Exploration detail card */
+.exploration-detail {
+  background: rgb(var(--card));
+  border: 1px solid rgb(var(--border) / 0.15);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+/* Request modal */
+.request-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(var(--foreground) / 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.request-overlay.open { opacity: 1; pointer-events: all; }
+.request-modal {
+  background: rgb(var(--background));
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 520px;
+  border: 1px solid rgb(var(--border) / 0.25);
+  box-shadow: 0 24px 64px rgb(var(--foreground) / 0.15);
+  padding: 2rem;
+}
+.request-modal h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.request-modal p { font-size: 0.9rem; color: rgb(var(--muted-foreground)); margin-bottom: 1.5rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: rgb(var(--muted-foreground));
+  margin-bottom: 0.4rem;
+}
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid rgb(var(--border) / 0.35);
+  background: rgb(var(--card));
+  padding: 0.6rem 0.85rem;
+  font-size: 0.88rem;
+  font-family: var(--font-sans);
+  color: rgb(var(--foreground));
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  outline: none;
+  border-color: rgb(var(--ring));
+  box-shadow: 0 0 0 3px rgb(var(--ring) / 0.18);
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgb(var(--border) / 0.4); border-radius: 100px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--border) / 0.6); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .list-header, .list-row { font-size: 0.75rem; grid-template-columns: 2fr 1fr 1fr; }
+  .list-header > :nth-child(n+4), .list-row > :nth-child(n+4) { display: none; }
+  .detail-hero { flex-direction: column; padding: 1.5rem; }
+  .detail-body { padding: 1.5rem; }
+  .detail-hero .hero-actions { align-items: flex-start; flex-direction: row; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <!-- ===== HERO ===== -->
+  <header class="hero animate-in">
+    <h1>Tool Catalog</h1>
+    <p>Discover what AI can do in the tools your organisation uses — and learn how to make the most of them.</p>
+  </header>
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar animate-in animate-in-delay-1">
+    <div class="scope-toggle" id="scopeToggle">
+      <button class="active" data-scope="org">My Org's Stack</button>
+      <button data-scope="all">Explore All Tools</button>
+    </div>
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+      <input type="text" id="searchInput" placeholder="Search tools, capabilities, use cases…">
+    </div>
+    <div class="view-toggles">
+      <button class="view-toggle-btn active" data-view="grid" title="Grid view">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </button>
+      <button class="view-toggle-btn" data-view="list" title="List view">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== CIB DOMAIN NAV ===== -->
+  <nav class="domain-nav animate-in animate-in-delay-2" id="domainNav">
+    <div class="domain-tile" data-domain="all">
+      <span class="icon">🌐</span>
+      <span class="label">All Domains</span>
+      <span class="count" id="countAll">55 tools</span>
+    </div>
+    <div class="domain-tile" data-domain="workforce_and_skills">
+      <span class="icon">👥</span>
+      <span class="label">Workforce & Skills</span>
+      <span class="count">8 tools</span>
+    </div>
+    <div class="domain-tile" data-domain="projects_and_innovation">
+      <span class="icon">🚀</span>
+      <span class="label">Projects & Innovation</span>
+      <span class="count">10 tools</span>
+    </div>
+    <div class="domain-tile" data-domain="customers_and_contracts">
+      <span class="icon">🤝</span>
+      <span class="label">Customers & Contracts</span>
+      <span class="count">9 tools</span>
+    </div>
+    <div class="domain-tile" data-domain="communications_and_collaboration">
+      <span class="icon">💬</span>
+      <span class="label">Comms & Collaboration</span>
+      <span class="count">12 tools</span>
+    </div>
+    <div class="domain-tile" data-domain="meetings_and_engagements">
+      <span class="icon">📅</span>
+      <span class="label">Meetings & Engagements</span>
+      <span class="count">7 tools</span>
+    </div>
+    <div class="domain-tile" data-domain="insights_and_analytics">
+      <span class="icon">📊</span>
+      <span class="label">Insights & Analytics</span>
+      <span class="count">9 tools</span>
+    </div>
+  </nav>
+
+  <!-- ===== FILTER BAR ===== -->
+  <div class="filter-bar animate-in animate-in-delay-3" id="filterBar">
+    <div class="mono-label" style="margin-right: 0.5rem;">Filters:</div>
+    <button class="filter-chip active" data-filter="all">All</button>
+    <button class="filter-chip" data-filter="org">🏢 Used by org</button>
+    <button class="filter-chip" data-filter="industry">🌍 Common in industry</button>
+    <button class="filter-chip" data-filter="has-resources">📚 Has resources</button>
+    <button class="filter-chip" data-filter="high-maturity">💡 High AI maturity</button>
+
+    <select class="sort-select" id="sortSelect" style="margin-left: auto;">
+      <option value="recommended">Sort: Recommended</option>
+      <option value="adopted">Most adopted</option>
+      <option value="resources">Most resources</option>
+      <option value="maturity">AI maturity</option>
+      <option value="alpha">A → Z</option>
+    </select>
+    <span class="results-meta" id="resultsMeta">Showing 18 tools</span>
+  </div>
+
+  <!-- ===== GRID VIEW ===== -->
+  <div class="tool-grid" id="toolGrid"></div>
+
+  <!-- ===== LIST VIEW ===== -->
+  <div class="tool-list" id="toolList">
+    <div class="list-header">
+      <div>Tool</div>
+      <div>CIB Domain</div>
+      <div>AI Maturity</div>
+      <div>Explored</div>
+      <div>Org Status</div>
+      <div>Resources</div>
+      <div>Actions</div>
+    </div>
+    <div id="toolListRows"></div>
+  </div>
+</div>
+
+<!-- ===== DETAIL MODAL ===== -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-content">
+    <div class="detail-hero" id="detailHero"></div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- ===== REQUEST MODAL ===== -->
+<div class="request-overlay" id="requestModal">
+  <div class="request-modal">
+    <h3>Request a Tool</h3>
+    <p>Suggest a tool that should be added to your organisation's landscape or the TATOMA catalog.</p>
+    <div class="form-group">
+      <label>Tool Name</label>
+      <input type="text" placeholder="e.g. Notion AI, Midjourney…" id="requestToolName">
+    </div>
+    <div class="form-group">
+      <label>CIB Domain</label>
+      <select id="requestDomain">
+        <option value="">Select a domain…</option>
+        <option value="workforce_and_skills">Workforce & Skills</option>
+        <option value="projects_and_innovation">Projects & Innovation</option>
+        <option value="customers_and_contracts">Customers & Contracts</option>
+        <option value="communications_and_collaboration">Comms & Collaboration</option>
+        <option value="meetings_and_engagements">Meetings & Engagements</option>
+        <option value="insights_and_analytics">Insights & Analytics</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Why do you need this tool?</label>
+      <textarea placeholder="Describe your use case and how it would help your work…" id="requestReason"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn-outline" onclick="closeRequestModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitRequest()">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ===== TOOL DATA (v1: resources + exploration, not courses + proficiency) =====
+const TOOLS = [
+  { id: 1, name: "Slack", vendor: "Slack Technologies", logo: "https://logo.clearbit.com/slack.com",
+    aiDescription: "AI-generated channel summaries, thread digests, and intelligent search answers across your workspace",
+    domain: "communications_and_collaboration", domainLabel: "💬 Comms & Collaboration",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 14, industry: true, industryPct: 82,
+    tags: ["messaging", "ai-search", "automation"],
+    idealFor: [
+      { icon: "📋", text: "Catching up on channels you missed with AI-generated summaries" },
+      { icon: "🔍", text: "Finding answers across thousands of messages with natural language search" },
+      { icon: "⚡", text: "Automating routine responses and workflow triggers" },
+    ],
+    pros: ["Deeply integrated AI — summaries, search, and recaps are native", "Excellent third-party AI bot ecosystem", "Enterprise-grade security and compliance", "Works across all CIB domains"],
+    cons: ["AI features require paid plans (Pro+)", "Summary quality degrades in very active channels", "Limited customisation of AI behaviour"],
+    resources: [
+      { title: "Getting Started with Slack AI", source: "Slack Help", type: "docs", url: "#", tried: true },
+      { title: "How to Use Slack AI Search", source: "YouTube", type: "video", url: "#", tried: true },
+      { title: "Slack AI: Channel Recaps Explained", source: "Slack Blog", type: "article", url: "#", tried: true },
+      { title: "Building Slack Workflows with AI", source: "Slack Docs", type: "guide", url: "#", tried: false },
+      { title: "Advanced Slack AI Tips for Teams", source: "Medium", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Automate meeting follow-ups", "Summarise project channels weekly"],
+    comments: [{ user: "Maria K.", text: "The channel recaps feature alone saves me 30 min/day. Highly recommend trying it!", time: "2 days ago" }]
+  },
+  { id: 2, name: "Power BI", vendor: "Microsoft", logo: "https://logo.clearbit.com/powerbi.microsoft.com",
+    aiDescription: "Natural language Q&A, AI-powered insights detection, and automated report narratives",
+    domain: "insights_and_analytics", domainLabel: "📊 Insights & Analytics",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 9, industry: true, industryPct: 71,
+    tags: ["data-analysis", "visualization", "ai-insights"],
+    idealFor: [
+      { icon: "📊", text: "Asking business questions in plain English and getting instant charts" },
+      { icon: "💡", text: "Automatically detecting trends and anomalies in your data" },
+      { icon: "📝", text: "Generating narrative explanations of dashboard metrics" },
+    ],
+    pros: ["Q&A natural language queries are production-ready", "Deep integration with Microsoft 365 ecosystem", "Copilot adds generative report creation", "Strong governance and row-level security"],
+    cons: ["AI features locked behind premium licensing", "Natural language understanding struggles with complex schemas", "Copilot still in preview for some features"],
+    resources: [
+      { title: "Power BI AI Fundamentals", source: "Microsoft Learn", type: "docs", url: "#", tried: true },
+      { title: "Natural Language Q&A in Power BI", source: "YouTube", type: "video", url: "#", tried: true },
+      { title: "Smart Narratives & AI Insights", source: "Microsoft Learn", type: "guide", url: "#", tried: true },
+      { title: "Power BI Copilot Deep Dive", source: "YouTube", type: "video", url: "#", tried: true },
+      { title: "AI-Enhanced Dashboard Design", source: "SQLBI", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Generate monthly sales reports", "Detect revenue anomalies automatically"],
+    comments: [{ user: "Tom R.", text: "Q&A works surprisingly well if you name your columns clearly.", time: "1 week ago" }]
+  },
+  { id: 3, name: "ChatGPT", vendor: "OpenAI", logo: "https://logo.clearbit.com/openai.com",
+    aiDescription: "General-purpose AI assistant for writing, analysis, coding, research, and creative tasks",
+    domain: "communications_and_collaboration", domainLabel: "💬 Comms & Collaboration",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 22, industry: true, industryPct: 91,
+    tags: ["writing", "research", "coding", "ai-assistant"],
+    idealFor: [
+      { icon: "✍️", text: "Drafting and refining professional communications and documents" },
+      { icon: "🔬", text: "Researching topics and synthesising information from multiple sources" },
+      { icon: "💻", text: "Generating, debugging, and explaining code across languages" },
+    ],
+    pros: ["Most versatile general-purpose AI available", "Excellent at following complex instructions", "Supports file analysis, browsing, and code execution", "Regular model improvements"],
+    cons: ["Can hallucinate facts — requires verification", "Enterprise data governance requires ChatGPT Enterprise", "Token limits on long conversations"],
+    resources: [
+      { title: "ChatGPT Essentials for Work", source: "OpenAI Help", type: "docs", url: "#", tried: true },
+      { title: "Prompt Engineering Guide", source: "OpenAI", type: "guide", url: "#", tried: true },
+      { title: "Advanced Prompting Techniques", source: "YouTube", type: "video", url: "#", tried: true },
+      { title: "Using ChatGPT for Data Analysis", source: "Medium", type: "article", url: "#", tried: true },
+      { title: "Building Custom GPTs", source: "OpenAI Docs", type: "guide", url: "#", tried: true },
+      { title: "AI Governance Best Practices", source: "Harvard Business Review", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Draft client proposals", "Analyse survey results", "Generate meeting agendas"],
+    comments: [
+      { user: "Sarah L.", text: "Custom GPTs are a game-changer for repetitive tasks. Set one up for our weekly reports.", time: "3 days ago" },
+      { user: "James P.", text: "Works great with the data analysis mode for CSV files — much faster than Excel for quick questions.", time: "1 week ago" },
+    ]
+  },
+  { id: 4, name: "Notion", vendor: "Notion Labs", logo: "https://logo.clearbit.com/notion.so",
+    aiDescription: "AI writing assistant, autofill databases, Q&A across workspace, and automated summaries",
+    domain: "projects_and_innovation", domainLabel: "🚀 Projects & Innovation",
+    maturity: "medium", maturityLabel: "Medium",
+    orgUsed: true, orgTeams: 7, industry: false, industryPct: 45,
+    tags: ["project-management", "writing", "knowledge-base"],
+    idealFor: [
+      { icon: "📝", text: "Drafting and editing documents with AI writing assistance" },
+      { icon: "🗃️", text: "Auto-filling database properties from page content" },
+      { icon: "❓", text: "Asking questions about your workspace and getting sourced answers" },
+    ],
+    pros: ["AI natively integrated into the writing experience", "Q&A searches across all connected workspace pages", "Database autofill saves significant data entry time"],
+    cons: ["AI add-on costs extra per member per month", "Q&A accuracy depends heavily on workspace organisation", "Limited AI capabilities in free tier"],
+    resources: [
+      { title: "Notion AI Getting Started", source: "Notion Help", type: "docs", url: "#", tried: true },
+      { title: "AI-Powered Project Docs", source: "YouTube", type: "video", url: "#", tried: false },
+      { title: "Database Autofill Guide", source: "Notion Templates", type: "guide", url: "#", tried: false },
+    ],
+    useCases: ["Auto-summarise meeting notes"],
+    comments: []
+  },
+  { id: 5, name: "Salesforce", vendor: "Salesforce", logo: "https://logo.clearbit.com/salesforce.com",
+    aiDescription: "Einstein AI for predictive lead scoring, opportunity insights, automated email drafting, and sales forecasting",
+    domain: "customers_and_contracts", domainLabel: "🤝 Customers & Contracts",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 5, industry: true, industryPct: 67,
+    tags: ["crm", "sales", "ai-predictions"],
+    idealFor: [
+      { icon: "🎯", text: "Predicting which leads are most likely to convert" },
+      { icon: "📧", text: "Auto-drafting personalised outreach emails" },
+      { icon: "📈", text: "Forecasting quarterly revenue with AI confidence scores" },
+    ],
+    pros: ["Einstein deeply embedded across Sales, Service, and Marketing clouds", "Predictive scoring is battle-tested at enterprise scale", "Copilot adds conversational CRM interaction"],
+    cons: ["AI features spread across many add-on SKUs", "Requires clean data to deliver accurate predictions", "Complex setup for advanced Einstein features"],
+    resources: [
+      { title: "Einstein AI Overview", source: "Trailhead", type: "guide", url: "#", tried: true },
+      { title: "Predictive Lead Scoring Setup", source: "Salesforce Docs", type: "docs", url: "#", tried: true },
+      { title: "AI-Powered Sales Workflows", source: "YouTube", type: "video", url: "#", tried: false },
+      { title: "Einstein Copilot Deep Dive", source: "Salesforce Blog", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Prioritise hot leads", "Automate follow-up emails"],
+    comments: [{ user: "David M.", text: "Lead scoring took a few weeks to calibrate but now it's genuinely useful.", time: "5 days ago" }]
+  },
+  { id: 6, name: "Figma", vendor: "Figma", logo: "https://logo.clearbit.com/figma.com",
+    aiDescription: "AI-powered design suggestions, auto-layout generation, and content replacement with contextual fills",
+    domain: "projects_and_innovation", domainLabel: "🚀 Projects & Innovation",
+    maturity: "medium", maturityLabel: "Medium",
+    orgUsed: true, orgTeams: 3, industry: false, industryPct: 38,
+    tags: ["design", "prototyping", "ai-generation"],
+    idealFor: [
+      { icon: "🎨", text: "Generating design variations and layout suggestions automatically" },
+      { icon: "📐", text: "Creating responsive auto-layouts from rough wireframes" },
+      { icon: "🖼️", text: "Replacing placeholder content with contextually relevant fills" },
+    ],
+    pros: ["AI features feel native to the design workflow", "Collaborative by default — AI assists in real-time", "Growing plugin ecosystem with AI capabilities"],
+    cons: ["AI features still emerging — many in beta", "Limited compared to dedicated AI design tools", "Requires design literacy to leverage effectively"],
+    resources: [
+      { title: "Figma AI Features Overview", source: "Figma Blog", type: "article", url: "#", tried: false },
+      { title: "AI-Assisted Design Workflows", source: "YouTube", type: "video", url: "#", tried: false },
+    ],
+    useCases: [],
+    comments: []
+  },
+  { id: 7, name: "Tableau", vendor: "Tableau Software", logo: "https://logo.clearbit.com/tableau.com",
+    aiDescription: "Ask Data natural language queries, Explain Data anomaly detection, and Einstein Discovery predictive models",
+    domain: "insights_and_analytics", domainLabel: "📊 Insights & Analytics",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: false, orgTeams: 0, industry: true, industryPct: 58,
+    tags: ["data-analysis", "visualization", "predictions"],
+    idealFor: [
+      { icon: "💬", text: "Querying dashboards in natural language without writing formulas" },
+      { icon: "🔎", text: "Automatically explaining why data points are unusual" },
+      { icon: "🔮", text: "Building no-code predictive models with Einstein Discovery" },
+    ],
+    pros: ["Ask Data is production-ready and surprisingly accurate", "Explain Data provides genuine analytical value", "Best-in-class data visualization capabilities"],
+    cons: ["AI features require Tableau Server/Cloud premium", "Learning curve for advanced predictive features", "Natural language can misinterpret ambiguous field names"],
+    resources: [
+      { title: "Tableau AI Features Intro", source: "Tableau Docs", type: "docs", url: "#", tried: false },
+      { title: "Ask Data Tutorial", source: "YouTube", type: "video", url: "#", tried: false },
+      { title: "Einstein Discovery Guide", source: "Tableau Help", type: "guide", url: "#", tried: false },
+    ],
+    useCases: ["Natural language data exploration"],
+    comments: []
+  },
+  { id: 8, name: "Otter.ai", vendor: "Otter.ai", logo: "https://logo.clearbit.com/otter.ai",
+    aiDescription: "Real-time meeting transcription, AI-generated summaries, action item extraction, and searchable meeting archives",
+    domain: "meetings_and_engagements", domainLabel: "📅 Meetings & Engagements",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 11, industry: false, industryPct: 34,
+    tags: ["transcription", "meetings", "ai-summaries"],
+    idealFor: [
+      { icon: "🎙️", text: "Automatically transcribing meetings with speaker identification" },
+      { icon: "📋", text: "Extracting action items and key decisions from conversations" },
+      { icon: "🔍", text: "Searching across all past meetings by topic or keyword" },
+    ],
+    pros: ["Transcription accuracy is excellent for English", "Summaries and action items are genuinely useful", "Integrates natively with Zoom, Teams, and Google Meet"],
+    cons: ["Accuracy drops with heavy accents or crosstalk", "Free tier has limited monthly minutes", "Some users report privacy concerns with always-on recording"],
+    resources: [
+      { title: "Otter.ai Quick Start Guide", source: "Otter Help", type: "docs", url: "#", tried: true },
+      { title: "Meeting Intelligence Best Practices", source: "YouTube", type: "video", url: "#", tried: true },
+      { title: "Otter + Zoom Integration", source: "Otter Blog", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Automate meeting notes", "Search past decisions"],
+    comments: [{ user: "Anna S.", text: "Works great with Zoom. The action items extraction saves a ton of follow-up time.", time: "4 days ago" }]
+  },
+  { id: 9, name: "HubSpot", vendor: "HubSpot", logo: "https://logo.clearbit.com/hubspot.com",
+    aiDescription: "Breeze AI for content generation, predictive lead scoring, conversation intelligence, and automated workflows",
+    domain: "customers_and_contracts", domainLabel: "🤝 Customers & Contracts",
+    maturity: "medium", maturityLabel: "Medium",
+    orgUsed: false, orgTeams: 0, industry: true, industryPct: 52,
+    tags: ["marketing", "crm", "content-generation"],
+    idealFor: [
+      { icon: "✏️", text: "Generating blog posts, emails, and social content with Breeze" },
+      { icon: "🎯", text: "Scoring and prioritising leads based on engagement patterns" },
+      { icon: "📞", text: "Analysing sales calls for coaching opportunities" },
+    ],
+    pros: ["Breeze integrates AI across marketing, sales, and service", "Content generation quality is good for first drafts", "Free CRM tier includes basic AI features"],
+    cons: ["Advanced AI features require expensive Enterprise tiers", "Breeze is newer and less mature than competitors", "Content generation can feel generic without careful prompting"],
+    resources: [
+      { title: "HubSpot Breeze Overview", source: "HubSpot Academy", type: "guide", url: "#", tried: false },
+      { title: "AI Marketing Campaigns", source: "YouTube", type: "video", url: "#", tried: false },
+      { title: "Conversation Intelligence Setup", source: "HubSpot Docs", type: "docs", url: "#", tried: false },
+    ],
+    useCases: ["Generate marketing emails"],
+    comments: []
+  },
+  { id: 10, name: "Microsoft Teams", vendor: "Microsoft", logo: "https://logo.clearbit.com/microsoft.com",
+    aiDescription: "Copilot meeting summaries, intelligent recap, real-time translation, and AI-composed messages",
+    domain: "communications_and_collaboration", domainLabel: "💬 Comms & Collaboration",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 22, industry: true, industryPct: 88,
+    tags: ["meetings", "messaging", "ai-copilot"],
+    idealFor: [
+      { icon: "📝", text: "Getting AI-generated meeting notes and action items without note-taking" },
+      { icon: "🌐", text: "Real-time translation and captioning across 30+ languages" },
+      { icon: "📨", text: "Composing and rewriting chat messages with AI tone adjustment" },
+    ],
+    pros: ["Copilot deeply integrated across chat, meetings, and channels", "Best real-time translation in the market", "Massive enterprise adoption ensures continuous investment"],
+    cons: ["Copilot requires Microsoft 365 Copilot add-on license", "Feature set varies between personal and enterprise plans", "Can feel overwhelming with the volume of AI suggestions"],
+    resources: [
+      { title: "Teams Copilot Quick Start", source: "Microsoft Learn", type: "docs", url: "#", tried: true },
+      { title: "AI Meeting Intelligence", source: "YouTube", type: "video", url: "#", tried: false },
+      { title: "Advanced Copilot Workflows", source: "Microsoft Blog", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Automate meeting recaps", "Translate real-time conversations"],
+    comments: [{ user: "Pieter V.", text: "The meeting recap is surprisingly accurate. Makes it easy to skip meetings you were invited to but don't need to attend.", time: "1 week ago" }]
+  },
+  { id: 11, name: "Jira", vendor: "Atlassian", logo: "https://logo.clearbit.com/atlassian.com",
+    aiDescription: "Atlassian Intelligence for AI-generated issue summaries, smart backlog refinement, and natural language JQL",
+    domain: "projects_and_innovation", domainLabel: "🚀 Projects & Innovation",
+    maturity: "medium", maturityLabel: "Medium",
+    orgUsed: true, orgTeams: 8, industry: true, industryPct: 63,
+    tags: ["project-management", "agile", "ai-summaries"],
+    idealFor: [
+      { icon: "📋", text: "Summarising long issue threads and extracting key decisions" },
+      { icon: "🔍", text: "Searching your backlog using natural language instead of JQL" },
+      { icon: "📊", text: "Getting AI recommendations for sprint planning and story points" },
+    ],
+    pros: ["AI summaries save significant time on long ticket threads", "Natural language JQL opens up querying to non-technical users", "Rovo virtual agent can answer project questions"],
+    cons: ["AI features require Atlassian Intelligence (Premium+ plans)", "Summarisation quality varies with ticket quality", "Still catching up to competitors on generative features"],
+    resources: [
+      { title: "Atlassian Intelligence Intro", source: "Atlassian Docs", type: "docs", url: "#", tried: true },
+      { title: "AI-Powered Project Management", source: "YouTube", type: "video", url: "#", tried: false },
+    ],
+    useCases: ["Summarise sprint retrospectives"],
+    comments: []
+  },
+  { id: 12, name: "Grammarly", vendor: "Grammarly", logo: "https://logo.clearbit.com/grammarly.com",
+    aiDescription: "AI writing enhancement with tone detection, generative rewriting, brand voice consistency, and knowledge-aware suggestions",
+    domain: "communications_and_collaboration", domainLabel: "💬 Comms & Collaboration",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 18, industry: false, industryPct: 41,
+    tags: ["writing", "tone-detection", "brand-voice"],
+    idealFor: [
+      { icon: "✍️", text: "Rewriting drafts to match your organisation's brand voice" },
+      { icon: "🎭", text: "Adjusting tone for different audiences — formal, friendly, persuasive" },
+      { icon: "📊", text: "Tracking team writing quality metrics over time" },
+    ],
+    pros: ["Best-in-class grammar and clarity suggestions", "Generative AI rewriting is remarkably good", "Works everywhere — browser, desktop, mobile, Slack, Teams"],
+    cons: ["Business tier pricing can be steep for large teams", "Brand voice training requires initial setup effort", "Occasional false positives on technical or domain-specific writing"],
+    resources: [
+      { title: "Grammarly AI Writing Basics", source: "Grammarly Blog", type: "article", url: "#", tried: true },
+      { title: "Brand Voice Setup Guide", source: "Grammarly Docs", type: "guide", url: "#", tried: true },
+      { title: "Team Analytics Dashboard", source: "YouTube", type: "video", url: "#", tried: true },
+    ],
+    useCases: ["Maintain consistent brand voice", "Improve team writing quality"],
+    comments: [{ user: "Lisa T.", text: "The brand voice feature is excellent once you train it with 5-6 sample documents.", time: "2 weeks ago" }]
+  },
+  { id: 13, name: "Claude", vendor: "Anthropic", logo: "https://logo.clearbit.com/anthropic.com",
+    aiDescription: "Advanced AI assistant for analysis, writing, coding, and complex reasoning with extended thinking capabilities",
+    domain: "communications_and_collaboration", domainLabel: "💬 Comms & Collaboration",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 16, industry: true, industryPct: 64,
+    tags: ["reasoning", "analysis", "writing", "coding"],
+    idealFor: [
+      { icon: "🧠", text: "Breaking down complex problems with structured reasoning" },
+      { icon: "📄", text: "Analysing long documents and extracting structured insights" },
+      { icon: "💻", text: "Writing, reviewing, and debugging code with detailed explanations" },
+    ],
+    pros: ["Exceptional at nuanced, multi-step reasoning tasks", "Handles very long documents and contexts", "Strong safety alignment and refusal of harmful outputs", "Extended thinking for complex problems"],
+    cons: ["Smaller ecosystem than ChatGPT (fewer plugins/integrations)", "Knowledge cutoff may miss very recent events", "Can be more cautious than needed on edge cases"],
+    resources: [
+      { title: "Getting Started with Claude", source: "Anthropic Docs", type: "docs", url: "#", tried: true },
+      { title: "Effective Prompting for Claude", source: "Anthropic Blog", type: "guide", url: "#", tried: true },
+      { title: "Claude for Document Analysis", source: "YouTube", type: "video", url: "#", tried: false },
+      { title: "Building with the Claude API", source: "Anthropic Docs", type: "docs", url: "#", tried: false },
+    ],
+    useCases: ["Analyse long contracts", "Draft technical documentation", "Code review assistance"],
+    comments: [{ user: "Israel", text: "Extended thinking is incredible for complex analysis tasks. Try it with financial reports.", time: "1 day ago" }]
+  },
+  { id: 14, name: "Miro", vendor: "Miro", logo: "https://logo.clearbit.com/miro.com",
+    aiDescription: "AI-powered sticky note clustering, mind map generation, summary creation, and image generation on the canvas",
+    domain: "projects_and_innovation", domainLabel: "🚀 Projects & Innovation",
+    maturity: "medium", maturityLabel: "Medium",
+    orgUsed: true, orgTeams: 6, industry: false, industryPct: 33,
+    tags: ["whiteboard", "ideation", "ai-clustering"],
+    idealFor: [
+      { icon: "🗂️", text: "Automatically clustering brainstorm sticky notes into themes" },
+      { icon: "🧠", text: "Generating mind maps from text descriptions" },
+      { icon: "📝", text: "Summarising board content into structured takeaways" },
+    ],
+    pros: ["AI clustering genuinely accelerates workshop facilitation", "Canvas-native AI feels natural in visual workflows", "Good integration with Jira, Confluence, and Slack"],
+    cons: ["AI features limited to paid plans", "Image generation quality is basic", "Mind map generation can produce shallow results"],
+    resources: [
+      { title: "Miro AI Features Overview", source: "Miro Blog", type: "article", url: "#", tried: false },
+    ],
+    useCases: [],
+    comments: []
+  },
+  { id: 15, name: "Google Analytics", vendor: "Google", logo: "https://logo.clearbit.com/google.com",
+    aiDescription: "AI-powered insights, predictive audiences, anomaly detection, and natural language querying of analytics data",
+    domain: "insights_and_analytics", domainLabel: "📊 Insights & Analytics",
+    maturity: "medium", maturityLabel: "Medium",
+    orgUsed: true, orgTeams: 4, industry: true, industryPct: 76,
+    tags: ["web-analytics", "predictions", "audience"],
+    idealFor: [
+      { icon: "📈", text: "Predicting which users are likely to convert or churn" },
+      { icon: "🔔", text: "Automatically detecting unusual traffic patterns and anomalies" },
+      { icon: "💬", text: "Asking questions about your analytics data in plain English" },
+    ],
+    pros: ["Predictive audiences are powerful for marketing segmentation", "Free tier includes most AI features", "Deep integration with Google Ads ecosystem"],
+    cons: ["GA4 interface has steep learning curve", "Natural language querying is still basic", "Data sampling can affect AI insight accuracy"],
+    resources: [
+      { title: "GA4 AI Features Overview", source: "Google Analytics Help", type: "docs", url: "#", tried: true },
+      { title: "Predictive Audiences Guide", source: "YouTube", type: "video", url: "#", tried: false },
+    ],
+    useCases: ["Predict churn risk"],
+    comments: []
+  },
+  { id: 16, name: "Fireflies.ai", vendor: "Fireflies", logo: "https://logo.clearbit.com/fireflies.ai",
+    aiDescription: "AI meeting assistant with transcription, smart summaries, topic tracking, and conversation analytics",
+    domain: "meetings_and_engagements", domainLabel: "📅 Meetings & Engagements",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: false, orgTeams: 0, industry: false, industryPct: 22,
+    tags: ["transcription", "meetings", "analytics"],
+    idealFor: [
+      { icon: "🎙️", text: "Transcribing meetings across Zoom, Teams, and Google Meet" },
+      { icon: "📊", text: "Tracking talk-time ratios and sentiment across meetings" },
+      { icon: "🔗", text: "Automatically creating CRM entries from sales call notes" },
+    ],
+    pros: ["Excellent transcription accuracy across accents", "Conversation analytics provide genuine coaching value", "CRM auto-logging saves significant admin time"],
+    cons: ["Requires inviting the bot to meetings", "Free tier is very limited", "Less established than Otter.ai in enterprise"],
+    resources: [
+      { title: "Fireflies.ai Quick Start", source: "Fireflies Help", type: "docs", url: "#", tried: false },
+    ],
+    useCases: [],
+    comments: []
+  },
+  { id: 17, name: "LinkedIn", vendor: "Microsoft", logo: "https://logo.clearbit.com/linkedin.com",
+    aiDescription: "AI-powered job matching, content suggestions, InMail drafting, and skill-based hiring recommendations",
+    domain: "workforce_and_skills", domainLabel: "👥 Workforce & Skills",
+    maturity: "medium", maturityLabel: "Medium",
+    orgUsed: true, orgTeams: 4, industry: true, industryPct: 94,
+    tags: ["recruitment", "networking", "ai-content"],
+    idealFor: [
+      { icon: "🎯", text: "AI-matching candidates to job postings based on skills and experience" },
+      { icon: "✍️", text: "Drafting compelling InMails and posts with AI writing assistance" },
+      { icon: "📚", text: "Discovering learning courses matched to career goals" },
+    ],
+    pros: ["Largest professional network — AI has unmatched data", "Recruiter AI features are genuinely time-saving", "Learning path recommendations are increasingly accurate"],
+    cons: ["AI features mostly behind premium subscriptions", "Content suggestions can be generic", "Algorithm changes can unpredictably affect reach"],
+    resources: [
+      { title: "LinkedIn AI for Professionals", source: "LinkedIn Help", type: "docs", url: "#", tried: true },
+      { title: "AI-Powered Recruiting Guide", source: "LinkedIn Blog", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Automate candidate sourcing"],
+    comments: []
+  },
+  { id: 18, name: "Canva", vendor: "Canva", logo: "https://logo.clearbit.com/canva.com",
+    aiDescription: "Magic Write AI text generation, Magic Edit image manipulation, text-to-image creation, and AI presentation builder",
+    domain: "communications_and_collaboration", domainLabel: "💬 Comms & Collaboration",
+    maturity: "high", maturityLabel: "High",
+    orgUsed: true, orgTeams: 10, industry: false, industryPct: 47,
+    tags: ["design", "image-generation", "presentations"],
+    idealFor: [
+      { icon: "🖼️", text: "Generating custom images and graphics from text descriptions" },
+      { icon: "✨", text: "Removing backgrounds and editing images with AI-powered tools" },
+      { icon: "📑", text: "Creating full presentations from a single text prompt" },
+    ],
+    pros: ["AI features deeply woven into every design workflow", "Magic Studio makes advanced editing accessible to non-designers", "Excellent template ecosystem enhanced by AI"],
+    cons: ["Most AI features require Canva Pro or Teams plan", "Image generation quality below Midjourney/DALL-E", "Brand kit AI features need careful setup"],
+    resources: [
+      { title: "Canva Magic Studio Guide", source: "Canva Help", type: "docs", url: "#", tried: true },
+      { title: "AI-Powered Visual Content", source: "YouTube", type: "video", url: "#", tried: false },
+      { title: "Brand-Consistent AI Design", source: "Canva Blog", type: "article", url: "#", tried: false },
+    ],
+    useCases: ["Generate social media visuals", "Create presentations from briefs"],
+    comments: []
+  }
+];
+
+// ===== STATE =====
+let currentScope = "org";
+let currentDomain = "all";
+let currentFilter = "all";
+let currentView = "grid";
+let searchQuery = "";
+
+// ===== RENDER FUNCTIONS =====
+
+function getFilteredTools() {
+  let filtered = [...TOOLS];
+  if (currentScope === "org") filtered = filtered.filter(t => t.orgUsed);
+  if (currentDomain !== "all") filtered = filtered.filter(t => t.domain === currentDomain);
+  if (currentFilter === "org") filtered = filtered.filter(t => t.orgUsed);
+  if (currentFilter === "industry") filtered = filtered.filter(t => t.industry);
+  if (currentFilter === "has-resources") filtered = filtered.filter(t => t.resources.length > 0);
+  if (currentFilter === "high-maturity") filtered = filtered.filter(t => t.maturity === "high");
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(t =>
+      t.name.toLowerCase().includes(q) ||
+      t.vendor.toLowerCase().includes(q) ||
+      t.aiDescription.toLowerCase().includes(q) ||
+      t.tags.some(tag => tag.includes(q))
+    );
+  }
+  return filtered;
+}
+
+function resourceTypeIcon(type) {
+  const icons = { docs: "📄", video: "▶️", article: "📝", guide: "📘", tutorial: "🎓", webinar: "🎙️" };
+  return icons[type] || "📎";
+}
+
+function maturityBadgeClass(m) {
+  return `badge badge-maturity-${m}`;
+}
+
+function renderToolCard(tool) {
+  const triedCount = tool.resources.filter(r => r.tried).length;
+  const totalResources = tool.resources.length;
+  const hasExplored = triedCount > 0;
+  const pct = totalResources > 0 ? Math.round((triedCount / totalResources) * 100) : 0;
+  return `
+    <div class="tool-card animate-in" onclick="openDetail(${tool.id})">
+      <div class="tool-card-header">
+        <div class="tool-logo">
+          <img src="${tool.logo}" alt="${tool.name}" onerror="this.parentElement.innerHTML='<div class=tool-logo-fallback>${tool.name[0]}</div>'">
+        </div>
+        <div class="tool-header-text">
+          <div class="tool-name">${tool.name}</div>
+          <div class="tool-vendor">${tool.vendor}</div>
+        </div>
+        <button class="bookmark-btn" onclick="event.stopPropagation(); this.classList.toggle('bookmarked')" title="Bookmark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
+      </div>
+      <div class="tool-description">${tool.aiDescription}</div>
+      <div class="tool-badges">
+        ${tool.orgUsed ? '<span class="badge badge-org">🏢 Used by your org</span>' : '<span class="badge" style="background:rgb(var(--primary)/0.08);color:rgb(var(--primary));">→ Request access</span>'}
+        ${tool.industry ? `<span class="badge badge-industry">🌍 ${tool.industryPct}% in your industry</span>` : ''}
+        <span class="badge badge-domain">${tool.domainLabel}</span>
+      </div>
+      <div class="tool-meta-row">
+        <span class="meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+          ${totalResources} resource${totalResources !== 1 ? 's' : ''}
+        </span>
+        <span class="meta-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span class="${maturityBadgeClass(tool.maturity)}">${tool.maturityLabel} AI</span>
+        </span>
+        ${tool.orgUsed && tool.orgTeams > 0 ? `<span class="meta-item" style="margin-left:auto;"><span style="font-weight:600;">${tool.orgTeams}</span> teams</span>` : ''}
+      </div>
+      ${hasExplored ? `
+        <div class="exploration-bar">
+          <div class="exploration-label">
+            <span class="exploration-status">${triedCount} of ${totalResources} explored</span>
+            <span class="exploration-count">${pct}%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        </div>
+      ` : `
+        <div class="explore-cta">Explore resources <span>→</span></div>
+      `}
+      <div class="tool-tags">
+        ${tool.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderListRow(tool) {
+  const triedCount = tool.resources.filter(r => r.tried).length;
+  const totalResources = tool.resources.length;
+  return `
+    <div class="list-row" onclick="openDetail(${tool.id})">
+      <div class="list-tool-info">
+        <div class="list-logo">
+          <img src="${tool.logo}" alt="${tool.name}" onerror="this.parentElement.innerHTML='<div class=list-logo-fallback>${tool.name[0]}</div>'">
+        </div>
+        <div>
+          <div class="list-tool-name">${tool.name}</div>
+          <div class="list-tool-vendor">${tool.vendor}</div>
+        </div>
+      </div>
+      <div class="list-cell"><span class="badge badge-domain" style="font-size:0.65rem;">${tool.domainLabel}</span></div>
+      <div class="list-cell"><span class="${maturityBadgeClass(tool.maturity)}" style="font-size:0.65rem;">${tool.maturityLabel}</span></div>
+      <div class="list-cell">${triedCount > 0 ? `${triedCount}/${totalResources}` : '—'}</div>
+      <div class="list-cell">${tool.orgUsed ? `${tool.orgTeams} teams` : '<span style="color:rgb(var(--muted))">Not adopted</span>'}</div>
+      <div class="list-cell" style="font-weight:600;">${totalResources}</div>
+      <div class="list-actions">
+        ${tool.orgUsed ? '<button class="list-action-btn">Explore</button>' : '<button class="list-action-btn">Request</button>'}
+        <button class="list-action-btn" style="color:rgb(var(--muted-foreground));">View</button>
+      </div>
+    </div>
+  `;
+}
+
+function render() {
+  const tools = getFilteredTools();
+  document.getElementById('toolGrid').innerHTML = tools.map(renderToolCard).join('');
+  document.getElementById('toolListRows').innerHTML = tools.map(renderListRow).join('');
+  document.getElementById('resultsMeta').textContent = `Showing ${tools.length} tool${tools.length !== 1 ? 's' : ''}`;
+}
+
+// ===== DETAIL MODAL =====
+function openDetail(id) {
+  const tool = TOOLS.find(t => t.id === id);
+  if (!tool) return;
+
+  const triedCount = tool.resources.filter(r => r.tried).length;
+  const totalResources = tool.resources.length;
+  const pct = totalResources > 0 ? Math.round((triedCount / totalResources) * 100) : 0;
+
+  document.getElementById('detailHero').innerHTML = `
+    <div class="detail-logo">
+      <img src="${tool.logo}" alt="${tool.name}" onerror="this.parentElement.innerHTML='<div class=detail-logo-fallback>${tool.name[0]}</div>'">
+    </div>
+    <div class="detail-hero-text">
+      <h2>${tool.name}</h2>
+      <div class="vendor-line">${tool.vendor}</div>
+      <div class="hero-badges">
+        ${tool.orgUsed ? `<span class="badge badge-org">🏢 Used by ${tool.orgTeams} teams</span>` : '<span class="badge" style="background:#fef3cd;color:#856404;">Not yet adopted</span>'}
+        ${tool.industry ? `<span class="badge badge-industry">🌍 ${tool.industryPct}% in your industry</span>` : ''}
+        <span class="badge badge-domain">${tool.domainLabel}</span>
+        <span class="${maturityBadgeClass(tool.maturity)}">${tool.maturityLabel} AI maturity</span>
+      </div>
+      <div class="hero-desc">${tool.aiDescription}</div>
+    </div>
+    <div class="hero-actions">
+      <button class="close-btn" onclick="closeDetail()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      ${tool.orgUsed
+        ? (triedCount > 0 ? '<button class="btn-primary">Continue Exploring →</button>' : '<button class="btn-primary">Start Exploring →</button>')
+        : '<button class="btn-secondary" onclick="event.stopPropagation(); openRequestModal()">Request Access</button>'
+      }
+      <button class="btn-outline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        Bookmark
+      </button>
+    </div>
+  `;
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-section">
+      <h3 class="detail-section-title">AI Capabilities</h3>
+      <div class="ideal-for-grid">
+        ${tool.idealFor.map(u => `
+          <div class="ideal-for-card">
+            <span class="use-icon">${u.icon}</span>
+            ${u.text}
+          </div>
+        `).join('')}
+      </div>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>✓ Strengths</h4>
+          <ul>${tool.pros.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+        <div class="cons">
+          <h4>✗ Limitations</h4>
+          <ul>${tool.cons.map(c => `<li>${c}</li>`).join('')}</ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3 class="detail-section-title">Resources</h3>
+      <div class="resource-list">
+        ${tool.resources.map(r => `
+          <div class="resource-card" onclick="window.open('${r.url}', '_blank')">
+            <div class="resource-icon">${resourceTypeIcon(r.type)}</div>
+            <div class="resource-info">
+              <div class="resource-title">${r.title}</div>
+              <div class="resource-meta">${r.source} · ${r.type}</div>
+            </div>
+            <span class="resource-tried-badge ${r.tried ? 'tried' : 'not-tried'}">${r.tried ? '✓ Tried' : 'Not tried'}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    ${tool.useCases.length > 0 ? `
+    <div class="detail-section">
+      <h3 class="detail-section-title">Connected Use Cases</h3>
+      <div class="use-case-list">
+        ${tool.useCases.map(uc => `
+          <div class="use-case-item">
+            <div class="use-case-icon">💡</div>
+            <span>${uc}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    ` : ''}
+
+    <div class="detail-section">
+      <h3 class="detail-section-title">Your Exploration</h3>
+      <div class="exploration-detail">
+        ${triedCount > 0 ? `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <span class="mono-label">Resources explored</span>
+              <div style="font-family:var(--font-serif);font-size:1.4rem;font-weight:100;margin-top:0.2rem;">${triedCount} of ${totalResources}</div>
+            </div>
+            <div style="text-align:right;">
+              <span class="mono-label">Progress</span>
+              <div style="font-family:var(--font-mono);font-size:1.4rem;font-weight:700;margin-top:0.2rem;">${pct}%</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem;">
+            <div class="progress-track" style="height:8px;">
+              <div class="progress-fill" style="width:${pct}%"></div>
+            </div>
+          </div>
+        ` : `
+          <div style="text-align:center;padding:1rem 0;">
+            <div style="font-size:0.95rem;color:rgb(var(--muted-foreground));margin-bottom:0.75rem;">You haven't explored any resources for this tool yet.</div>
+            <button class="btn-primary">Start Exploring →</button>
+          </div>
+        `}
+      </div>
+    </div>
+
+    ${tool.comments.length > 0 ? `
+    <div class="detail-section">
+      <h3 class="detail-section-title">Comments from your Org</h3>
+      <div class="comments-list">
+        ${tool.comments.map(c => `
+          <div class="comment-card">
+            <div class="comment-header">
+              <span class="comment-user">${c.user}</span>
+              <span class="comment-time">${c.time}</span>
+            </div>
+            <div class="comment-text">${c.text}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="margin-top:0.75rem;">
+        <button class="btn-outline" style="font-size:0.82rem;">+ Add a comment</button>
+      </div>
+    </div>
+    ` : `
+    <div class="detail-section">
+      <h3 class="detail-section-title">Comments from your Org</h3>
+      <div style="text-align:center;padding:1.5rem 0;color:rgb(var(--muted-foreground));font-size:0.9rem;">
+        No comments yet. Be the first to share your experience!
+        <div style="margin-top:0.75rem;">
+          <button class="btn-outline" style="font-size:0.82rem;">+ Add a comment</button>
+        </div>
+      </div>
+    </div>
+    `}
+  `;
+
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ===== REQUEST MODAL =====
+function openRequestModal() {
+  document.getElementById('requestModal').classList.add('open');
+}
+function closeRequestModal() {
+  document.getElementById('requestModal').classList.remove('open');
+}
+function submitRequest() {
+  alert('Tool request submitted! Your admin will review it shortly.');
+  closeRequestModal();
+}
+
+// ===== EVENT LISTENERS =====
+
+// Scope toggle
+document.getElementById('scopeToggle').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  document.querySelectorAll('#scopeToggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentScope = btn.dataset.scope;
+  render();
+});
+
+// Domain nav
+document.getElementById('domainNav').addEventListener('click', e => {
+  const tile = e.target.closest('.domain-tile');
+  if (!tile) return;
+  document.querySelectorAll('.domain-tile').forEach(t => t.classList.remove('active'));
+  tile.classList.add('active');
+  currentDomain = tile.dataset.domain;
+  render();
+});
+
+// Filter chips
+document.getElementById('filterBar').addEventListener('click', e => {
+  const chip = e.target.closest('.filter-chip');
+  if (!chip) return;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  currentFilter = chip.dataset.filter;
+  render();
+});
+
+// View toggle
+document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentView = btn.dataset.view;
+    document.getElementById('toolGrid').classList.toggle('hidden', currentView === 'list');
+    document.getElementById('toolList').classList.toggle('active', currentView === 'list');
+  });
+});
+
+// Search
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  render();
+});
+
+// Close modals on overlay click
+document.getElementById('detailModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeDetail();
+});
+document.getElementById('requestModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeRequestModal();
+});
+
+// Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDetail(); closeRequestModal(); }
+});
+
+// ===== INIT =====
+render();
+</script>
+
+</body>
+</html>

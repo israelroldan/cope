@@ -1,0 +1,104 @@
+{
+  "id": "multiple-choice",
+  "number": 1,
+  "name": "Multiple Choice (Single Answer)",
+  "slug": "multiple-choice",
+  "tier": {
+    "bloom": "remember",
+    "level": 1,
+    "label": "Remember — Factual Recall"
+  },
+  "summary": "Question with 2-6 answer options; user taps one. Immediate feedback. Points for correctness ± speed.",
+  "platforms": [
+    "Kahoot",
+    "Quizizz",
+    "Duolingo",
+    "SoloLearn",
+    "Quizlet",
+    "Nearpod",
+    "Memrise",
+    "Blooket"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "Most mature format. LLMs excel at creating questions with plausible distractors. AI can generate questions with pedagogically sound distractors that reflect common misconceptions."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "tap",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "question": {
+      "type": "string",
+      "required": true,
+      "description": "The question text posed to the learner."
+    },
+    "options": {
+      "type": "string[]",
+      "required": true,
+      "description": "Array of answer options (2-6 items).",
+      "minItems": 2,
+      "maxItems": 6
+    },
+    "correctIndex": {
+      "type": "integer",
+      "required": true,
+      "description": "0-based index of the correct answer in the options array."
+    },
+    "explanation": {
+      "type": "string",
+      "required": false,
+      "description": "Optional explanation of the correct answer shown after selection."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": true,
+      "description": "Difficulty level of the question.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Topic tags for curriculum mapping."
+    }
+  },
+  "scoring": {
+    "type": "binary",
+    "partialCredit": false,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "10-20s",
+    "animation": "tap-highlight with color-change feedback",
+    "mobileNotes": "Large tap targets stacked vertically. Color coding (green=correct, red=incorrect) visible even on small screens. Avoid text-only options; use icons + text when possible."
+  },
+  "lessonPlacement": [
+    "warm-up",
+    "post-content",
+    "spaced-review"
+  ],
+  "ageAdaptations": {
+    "8-10": "Maximum 4 options. Positive-only feedback (avoid harsh 'wrong'). Larger 56x56px touch targets. Simple, concrete language. Use icons + color coding.",
+    "11-13": "Up to 5 options. Constructive feedback explaining misconceptions. Standard 48x48px targets. Longer, more complex questions allowed.",
+    "14-16": "Up to 6 options. Timed variant available (10-15s countdown). Challenging distractors. Can include contextual follow-up explanation."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": [
+    "true-false",
+    "image-recognition",
+    "audio-recognition"
+  ],
+  "tags": [
+    "fundamental",
+    "single-select",
+    "fact-recall",
+    "assessment"
+  ]
+}

@@ -99,15 +99,17 @@ Open their IT Landschap document on your screen. Use the **application landscape
 - "Has there been a technical exploration — do you know if the existing tool can do this, or does it need to be built?"
 - "Who owns this initiative within the organization?"
 
-**If they mention Flowmatic / self-built AI agents:**
-- "We understand there are already some agents built in Flowmatic — a service desk agent, Billie for invoicing, an intakes agent. Are those live with end users, or still in a testing/pilot phase?"
-- "Who built those — and who maintains them? Is that one person's initiative or a team effort?"
-- "How do those agents connect to your core systems — do they tap into AFAS or Facilitor data, or do they work more standalone?"
-- "Is Flowmatic something you see scaling across BUs, or is it more of a sandbox for experimentation?"
+**If they mention Flowmatic / Copilot Studio / self-built AI agents:**
+- "We see there's activity on multiple agent platforms — Billy for invoice processing in Flowmatic, a project management agent and AFAS Helpdesk agent in Copilot Studio, Heydi as a servicedesk agent at Multiline. How do you decide which platform to use for which agent?"
+- "Which of these agents are live with end users, and which are still in testing?"
+- "How do they connect to your core systems — do they tap into AFAS or Facilitor data, or work more standalone?"
+- "Who maintains these agents once they're built? Is that sustainable with current capacity?"
+- "Is there a vision for consolidating onto one agent platform, or is the multi-platform approach intentional?"
 
 **If they mention Jonas / AFAS AI:**
 - "How far along is that? Active, piloting, or still exploring?"
-- "Which AFAS modules are you most interested in applying it to?"
+- "We understand you've mapped specific use cases — consultants dictating action points, field inspectors capturing observations for MJOP tasks, HR documentation. Are those the priorities, or has the thinking shifted?"
+- "Is there a connection between Jonas and the Billy finance agent — could Jonas handle some of what Billy does natively?"
 - "Any blockers — licensing, data quality, change management?"
 
 **If they mention Copilot / M365 AI:**

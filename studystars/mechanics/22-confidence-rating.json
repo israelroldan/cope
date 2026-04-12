@@ -1,0 +1,65 @@
+{
+  "id": "confidence-rating",
+  "number": 22,
+  "name": "Confidence Rating (Metacognitive)",
+  "slug": "confidence-rating",
+  "tier": {
+    "bloom": "evaluate",
+    "level": 5,
+    "label": "Evaluate — Making Judgments"
+  },
+  "summary": "After answering a question, learners rate their confidence (low/med/high); scoring multiplies by confidence level.",
+  "platforms": ["Kahoot Confidence Mode", "The Lost Pyramid", "StudyStars"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "Pure mechanic overlay. No additional content generation beyond any base question's content. Works with any other mechanic: multiple choice, true-false, open-ended, etc. Zero AI complexity."
+  },
+  "interaction": {
+    "type": "meta-overlay",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "baseQuestionId": {
+      "type": "string",
+      "required": false,
+      "description": "Reference to any base mechanic's content (e.g., a multiple-choice question). This mechanic overlays confidence rating on top."
+    },
+    "confidenceLevels": {
+      "type": "string[]",
+      "required": true,
+      "description": "The confidence options. Ages 8-10: ['Not sure', 'Pretty sure']. Ages 11-16: ['Low', 'Medium', 'High']. Can use emoji for young learners.",
+      "minItems": 2,
+      "maxItems": 3
+    },
+    "scoringMultiplier": {
+      "type": "object",
+      "required": true,
+      "description": "Multiplier for each confidence level. e.g., {'Low': 1.0, 'Medium': 1.5, 'High': 2.0}. Correct answer + high confidence = max points. Wrong answer + high confidence = learning moment."
+    }
+  },
+  "scoring": {
+    "type": "meta-overlay",
+    "partialCredit": true,
+    "feedback": "immediate",
+    "feedbackContent": "confidence-calibration"
+  },
+  "ux": {
+    "layout": "horizontal-row",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "5s additional",
+    "animation": "appear-after-answer, scale-on-tap, highlight-selection",
+    "mobileNotes": "Appears below or beside the answer selection. For young learners, use emoji (😊 sure, 😕 not sure). Tap to select confidence level; immediate visual feedback (scaling, color change). Keep options horizontally arranged for quick scanning. Ensure adequate spacing between options to prevent mis-taps."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement", "reflection"],
+  "ageAdaptations": {
+    "8-10": "Two emoji-based confidence levels: 😊 Sure / 😕 Not Sure. Large, tappable emoji buttons. Multiplier: Sure = 2x, Not Sure = 1x. Celebratory feedback when learner is correct + confident, encouraging feedback when wrong + not confident.",
+    "11-13": "Three text-based levels: Low, Medium, High. Multiplier: Low = 1x, Medium = 1.5x, High = 2x. Feedback includes reflection: 'You got it right and were confident! Great job.' or 'You weren't sure and that was wise given the difficulty.'",
+    "14-16": "Three levels with detailed feedback on calibration: 'Your confidence matches your accuracy. Keep it up!' or 'You were overconfident on this question. How can you improve?' Learner sees a calibration graph over multiple questions (confidence vs. accuracy) to track metacognitive growth."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["01-multiple-choice", "02-true-false", "21-poll"],
+  "tags": ["metacognition", "confidence", "self-assessment", "reflection", "bloom-5", "overlay"]
+}

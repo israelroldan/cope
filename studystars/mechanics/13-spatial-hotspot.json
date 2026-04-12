@@ -1,0 +1,96 @@
+{
+  "id": "spatial-hotspot",
+  "number": 13,
+  "name": "Spatial Pin/Hotspot (Tap on Image)",
+  "slug": "spatial-hotspot",
+  "tier": {
+    "bloom": "apply",
+    "level": 3,
+    "label": "Apply — Using Information in New Contexts"
+  },
+  "summary": "Tap a specific location on an image (map, diagram, photo). Validated against a correct zone with proximity-based partial credit.",
+  "platforms": ["Kahoot", "Quizizz", "Nearpod"],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI can generate questions and define correct zones, but requires pre-existing reference images with coordinate mappings. Works well with standard educational images (maps, anatomy, architecture, etc.)."
+  },
+  "interaction": {
+    "type": "spatial",
+    "input": "tap-on-image",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "Question asking learner to tap a specific location on the image. Must be clear and unambiguous."
+    },
+    "imageUrl": {
+      "type": "string",
+      "required": true,
+      "description": "URL to the reference image. Must be a real, accessible image (map, diagram, photo, chart)."
+    },
+    "imageAlt": {
+      "type": "string",
+      "required": true,
+      "description": "Descriptive alt text for the image (accessibility)."
+    },
+    "correctZone": {
+      "type": "object",
+      "required": true,
+      "description": "Defines the correct area on the image as a center point and radius.",
+      "properties": {
+        "x": {
+          "type": "number",
+          "required": true,
+          "description": "X coordinate (pixels) of the center of the correct zone, relative to image."
+        },
+        "y": {
+          "type": "number",
+          "required": true,
+          "description": "Y coordinate (pixels) of the center of the correct zone, relative to image."
+        },
+        "radius": {
+          "type": "number",
+          "required": true,
+          "description": "Radius (pixels) of the acceptable zone around the center. Learner can tap anywhere within this radius."
+        }
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "Explanation of the correct location and its context."
+    },
+    "distractorHints": {
+      "type": "string[]",
+      "required": false,
+      "description": "Optional common wrong answers to address in explanation (e.g., 'Not Cairo, which is further north')."
+    }
+  },
+  "scoring": {
+    "type": "proximity",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "show-correct-answer"
+  },
+  "ux": {
+    "layout": "image-overlay",
+    "minTouchTarget": "44x44px",
+    "estimatedDuration": "10-20s",
+    "animation": "pin-drop",
+    "mobileNotes": "Image is responsive, zoomed to fit mobile screen. After tap, a pin appears at the tap location with visual feedback (glow or pulse). On correct answer, show a green pin at correct location. On incorrect, show both learner's pin (red) and correct pin (green)."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "Simple maps or diagrams with large regions. Larger acceptable zones (radius: 40–60px). Questions about familiar locations (continents, oceans, planets). After incorrect tap, show visual outline of correct region.",
+    "11-13": "More detailed maps (countries, states, major cities) or anatomy diagrams (organs, body systems). Moderate zones (radius: 25–40px). Questions require moderate geographic or anatomical knowledge. Feedback shows distance from correct location.",
+    "14-16": "Detailed maps (small cities, provinces) or precise diagrams (cell structures, architectural plans). Tight zones (radius: 10–25px). Questions demand precise knowledge or map-reading skills. No visual hints; learner must know exact location."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": ["labeling"],
+  "tags": ["spatial", "geography", "anatomy", "mapping", "apply"]
+}

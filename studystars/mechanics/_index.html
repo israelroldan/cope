@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyStars Mechanics — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #FFFFFF;
+    color: #444;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Layout */
+  .page { max-width: 72rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* Header */
+  .header { padding-bottom: 2rem; border-bottom: 1px solid #E5E5E5; margin-bottom: 2rem; }
+  .header h1 { font-size: 2rem; font-weight: 800; color: #111; letter-spacing: -0.02em; }
+  .header h1 .accent { color: #FF6D00; }
+  .header .sub { color: #999; font-size: 0.9rem; margin-top: 0.25rem; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .stat-chip {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: #F5F5F5; border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.82rem; font-weight: 600; color: #111;
+  }
+  .stat-chip .num {
+    font-size: 1.25rem; font-weight: 800;
+  }
+  .stat-chip.highlight { background: #FF6D00; color: #fff; }
+
+  /* Filters */
+  .filters {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .filter-btn {
+    border: 1.5px solid #E5E5E5; background: #fff;
+    border-radius: 999px; padding: 0.4rem 0.9rem;
+    font-family: inherit; font-size: 0.78rem; font-weight: 600;
+    color: #666; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: #999; color: #111; }
+  .filter-btn.active { background: #111; color: #fff; border-color: #111; }
+
+  /* Tier sections */
+  .tier-section { margin-bottom: 2.5rem; }
+  .tier-label {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #111;
+    padding: 0.3rem 0.8rem; border-radius: 999px;
+    margin-bottom: 0.75rem;
+  }
+  .tier-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* Card grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.75rem;
+  }
+
+  /* Mechanic card */
+  .mech-card {
+    background: #fff;
+    border: 1.5px solid #F0F0F0;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
+    transition: box-shadow 0.15s, border-color 0.15s;
+    cursor: default;
+    position: relative;
+  }
+  .mech-card:hover {
+    border-color: #DDD;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .mech-card.status-prototype-done { border-left: 4px solid #00E676; }
+  .mech-card.status-in-progress { border-left: 4px solid #FFD600; }
+  .mech-card.status-reviewed { border-left: 4px solid #448AFF; }
+  .mech-card.status-blocked { border-left: 4px solid #FF4081; }
+
+  .mech-card .top-row {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mech-card .card-num {
+    font-size: 0.68rem; font-weight: 700; color: #999;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .mech-card .status-badge {
+    font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+  }
+  .badge-spec-complete { background: #F5F5F5; color: #999; }
+  .badge-in-progress { background: #FFF8E1; color: #F9A825; }
+  .badge-prototype-done { background: #E8F5E9; color: #2E7D32; }
+  .badge-reviewed { background: #E3F2FD; color: #1565C0; }
+  .badge-blocked { background: #FCE4EC; color: #C62828; }
+
+  .mech-card h3 {
+    font-size: 0.95rem; font-weight: 700; color: #111;
+    margin: 0; line-height: 1.3;
+  }
+
+  .mech-card .meta {
+    display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+    margin-top: auto;
+  }
+  .mech-card .stars { color: #FF6D00; font-size: 0.78rem; font-weight: 600; }
+  .mech-card .priority-tag {
+    font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 0.12rem 0.45rem;
+    border-radius: 999px; background: #F0F0F0; color: #666;
+  }
+  .priority-tag.p0 { background: #FF6D00; color: #fff; }
+  .priority-tag.p1 { background: #7C4DFF; color: #fff; }
+  .priority-tag.p2 { background: #E0E0E0; color: #555; }
+  .priority-tag.p3 { background: #F5F5F5; color: #999; }
+
+  .mech-card .links {
+    display: flex; gap: 0.5rem; margin-top: 0.25rem;
+  }
+  .mech-card .links a {
+    font-size: 0.72rem; font-weight: 600; color: #FF6D00;
+    text-decoration: none;
+  }
+  .mech-card .links a:hover { text-decoration: underline; }
+
+  .mech-card .notes {
+    font-size: 0.75rem; color: #999; font-style: italic;
+    margin-top: 0.25rem;
+  }
+
+  /* Prototype link */
+  .mech-card .proto-link {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-size: 0.72rem; font-weight: 700; color: #00C853;
+    text-decoration: none;
+  }
+  .mech-card .proto-link:hover { text-decoration: underline; }
+
+  /* Footer */
+  .footer {
+    text-align: center; padding-top: 2rem;
+    border-top: 1px solid #E5E5E5;
+    color: #999; font-size: 0.82rem;
+  }
+
+  /* Hidden when filtered out */
+  .mech-card.hidden { display: none; }
+  .tier-section.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <h1>StudyStars <span class="accent">Mechanics</span></h1>
+    <div class="sub">32 canonical activity archetypes — specs, status, and prototypes</div>
+  </div>
+
+  <div class="stats-bar" id="stats-bar"></div>
+  <div class="filters" id="filters"></div>
+  <div id="content"></div>
+
+  <div class="footer">
+    <p>studystars/mechanics · <span id="last-updated"></span></p>
+  </div>
+</div>
+
+<script>
+const TIER_COLORS = {
+  remember:      { color: '#FFD600', bg: '#FFF8E1', label: 'Tier 1 — Remember' },
+  understand:    { color: '#448AFF', bg: '#E3F2FD', label: 'Tier 2 — Understand' },
+  apply:         { color: '#00E676', bg: '#E8F5E9', label: 'Tier 3 — Apply' },
+  analyze:       { color: '#7C4DFF', bg: '#EDE7F6', label: 'Tier 4 — Analyze' },
+  evaluate:      { color: '#FF4081', bg: '#FCE4EC', label: 'Tier 5 — Evaluate' },
+  create:        { color: '#FF6D00', bg: '#FFF3E0', label: 'Tier 6 — Create' },
+  gamification:  { color: '#FF3D00', bg: '#FBE9E7', label: 'Cross-Tier — Gamification' }
+};
+
+const STATUS_LABELS = {
+  'spec-complete': 'Spec',
+  'in-progress': 'Building',
+  'prototype-done': 'Prototype',
+  'reviewed': 'Reviewed',
+  'blocked': 'Blocked'
+};
+
+let data = null;
+let activeFilter = 'all';
+
+async function init() {
+  const resp = await fetch('./_index.json');
+  data = await resp.json();
+  document.getElementById('last-updated').textContent = `v${data.version}`;
+  renderStats();
+  renderFilters();
+  renderContent();
+}
+
+function renderStats() {
+  const bar = document.getElementById('stats-bar');
+  const total = data.mechanics.length;
+  const counts = { 'spec-complete': 0, 'in-progress': 0, 'prototype-done': 0, 'reviewed': 0, 'blocked': 0 };
+  data.mechanics.forEach(m => counts[m.status] = (counts[m.status] || 0) + 1);
+
+  const done = counts['prototype-done'] + counts['reviewed'];
+  const pct = Math.round((done / total) * 100);
+
+  bar.innerHTML = `
+    <div class="stat-chip highlight"><span class="num">${pct}%</span> prototyped</div>
+    <div class="stat-chip"><span class="num">${counts['spec-complete']}</span> spec only</div>
+    <div class="stat-chip"><span class="num">${counts['in-progress']}</span> in progress</div>
+    <div class="stat-chip"><span class="num">${counts['prototype-done']}</span> prototype done</div>
+    <div class="stat-chip"><span class="num">${counts['reviewed']}</span> reviewed</div>
+    ${counts['blocked'] > 0 ? `<div class="stat-chip"><span class="num">${counts['blocked']}</span> blocked</div>` : ''}
+  `;
+}
+
+function renderFilters() {
+  const container = document.getElementById('filters');
+  const groups = [
+    { key: 'all', label: 'All (32)' },
+    { key: 'p0-must-have', label: 'P0 — Must Have' },
+    { key: 'p1-important', label: 'P1 — Important' },
+    { key: 'p2-nice-to-have', label: 'P2 — Nice to Have' },
+    { key: 'p3-future', label: 'P3 — Future' },
+    { key: 'sep', label: '' },
+    { key: 'spec-complete', label: 'Spec Only' },
+    { key: 'in-progress', label: 'In Progress' },
+    { key: 'prototype-done', label: 'Prototype Done' },
+    { key: 'reviewed', label: 'Reviewed' },
+    { key: 'blocked', label: 'Blocked' },
+  ];
+
+  groups.forEach(g => {
+    if (g.key === 'sep') {
+      const sep = document.createElement('span');
+      sep.style.cssText = 'width:1px;height:20px;background:#E5E5E5;margin:0 0.25rem;';
+      container.appendChild(sep);
+      return;
+    }
+    const btn = document.createElement('button');
+    btn.className = `filter-btn${g.key === 'all' ? ' active' : ''}`;
+    btn.textContent = g.label;
+    btn.dataset.filter = g.key;
+    btn.addEventListener('click', () => setFilter(g.key));
+    container.appendChild(btn);
+  });
+}
+
+function setFilter(key) {
+  activeFilter = key;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === key);
+  });
+  renderContent();
+}
+
+function matchesFilter(m) {
+  if (activeFilter === 'all') return true;
+  if (['p0-must-have','p1-important','p2-nice-to-have','p3-future'].includes(activeFilter)) {
+    return m.priority === activeFilter;
+  }
+  return m.status === activeFilter;
+}
+
+function renderContent() {
+  const container = document.getElementById('content');
+  container.innerHTML = '';
+
+  const tiers = ['remember','understand','apply','analyze','evaluate','create','gamification'];
+
+  tiers.forEach(tierKey => {
+    const tier = TIER_COLORS[tierKey];
+    const mechs = data.mechanics.filter(m => m.tier.bloom === tierKey && matchesFilter(m));
+    if (mechs.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'tier-section';
+    section.innerHTML = `
+      <div class="tier-label" style="background:${tier.bg}">
+        <span class="tier-dot" style="background:${tier.color}"></span>
+        ${tier.label}
+      </div>
+    `;
+
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+
+    mechs.forEach(m => {
+      const stars = '★'.repeat(m.aiGenerability) + '☆'.repeat(5 - m.aiGenerability);
+      const pClass = m.priority.startsWith('p0') ? 'p0' : m.priority.startsWith('p1') ? 'p1' : m.priority.startsWith('p2') ? 'p2' : 'p3';
+      const statusClass = `status-${m.status}`;
+      const badgeClass = `badge-${m.status}`;
+
+      let protoLink = '';
+      if (m.prototypeFile) {
+        protoLink = `<a class="proto-link" href="${m.prototypeRoute || m.prototypeFile}">▶ Try prototype</a>`;
+      }
+
+      const card = document.createElement('div');
+      card.className = `mech-card ${statusClass}`;
+      card.innerHTML = `
+        <div class="top-row">
+          <span class="card-num">#${String(m.number).padStart(2,'0')}</span>
+          <span class="status-badge ${badgeClass}">${STATUS_LABELS[m.status]}</span>
+        </div>
+        <h3>${m.name}</h3>
+        <div class="meta">
+          <span class="stars" title="AI Generability: ${m.aiGenerability}/5">${stars}</span>
+          <span class="priority-tag ${pClass}">${m.priority.replace(/-/g,' ').toUpperCase()}</span>
+        </div>
+        <div class="links">
+          <a href="./${String(m.number).padStart(2,'0')}-${m.slug}.json" title="JSON spec">spec.json</a>
+          <a href="./${String(m.number).padStart(2,'0')}-${m.slug}.md" title="Mechanic description">mechanic.md</a>
+          ${protoLink}
+        </div>
+        ${m.notes ? `<div class="notes">${m.notes}</div>` : ''}
+      `;
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

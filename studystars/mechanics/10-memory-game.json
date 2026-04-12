@@ -1,0 +1,89 @@
+{
+  "id": "memory-game",
+  "number": 10,
+  "name": "Memory/Concentration Game",
+  "slug": "memory-game",
+  "tier": {
+    "bloom": "understand",
+    "level": 2,
+    "label": "Understand — Conceptual Comprehension"
+  },
+  "summary": "Flip pairs of face-down cards to find matching pairs from memory, reinforcing associations between related concepts.",
+  "platforms": ["Nearpod", "Quizizz"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates matching pairs with memory overlay. Same content generation as matching pairs (mechanic 8), but presented with hidden cards for memory challenge."
+  },
+  "interaction": {
+    "type": "matching",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "pairs": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of matching pairs. Each pair has front and back content.",
+      "minItems": 6,
+      "maxItems": 8,
+      "itemSchema": {
+        "front": {
+          "type": "string",
+          "required": true,
+          "description": "Content on first card (e.g., country name, historical date, vocabulary term)."
+        },
+        "back": {
+          "type": "string",
+          "required": true,
+          "description": "Content on matching card (e.g., flag, event description, definition)."
+        },
+        "category": {
+          "type": "string",
+          "required": false,
+          "description": "Optional category label for grouping (e.g., 'geography', 'history')."
+        }
+      }
+    },
+    "gridSize": {
+      "type": "enum",
+      "required": true,
+      "description": "Grid layout for cards.",
+      "values": ["3x4", "4x4"]
+    },
+    "speedBonus": {
+      "type": "boolean",
+      "required": false,
+      "description": "If true, completing quickly earns bonus points."
+    },
+    "theme": {
+      "type": "string",
+      "required": false,
+      "description": "Visual theme hint for AI (e.g., 'animals', 'flags', 'historical figures'). Helps with image/icon selection."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "grid-3x4",
+    "minTouchTarget": "56x56px",
+    "estimatedDuration": "60-120s",
+    "animation": "card-flip",
+    "mobileNotes": "3×4 grid for ages 8–10; 4×4 grid for 11–16. Cards flip with smooth 3D rotation (300ms). Matched pairs fade out or show checkmark overlay. Cards remain visible if mismatched; learner tries again."
+  },
+  "lessonPlacement": ["core-practice", "extension"],
+  "ageAdaptations": {
+    "8-10": "3×4 grid (6 pairs). Matched pairs remain visible and highlighted. No timer. Simple categories (animals, colors, shapes). Encourages pattern recognition over speed.",
+    "11-13": "4×4 grid (8 pairs). Matched pairs fade or remove after 1-2 seconds. Optional 90-second timer. Feedback shows how many pairs found and attempts taken.",
+    "14-16": "4×4 grid (8 pairs). Matched pairs remove immediately. 60-second timer with leaderboard. Strict scoring: points deducted for failed attempts. Content is more abstract (historical figures & achievements, scientific terms & definitions)."
+  },
+  "implementationPriority": "p2-nice-to-have",
+  "relatedMechanics": ["matching-pairs"],
+  "tags": ["memory", "recall", "concentration", "matching", "gamification", "timed"]
+}

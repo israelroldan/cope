@@ -1,0 +1,116 @@
+{
+  "id": "labeling",
+  "number": 14,
+  "name": "Labeling (Drag Labels onto Image)",
+  "slug": "labeling",
+  "tier": {
+    "bloom": "apply",
+    "level": 3,
+    "label": "Apply — Using Information in New Contexts"
+  },
+  "summary": "Drag text labels from a bank onto correct positions on a reference image. Validates label placement with snap-to-anchor feedback.",
+  "platforms": ["Quizizz", "Nearpod"],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI generates label text and defines anchor points on images. Requires pre-prepared reference images with marked anchor coordinates. AI can generate distractor labels to increase difficulty."
+  },
+  "interaction": {
+    "type": "drag-drop",
+    "input": "drag",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "Question or instruction asking learner to label the image. Example: 'Label the parts of a flower.'"
+    },
+    "imageUrl": {
+      "type": "string",
+      "required": true,
+      "description": "URL to the reference image that will be labeled."
+    },
+    "imageAlt": {
+      "type": "string",
+      "required": true,
+      "description": "Descriptive alt text for the image (accessibility)."
+    },
+    "labels": {
+      "type": "object[]",
+      "required": true,
+      "description": "Correct labels with their target anchor positions on the image.",
+      "minItems": 3,
+      "maxItems": 10,
+      "itemSchema": {
+        "text": {
+          "type": "string",
+          "required": true,
+          "description": "Label text to display on a draggable tile."
+        },
+        "position": {
+          "type": "object",
+          "required": true,
+          "description": "Target anchor position (x, y) in image pixel coordinates.",
+          "properties": {
+            "x": {
+              "type": "number",
+              "required": true,
+              "description": "X coordinate (pixels) of anchor point."
+            },
+            "y": {
+              "type": "number",
+              "required": true,
+              "description": "Y coordinate (pixels) of anchor point."
+            },
+            "snapRadius": {
+              "type": "number",
+              "required": false,
+              "description": "Radius (pixels) within which label must land to snap. Default: 30px."
+            }
+          }
+        }
+      }
+    },
+    "distractorLabels": {
+      "type": "string[]",
+      "required": false,
+      "description": "Optional extra labels that don't belong (e.g., parts from a different organism). Increases difficulty by requiring selection.",
+      "maxItems": 5
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "General explanation of the labeled structure or system."
+    },
+    "perLabelExplanations": {
+      "type": "object",
+      "required": false,
+      "description": "Optional explanations for each label (keyed by label text). Shown on correct placement."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "image-overlay",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "30-60s",
+    "animation": "snap-to-position",
+    "mobileNotes": "Labels appear in a scrollable bank below or beside the image. Drag label tile onto image. Snap-to-anchor animation when within radius. Snap feedback (highlight, gentle bounce). Correctly placed labels become immovable; incorrectly placed labels return to bank if released outside valid snap zone."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "Max 4 labels. Large anchor zones (snap radius: 40–50px). Simple structures (body parts, plant anatomy, basic objects). Large touch targets (56×56px+). No distractors. Feedback shows gentle animation of correctly placed labels.",
+    "11-13": "6 labels. Moderate anchor zones (snap radius: 30px). More complex structures (organs, ecosystems, machinery). Standard touch targets. Optional 1–2 distractors. Feedback shows check mark and brief description.",
+    "14-16": "Up to 10 labels. Tight anchor zones (snap radius: 20–25px). Complex diagrams (cell structures, chemical reaction, historical architecture, anatomical systems). Small touch targets acceptable. 2–5 distractors. Feedback includes scientific or historical context. Per-label explanations show on correct placement."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": ["spatial-hotspot"],
+  "tags": ["labeling", "anatomy", "diagram", "drag-drop", "apply"]
+}

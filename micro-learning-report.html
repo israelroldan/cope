@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Definitive Catalog of Micro-Learning Activity Types</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400;1,9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #FFFFFF;
+    color: #444444;
+    line-height: 1.75;
+    font-weight: 400;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* --- Layout --- */
+  .page-wrapper {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  section {
+    padding: 4rem 0 3rem;
+  }
+
+  section + section {
+    border-top: 1px solid #E5E5E5;
+  }
+
+  /* --- Typography --- */
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 800;
+    color: #111111;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+  }
+  h1 .accent { color: #FF6D00; }
+
+  h2 {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: #111111;
+    line-height: 1.25;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111111;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p { margin-bottom: 1rem; max-width: 42rem; }
+  p.wide { max-width: 54rem; }
+
+  strong { font-weight: 700; color: #111111; }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: #999999;
+    font-weight: 500;
+    max-width: 38rem;
+    margin-bottom: 2rem;
+  }
+
+  .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #999999;
+    margin-bottom: 0.5rem;
+  }
+
+  /* --- Hero --- */
+  .hero {
+    padding: 5rem 0 3rem;
+    position: relative;
+  }
+  .hero-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .hero-text { flex: 1; min-width: 300px; }
+  .hero-visual {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    max-width: 280px;
+    align-self: center;
+  }
+
+  .hero-stat-card {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    min-width: 120px;
+  }
+  .hero-stat-card .num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.1;
+  }
+  .hero-stat-card .desc {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+  }
+  .hero-stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 16px; height: 16px;
+    border-radius: 0 0 8px 0;
+  }
+
+  /* --- Post-it Card --- */
+  .postit {
+    background: #FFD600;
+    border-radius: 8px;
+    padding: 1.5rem 1.5rem 1.75rem;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    overflow: hidden;
+  }
+  .postit::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 8px 8px 0 0;
+  }
+  .postit::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 16px; height: 16px;
+    background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.08) 50%);
+    border-radius: 0 0 8px 0;
+  }
+  .postit.yellow  { background: #FFD600; }
+  .postit.coral   { background: #FF4081; color: #fff; }
+  .postit.mint    { background: #00E676; }
+  .postit.sky     { background: #448AFF; color: #fff; }
+  .postit.lavender{ background: #7C4DFF; color: #fff; }
+  .postit.peach   { background: #FF6D00; color: #fff; }
+
+  .postit.coral::before, .postit.sky::before, .postit.lavender::before, .postit.peach::before {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .postit-quote {
+    font-style: italic;
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .postit-source {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    opacity: 0.7;
+  }
+
+  /* --- Feature Cards --- */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .feature-card {
+    border-radius: 12px;
+    padding: 1.75rem;
+    color: #fff;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .feature-card .icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+  }
+  .feature-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .feature-card p {
+    font-size: 0.88rem;
+    font-weight: 400;
+    opacity: 0.85;
+    line-height: 1.55;
+    margin: 0;
+    max-width: none;
+  }
+
+  /* --- Activity Cards (the 32 archetypes) --- */
+  .activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .activity-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-left: 5px solid #E5E5E5;
+  }
+  .activity-card .card-number {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #999;
+  }
+  .activity-card h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+  }
+  .activity-card .platforms {
+    font-size: 0.78rem;
+    color: #999;
+    line-height: 1.5;
+  }
+  .activity-card .mechanic {
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.6;
+  }
+  .activity-card .example {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #666;
+    background: #FAFAFA;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+  }
+  .activity-card .meta-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: auto;
+  }
+  .stars {
+    font-size: 0.85rem;
+    color: #FF6D00;
+    font-weight: 600;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: #F0F0F0;
+    color: #666;
+  }
+
+  /* Tier color accents */
+  .tier-remember   { border-left-color: #FFD600; }
+  .tier-understand { border-left-color: #448AFF; }
+  .tier-apply      { border-left-color: #00E676; }
+  .tier-analyze    { border-left-color: #7C4DFF; }
+  .tier-evaluate   { border-left-color: #FF4081; }
+  .tier-create     { border-left-color: #FF6D00; }
+  .tier-gamify     { border-left-color: #FF3D00; }
+
+  /* --- Bloom's Table --- */
+  .bloom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  .bloom-table th {
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #999;
+    padding: 0.5rem 1rem;
+  }
+  .bloom-table td {
+    padding: 1rem;
+    background: #fff;
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  .bloom-table tr td:first-child {
+    border-radius: 8px 0 0 8px;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+  }
+  .bloom-table tr td:last-child {
+    border-radius: 0 8px 8px 0;
+  }
+  .bloom-table tbody tr {
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .bloom-row-remember td { border-bottom: 3px solid #FFD600; }
+  .bloom-row-understand td { border-bottom: 3px solid #448AFF; }
+  .bloom-row-apply td { border-bottom: 3px solid #00E676; }
+  .bloom-row-analyze td { border-bottom: 3px solid #7C4DFF; }
+  .bloom-row-evaluate td { border-bottom: 3px solid #FF4081; }
+  .bloom-row-create td { border-bottom: 3px solid #FF6D00; }
+
+  /* --- Step Pills --- */
+  .step-pills {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+    align-items: center;
+  }
+  .step-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #111;
+  }
+  .step-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .step-connector {
+    width: 24px;
+    height: 2px;
+    background: #E5E5E5;
+  }
+
+  /* --- Lesson Flow --- */
+  .flow-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .flow-card {
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: #fff;
+    position: relative;
+  }
+  .flow-card .step-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+  }
+  .flow-card h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .flow-card .time {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.65;
+    margin-bottom: 0.5rem;
+  }
+  .flow-card p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    line-height: 1.55;
+    max-width: none;
+    margin: 0;
+  }
+
+  /* --- Priority List --- */
+  .priority-list {
+    list-style: none;
+    counter-reset: priority;
+    margin: 1.5rem 0;
+    max-width: 42rem;
+  }
+  .priority-list li {
+    counter-increment: priority;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .priority-list li::before {
+    content: counter(priority);
+    flex: 0 0 2rem;
+    height: 2rem;
+    background: #FF6D00;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+  .priority-list .item-name {
+    font-weight: 700;
+    color: #111;
+  }
+  .priority-list .item-desc {
+    font-size: 0.85rem;
+    color: #999;
+  }
+
+  /* --- Insight Callout --- */
+  .insight-callout {
+    background: #111;
+    color: #fff;
+    border-radius: 12px;
+    padding: 2rem 2.25rem;
+    margin: 2rem 0;
+    max-width: 48rem;
+  }
+  .insight-callout p {
+    color: #fff;
+    font-weight: 500;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    max-width: none;
+    margin: 0;
+  }
+  .insight-callout .accent { color: #FF6D00; }
+
+  /* --- Science Cards --- */
+  .science-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .science-card {
+    background: #F5F5F5;
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .science-card .icon-sq {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    color: #fff;
+  }
+  .science-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 0.25rem;
+  }
+  .science-card p {
+    font-size: 0.82rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+    max-width: none;
+  }
+
+  /* --- Tier Header --- */
+  .tier-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+    color: #111;
+  }
+
+  /* --- Gamification Strip --- */
+  .gamification-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .gamification-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #fff;
+    border: 1.5px solid #E5E5E5;
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #111;
+  }
+  .gamification-chip .chip-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+
+  /* --- Innovation cards --- */
+  .innovation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .innovation-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  .innovation-card .source-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #999;
+    margin-bottom: 0.35rem;
+  }
+  .innovation-card h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 0.5rem;
+  }
+  .innovation-card p {
+    font-size: 0.88rem;
+    color: #444;
+    line-height: 1.6;
+    margin: 0;
+    max-width: none;
+  }
+
+  /* --- Grej Acts --- */
+  .grej-acts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .grej-act {
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    overflow: hidden;
+  }
+  .grej-act::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 8px 8px 0 0;
+  }
+  .grej-act::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 16px; height: 16px;
+    background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.08) 50%);
+    border-radius: 0 0 8px 0;
+  }
+  .grej-act .act-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .grej-act h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .grej-act .timing {
+    font-size: 0.78rem;
+    font-weight: 600;
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+  }
+  .grej-act p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    max-width: none;
+    margin: 0;
+  }
+
+  /* --- Hierarchy bar chart --- */
+  .hierarchy-list {
+    list-style: none;
+    margin: 1.5rem 0;
+    max-width: 42rem;
+  }
+  .hierarchy-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+  }
+  .hierarchy-bar {
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .hierarchy-label {
+    font-size: 0.82rem;
+    color: #444;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  /* --- Session Design --- */
+  .session-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .session-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    text-align: center;
+  }
+  .session-card .age {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.1;
+  }
+  .session-card .details {
+    font-size: 0.82rem;
+    color: #666;
+    margin-top: 0.35rem;
+    line-height: 1.5;
+  }
+
+  /* --- Footer --- */
+  .footer {
+    text-align: center;
+    padding: 4rem 0 3rem;
+    border-top: 1px solid #E5E5E5;
+  }
+  .footer .mascot {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12)) drop-shadow(0 4px 8px rgba(0,0,0,0.08));
+  }
+  .footer .tagline {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 0.5rem;
+  }
+  .footer .sub {
+    font-size: 0.88rem;
+    color: #999;
+  }
+  .footer .cta-btn {
+    display: inline-block;
+    margin-top: 1.25rem;
+    background: #FF6D00;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.85rem 2.5rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 2px 8px rgba(255,109,0,0.25);
+  }
+  .footer .cta-btn:hover {
+    background: #E65100;
+    transform: scale(1.04);
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 640px) {
+    .hero-visual { max-width: 100%; }
+    .feature-grid, .activity-grid, .flow-cards, .innovation-grid { grid-template-columns: 1fr; }
+    .bloom-table { font-size: 0.78rem; }
+    .bloom-table th, .bloom-table td { padding: 0.5rem; }
+    section { padding: 2.5rem 0 2rem; }
+  }
+
+  /* decorative postit scatter break */
+  .postit-break {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.5rem 0;
+  }
+  .postit-sq {
+    width: 12px; height: 12px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- ====== HERO ====== -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="label">Pimpi Sparks · Research Report</div>
+        <h1>The definitive catalog of <span class="accent">micro-learning activity types</span> for AI-generated kids' lessons</h1>
+        <p class="subtitle">150+ interactive activities across 10 platforms, distilled into 32 canonical archetypes — mapped to Bloom's taxonomy and grounded in cognitive science.</p>
+        <div class="step-pills">
+          <span class="step-pill"><span class="step-dot" style="background:#FFD600"></span> Remember</span>
+          <span class="step-connector"></span>
+          <span class="step-pill"><span class="step-dot" style="background:#448AFF"></span> Understand</span>
+          <span class="step-connector"></span>
+          <span class="step-pill"><span class="step-dot" style="background:#00E676"></span> Apply</span>
+          <span class="step-connector"></span>
+          <span class="step-pill"><span class="step-dot" style="background:#7C4DFF"></span> Analyze</span>
+          <span class="step-connector"></span>
+          <span class="step-pill"><span class="step-dot" style="background:#FF4081"></span> Evaluate</span>
+          <span class="step-connector"></span>
+          <span class="step-pill"><span class="step-dot" style="background:#FF6D00"></span> Create</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-stat-card" style="background:#FFD600; transform:rotate(-3deg);">
+          <div class="num">150+</div>
+          <div class="desc" style="color:#111;">Activities cataloged</div>
+        </div>
+        <div class="hero-stat-card" style="background:#FF4081; transform:rotate(2deg);">
+          <div class="num" style="color:#fff;">32</div>
+          <div class="desc" style="color:rgba(255,255,255,0.85);">Core archetypes</div>
+        </div>
+        <div class="hero-stat-card" style="background:#448AFF; transform:rotate(-1deg);">
+          <div class="num" style="color:#fff;">10</div>
+          <div class="desc" style="color:rgba(255,255,255,0.85);">Platforms analyzed</div>
+        </div>
+        <div class="hero-stat-card" style="background:#00E676; transform:rotate(3deg);">
+          <div class="num">6</div>
+          <div class="desc" style="color:#111;">Bloom's levels</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PART 1: GREJ OF THE DAY ====== -->
+  <section>
+    <div class="label">Part 1</div>
+    <h2>Grej of the Day — the pedagogical foundation</h2>
+    <p class="wide">"Grej of the Day" (Grej av Dagen) was created in 2010 by Swedish teacher <strong>Micael Hermansson</strong> in Umeå. The Swedish word "grej" means "thing" or "stuff." The method has since spread to <strong>100,000+ teachers across 16+ countries</strong>, and a 2024 study of 2,025 respondents confirmed measurable positive effects on engagement and learning behavior.</p>
+
+    <h3>How a Grej session works</h3>
+    <p>A Grej session runs <strong>7–10 minutes</strong> across three acts:</p>
+
+    <div class="grej-acts">
+      <div class="grej-act" style="background:#FFD600; color:#111;">
+        <div class="act-label" style="color:#111;">Act 1</div>
+        <h4>The Clue</h4>
+        <div class="timing">Day before · ~1 minute</div>
+        <p>Students receive a cryptic clue — a riddle, image fragment, sound, or quote — designed to create an <strong>information gap</strong>. Example: "A radiant woman" → Marie Curie. This leverages the <strong>Zeigarnik Effect</strong>: unfinished cognitive loops persist in working memory.</p>
+      </div>
+      <div class="grej-act" style="background:#FF4081; color:#fff;">
+        <div class="act-label">Act 2</div>
+        <h4>The Micro-Lesson</h4>
+        <div class="timing">Next day · 5–8 minutes</div>
+        <p>The teacher reveals the answer through <strong>storytelling-driven presentation using only large, colorful images — zero text</strong>. Every Grej must contain at least <strong>two genuine WOW moments</strong> that trigger dopamine release via the brain's novelty detection system.</p>
+      </div>
+      <div class="grej-act" style="background:#448AFF; color:#fff;">
+        <div class="act-label">Act 3</div>
+        <h4>Retelling + Next Clue</h4>
+        <div class="timing">Same day · ~1–2 minutes</div>
+        <p>Students retell what they learned to a peer, parent, or other adult. This leverages <strong>retrieval practice</strong> — one of the most powerful learning strategies. The next day's clue is introduced, restarting the curiosity loop.</p>
+      </div>
+    </div>
+
+    <h3>Why it works — the science</h3>
+
+    <div class="science-grid">
+      <div class="science-card">
+        <div class="icon-sq" style="background:#FFD600; color:#111;">🔍</div>
+        <h4>Information Gap</h4>
+        <p>Curiosity as deprivation — the brain craves closure on open questions (Loewenstein, 1994)</p>
+      </div>
+      <div class="science-card">
+        <div class="icon-sq" style="background:#FF4081;">🔄</div>
+        <h4>Zeigarnik Effect</h4>
+        <p>Open cognitive loops persist in working memory, producing anticipation and engagement</p>
+      </div>
+      <div class="science-card">
+        <div class="icon-sq" style="background:#7C4DFF;">⚡</div>
+        <h4>Dopaminergic Reward</h4>
+        <p>Novelty and surprise enhance hippocampal encoding via the brain's reward system (Gruber et al., 2014)</p>
+      </div>
+      <div class="science-card">
+        <div class="icon-sq" style="background:#00E676; color:#111;">🧠</div>
+        <h4>Retrieval Practice</h4>
+        <p>Retelling activates deep recall — the most powerful learning strategy in cognitive science</p>
+      </div>
+    </div>
+
+    <div class="postit" style="max-width:36rem; transform:rotate(-2deg); margin:2rem 0;">
+      <p class="postit-quote">"After 100+ Grejs, students can connect almost everything they learn in school to a Grej they've had earlier."</p>
+      <p class="postit-source">— Ela Strandberg, Teacher, Finland</p>
+    </div>
+  </section>
+
+  <!-- ====== PART 2: 32 ARCHETYPES ====== -->
+  <section>
+    <div class="label">Part 2</div>
+    <h2>Master taxonomy of 32 canonical activity archetypes</h2>
+    <p class="wide">After cataloging 150+ activity types across all platforms, they collapse into <strong>32 distinct interaction archetypes</strong> based on core mechanic. Organized by Bloom's taxonomy tier.</p>
+
+    <!-- Tier 1: Remember -->
+    <div style="margin-top:2.5rem;">
+      <div class="tier-header" style="background:#FFF8E1;">
+        <span class="step-dot" style="background:#FFD600;"></span>
+        Tier 1 — Remember (Factual Recall)
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card tier-remember">
+          <div class="card-number">Archetype 1</div>
+          <h4>Multiple Choice (Single Answer)</h4>
+          <div class="platforms">Kahoot · Quizizz · Duolingo · SoloLearn · Quizlet · Nearpod · Memrise · Blooket</div>
+          <div class="mechanic">Question with 2–6 answer options; tap one. Immediate feedback. Points for correctness ± speed.</div>
+          <div class="example">"Which country has the longest coastline?" / "Who painted the Mona Lisa?"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Gold standard</span></div>
+        </div>
+        <div class="activity-card tier-remember">
+          <div class="card-number">Archetype 2</div>
+          <h4>True / False (Binary Judgment)</h4>
+          <div class="platforms">Kahoot · Quizizz · SoloLearn · Quizlet</div>
+          <div class="mechanic">Statement displayed; select True or False. Ultra-fast decision cycle. Ideal for warm-ups.</div>
+          <div class="example">"The Great Wall of China is visible from space" (False) · "Octopuses have three hearts" (True)</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Fastest activity</span></div>
+        </div>
+        <div class="activity-card tier-remember">
+          <div class="card-number">Archetype 3</div>
+          <h4>Flashcard (Self-Assessed Recall)</h4>
+          <div class="platforms">Quizlet · Duolingo · Kahoot · Memrise</div>
+          <div class="mechanic">Card shows prompt on front. User attempts recall, flips to check. Self-sorts into "Know" / "Still Learning."</div>
+          <div class="example">"What year did the Titanic sink?" [flip] "1912"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Swipe-based</span></div>
+        </div>
+        <div class="activity-card tier-remember">
+          <div class="card-number">Archetype 4</div>
+          <h4>Image Recognition</h4>
+          <div class="platforms">Duolingo · Nearpod</div>
+          <div class="mechanic">See 3–4 images, select one matching a text prompt. Visual association builds vocabulary.</div>
+          <div class="example">"Which of these is the Colosseum?" (4 famous buildings shown)</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Visual</span></div>
+        </div>
+        <div class="activity-card tier-remember">
+          <div class="card-number">Archetype 5</div>
+          <h4>Audio Recognition</h4>
+          <div class="platforms">Duolingo · Kahoot · Memrise</div>
+          <div class="mechanic">Audio plays (sound, music, speech). User selects correct identification from options.</div>
+          <div class="example">"What instrument is playing?" / "Which language is this?"</div>
+          <div class="meta-row"><span class="stars">★★★☆☆</span> <span class="tag">Audio assets needed</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 2: Understand -->
+    <div style="margin-top:2.5rem;">
+      <div class="tier-header" style="background:#E3F2FD;">
+        <span class="step-dot" style="background:#448AFF;"></span>
+        Tier 2 — Understand (Demonstrate Comprehension)
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card tier-understand">
+          <div class="card-number">Archetype 6</div>
+          <h4>Matching Pairs (Association)</h4>
+          <div class="platforms">Duolingo · Quizlet · Quizizz · Nearpod · Memrise</div>
+          <div class="mechanic">Grid of 6–12 items; connect related pairs. Matched pairs disappear. Often timed.</div>
+          <div class="example">Countries↔Capitals · Inventors↔Inventions · Flags↔Countries</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Associative</span></div>
+        </div>
+        <div class="activity-card tier-understand">
+          <div class="card-number">Archetype 7</div>
+          <h4>Categorization / Sorting</h4>
+          <div class="platforms">Quizizz · Nearpod</div>
+          <div class="mechanic">Drag items into 2–4 labeled category buckets. Tests conceptual grouping.</div>
+          <div class="example">Sort animals into Mammals / Reptiles / Birds · Inventions by century</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Conceptual</span></div>
+        </div>
+        <div class="activity-card tier-understand">
+          <div class="card-number">Archetype 8</div>
+          <h4>Fill in the Blank (Word Bank)</h4>
+          <div class="platforms">Duolingo · Quizizz · Nearpod · Kahoot</div>
+          <div class="mechanic">Sentence with blanks + word bank below. Tap/drag correct words into blanks. Scaffolded recall.</div>
+          <div class="example">"The _____ is the largest ocean on Earth" [Pacific/Atlantic/Indian]</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Scaffolded</span></div>
+        </div>
+        <div class="activity-card tier-understand">
+          <div class="card-number">Archetype 9</div>
+          <h4>Sentence / Sequence Reordering</h4>
+          <div class="platforms">Kahoot Puzzle · Quizizz · Duolingo · SoloLearn</div>
+          <div class="mechanic">3–6 scrambled items. Drag into correct sequence (chronological, procedural, logical).</div>
+          <div class="example">Order historical events · Arrange steps of the water cycle</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Satisfying UX</span></div>
+        </div>
+        <div class="activity-card tier-understand">
+          <div class="card-number">Archetype 10</div>
+          <h4>Memory / Concentration Game</h4>
+          <div class="platforms">Nearpod</div>
+          <div class="mechanic">Grid of face-down cards. Flip two at a time to find matching pairs from memory.</div>
+          <div class="example">Match flags to country names · Historical figures to achievements</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Working memory</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 3: Apply -->
+    <div style="margin-top:2.5rem;">
+      <div class="tier-header" style="background:#E8F5E9;">
+        <span class="step-dot" style="background:#00E676;"></span>
+        Tier 3 — Apply (Use Knowledge in New Situations)
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card tier-apply">
+          <div class="card-number">Archetype 11</div>
+          <h4>Free Recall Fill-in-the-Blank</h4>
+          <div class="platforms">Kahoot · Quizizz · Duolingo · Quizlet · SoloLearn</div>
+          <div class="mechanic">Blank with no options provided. Type from memory. Auto-validated with spelling variants. Significantly harder.</div>
+          <div class="example">"The capital of Australia is _____" / "Element with atomic number 79 is _____"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Strongest retention</span></div>
+        </div>
+        <div class="activity-card tier-apply">
+          <div class="card-number">Archetype 12</div>
+          <h4>Numerical Estimation / Slider</h4>
+          <div class="platforms">Kahoot Slider · Quizizz</div>
+          <div class="mechanic">Move slider along a scale or type a number. Partial credit for proximity. Tactile and engaging.</div>
+          <div class="example">"In what year was the Eiffel Tower built?" (slider: 1800–2000)</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Novel interaction</span></div>
+        </div>
+        <div class="activity-card tier-apply">
+          <div class="card-number">Archetype 13</div>
+          <h4>Spatial Pin / Hotspot</h4>
+          <div class="platforms">Kahoot · Quizizz · Nearpod</div>
+          <div class="mechanic">Tap a specific location on an image (map, diagram). Validated against defined correct zone.</div>
+          <div class="example">"Tap where Egypt is on this map" / "Tap the heart on this diagram"</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Spatial</span></div>
+        </div>
+        <div class="activity-card tier-apply">
+          <div class="card-number">Archetype 14</div>
+          <h4>Labeling (Drag onto Image)</h4>
+          <div class="platforms">Quizizz · Nearpod</div>
+          <div class="mechanic">Drag text labels from a bank onto correct positions on a reference image. Up to 10 labels.</div>
+          <div class="example">Label parts of a cell · Continents on a map · Organs of the body</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Snap-to-position</span></div>
+        </div>
+        <div class="activity-card tier-apply">
+          <div class="card-number">Archetype 15</div>
+          <h4>Scenario-Based Question</h4>
+          <div class="platforms">Duolingo Stories · Quizizz · Nearpod</div>
+          <div class="mechanic">Short passage or video + comprehension questions embedded within. Core Grej-style format.</div>
+          <div class="example">Water cycle paragraph → "Why does water evaporate faster at higher temperatures?"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Grej-native</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 4: Analyze -->
+    <div style="margin-top:2.5rem;">
+      <div class="tier-header" style="background:#EDE7F6;">
+        <span class="step-dot" style="background:#7C4DFF;"></span>
+        Tier 4 — Analyze (Examine Relationships)
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card tier-analyze">
+          <div class="card-number">Archetype 16</div>
+          <h4>Compare and Contrast</h4>
+          <div class="platforms">Quizizz · Nearpod</div>
+          <div class="mechanic">Examine two+ items and identify similarities and differences. Structured or free-form.</div>
+          <div class="example">"How are the Amazon and Nile rivers similar and different?"</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Higher-order</span></div>
+        </div>
+        <div class="activity-card tier-analyze">
+          <div class="card-number">Archetype 17</div>
+          <h4>Find the Error / Odd One Out</h4>
+          <div class="platforms">Custom implementations</div>
+          <div class="mechanic">Identify what's wrong or which item doesn't belong. Detective/puzzle feel — highly engaging for kids.</div>
+          <div class="example">"One of these facts about sharks is false — which one?"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Detective feel</span></div>
+        </div>
+        <div class="activity-card tier-analyze">
+          <div class="card-number">Archetype 18</div>
+          <h4>Cause & Effect / Connection Mapping</h4>
+          <div class="platforms">Quizizz · Nearpod</div>
+          <div class="mechanic">Match causes to effects, or find hidden connections between seemingly unrelated facts.</div>
+          <div class="example">"Match the invention to the problem it solved"</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Relational</span></div>
+        </div>
+        <div class="activity-card tier-analyze">
+          <div class="card-number">Archetype 19</div>
+          <h4>Hot Text (Textual Analysis)</h4>
+          <div class="platforms">Quizizz</div>
+          <div class="mechanic">Tap/highlight specific words or sentences in a passage that answer the question.</div>
+          <div class="example">"Highlight the sentence that explains why volcanoes erupt"</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Reading comp</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 5: Evaluate -->
+    <div style="margin-top:2.5rem;">
+      <div class="tier-header" style="background:#FCE4EC;">
+        <span class="step-dot" style="background:#FF4081;"></span>
+        Tier 5 — Evaluate (Make Judgments)
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card tier-evaluate">
+          <div class="card-number">Archetype 20</div>
+          <h4>Ranking / Prioritization</h4>
+          <div class="platforms">Kahoot Slider · Quizizz · Nearpod</div>
+          <div class="mechanic">Rank items by a criterion (biggest→smallest, oldest→newest). Drag-to-reorder.</div>
+          <div class="example">"Rank these planets from closest to farthest from the Sun"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Judgment</span></div>
+        </div>
+        <div class="activity-card tier-evaluate">
+          <div class="card-number">Archetype 21</div>
+          <h4>Poll / Opinion Vote</h4>
+          <div class="platforms">Kahoot · Quizizz · Nearpod</div>
+          <div class="mechanic">No correct answer. Select from options or type response. Results displayed as charts or word clouds.</div>
+          <div class="example">"Which invention changed the world most?" / "What surprised you today?"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Zero grading</span></div>
+        </div>
+        <div class="activity-card tier-evaluate">
+          <div class="card-number">Archetype 22</div>
+          <h4>Confidence Rating (Metacognitive)</h4>
+          <div class="platforms">Kahoot Confidence Mode · The Lost Pyramid</div>
+          <div class="mechanic">After answering, rate confidence (low/med/high). Higher confidence + correct = more points. Wrong + high confidence = learning moment.</div>
+          <div class="example">"How sure are you that the Amazon flows through Brazil?"</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Metacognitive overlay</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier 6: Create -->
+    <div style="margin-top:2.5rem;">
+      <div class="tier-header" style="background:#FFF3E0;">
+        <span class="step-dot" style="background:#FF6D00;"></span>
+        Tier 6 — Create (Produce New Work)
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card tier-create">
+          <div class="card-number">Archetype 23</div>
+          <h4>Open-Ended Text Response</h4>
+          <div class="platforms">Kahoot · Quizizz · Nearpod</div>
+          <div class="mechanic">Free-form text up to 1,000 chars. AI-evaluated or manually graded. "Show your work" option.</div>
+          <div class="example">"In your own words, explain why the dinosaurs went extinct"</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Free expression</span></div>
+        </div>
+        <div class="activity-card tier-create">
+          <div class="card-number">Archetype 24</div>
+          <h4>Drawing / Sketching</h4>
+          <div class="platforms">Quizizz Draw · Nearpod Draw It</div>
+          <div class="mechanic">Digital canvas with pen, highlighter, colors. Draw, label, or annotate on a background image.</div>
+          <div class="example">"Draw the water cycle" / "Sketch what a Viking longship looked like"</div>
+          <div class="meta-row"><span class="stars">★★★☆☆</span> <span class="tag">Creative</span></div>
+        </div>
+        <div class="activity-card tier-create">
+          <div class="card-number">Archetype 25</div>
+          <h4>Brainstorm / Ideation</h4>
+          <div class="platforms">Kahoot Brainstorm · Nearpod Collaborate</div>
+          <div class="mechanic">Submit multiple ideas. AI groups by theme. Participants vote on best ideas.</div>
+          <div class="example">"What are possible solutions to ocean pollution?"</div>
+          <div class="meta-row"><span class="stars">★★★★☆</span> <span class="tag">Collaborative</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cross-tier: Gamification -->
+    <div style="margin-top:2.5rem;">
+      <div class="tier-header" style="background:#FBE9E7;">
+        <span class="step-dot" style="background:#FF3D00;"></span>
+        Cross-Tier — Gamification Wrappers
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card tier-gamify">
+          <div class="card-number">Archetype 26</div>
+          <h4>Timed Speed Challenge</h4>
+          <div class="platforms">Memrise · Quizlet · Duolingo · Quizizz</div>
+          <div class="mechanic">Any question type with countdown timer. Speed + accuracy = score. Creates urgency.</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Timer overlay</span></div>
+        </div>
+        <div class="activity-card tier-gamify">
+          <div class="card-number">Archetype 27</div>
+          <h4>Strategy Game Wrapper</h4>
+          <div class="platforms">Blooket Tower Defense · Gimkit Tycoon · Blooket Café</div>
+          <div class="mechanic">Correct answers earn in-game currency/resources. Invest in strategic decisions (towers, upgrades, crops).</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Pre-built shells</span></div>
+        </div>
+        <div class="activity-card tier-gamify">
+          <div class="card-number">Archetype 28</div>
+          <h4>Collection / Gacha Reward</h4>
+          <div class="platforms">Blooket Gold Quest · Blooket Fishing · Gimkit Fishtopia</div>
+          <div class="mechanic">Correct answers grant randomized reward selection with rarity tiers. "One more try" loop.</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Reward loop</span></div>
+        </div>
+        <div class="activity-card tier-gamify">
+          <div class="card-number">Archetype 29</div>
+          <h4>PvP Competition</h4>
+          <div class="platforms">SoloLearn · Blooket Battle Royale · Gimkit Snowbrawl</div>
+          <div class="mechanic">Direct player-vs-player interaction. Correct answers generate attacks, defenses, or steals.</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Social dynamics</span></div>
+        </div>
+        <div class="activity-card tier-gamify">
+          <div class="card-number">Archetype 30</div>
+          <h4>Cooperative / Team Challenge</h4>
+          <div class="platforms">Gimkit Floor is Lava · Kahoot Submarine · Quizlet Live</div>
+          <div class="mechanic">Group works together against environmental challenge. Individual answers contribute to shared progress.</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Collective</span></div>
+        </div>
+        <div class="activity-card tier-gamify">
+          <div class="card-number">Archetype 31</div>
+          <h4>Social Deduction</h4>
+          <div class="platforms">Gimkit Trust No One · Blooket Deceptive Dinos</div>
+          <div class="mechanic">Among Us-style gameplay. Impostors sabotage. Players investigate quiz anomalies and vote.</div>
+          <div class="meta-row"><span class="stars">★★★★★</span> <span class="tag">Social</span></div>
+        </div>
+        <div class="activity-card tier-gamify">
+          <div class="card-number">Archetype 32</div>
+          <h4>Creative Expression (Pictionary / Audio / Video)</h4>
+          <div class="platforms">Gimkit Draw That · Quizizz Audio/Video · Nearpod Flipgrid</div>
+          <div class="mechanic">Draw, record audio, or record video to demonstrate understanding. Peers guess or evaluate.</div>
+          <div class="meta-row"><span class="stars">★★★☆☆</span> <span class="tag">Peer interaction</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PART 3: BLOOM'S MAPPING ====== -->
+  <section>
+    <div class="label">Part 3</div>
+    <h2>Bloom's taxonomy mapping for AI lesson generation</h2>
+    <p class="wide">Mapping cognitive levels to activity archetypes and AI-generability enables an AI lesson engine to automatically select appropriate activity types based on learning objectives.</p>
+
+    <div style="overflow-x:auto;">
+      <table class="bloom-table">
+        <thead>
+          <tr>
+            <th>Bloom's Level</th>
+            <th>Best Activity Archetypes</th>
+            <th>AI Gen.</th>
+            <th>Recommended Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bloom-row-remember">
+            <td>Remember</td>
+            <td>Multiple Choice, True/False, Flashcard, Image Recognition, Audio Recognition</td>
+            <td><span class="stars">★★★★★</span></td>
+            <td>Warm-up questions; spaced repetition review</td>
+          </tr>
+          <tr class="bloom-row-understand">
+            <td>Understand</td>
+            <td>Matching Pairs, Categorization, Fill-in-Blank (word bank), Reordering, Memory Game, Scenario Comprehension</td>
+            <td><span class="stars">★★★★★</span></td>
+            <td>Post-content practice; demonstrate grasp</td>
+          </tr>
+          <tr class="bloom-row-apply">
+            <td>Apply</td>
+            <td>Free-Recall FIB, Numerical Estimation, Hotspot/Pin, Labeling, Scenario-Based Questions</td>
+            <td><span class="stars">★★★★☆</span></td>
+            <td>Core lesson activities; transfer to new contexts</td>
+          </tr>
+          <tr class="bloom-row-analyze">
+            <td>Analyze</td>
+            <td>Compare/Contrast, Find the Error, Cause-Effect Mapping, Hot Text, Ranking</td>
+            <td><span class="stars">★★★★☆</span></td>
+            <td>Deeper engagement; advanced learners</td>
+          </tr>
+          <tr class="bloom-row-evaluate">
+            <td>Evaluate</td>
+            <td>Confidence Rating, Poll/Opinion, Ranking by Judgment, Peer Voting</td>
+            <td><span class="stars">★★★★★</span></td>
+            <td>Metacognitive reflection; end-of-lesson</td>
+          </tr>
+          <tr class="bloom-row-create">
+            <td>Create</td>
+            <td>Open-Ended, Drawing, Brainstorm, Audio/Video Response</td>
+            <td><span class="stars">★★★☆☆</span></td>
+            <td>Extension activities; student-created Grejs</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="insight-callout">
+      <p><span class="accent">Key insight:</span> The bottom three levels of Bloom's taxonomy (Remember, Understand, Apply) account for <strong>20 of the 32 archetypes</strong> and are nearly fully automatable by AI. These levels also align with the core objective of Grej-style lessons: building broad general knowledge through recall and comprehension of fascinating facts.</p>
+    </div>
+  </section>
+
+  <!-- ====== PART 4: DESIGN PRINCIPLES ====== -->
+  <section>
+    <div class="label">Part 4</div>
+    <h2>Research-backed design principles for maximum retention</h2>
+
+    <h3>The testing effect is the single most powerful lever</h3>
+    <p class="wide">Retrieval practice produces a <strong>full grade-level increase</strong> in retention among middle schoolers (Roediger et al., 2011). Children as young as 8 show robust retrieval practice effects independent of reading comprehension or IQ. <strong>Fill-in-the-gap tests are particularly effective for primary-school children</strong>, with superior performance measured 7 days later.</p>
+
+    <div class="postit coral" style="max-width:32rem; transform:rotate(1.5deg); margin:1.5rem 0;">
+      <p class="postit-quote">Every micro-lesson must include retrieval practice, not just content presentation.</p>
+    </div>
+
+    <h3>The hierarchy of activity effectiveness</h3>
+    <ul class="hierarchy-list">
+      <li>
+        <span class="hierarchy-bar" style="background:#FF6D00; width:100%;">Spaced retrieval + feedback</span>
+      </li>
+      <li>
+        <span class="hierarchy-bar" style="background:#FF4081; width:85%;">Free recall with cues</span>
+      </li>
+      <li>
+        <span class="hierarchy-bar" style="background:#7C4DFF; width:72%;">MC with corrective feedback</span>
+      </li>
+      <li>
+        <span class="hierarchy-bar" style="background:#448AFF; width:58%;">Interleaved practice</span>
+      </li>
+      <li>
+        <span class="hierarchy-bar" style="background:#00E676; color:#111; width:44%;">Concept mapping</span>
+      </li>
+      <li>
+        <span class="hierarchy-bar" style="background:#E5E5E5; color:#666; width:28%;">Re-reading</span>
+        <span class="hierarchy-label" style="color:#999;">← least effective</span>
+      </li>
+    </ul>
+
+    <h3>Optimal session design by age</h3>
+    <div class="session-grid">
+      <div class="session-card" style="border-top:4px solid #FFD600;">
+        <div class="age">8–10</div>
+        <div class="details">3–5 min sessions<br>3–4 activities<br>Positive-only feedback</div>
+      </div>
+      <div class="session-card" style="border-top:4px solid #448AFF;">
+        <div class="age">11–13</div>
+        <div class="details">5–7 min sessions<br>4–5 activities<br>Constructive error feedback</div>
+      </div>
+      <div class="session-card" style="border-top:4px solid #7C4DFF;">
+        <div class="age">14–16</div>
+        <div class="details">7–10 min sessions<br>5–6 activities<br>Constructive error feedback</div>
+      </div>
+      <div class="session-card" style="border-top:4px solid #00E676;">
+        <div class="age">All</div>
+        <div class="details">1 clear objective<br>Mix 2–3 formats<br>Min. 48×48px touch targets</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PART 5: AI LESSON SPEC ====== -->
+  <section>
+    <div class="label">Part 5</div>
+    <h2>The AI lesson generation specification</h2>
+    <p class="wide">A Grej-inspired AI micro-lesson follows this four-step architecture — <strong>3–5 minutes total</strong>, ending before boredom, within the attention window for all target ages.</p>
+
+    <h3>Recommended lesson flow</h3>
+
+    <div class="flow-cards">
+      <div class="flow-card" style="background:#FFD600; color:#111;">
+        <div class="step-num" style="color:#111;">Step 1</div>
+        <h4>The Hook / Clue</h4>
+        <div class="time">~30 seconds · Activate</div>
+        <p>An intriguing image, riddle, or surprising fact that creates an information gap. Push notification the day before or timed reveal at lesson start.</p>
+      </div>
+      <div class="flow-card" style="background:#FF4081;">
+        <div class="step-num">Step 2</div>
+        <h4>The Micro-Content</h4>
+        <div class="time">~90 seconds · Demonstrate</div>
+        <p>3–5 swipeable image-rich slides with concise narration. No more than 2 sentences per slide. At least 2 WOW facts. Images only, minimal text, storytelling voice.</p>
+      </div>
+      <div class="flow-card" style="background:#00E676; color:#111;">
+        <div class="step-num" style="color:#111;">Step 3</div>
+        <h4>Active Practice</h4>
+        <div class="time">~90 seconds · Apply</div>
+        <p>3–4 activities ascending Bloom's: True/False → Matching → Reorder → Find-the-Error. Progression from recall to analysis.</p>
+      </div>
+      <div class="flow-card" style="background:#7C4DFF;">
+        <div class="step-num">Step 4</div>
+        <h4>Reflection + Next Hook</h4>
+        <div class="time">~30 seconds · Integrate</div>
+        <p>"What surprised you most?" Then reveal the next lesson's clue. Closes the current loop, opens the next one.</p>
+      </div>
+    </div>
+
+    <h3>Top 12 activity types to implement first</h3>
+    <p>These cover all essential Bloom's levels, are fully AI-generable, and have the strongest evidence for effectiveness:</p>
+
+    <ol class="priority-list">
+      <li><div><span class="item-name">Multiple Choice</span><br><span class="item-desc">Universal, proven, trivial to generate</span></div></li>
+      <li><div><span class="item-name">True/False</span><br><span class="item-desc">Fastest activity, ideal for warm-ups</span></div></li>
+      <li><div><span class="item-name">Fill-in-the-Blank (word bank)</span><br><span class="item-desc">Scaffolded recall</span></div></li>
+      <li><div><span class="item-name">Fill-in-the-Blank (free recall)</span><br><span class="item-desc">Strongest retention effect</span></div></li>
+      <li><div><span class="item-name">Matching Pairs</span><br><span class="item-desc">Excellent for associative knowledge</span></div></li>
+      <li><div><span class="item-name">Sequence Reorder</span><br><span class="item-desc">Tests deeper understanding of processes/timelines</span></div></li>
+      <li><div><span class="item-name">Numerical Slider</span><br><span class="item-desc">Engaging for quantitative facts, novel interaction</span></div></li>
+      <li><div><span class="item-name">Find the Error / Odd One Out</span><br><span class="item-desc">Analytical, detective-like, highly engaging for kids</span></div></li>
+      <li><div><span class="item-name">Categorization / Sorting</span><br><span class="item-desc">Tests conceptual understanding</span></div></li>
+      <li><div><span class="item-name">Hotspot / Pin on Image</span><br><span class="item-desc">Spatial knowledge (geography, anatomy, diagrams)</span></div></li>
+      <li><div><span class="item-name">Confidence Rating</span><br><span class="item-desc">Metacognitive layer on any question type</span></div></li>
+      <li><div><span class="item-name">Poll / WOW Reaction</span><br><span class="item-desc">Reflection and engagement, zero grading needed</span></div></li>
+    </ol>
+
+    <h3>Gamification framework</h3>
+    <div class="gamification-strip">
+      <span class="gamification-chip"><span class="chip-dot" style="background:#FF3D00;"></span> Streaks</span>
+      <span class="gamification-chip"><span class="chip-dot" style="background:#FFD600;"></span> XP / Points</span>
+      <span class="gamification-chip"><span class="chip-dot" style="background:#448AFF;"></span> Knowledge Map</span>
+      <span class="gamification-chip"><span class="chip-dot" style="background:#7C4DFF;"></span> Collection / Badges</span>
+      <span class="gamification-chip"><span class="chip-dot" style="background:#00E676;"></span> Progress Visualization</span>
+      <span class="gamification-chip"><span class="chip-dot" style="background:#FF6D00;"></span> Curiosity Clue Notifications</span>
+    </div>
+    <p style="font-size:0.88rem; color:#999;">Avoid punitive leaderboards for children under 12. Avoid excessive extrinsic rewards that undermine intrinsic curiosity — the core Grej mechanism.</p>
+  </section>
+
+  <!-- ====== PART 6: INNOVATIONS ====== -->
+  <section>
+    <div class="label">Part 6</div>
+    <h2>Platform-specific innovations worth adapting</h2>
+    <p class="wide">Several platforms offer unique mechanics that deserve special attention for a general-knowledge kids' app:</p>
+
+    <div class="innovation-grid">
+      <div class="innovation-card" style="border-top:4px solid #FFD600;">
+        <div class="source-label">Kahoot</div>
+        <h4>Brainstorm with AI Grouping</h4>
+        <p>Combines idea submission, AI-powered grouping, and peer voting into a single activity. Could power collaborative Grej extensions where students collectively brainstorm connections between topics.</p>
+      </div>
+      <div class="innovation-card" style="border-top:4px solid #FF4081;">
+        <div class="source-label">Quizizz</div>
+        <h4>Interactive Video</h4>
+        <p>Pauses video at strategic moments for embedded questions. Maps directly to the Grej presentation format — short video content with comprehension checks.</p>
+      </div>
+      <div class="innovation-card" style="border-top:4px solid #7C4DFF;">
+        <div class="source-label">Blooket</div>
+        <h4>Tower Defense Wrapper</h4>
+        <p>Any question set becomes dramatically more engaging in a strategy game. A "Knowledge Kingdom" mode where correct answers build and defend a civilization could combine knowledge with strategic thinking.</p>
+      </div>
+      <div class="innovation-card" style="border-top:4px solid #448AFF;">
+        <div class="source-label">Duolingo</div>
+        <h4>Speech-Based Recall</h4>
+        <p>Showing a prompt and requiring the user to say the answer aloud leverages speech-based retrieval. A "Tell me about" mode where kids verbally explain a topic would be powerful.</p>
+      </div>
+      <div class="innovation-card" style="border-top:4px solid #00E676;">
+        <div class="source-label">Gimkit</div>
+        <h4>Economic Loop</h4>
+        <p>Answer questions → earn currency → buy upgrades → earn more per question. Knowledge literally compounds. Perhaps the most addictive mechanic in educational gaming.</p>
+      </div>
+      <div class="innovation-card" style="border-top:4px solid #FF6D00;">
+        <div class="source-label">Nearpod</div>
+        <h4>VR Field Trips</h4>
+        <p>360° panoramic exploration could transform geography and history Grejs into immersive explorations — "visit" the Great Wall, the Amazon rainforest, or the surface of Mars.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CONCLUSION ====== -->
+  <section>
+    <div class="label">Conclusion</div>
+    <h2>From catalog to <span style="color:#FF6D00;">system</span></h2>
+
+    <p class="wide">This catalog identifies <strong>32 canonical activity archetypes</strong> derived from 150+ implementations across 10+ platforms, mapped to Bloom's taxonomy and grounded in cognitive science.</p>
+
+    <p class="wide">The critical insight: <strong>the Grej of the Day method and interactive micro-learning are complementary, not competing, approaches.</strong> Grej provides the pedagogical philosophy — curiosity-first, story-driven, short-format, WOW-anchored, socially shared knowledge hooks. The activity catalog provides the interactive assessment layer that transforms passive consumption into active retrieval practice.</p>
+
+    <div class="feature-grid" style="margin-top:2rem;">
+      <div class="feature-card" style="background:#FF6D00;">
+        <div class="icon">✨</div>
+        <h4>20 of 32 fully automatable</h4>
+        <p>Requiring only verified factual content, an image library, and well-designed prompt templates.</p>
+      </div>
+      <div class="feature-card" style="background:#448AFF;">
+        <div class="icon">🎮</div>
+        <h4>12 require pre-built game shells</h4>
+        <p>Strategy wrappers, PvP mechanics, and creative expression tools — AI fills them with generated questions.</p>
+      </div>
+      <div class="feature-card" style="background:#00E676; color:#111;">
+        <div class="icon">⏱️</div>
+        <h4 style="color:#111;">3–5 minute sessions</h4>
+        <p style="color:rgba(17,17,17,0.7);">Pedagogically sound and technically feasible — making general knowledge irresistible for kids.</p>
+      </div>
+    </div>
+
+    <div class="postit sky" style="max-width:36rem; transform:rotate(-1.5deg); margin:2.5rem 0;">
+      <p class="postit-quote">"You don't need more motivation. You need a smaller first step."</p>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <div class="footer">
+    <img src="https://pimpi.app/pimpi_celeb.svg" alt="Pimpi celebrating" class="mascot">
+    <div class="tagline">Small steps, big kids.</div>
+    <div class="sub">Pimpi Sparks · Micro-Learning Research Catalog</div>
+    <a href="https://pimpi.app" class="cta-btn">Explore Pimpi →</a>
+  </div>
+
+</div>
+
+</body>
+</html>

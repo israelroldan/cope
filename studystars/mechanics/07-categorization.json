@@ -1,0 +1,104 @@
+{
+  "id": "categorization",
+  "number": 7,
+  "name": "Categorization/Sorting",
+  "slug": "categorization",
+  "tier": {
+    "bloom": "understand",
+    "level": 2,
+    "label": "Understand — Conceptual Relationships"
+  },
+  "summary": "Drag items into 2-4 labeled category buckets.",
+  "platforms": [
+    "Quizizz",
+    "Nearpod"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI excels at generating category-item sets. Given a topic (animals, inventions, historical periods), AI can define categories and generate items that fit each category, including plausible distractors that fit multiple categories."
+  },
+  "interaction": {
+    "type": "drag-drop",
+    "input": "drag",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "categories": {
+      "type": "string[]",
+      "required": true,
+      "description": "Array of category names (2-4 items).",
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "items": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of items to sort into categories.",
+      "minItems": 4,
+      "maxItems": 16,
+      "itemSchema": {
+        "text": {
+          "type": "string",
+          "description": "The item text to be sorted."
+        },
+        "correctCategory": {
+          "type": "string",
+          "description": "The correct category name (must match one of the categories array)."
+        }
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "required": false,
+      "description": "Optional explanation of the categorization logic and tricky items."
+    },
+    "difficulty": {
+      "type": "enum",
+      "required": false,
+      "description": "Difficulty level based on category distinctiveness.",
+      "values": ["easy", "medium", "hard"]
+    },
+    "tags": {
+      "type": "string[]",
+      "required": false,
+      "description": "Topic tags for curriculum mapping."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "30-60s",
+    "animation": "drag-highlight on long-press, snap-to-bucket with highlight, fade-out for correctly placed items",
+    "mobileNotes": "Bucket zones at top (2-4 columns of labeled buckets), items at bottom in a pool. Long-press-drag on items to move them. Drop into bucket to place. Buckets expand/highlight when item is dragged over them."
+  },
+  "lessonPlacement": [
+    "post-content",
+    "core-practice",
+    "deep-engagement"
+  ],
+  "ageAdaptations": {
+    "8-10": "2 categories maximum, 4-6 items total. Large buckets (120x120px) with icons or colors. Items are large (80x60px). Very distinct category items (e.g., Mammals vs. Reptiles, not Mammals vs. Primates). Visual bucket labels with emojis. Tap-and-sort interaction (less dexterity required than drag).",
+    "11-13": "3 categories, 6-10 items. Standard bucket size (100x100px). Items moderate size (70x50px). Categories are conceptually related (e.g., Mammals/Reptiles/Birds, or Vegetables/Fruits/Grains). Drag-and-drop interaction required. Immediate per-item feedback.",
+    "14-16": "4 categories, 10-16 items. Compact buckets (80x80px). Items small (60x40px). Complex categorization (e.g., ancient civilizations by continent, chemical elements by group, or historical events by century). Tricky distractors that fit multiple categories. No feedback until full completion (summative assessment variant)."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": [
+    "matching-pairs",
+    "fill-in-blank-wordbank"
+  ],
+  "tags": [
+    "classification",
+    "grouping",
+    "conceptual-understanding",
+    "taxonomy"
+  ]
+}

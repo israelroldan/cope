@@ -1,0 +1,129 @@
+{
+  "id": "pvp-competition",
+  "number": 29,
+  "name": "PvP Competition (Player vs Player)",
+  "slug": "pvp-competition",
+  "tier": {
+    "bloom": "gamification",
+    "level": 7,
+    "label": "Gamification — Cross-Tier Wrapper"
+  },
+  "summary": "Direct player-vs-player combat: correct answers generate attacks, defenses, or steals. Social dynamics create engagement and mild competitive tension.",
+  "platforms": [
+    "SoloLearn",
+    "Blooket Battle Royale",
+    "Blooket Blook Rush",
+    "Blooket Crypto Hack",
+    "Gimkit Snowbrawl",
+    "Gimkit Knockback",
+    "Quizizz Strike & Shield"
+  ],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates questions excellently. Multiplayer mechanics and action generation (attack names, animations) are deterministic templates. Full AI generability."
+  },
+  "interaction": {
+    "type": "game-wrapper",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": true,
+    "timePressure": "core"
+  },
+  "contentSchema": {
+    "questionMechanic": {
+      "type": "string",
+      "required": true,
+      "description": "ID of the wrapped question mechanic (e.g., 'multiple-choice', 'true-false')."
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of question objects conforming to the wrapped mechanic's schema."
+    },
+    "gameMode": {
+      "type": "enum",
+      "required": true,
+      "values": [
+        "attack",
+        "defend",
+        "steal",
+        "mixed"
+      ],
+      "description": "Core mechanic: 'attack' (correct = damage opponent), 'defend' (correct = shield), 'steal' (correct = take resources), 'mixed' (varies by turn)."
+    },
+    "actionNames": {
+      "type": "object",
+      "required": true,
+      "description": "Object with 'correct' and 'incorrect' action names (e.g., {correct: 'Snowball Throw', incorrect: 'Slip on Ice'})."
+    },
+    "matchSize": {
+      "type": "integer",
+      "required": true,
+      "description": "Number of concurrent players (2 for duel, 4-8 for squad, up to 30 for royale)."
+    },
+    "healthPerPlayer": {
+      "type": "integer",
+      "required": true,
+      "description": "Starting health points (typical 100-200)."
+    },
+    "damagePerCorrect": {
+      "type": "integer",
+      "required": true,
+      "description": "Damage/advantage gained from correct answer (e.g., 10-25)."
+    },
+    "questionsPerMatch": {
+      "type": "integer",
+      "required": true,
+      "description": "Total questions before match ends (typical 10-30)."
+    },
+    "winCondition": {
+      "type": "enum",
+      "required": false,
+      "values": [
+        "last-player-standing",
+        "most-points",
+        "first-to-elimination"
+      ],
+      "description": "How victory is determined."
+    }
+  },
+  "scoring": {
+    "type": "speed-weighted",
+    "partialCredit": false,
+    "speedBonus": true,
+    "feedback": "immediate",
+    "feedbackContent": "correct-incorrect"
+  },
+  "ux": {
+    "layout": "split-screen",
+    "minTouchTarget": "56x56px",
+    "estimatedDuration": "180-600s",
+    "animation": "attack-arc, damage-number-pop, health-bar-drain, victory-burst",
+    "mobileNotes": "Split-screen with opponent portrait + health bar on each side (top 30%). Question in center (40%). Large tap answer buttons (bottom 30%). Action animations between both players. Real-time sync. Leaderboard at end. Portrait orientation; landscape for tablets."
+  },
+  "lessonPlacement": [
+    "extension",
+    "deep-engagement"
+  ],
+  "ageAdaptations": {
+    "8-10": "Cooperative-leaning; duels only (2 players). No stealing. Simple health mechanic (50 points). Friendly themes (snowball, bubbles). 5-10 questions. Encourages participation over winning.",
+    "11-13": "Moderate competition; squads (4-6) allowed. Light stealing (1-2 points). Standard health/damage model. 10-20 questions. Leaderboard visible but not emphasized.",
+    "14-16": "Full competitive; royales (8-30). Aggressive stealing (5+ points). Shields, power-ups, skill-based damage scaling. 20-30 questions. Ranked leaderboard, seasonal achievements."
+  },
+  "implementationPriority": "p3-future",
+  "relatedMechanics": [
+    "cooperative-challenge",
+    "strategy-game",
+    "timed-speed"
+  ],
+  "tags": [
+    "gamification",
+    "competitive",
+    "pvp",
+    "multiplayer",
+    "social",
+    "real-time",
+    "wrapper",
+    "engagement"
+  ]
+}

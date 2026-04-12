@@ -72,15 +72,17 @@ Open het IT Landschap document op je scherm. Gebruik het **applicatielandschap-d
 - "Is er al een technische verkenning gedaan — weten jullie of het bestaande tool dit kan, of moet er iets gebouwd worden?"
 - "Wie is de eigenaar van dit initiatief binnen de organisatie?"
 
-**Als ze Flowmatic / zelfgebouwde AI-agents noemen:**
-- "We begrijpen dat er al een aantal agents gebouwd zijn in Flowmatic — een servicedesk-agent, Billie voor facturatie, een intakes-agent. Zijn die al live bij eindgebruikers, of zitten ze nog in een test-/pilotfase?"
-- "Wie heeft die gebouwd — en wie onderhoudt ze? Is dat het initiatief van één persoon of een teaminspanning?"
-- "Hoe zijn die agents verbonden met jullie kernsystemen — halen ze data op uit AFAS of Facilitor, of werken ze meer standalone?"
-- "Is Flowmatic iets dat jullie zien opschalen naar andere BU's, of is het meer een experimenteeromgeving?"
+**Als ze Flowmatic / Copilot Studio / zelfgebouwde AI-agents noemen:**
+- "We zien activiteit op meerdere agent-platformen — Billy voor factuurverwerking in Flowmatic, een projectmanagement-agent en AFAS Helpdesk-agent in Copilot Studio, Heydi als servicedesk-agent bij Multiline. Hoe bepalen jullie welk platform voor welke agent?"
+- "Welke van die agents zijn al live bij eindgebruikers, en welke zitten nog in test?"
+- "Hoe zijn ze verbonden met jullie kernsystemen — halen ze data op uit AFAS of Facilitor, of werken ze meer standalone?"
+- "Wie onderhoudt die agents als ze eenmaal gebouwd zijn? Is dat houdbaar met de huidige capaciteit?"
+- "Is er een visie om naar één agent-platform te consolideren, of is de multi-platform aanpak bewust?"
 
 **Als ze Jonas / AFAS AI noemen:**
 - "Hoe ver zijn jullie daarmee? Actief, pilot, of nog verkennend?"
-- "Op welke AFAS-modules willen jullie dat het meest toepassen?"
+- "We begrijpen dat jullie specifieke use cases hebben uitgewerkt — consultants die actiepunten inspreken, veldmedewerkers die observaties vastleggen voor MJOP-taken, HR-documentatie. Zijn dat nog steeds de prioriteiten, of is het denken verschoven?"
+- "Is er een connectie tussen Jonas en de Billy finance-agent — kan Jonas een deel van wat Billy doet native afhandelen?"
 - "Zijn er blokkades — licenties, datakwaliteit, verandermanagement?"
 
 **Als ze Copilot / M365 AI noemen:**

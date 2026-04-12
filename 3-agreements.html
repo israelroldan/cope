@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q2 Agreements — Tatoma</title>
+<style>
+@import url('https://hub.tatoma.eu/fonts/canela/stylesheet.css');
+@import url('https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css');
+
+:root {
+  --background: #F6FAEB;
+  --foreground: #1D021F;
+  --card: #FFFFFF;
+  --primary: #FF8E7D;
+  --primary-foreground: #1D021F;
+  --secondary: #4F2035;
+  --secondary-foreground: #F6FAEB;
+  --muted: #A397A3;
+  --muted-foreground: #4C3C47;
+  --dark-magenta: #1E001E;
+  --border: #A397A3;
+  --radius: 0.75rem;
+  --font-serif: "Canela", Georgia, serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--background); color: var(--foreground);
+  font-family: var(--font-sans); -webkit-font-smoothing: antialiased; line-height: 1.6;
+}
+h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; }
+
+/* Nav */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(246,250,235,0.85); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(163,151,163,0.3);
+  padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--secondary); }
+.nav-links { display: flex; gap: 0.25rem; }
+.nav-link {
+  font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 0.4rem 0.8rem; border-radius: 999px; text-decoration: none; color: var(--muted-foreground); transition: all 0.2s;
+}
+.nav-link:hover { background: rgba(255,142,125,0.15); color: var(--foreground); }
+.nav-link.active { background: var(--secondary); color: var(--secondary-foreground); }
+
+/* Page */
+.page { max-width: 800px; margin: 0 auto; padding: 6rem 2rem 4rem; }
+
+.page-header { margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.5s ease forwards; }
+.page-badge {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  background: var(--dark-magenta); color: var(--primary);
+  padding: 0.3rem 0.8rem; border-radius: 999px; margin-bottom: 1.25rem;
+}
+.page-header h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 0.5rem; }
+.page-header p { color: var(--muted-foreground); font-size: 1rem; }
+
+/* Editable fields */
+[contenteditable] {
+  outline: none; border-bottom: 2px dashed rgba(163,151,163,0.3);
+  padding-bottom: 2px; min-width: 60px; transition: border-color 0.2s;
+}
+[contenteditable]:focus { border-color: var(--primary); }
+[contenteditable]:empty::before {
+  content: attr(data-placeholder); color: var(--muted); font-style: italic;
+}
+
+/* Sections */
+.agreement-section {
+  margin-bottom: 3rem; opacity: 0; animation: fadeUp 0.5s ease forwards;
+}
+.agreement-section:nth-child(2) { animation-delay: 0.1s; }
+.agreement-section:nth-child(3) { animation-delay: 0.2s; }
+.agreement-section:nth-child(4) { animation-delay: 0.3s; }
+.agreement-section:nth-child(5) { animation-delay: 0.4s; }
+.agreement-section:nth-child(6) { animation-delay: 0.5s; }
+
+.section-label {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--muted); margin-bottom: 0.75rem;
+}
+
+/* OKR agreement blocks */
+.okr-agreement {
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 1.75rem; margin-bottom: 1.25rem;
+}
+.okr-agreement h3 { font-size: 1.35rem; margin-bottom: 0.25rem; }
+.okr-agreement .theme {
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--muted); margin-bottom: 1rem;
+}
+
+.kr-row {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.75rem 0; border-bottom: 1px solid rgba(163,151,163,0.12);
+}
+.kr-row:last-child { border: none; }
+.kr-check {
+  width: 20px; height: 20px; border-radius: 4px; border: 2px solid rgba(163,151,163,0.3);
+  background: none; cursor: pointer; flex-shrink: 0; margin-top: 0.15rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; color: transparent; transition: all 0.2s;
+}
+.kr-check.checked { background: var(--secondary); border-color: var(--secondary); color: var(--secondary-foreground); }
+.kr-content { flex: 1; }
+.kr-text-line { font-size: 0.9rem; }
+.kr-meta {
+  display: flex; gap: 1rem; margin-top: 0.35rem;
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+}
+
+/* Commitment cards */
+.commit-section { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+.commit-card {
+  background: var(--dark-magenta); color: var(--secondary-foreground); border-radius: var(--radius);
+  padding: 1.5rem; text-align: center;
+}
+.commit-card .person-name { font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 0.5rem; }
+.commit-card .commit-label {
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--primary); margin-bottom: 0.5rem;
+}
+.commit-card [contenteditable] { border-color: rgba(255,142,125,0.3); color: var(--secondary-foreground); min-height: 1.5em; }
+.commit-card [contenteditable]:focus { border-color: var(--primary); }
+.commit-card [contenteditable]:empty::before { color: rgba(163,151,163,0.6); }
+
+/* Priority stack */
+.priority-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.85rem 1.25rem; background: var(--card); border: 1px solid rgba(163,151,163,0.3);
+  border-radius: var(--radius); margin-bottom: 0.5rem;
+}
+.priority-num {
+  font-family: var(--font-mono); font-size: 1.1rem; color: var(--primary); width: 2rem; flex-shrink: 0;
+}
+
+/* Logistics */
+.logistics-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;
+}
+.log-card {
+  background: var(--card); border: 1px solid rgba(163,151,163,0.3); border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.log-card .log-label {
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.5rem;
+}
+
+/* Actions */
+.action-bar {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 100; display: flex; gap: 0.5rem;
+}
+.action-btn {
+  font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+  padding: 0.6rem 1.25rem; border-radius: 999px; cursor: pointer; transition: all 0.2s; border: none;
+}
+.action-btn.primary { background: var(--primary); color: var(--primary-foreground); }
+.action-btn.primary:hover { opacity: 0.85; }
+.action-btn.secondary-btn { background: var(--card); color: var(--foreground); border: 1px solid rgba(163,151,163,0.3); }
+.action-btn.secondary-btn:hover { background: var(--dark-magenta); color: var(--secondary-foreground); }
+
+/* Signature area */
+.signatures {
+  margin-top: 3rem; padding-top: 2rem; border-top: 2px solid rgba(163,151,163,0.2);
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; text-align: center;
+}
+.sig-block .sig-line { border-bottom: 1px solid var(--foreground); margin-bottom: 0.5rem; min-height: 2rem; }
+.sig-block .sig-name { font-family: var(--font-serif); font-size: 1rem; }
+.sig-block .sig-role {
+  font-family: var(--font-mono); font-size: 0.6rem; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--muted);
+}
+
+/* Print */
+@media print {
+  .nav, .action-bar { display: none; }
+  .page { padding-top: 2rem; }
+  .okr-agreement { break-inside: avoid; }
+  [contenteditable] { border-bottom-style: solid; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .commit-section, .logistics-row, .signatures { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">Tatoma / Q2 OKR Session</div>
+  <div class="nav-links">
+    <a href="1-kletkamp-vision.html" class="nav-link">Vision</a>
+    <a href="2-session-guide.html" class="nav-link">Session</a>
+    <a href="3-agreements.html" class="nav-link active">Agreements</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="page-badge">Deliverable &bull; Q2 2026</div>
+    <h1>Our Q2 Agreements</h1>
+    <p>Decisions captured during our OKR session on March 31, 2026. All fields are editable — click to fill in during the meeting.</p>
+  </div>
+
+  <!-- OKR 1 -->
+  <div class="agreement-section">
+    <div class="section-label">Objective 1</div>
+    <div class="okr-agreement">
+      <h3>Accelerate Revenue to &gt;&euro;300k</h3>
+      <div class="theme">Commercial / Sales</div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Close <strong contenteditable="true" data-placeholder="___">&nbsp;</strong>k in Group Company deals (ADG / Crowe)</div>
+          <div class="kr-meta"><span>Owner: Sander / Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Agency Circle generates <strong contenteditable="true" data-placeholder="___">&nbsp;</strong>k through BD model</div>
+          <div class="kr-meta"><span>Owner: Sander</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Accountancy Circle: model designed &amp; first pilot running</div>
+          <div class="kr-meta"><span>Owner: Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Partnership revenue (Kriton / Node 1) reaches <strong contenteditable="true" data-placeholder="___">&nbsp;</strong>k</div>
+          <div class="kr-meta"><span>Owner: Sander / Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OKR 2 -->
+  <div class="agreement-section">
+    <div class="section-label">Objective 2</div>
+    <div class="okr-agreement">
+      <h3>Ship a Product That Sells Itself</h3>
+      <div class="theme">Product &amp; Engineering</div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">V2.0 Portal live with Visual Transformation Timeline</div>
+          <div class="kr-meta"><span>Owner: Israel / Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">100% of active clients on the Portal</div>
+          <div class="kr-meta"><span>Owner: Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Creator Hub MVP launched</div>
+          <div class="kr-meta"><span>Owner: Israel</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Knowledge Retention: workshop insights auto-stored in AI Memory</div>
+          <div class="kr-meta"><span>Owner: Israel</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">MCP context-layer: first client pilot running</div>
+          <div class="kr-meta"><span>Owner: Israel</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OKR 3 -->
+  <div class="agreement-section">
+    <div class="section-label">Objective 3</div>
+    <div class="okr-agreement">
+      <h3>Prove the "Software with a Service" Model</h3>
+      <div class="theme">Delivery &amp; Scalability</div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">First expert webinars executed; cross-circle sharing live</div>
+          <div class="kr-meta"><span>Owner: Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">External learning partner onboarded for Work Better</div>
+          <div class="kr-meta"><span>Owner: Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Delivery playbook documented for independent leads</div>
+          <div class="kr-meta"><span>Owner: Sander / Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Test outsourced Circle Operations for Accountancy</div>
+          <div class="kr-meta"><span>Owner: Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OKR 4 -->
+  <div class="agreement-section">
+    <div class="section-label">Objective 4</div>
+    <div class="okr-agreement">
+      <h3>Build the Team &amp; Brand for Scale</h3>
+      <div class="theme">People, Marketing &amp; Ops</div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Tech intern productive and contributing to backlog</div>
+          <div class="kr-meta"><span>Owner: Israel</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Data consultant onboarded</div>
+          <div class="kr-meta"><span>Owner: Sander</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">Each cofounder publishes <strong contenteditable="true" data-placeholder="6">6</strong>+ LinkedIn posts in Q2</div>
+          <div class="kr-meta"><span>Owner: All</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">"Movement" community: <strong contenteditable="true" data-placeholder="___">&nbsp;</strong> active client participants</div>
+          <div class="kr-meta"><span>Owner: Maarten</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+
+      <div class="kr-row">
+        <button class="kr-check" onclick="this.classList.toggle('checked')">&#10003;</button>
+        <div class="kr-content">
+          <div class="kr-text-line">WBSO approved and R&amp;D tracking in place</div>
+          <div class="kr-meta"><span>Owner: Israel</span><span>Due: <span contenteditable="true" data-placeholder="date">Q2</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Commitments -->
+  <div class="agreement-section">
+    <div class="section-label">Personal Commitments</div>
+    <h2 style="font-size:1.75rem; margin-bottom:0.5rem;">Our #1 Key Result</h2>
+    <p style="color:var(--muted-foreground); font-size:0.9rem; margin-bottom:1rem;">The one thing that makes Q2 a success for each of us.</p>
+    <div class="commit-section">
+      <div class="commit-card">
+        <div class="person-name">Sander</div>
+        <div class="commit-label">#1 KR</div>
+        <div contenteditable="true" data-placeholder="Type here...">&nbsp;</div>
+      </div>
+      <div class="commit-card">
+        <div class="person-name">Maarten</div>
+        <div class="commit-label">#1 KR</div>
+        <div contenteditable="true" data-placeholder="Type here...">&nbsp;</div>
+      </div>
+      <div class="commit-card">
+        <div class="person-name">Israel</div>
+        <div class="commit-label">#1 KR</div>
+        <div contenteditable="true" data-placeholder="Type here...">&nbsp;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Priority Stack -->
+  <div class="agreement-section">
+    <div class="section-label">Priority Stack</div>
+    <h2 style="font-size:1.75rem; margin-bottom:1rem;">If Q2 gets tight...</h2>
+    <div class="priority-item">
+      <span class="priority-num">#1</span>
+      <span contenteditable="true" data-placeholder="Highest priority objective or KR" style="flex:1; font-size:0.95rem;">&nbsp;</span>
+    </div>
+    <div class="priority-item">
+      <span class="priority-num">#2</span>
+      <span contenteditable="true" data-placeholder="Second priority" style="flex:1; font-size:0.95rem;">&nbsp;</span>
+    </div>
+    <div class="priority-item">
+      <span class="priority-num">#3</span>
+      <span contenteditable="true" data-placeholder="Third priority" style="flex:1; font-size:0.95rem;">&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- Logistics -->
+  <div class="agreement-section">
+    <div class="section-label">Logistics</div>
+    <div class="logistics-row">
+      <div class="log-card">
+        <div class="log-label">Check-in Cadence</div>
+        <div contenteditable="true" data-placeholder="Weekly / biweekly / async?" style="font-size:0.9rem;">&nbsp;</div>
+      </div>
+      <div class="log-card">
+        <div class="log-label">Tracking Tool</div>
+        <div contenteditable="true" data-placeholder="Notion / Portal / Shared doc?" style="font-size:0.9rem;">&nbsp;</div>
+      </div>
+      <div class="log-card">
+        <div class="log-label">Next Review Date</div>
+        <div contenteditable="true" data-placeholder="Mid-Q2 date" style="font-size:0.9rem;">&nbsp;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="agreement-section">
+    <div class="section-label">Session Notes</div>
+    <div style="background:var(--card); border:1px solid rgba(163,151,163,0.3); border-radius:var(--radius); padding:1.5rem; min-height:120px;" contenteditable="true" data-placeholder="Capture any additional notes, decisions, or context from the session...">&nbsp;</div>
+  </div>
+
+  <!-- Signatures -->
+  <div class="signatures">
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Sander Kok</div>
+      <div class="sig-role">Cofounder</div>
+    </div>
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Maarten van den Heuvel</div>
+      <div class="sig-role">Cofounder</div>
+    </div>
+    <div class="sig-block">
+      <div class="sig-line"></div>
+      <div class="sig-name">Israel</div>
+      <div class="sig-role">Cofounder</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Actions -->
+<div class="action-bar">
+  <button class="action-btn secondary-btn" onclick="window.print()">Print / PDF</button>
+  <button class="action-btn primary" onclick="saveSnapshot()">Save Snapshot</button>
+</div>
+
+<script>
+function saveSnapshot() {
+  const data = {};
+  document.querySelectorAll('[contenteditable]').forEach((el, i) => {
+    data['field_' + i] = el.innerText.trim();
+  });
+  document.querySelectorAll('.kr-check').forEach((el, i) => {
+    data['check_' + i] = el.classList.contains('checked');
+  });
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'tatoma-q2-agreements-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Visual feedback
+  const btn = document.querySelector('.action-btn.primary');
+  const orig = btn.textContent;
+  btn.textContent = 'Saved!';
+  setTimeout(() => btn.textContent = orig, 2000);
+}
+</script>
+
+</body>
+</html>

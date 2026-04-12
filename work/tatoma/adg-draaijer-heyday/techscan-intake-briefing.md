@@ -170,22 +170,26 @@ Their innovation portfolio follows the **Innovation Ambition Matrix** (Nagji & T
 
 This is critical. They already have **named AI initiatives** on their 2026 innovation wheel:
 
-| Initiative | BU / Scope | What it likely means |
-|-----------|-----------|---------------------|
-| AI offertetool | Multiple BUs (appears 3x) | AI-assisted proposal/quote generation — likely their #1 cross-BU priority |
-| Staff HR-agent "Billy" | Group-level | AI HR assistant, probably leveraging AFAS HR data |
-| BU Interim Matchmaker | BU Interim | AI matching of interim candidates to assignments |
-| Consultancy AI personal agents | BU Consultancy | AI assistants for consultants |
-| Multiline "Bonnie" MCP | BU Multiline | Named AI agent for Multiline operations |
-| Digitale receptie | BU Hospitality | AI/digital reception for hospitality clients |
-| MJOB/MJOP AI | BU Vastgoedbeheer | AI for maintenance planning (meerjarenonderhoudsplan) |
-| HR-data-inzicht | Group-level | AI-driven HR analytics |
-| AI leergang | Group-level | AI training/learning program for employees |
-| PVE digital Dashboarding & IHP | Cross-BU | Digital program of requirements + dashboarding |
-| Landschapskaart | Group-level | Mapping exercise (possibly what our Tech Scan feeds into) |
-| AI & digitalisering | Group-level | Overarching digitalization initiative |
+| Initiative | BU / Scope | Status & detail |
+|-----------|-----------|----------------|
+| **Let's Copilot adoption** | Group-wide | ACTIVE — Train-de-trainer model via &Samhoud, Copilot Lab started, ambassadors sharing via Teams + internal workshops. ~80-90 licenses. |
+| **Copilot Studio Agents** | Group-wide | IN PILOT — Employee Self-Service agent, Skills Agent, Researcher Agent available. Active pilots: **project management agent (Interim)** and **AFAS Helpdesk agent**. |
+| **Jonas / AFAS AI** | Group-wide | PLANNED — Specific use cases mapped: consultants dictating action points post-meeting, field inspectors dictating observations → tasks for MJOP/MJOB, HR service for faster documentation + 24/7 HR support ambition. |
+| **HR-support agent pilot** | Group / HR | PLANNED — AI assistant for first-line HR questions (leave, onboarding). Reduces workload, 24/7 availability, frees HR for complex cases. |
+| **Billy (finance tool)** | Group / Finance | IN DEVELOPMENT — Automated invoice processing + ledger classification (grootboekclassificatie). Planned AFAS AI integration for analysis + standard queries. Built in Flowmatic. |
+| **Brainial for tenderdesk** | Sales / Group-wide | IMPLEMENTING — AI tender/bid automation, ADG-wide rollout confirmed. |
+| **AI personal agents (Consultancy)** | BU Consultancy | IN PILOT — Tools for meeting notes, text review, process support. Copilot pilots showing productivity gains from automating repetitive tasks. |
+| **PVE "Schoolreisje 2.0"** | BU Consultancy | IN DEVELOPMENT — AI for parametric translation of educational visions into spatial programs for school construction tenders. Direct competitive advantage in aanbestedingen. |
+| **Integrated dashboards + AI in Facilitor** | BU Integrated | PLANNED — Integrated dashboards coupling mail, Teams, financial data for task overview. Plus "low-hanging fruit" AI features in Facilitor (dashboards/to-do). Focus on reducing task fragmentation. |
+| **MJOP/MJOB AI** | BU Vastgoedexploitatie | EXPLORATORY (detailed) — Photo-based defect recognition, auto quantity calculation from photos + building drawings, auto-generation of maintenance plans from inspection reports, activity clustering across plans, integration with O-prognose/Facilitor/Propelli. TwinTopics meeting (Jan 26) for digital twins. Very concrete use cases with real pain points. |
+| **Bonnie MCP + Facilitor** | BU Multiline | IN DEVELOPMENT — MCP coupling between Bonnie AI voice assistant and Facilitor for standardization + automation. |
+| **Webhook Genesys + CWS + Bonnie** | BU Multiline | IN DEVELOPMENT — Real-time event integrations and notifications across contact center stack. |
+| **Genesys AI development** | BU Multiline | IN DEVELOPMENT — Automatic call summaries after every call + automatic transcription. AI Insights conversations ongoing. |
+| **Heydi (servicedesk agent)** | BU Multiline | IN DEVELOPMENT — Servicedesk agent coupled to Facilitor for answering questions about tickets. (Previously unnamed — now "Heydi".) |
+| BU Interim Matchmaker | BU Interim | IN STRATEGY — AI matching of interim candidates to assignments, targeting declarability from 65% → 80%+. |
+| Digitale receptie | BU Hospitality | ON INNOVATION WHEEL — AI/digital reception for hospitality clients. |
 
-**Implication for the Tech Scan:** Our work directly feeds their Signaalfase and Selectiefase. The Tech Scan tells them which of these ideas can be supported by their existing tool capabilities (Core innovation) vs. which require new tooling or custom development (Adjacencies/Transformational). We should explicitly frame our output as input to their R-W-W evaluation.
+**Implication for the Tech Scan:** They're not just planning — they're actively building. At least 8 initiatives are in development or pilot. Our Tech Scan needs to (1) validate which of these are supported by existing tool capabilities vs. custom-built, (2) identify where native AI features (Jonas, Copilot, Genesys AI, Facilitor AI) can replace or accelerate custom builds, and (3) frame our output as input to their R-W-W evaluation for the initiatives still in signal/selection phase.
 
 ### Open innovation & external partners
 
@@ -223,11 +227,11 @@ We have interview notes from 4 key stakeholders (Brandon Kwey - Innovatiemanager
 
 | BU | Readiness | Key signal | Primary AI play |
 |-----|-----------|-----------|----------------|
-| **Multiline** | Advanced — mid-race | Bonnie is live, AI as revenue stream (100-150% markup), €50-100K annual investment | Scale Bonnie, integrate data layer (AFAS + Power BI + Genesys) |
-| **Consultancy** | Ambitious — actively building | AI offertetool in development, Copilot fully rolled out, BLC system in design | Validate and accelerate existing initiatives |
-| **Interim** | Focused — one clear use case | Matchmaker in approved strategy, commercially motivated (declarability from 65% → 80%+) | Build the Matchmaker, reduce 50% admin time |
-| **Vastgoedexploitatie** | Exploratory but concrete | Digital twins (TwinTopics), MJOB/MJOP AI, "mensloze exploitatie" vision | MJOB/MJOP AI + predictive maintenance |
-| **Integrated** | Cautious — operational first | "Early majority" self-description, Facilitor dependency, eNPS of 2 | Fix backbone (Facilitor + AFAS), then AI |
+| **Multiline** | Advanced — mid-race | Bonnie live, Heydi in dev, Genesys AI (auto summaries/transcription) in dev, webhook integrations being built, AI as revenue stream | Scale Bonnie+Heydi, Genesys AI activation, Facilitor MCP coupling |
+| **Consultancy** | Ambitious — actively building | AI personal agents in pilot (Copilot), PVE "Schoolreisje 2.0" in dev (parametric school design), Copilot fully rolled out | PVE digitalization + Copilot agent expansion |
+| **Interim** | Focused — two clear plays | Matchmaker in strategy (65%→80%+ declarability), Copilot Studio project management agent in pilot | Matchmaker build + project mgmt agent |
+| **Vastgoedexploitatie** | Exploratory but very concrete | Detailed MJOP/MJOB AI use cases mapped (photo recognition, auto plans, activity clustering), TwinTopics meeting held, multiple tools in play | MJOP/MJOB AI pipeline (photo→defect→plan→cluster) |
+| **Integrated** | Cautious — operational first | Focus on dashboard integration + "low-hanging fruit" AI in Facilitor, eNPS of 2 | Facilitor AI features + integrated dashboards |
 | **Hospitality** | Unknown — no strategy doc | Digitale receptie on innovation wheel, Planbition for scheduling | Assess during intake |
 
 ### People dynamics to be aware of
@@ -246,20 +250,21 @@ Brandon and Stefan both flag the same thing: **IT capacity is the bottleneck.** 
 
 ### Additional tools not in the IT Landscape document
 
-| Tool | Used by | Function |
-|------|---------|----------|
-| Flowmatic | Innovation / Brandon | AI agent builder (Service desk, Billie, Intakes agents) |
-| Bonnie | Multiline | AI partner for human+AI call center operations |
-| Brainial | Commercial / Inside Sales | Tender/bid automation — ADG-wide rollout |
-| TwinTopics | Vastgoedexploitatie | Digital twins for real estate |
-| Let's Copilot | Group-wide | Copilot training (&Samhoud) |
-| Genesys Cloud CX | Multiline | Contact center platform (voicebots, sentiment, Agent Copilot) |
-| Salesforce | Multiline | CRM and pipeline management |
-| Monday.com | Vastgoedexploitatie | Project management |
-| O-prognose | Vastgoedexploitatie | MJOB maintenance forecasting |
-| Proprli | Vastgoedexploitatie | Compliance and maintenance planning |
-| Copilot Studio | Innovation / Brandon | Agent building (Microsoft) |
-| VU Amsterdam AI module | Henri / Brandon | Custom AI CRM in development |
+| Tool | Used by | Function | Status |
+|------|---------|----------|--------|
+| Flowmatic | Innovation / Brandon | AI agent builder (Billy finance, Intakes agent for Consultancy) | Active — agents in development |
+| Copilot Studio | Innovation / Group | Agent building (Microsoft) — project mgmt agent (Interim), AFAS Helpdesk agent | In pilot |
+| Bonnie | Multiline | AI voice assistant for human+AI call center operations | Live — investment in doorontwikkeling |
+| Heydi | Multiline | Servicedesk agent coupled to Facilitor for ticket Q&A | In development |
+| Brainial | Sales / Group-wide | AI tender/bid automation | Implementing ADG-wide |
+| TwinTopics | Vastgoedexploitatie | Digital twins for real estate (Jan 26 meeting held) | Exploratory |
+| Let's Copilot | Group-wide | Copilot adoption training (&Samhoud), Copilot Lab active | Active |
+| Genesys Cloud CX | Multiline | Contact center (voicebots, sentiment, AI summaries, transcription) | Live + AI in development |
+| Salesforce | Multiline | CRM and pipeline management | Live — AFAS migration TBD |
+| Monday.com | Vastgoedexploitatie | Project management | Active |
+| O-prognose | Vastgoedexploitatie | MJOB maintenance forecasting | Active |
+| Proprli / Propelli | Vastgoedexploitatie | Compliance and maintenance planning | Active |
+| VU Amsterdam AI module | Henri / Brandon | Custom AI CRM in development | In development |
 
 ---
 

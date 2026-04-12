@@ -1,0 +1,114 @@
+{
+  "id": "creative-expression",
+  "number": 32,
+  "name": "Creative Expression (Pictionary/Audio/Video)",
+  "slug": "creative-expression",
+  "tier": {
+    "bloom": "create",
+    "level": 6,
+    "label": "Create — Divergent Expression & Communication"
+  },
+  "summary": "Learners draw, record audio, or record video to demonstrate understanding. Peers guess or evaluate responses, adding collaborative assessment.",
+  "platforms": [
+    "Gimkit Draw That",
+    "Quizizz Audio Response",
+    "Quizizz Video Response",
+    "Nearpod Flipgrid"
+  ],
+  "aiGenerability": {
+    "rating": 3,
+    "notes": "AI generates prompts excellently. AI cannot auto-grade creative (drawing, audio, video) output without rubric. Peer evaluation is essential. AI can generate feedback frameworks and analytic prompts."
+  },
+  "interaction": {
+    "type": "drawing",
+    "input": "draw",
+    "multiStep": true,
+    "peerInteraction": true,
+    "timePressure": "optional"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The creative prompt (e.g., 'Draw the water cycle', 'Explain photosynthesis in 30 seconds', 'Record your pronunciation of these words')."
+    },
+    "mediaType": {
+      "type": "enum",
+      "required": true,
+      "values": [
+        "drawing",
+        "audio",
+        "video"
+      ],
+      "description": "Type of creative expression: drawing (canvas), audio (voice recording), or video (camera + audio)."
+    },
+    "maxDuration": {
+      "type": "integer",
+      "required": false,
+      "description": "Time limit in seconds for audio or video recordings (typical 15-120s). Not applicable for drawing."
+    },
+    "peerGuessing": {
+      "type": "boolean",
+      "required": false,
+      "description": "For drawing: whether other peers guess the concept from the drawing (Pictionary-style)."
+    },
+    "peerVoting": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether peers vote on creativity, clarity, or correctness of responses."
+    },
+    "rubric": {
+      "type": "object[]",
+      "required": false,
+      "description": "Optional peer-evaluation rubric (e.g., [{ criterion: 'Clarity', weight: 0.5 }, { criterion: 'Creativity', weight: 0.5 }])."
+    },
+    "exampleResponse": {
+      "type": "object",
+      "required": false,
+      "description": "Optional teacher example (video, drawing, or audio sample) to model expectations."
+    },
+    "timePerResponse": {
+      "type": "integer",
+      "required": false,
+      "description": "Display time in seconds per response during peer review (typical 10-20s)."
+    }
+  },
+  "scoring": {
+    "type": "peer-assessed",
+    "partialCredit": false,
+    "feedback": "peer-review",
+    "feedbackContent": "peer-comparison"
+  },
+  "ux": {
+    "layout": "canvas",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "60-180s",
+    "animation": "brush-stroke, record-pulse, playback-animate, vote-cascade",
+    "mobileNotes": "Drawing: full-screen canvas with color palette (top) and eraser/undo (floating buttons). Paint bucket, line weight sliders. Save/submit button. Audio: large record button (center), timer, waveform visualization, playback controls. Video: camera view with record overlay timer, preview thumbnail. Peer review: full-screen playback of each submission (drawing/audio/video) with voting buttons below, comment optional."
+  },
+  "lessonPlacement": [
+    "extension",
+    "reflection"
+  ],
+  "ageAdaptations": {
+    "8-10": "Drawing only. Simple prompts (e.g., 'Draw a plant with roots and leaves'). No time pressure or short limit (120s+). Peer guessing optional. Teacher feedback emphasized over peer voting.",
+    "11-13": "Drawing + audio. Moderate prompts (e.g., 'Record yourself explaining the water cycle'). Time limits (30-60s for audio). Simple peer rubric (2 dimensions). Optional comment. Guessing enabled for drawing.",
+    "14-16": "All media types (drawing, audio, video). Complex prompts with sub-requirements. Strict time limits (15-45s for audio/video). Multi-criteria rubric (4+ dimensions). Mandatory peer comments. Optional voice emphasis (pronunciation, fluency). Trading/comparison features."
+  },
+  "implementationPriority": "p3-future",
+  "relatedMechanics": [
+    "brainstorm",
+    "peer-review",
+    "open-response"
+  ],
+  "tags": [
+    "creativity",
+    "expression",
+    "drawing",
+    "audio",
+    "video",
+    "peer-assessment",
+    "communication",
+    "multimodal"
+  ]
+}

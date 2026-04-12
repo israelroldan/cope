@@ -1,0 +1,293 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "studystars-fact-sheet-v3",
+  "title": "StudyStars Fact Sheet",
+  "description": "A structured, age-agnostic knowledge object generated from a topic. This is the raw research output — everything we know about a topic, organized for machine consumption. It does NOT contain lesson design decisions (hooks, narrative, reflection) — those belong to the Spark. It does NOT target a specific age group — age adaptation happens at Spark generation time (Stage 2). One fact sheet per topic, three Sparks per fact sheet (one per age band).",
+
+  "type": "object",
+  "required": ["topic", "facts", "wowFacts", "misconceptions", "sequences", "pairs", "quantities", "vocabulary"],
+
+  "properties": {
+    "topic": {
+      "type": "string",
+      "description": "The topic as a noun/subject — 'Mummification', 'Photosynthesis', 'The Solar System'. NOT a question or hook — those are Spark-level decisions."
+    },
+    "subtopic": {
+      "type": "string",
+      "description": "Optional narrower focus within the topic. e.g. 'Organ Preservation' within 'Mummification'. Still a noun, not a question."
+    },
+
+    "facts": {
+      "type": "array",
+      "description": "The core fact set. Every activity and content slideshow draws from this pool. Each fact is tagged with what it can seed and its complexity level.",
+      "items": {
+        "type": "object",
+        "required": ["id", "fact", "seedTypes", "complexity"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^f[0-9]+$",
+            "description": "Unique fact ID. e.g. 'f1', 'f2', etc."
+          },
+          "fact": {
+            "type": "string",
+            "description": "The factual statement. Clear, concise, verifiable. Written at a neutral reading level — the Spark generator adapts vocabulary per age group."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Expanded explanation. Used for feedback/explanations after questions, and as source material for content slideshow narration."
+          },
+          "source": {
+            "type": "string",
+            "description": "Where this fact comes from. For AI verification. e.g. 'Britannica', 'National Geographic'. Use 'NEEDS_VERIFICATION' if uncertain."
+          },
+          "seedTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "multiple-choice",
+                "true-false",
+                "flashcard",
+                "fill-blank",
+                "matching-pair",
+                "sequence-item",
+                "category-item",
+                "quantity",
+                "spatial",
+                "cause-effect",
+                "misconception",
+                "comparison",
+                "ranking-item",
+                "scenario-seed",
+                "open-ended-prompt",
+                "hot-text-passage"
+              ]
+            },
+            "description": "Which activity types this fact can seed. A fact about a date can seed sequence + quantity + fill-blank. A common misconception seeds true-false + find-the-error."
+          },
+          "complexity": {
+            "type": "string",
+            "enum": ["core", "intermediate", "advanced"],
+            "description": "Complexity tier — determines which age groups can use this fact. 'core' = suitable for all ages (8-16). 'intermediate' = suitable for 11+ (skip for 8-10). 'advanced' = suitable for 14+ only. The Spark generator filters facts by complexity for its target age group."
+          },
+          "coreFact": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, this fact is essential to understanding the topic. The Spark generator MUST include it in all three age-group Sparks (adapting language, not content). Use sparingly — 3-5 facts per sheet."
+          }
+        }
+      },
+      "minItems": 10,
+      "maxItems": 25,
+      "description": "10-25 facts provide enough material for three age-group Sparks (2-4 activities each) without repetition."
+    },
+
+    "wowFacts": {
+      "type": "array",
+      "description": "Subset of fact IDs that qualify as genuine WOW moments — jaw-dropping, counterintuitive, or emotionally resonant. WOW facts should work across all age groups (the presentation adapts, not the fact itself). The Spark generator decides WHERE to place these; the fact sheet just flags WHICH facts are wow-worthy.",
+      "items": { "type": "string" },
+      "minItems": 2,
+      "maxItems": 5
+    },
+
+    "misconceptions": {
+      "type": "array",
+      "description": "Common wrong beliefs about the topic. Age-agnostic — a misconception is a misconception regardless of who believes it. These become plausible distractors for MC, and seed true-false and find-the-error activities.",
+      "items": {
+        "type": "object",
+        "required": ["claim", "correction", "relatedFactId"],
+        "properties": {
+          "claim": {
+            "type": "string",
+            "description": "The false belief, stated as if true. e.g. 'The Great Wall of China is visible from space.'"
+          },
+          "correction": {
+            "type": "string",
+            "description": "Why it's wrong and what's actually true."
+          },
+          "relatedFactId": {
+            "type": "string",
+            "description": "ID of the related correct fact."
+          },
+          "plausibility": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "How believable the misconception is. High-plausibility misconceptions make the best distractors."
+          }
+        }
+      }
+    },
+
+    "sequences": {
+      "type": "array",
+      "description": "Ordered lists of events, steps, or stages. Seed reorder, ranking, and timeline activities.",
+      "items": {
+        "type": "object",
+        "required": ["label", "items"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "What the sequence represents. e.g. 'The mummification process', 'Construction phases of the Great Pyramid'"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["position", "text"],
+              "properties": {
+                "position": { "type": "integer" },
+                "text": { "type": "string" },
+                "date": { "type": "string", "description": "Optional date/year for timelines." },
+                "factId": { "type": "string", "description": "Related fact ID." }
+              }
+            },
+            "minItems": 3,
+            "maxItems": 6
+          },
+          "sequenceType": {
+            "type": "string",
+            "enum": ["chronological", "procedural", "causal", "size", "importance"],
+            "description": "What ordering principle the sequence follows."
+          }
+        }
+      }
+    },
+
+    "pairs": {
+      "type": "array",
+      "description": "Related pairs of items. Seed matching-pairs and cause-effect activities.",
+      "items": {
+        "type": "object",
+        "required": ["left", "right", "relationship"],
+        "properties": {
+          "left": { "type": "string", "description": "First item in the pair. e.g. 'Pharaoh'" },
+          "right": { "type": "string", "description": "Second item. e.g. 'King of Egypt'" },
+          "relationship": {
+            "type": "string",
+            "enum": ["term-definition", "cause-effect", "person-achievement", "place-feature", "date-event", "part-whole", "symbol-meaning"],
+            "description": "The type of relationship between the pair."
+          },
+          "factId": { "type": "string" }
+        }
+      },
+      "minItems": 4,
+      "maxItems": 12
+    },
+
+    "quantities": {
+      "type": "array",
+      "description": "Numerical facts. Seed numerical-slider and estimation activities.",
+      "items": {
+        "type": "object",
+        "required": ["question", "value", "unit"],
+        "properties": {
+          "question": { "type": "string", "description": "The estimation question. e.g. 'How many blocks in the Great Pyramid?'" },
+          "value": { "type": "number", "description": "The correct numerical answer." },
+          "unit": { "type": "string", "description": "Unit of measurement. e.g. 'blocks', 'years', 'km'" },
+          "rangeMin": { "type": "number", "description": "Slider minimum." },
+          "rangeMax": { "type": "number", "description": "Slider maximum." },
+          "acceptableMargin": { "type": "number", "description": "Percentage margin for partial credit. e.g. 0.1 = ±10%" },
+          "factId": { "type": "string" }
+        }
+      }
+    },
+
+    "categories": {
+      "type": "array",
+      "description": "Groupings of items into categories. Seed categorization/sorting activities.",
+      "items": {
+        "type": "object",
+        "required": ["categoryName", "items"],
+        "properties": {
+          "categoryName": { "type": "string" },
+          "items": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 2
+          },
+          "factIds": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "vocabulary": {
+      "type": "array",
+      "description": "Key terms and definitions. Written at a neutral level — the Spark generator simplifies for younger learners. Seed flashcards, fill-in-blank, and matching pairs.",
+      "items": {
+        "type": "object",
+        "required": ["term", "definition"],
+        "properties": {
+          "term": { "type": "string" },
+          "definition": { "type": "string" },
+          "pronunciation": { "type": "string", "description": "Phonetic guide for unfamiliar words." },
+          "factId": { "type": "string" },
+          "complexity": {
+            "type": "string",
+            "enum": ["core", "intermediate", "advanced"],
+            "description": "Mirrors the fact complexity tiers. 'natron' might be intermediate, 'desiccant' advanced."
+          }
+        }
+      }
+    },
+
+    "spatialElements": {
+      "type": "array",
+      "description": "Items that have a location on a map, diagram, or image. Seed hotspot and labeling activities.",
+      "items": {
+        "type": "object",
+        "required": ["label", "referenceImage", "description"],
+        "properties": {
+          "label": { "type": "string", "description": "What to identify. e.g. 'The Nile Delta'" },
+          "referenceImage": { "type": "string", "description": "Description of the reference image needed. e.g. 'Map of northeastern Africa'" },
+          "description": { "type": "string", "description": "Where/what it is on the image." },
+          "factId": { "type": "string" }
+        }
+      }
+    },
+
+    "comparisons": {
+      "type": "array",
+      "description": "Pairs or sets of things that can be compared/contrasted. Seed compare-contrast activities.",
+      "items": {
+        "type": "object",
+        "required": ["itemA", "itemB", "similarities", "differences"],
+        "properties": {
+          "itemA": { "type": "string" },
+          "itemB": { "type": "string" },
+          "similarities": { "type": "array", "items": { "type": "string" } },
+          "differences": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Generation metadata for traceability.",
+      "properties": {
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "model": { "type": "string", "description": "Which AI model generated this fact sheet." },
+        "reviewedBy": { "type": "string", "description": "Human reviewer, if any." },
+        "version": { "type": "integer", "default": 1 },
+        "qualityScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "AI self-assessment of fact sheet quality. 0.8+ = confident, 0.5-0.8 = some facts need checking, <0.5 = needs human review."
+        },
+        "factCount": {
+          "type": "object",
+          "description": "Breakdown of facts by complexity tier.",
+          "properties": {
+            "core": { "type": "integer" },
+            "intermediate": { "type": "integer" },
+            "advanced": { "type": "integer" }
+          }
+        }
+      }
+    }
+  }
+}

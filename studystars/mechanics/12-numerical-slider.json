@@ -1,0 +1,89 @@
+{
+  "id": "numerical-slider",
+  "number": 12,
+  "name": "Numerical Estimation/Slider",
+  "slug": "numerical-slider",
+  "tier": {
+    "bloom": "apply",
+    "level": 3,
+    "label": "Apply — Using Information in New Contexts"
+  },
+  "summary": "Move a slider along a scale or type a number to estimate a value. Proximity to the correct value determines partial credit.",
+  "platforms": ["Kahoot Slider", "Quizizz"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates numerical estimation questions and defines correct value plus acceptable range/margin of error. Works for any quantifiable fact: dates, distances, populations, measurements."
+  },
+  "interaction": {
+    "type": "slider",
+    "input": "slide",
+    "multiStep": false,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "Question asking for a numerical estimate. Must be clear about units and context."
+    },
+    "correctValue": {
+      "type": "number",
+      "required": true,
+      "description": "The correct answer (numeric, no units in the field)."
+    },
+    "minValue": {
+      "type": "number",
+      "required": true,
+      "description": "Minimum value for the slider range."
+    },
+    "maxValue": {
+      "type": "number",
+      "required": true,
+      "description": "Maximum value for the slider range."
+    },
+    "unit": {
+      "type": "string",
+      "required": false,
+      "description": "Unit of measurement (e.g., 'years', 'kilometers', 'millions', '%'). Displayed in the UI."
+    },
+    "acceptableRange": {
+      "type": "number",
+      "required": true,
+      "description": "Margin of error (±) for full credit. Example: acceptableRange = 10 means ±10 from correctValue earns full points."
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "Explanation of the correct answer and its context."
+    },
+    "precision": {
+      "type": "integer",
+      "required": false,
+      "description": "Number of decimal places to round to (0 for integers, 2 for decimals). Default: 0."
+    }
+  },
+  "scoring": {
+    "type": "proximity",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "show-correct-answer"
+  },
+  "ux": {
+    "layout": "slider-track",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "10-20s",
+    "animation": "smooth-drag",
+    "mobileNotes": "Slider thumb is 48×48px min. Current value displays above or inside the thumb as learner drags. Range min/max labels at slider ends. Optional numeric input field below slider for precise entry."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "Smaller numerical ranges (1–100). Wide acceptable range (±20–30). Visual number line with marked increments (0, 25, 50, 75, 100). Explanation is simple and concrete.",
+    "11-13": "Moderate ranges (1–2000). Standard acceptable range (±10–15). Slider shows marks every 250 or 500 units. Explanation includes context or reference points.",
+    "14-16": "Large, precise ranges (1–10000+). Tight acceptable range (±5–10). Fine-grained slider with optional direct numeric input field. Explanation includes calculations, derived data, or cross-referenced facts."
+  },
+  "implementationPriority": "p0-must-have",
+  "relatedMechanics": ["numerical-input", "multiple-choice"],
+  "tags": ["estimation", "quantitative", "numerical", "apply", "slider"]
+}

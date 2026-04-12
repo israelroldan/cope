@@ -1,0 +1,82 @@
+{
+  "id": "ranking",
+  "number": 20,
+  "name": "Ranking / Prioritization",
+  "slug": "ranking",
+  "tier": {
+    "bloom": "evaluate",
+    "level": 5,
+    "label": "Evaluate — Making Judgments"
+  },
+  "summary": "Learners rank items by a criterion (biggest to smallest, oldest to newest, most to least important) by dragging to reorder.",
+  "platforms": ["Kahoot Slider", "Quizizz", "Nearpod", "StudyStars"],
+  "aiGenerability": {
+    "rating": 5,
+    "notes": "AI generates ranked lists easily from factual data (sizes, dates, distances). Ranking by subjective criteria (importance, relevance) is more challenging and may require human curation for quality. Objective rankings (factual order) are trivial; subjective rankings demand clearer rubrics."
+  },
+  "interaction": {
+    "type": "ordering",
+    "input": "long-press-drag",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "prompt": {
+      "type": "string",
+      "required": true,
+      "description": "The ranking instruction. e.g., 'Rank these planets from closest to farthest from the Sun' or 'Rank these inventions by their impact on history.'"
+    },
+    "criterion": {
+      "type": "string",
+      "required": true,
+      "description": "The explicit sorting rule or dimension. e.g., 'distance from Sun', 'chronological order (oldest to newest)', 'importance', 'frequency'."
+    },
+    "items": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of items in the CORRECT order (as they should be ranked by the criterion).",
+      "minItems": 3,
+      "maxItems": 6,
+      "itemSchema": {
+        "label": {
+          "type": "string",
+          "required": true,
+          "description": "The item name or title. Displayed prominently on the draggable card. e.g. 'Jupiter', 'Printing Press', 'Mount Everest'. CONSTRAINT: Must NOT contain the ranking value or any numeric clue that reveals the correct order. The label names the ITEM, the value justifies its RANK — keep them separate."
+        },
+        "value": {
+          "type": "string",
+          "required": true,
+          "description": "The quantitative or qualifying measure that justifies this item's rank. Displayed below the label after reveal. e.g. '778 million km', '1440 CE', '8,849 m'."
+        }
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "required": true,
+      "description": "Why this order is correct. Explains the ranking logic and may include interesting facts about the items."
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "feedback": "immediate",
+    "feedbackContent": "show-correct-answer"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "20-40s",
+    "animation": "snap-to-position, reorder-slide, live-position-update",
+    "mobileNotes": "Long-press-to-grab is touch-friendly. Provide haptic feedback on drag initiation. Smooth animations as items reorder. Position numbers should update live as the learner drags. On small screens, ensure items have padding and are visually distinct (cards, not text lines). Avoid horizontal drag if possible (vertical reordering only)."
+  },
+  "lessonPlacement": ["core-practice", "deep-engagement", "reflection"],
+  "ageAdaptations": {
+    "8-10": "3-4 items with objective, concrete criteria (size, age, speed). Obvious, factual order (e.g., 'planets by size', 'animals by weight'). Clear visual or textual indicators help (icons, images). Fast feedback affirms correct ranking.",
+    "11-13": "5 items with objective criteria (chronological, numerical). Moderate complexity (e.g., 'events in historical order', 'numbers from smallest to largest'). Learner must recall facts and understand the ordering logic. Feedback includes brief explanation of the order.",
+    "14-16": "6 items with subjective or multi-dimensional criteria (importance, relevance, complexity). Learner must evaluate and justify (e.g., 'rank these sources by credibility', 'rank these arguments by strength'). Explanation may acknowledge nuance ('The ranking depends on how you weigh...') and can prompt deeper reflection."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": ["09-sequence-reorder", "20-ranking", "21-poll"],
+  "tags": ["evaluation", "prioritization", "ranking", "ordering", "bloom-5", "decision-making"]
+}

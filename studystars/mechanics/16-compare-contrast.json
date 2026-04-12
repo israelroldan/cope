@@ -1,0 +1,117 @@
+{
+  "id": "compare-contrast",
+  "number": 16,
+  "name": "Compare and Contrast",
+  "slug": "compare-contrast",
+  "tier": {
+    "bloom": "analyze",
+    "level": 4,
+    "label": "Analyze — Breaking Down Information"
+  },
+  "summary": "Examine two or more items and identify similarities and differences through structured multiple-choice questions.",
+  "platforms": ["Quizizz", "Nearpod"],
+  "aiGenerability": {
+    "rating": 4,
+    "notes": "AI generates comparison prompts and structured MC questions. Best as guided MC rather than open Venn diagram. AI identifies similarities and differences between items and creates plausible distractors."
+  },
+  "interaction": {
+    "type": "selection",
+    "input": "tap",
+    "multiStep": true,
+    "peerInteraction": false,
+    "timePressure": "none"
+  },
+  "contentSchema": {
+    "itemA": {
+      "type": "object",
+      "required": true,
+      "description": "First item to compare. Contains name and key facts.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": true,
+          "description": "Name of the item (e.g., 'Amazon River', 'Photosynthesis', 'Monarchy')."
+        },
+        "facts": {
+          "type": "string[]",
+          "required": true,
+          "description": "Array of 3–5 key facts about this item that will be referenced in comparison questions."
+        }
+      }
+    },
+    "itemB": {
+      "type": "object",
+      "required": true,
+      "description": "Second item to compare.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "facts": {
+          "type": "string[]",
+          "required": true,
+          "description": "Array of 3–5 key facts about this item."
+        }
+      }
+    },
+    "questions": {
+      "type": "object[]",
+      "required": true,
+      "description": "Array of comparison/contrast questions (similarities, differences, categorization).",
+      "minItems": 2,
+      "maxItems": 4,
+      "itemSchema": {
+        "question": {
+          "type": "string",
+          "required": true,
+          "description": "Comparison question (e.g., 'Which of the following is true of both rivers?', 'What is a key difference between X and Y?')."
+        },
+        "options": {
+          "type": "string[]",
+          "required": true,
+          "description": "Multiple choice options (3–4)."
+        },
+        "correctIndex": {
+          "type": "integer",
+          "required": true,
+          "description": "Index of correct option."
+        },
+        "comparisonType": {
+          "type": "enum",
+          "required": true,
+          "description": "Type of comparison being tested.",
+          "values": ["similarity", "difference", "categorization", "cause-effect"]
+        },
+        "explanation": {
+          "type": "string",
+          "required": true,
+          "description": "Explanation of correct answer with references to facts about both items."
+        }
+      }
+    }
+  },
+  "scoring": {
+    "type": "partial",
+    "partialCredit": true,
+    "speedBonus": false,
+    "feedback": "immediate",
+    "feedbackContent": "correct-with-explanation"
+  },
+  "ux": {
+    "layout": "vertical-stack",
+    "minTouchTarget": "48x48px",
+    "estimatedDuration": "30-60s",
+    "animation": "fade-stagger",
+    "mobileNotes": "Items A and B displayed side-by-side on wide screens or stacked on narrow screens. Each item shows name and 3–5 bullet-point facts. Questions appear below, one at a time. Answer options are large tappable buttons."
+  },
+  "lessonPlacement": ["deep-engagement"],
+  "ageAdaptations": {
+    "8-10": "Two concrete, obviously different items (dog vs. cat, rain vs. snow). 2 simple comparison questions (obvious similarities and differences only). 3 answer options. No multi-criteria analysis. Explanation uses simple language and direct comparison.",
+    "11-13": "Two items with moderate similarity (e.g., two rivers, two historical figures, plant vs. animal cell). 2–3 questions testing both obvious and subtle differences. 3 answer options. One question may require simple categorization. Explanation references specific facts from each item.",
+    "14-16": "Two complex items with multiple dimensions of comparison (e.g., political systems, evolutionary adaptations, literary themes). 3–4 questions testing multi-criteria analysis, implicit relationships, and cause-effect. 3–4 answer options. Questions may require synthesis across categories (structure, function, historical context, etc.). Explanation draws connections and may reference broader frameworks."
+  },
+  "implementationPriority": "p1-important",
+  "relatedMechanics": ["multiple-choice"],
+  "tags": ["comparison", "analysis", "critical-thinking", "analyze"]
+}
