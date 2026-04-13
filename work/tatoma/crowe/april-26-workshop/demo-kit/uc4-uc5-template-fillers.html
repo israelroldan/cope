@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC4 + UC5 · Template Fillers — Tatoma × Crowe Foederer</title>
+
+<!-- Tatoma fonts -->
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<style>
+  :root {
+    --bg: #F6FAEB;
+    --fg: #1D021F;
+    --card: #FFFFFF;
+    --primary: #FF8E7D;
+    --secondary: #4F2035;
+    --muted: #A397A3;
+    --muted-fg: #4C3C47;
+    --dark-magenta: #1E001E;
+    --salmon: #FF8C7D;
+    --mint: #0EE17E;
+    --border: rgba(163,151,163,0.25);
+    --radius: 0.75rem;
+    --font-serif: "Canela", Georgia, "Times New Roman", serif;
+    --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Slide engine ── */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3.5rem 5.5rem 5rem;
+    opacity: 0; transform: translateY(24px); pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(.25,.46,.45,.94),
+                transform 0.5s cubic-bezier(.25,.46,.45,.94);
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .slide.exit-up { opacity: 0; transform: translateY(-24px); }
+
+  .slide.section-divider {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .slide.section-divider h1 { font-size: clamp(3rem, 6vw, 5.5rem); }
+
+  /* ── Typography ── */
+  h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; line-height: 1.15; }
+  h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
+  h2 { font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+  h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); margin-bottom: 0.6rem; }
+
+  p, li { font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.6; color: var(--muted-fg); }
+  strong { font-weight: 600; color: var(--fg); }
+
+  .mono-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.6rem; display: block;
+  }
+
+  .chip {
+    display: inline-block; padding: 0.25rem 0.8rem;
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    border-radius: 999px;
+    background: var(--dark-magenta); color: var(--salmon);
+  }
+  .chip.mint { background: rgba(14,225,126,0.12); color: #08924f; }
+  .chip.salmon-bg { background: rgba(255,140,125,0.15); color: #b84a3b; }
+  .chip.muted-bg { background: rgba(163,151,163,0.15); color: var(--muted-fg); }
+  .chip.purple-bg { background: rgba(79,32,53,0.15); color: var(--secondary); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.6rem 1.8rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,0,30,0.06); }
+  .card h3 { margin-bottom: 0.4rem; }
+  .card p, .card li { font-size: 0.92rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+  /* ── Lists ── */
+  ul { list-style: none; padding: 0; }
+  ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+  ul li::before {
+    content: ""; position: absolute; left: 0; top: 0.6rem;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--salmon);
+  }
+
+  /* ── Big numbers ── */
+  .big-number {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: 3.2rem; line-height: 1; color: var(--fg); margin-bottom: 0.2rem;
+  }
+
+  /* ── Demo box ── */
+  .demo-box {
+    background: var(--card);
+    border: 2px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-top: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(255,140,125,0.1);
+  }
+  .demo-box-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255,140,125,0.06);
+    border-bottom: 1px solid rgba(255,140,125,0.15);
+  }
+  .demo-box-header .demo-label {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--salmon);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .demo-box-header .demo-label::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--salmon); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .demo-box-body { padding: 1rem 1.2rem; }
+  .demo-box-body .demo-files {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+  }
+  .demo-file {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.7rem; border-radius: 6px;
+    background: rgba(30,0,30,0.04); font-size: 0.78rem; color: var(--muted-fg);
+    font-family: var(--font-mono); letter-spacing: 0.02em;
+  }
+  .demo-file::before { content: "📄"; font-size: 0.7rem; }
+
+  .demo-prompt {
+    position: relative;
+    background: var(--fg); color: rgba(246,250,235,0.92);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem 1rem;
+    font-size: 0.78rem; line-height: 1.6;
+    font-family: var(--font-mono); letter-spacing: 0.01em;
+    max-height: 13rem; overflow-y: auto;
+  }
+  .demo-prompt::-webkit-scrollbar { width: 6px; }
+  .demo-prompt::-webkit-scrollbar-thumb { background: rgba(246,250,235,0.2); border-radius: 3px; }
+  .demo-prompt .p-tag {
+    display: block;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: rgba(246,250,235,0.4);
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(246,250,235,0.1);
+    padding-right: 3.5rem;
+  }
+  .demo-prompt .prompt-text {
+    display: block;
+    white-space: pre-wrap;
+  }
+
+  .copy-btn {
+    position: absolute; top: 0.55rem; right: 0.55rem;
+    background: rgba(255,140,125,0.22); border: none; border-radius: 6px;
+    padding: 0.35rem 0.7rem; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--salmon); transition: background 0.2s;
+    z-index: 2;
+  }
+  .copy-btn:hover { background: rgba(255,140,125,0.4); }
+  .copy-btn.copied { background: rgba(14,225,126,0.3); color: #0EE17E; }
+
+  .demo-surface {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    margin-top: 0.6rem; display: block;
+  }
+
+  /* ── Use-Case Asset canvas ── */
+  .uca-slide { padding-top: 2.4rem; padding-bottom: 4.5rem; justify-content: flex-start; }
+  .uca-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.8rem 2rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    max-width: 68rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .uca-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 2.5rem;
+  }
+  .uca-row {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.35rem 0;
+  }
+  .uca-icon {
+    width: 1.7rem; height: 1.7rem;
+    color: var(--salmon);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .uca-icon.mint-icon { color: var(--mint); }
+  .uca-label {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--fg);
+    line-height: 1.25;
+  }
+  .uca-hint {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--muted-fg);
+    line-height: 1.45;
+    margin-top: 0.15rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 900px) {
+    .uca-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Dual canvas wrapper ── */
+  .dual-uca {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    max-width: 82rem;
+    margin: 0 auto;
+    width: 100%;
+    align-items: start;
+  }
+  .dual-uca .uca-card {
+    max-width: 100%;
+    padding: 1.3rem 1.4rem 1.5rem;
+    margin: 0;
+  }
+  .dual-uca .uca-card.uc4 { border-top-color: var(--salmon); }
+  .dual-uca .uca-card.uc5 { border-top-color: var(--secondary); }
+  .dual-uca .uca-card.done { border-top-color: var(--mint); }
+  .dual-uca .uca-grid {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+  .dual-uca .uca-row {
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.65rem;
+    padding: 0.25rem 0;
+  }
+  .dual-uca .uca-icon { width: 1.2rem; height: 1.2rem; margin-top: 0.1rem; }
+  .dual-uca .uca-label { font-size: 0.84rem; }
+  .dual-uca .uca-hint { font-size: 0.68rem; line-height: 1.4; }
+  .uca-card-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding-bottom: 0.7rem; margin-bottom: 0.7rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  .uca-card-head .uca-card-title {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: 1.25rem; color: var(--fg);
+  }
+  .uca-card-head .uca-card-sub {
+    font-family: var(--font-mono); font-size: 0.58rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+  }
+
+  @media (max-width: 1100px) {
+    .dual-uca { grid-template-columns: 1fr; }
+  }
+
+  /* ── Canvas-step header ── */
+  .canvas-step {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .canvas-step-num {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--salmon);
+    background: rgba(255,140,125,0.1); border-radius: 4px;
+    padding: 0.3rem 0.55rem;
+  }
+  .canvas-step-icon { width: 1.4rem; height: 1.4rem; color: var(--salmon); flex-shrink: 0; }
+  .canvas-step-icon.mint-icon { color: var(--mint); }
+  .canvas-step-label {
+    font-family: var(--font-sans); font-size: 1rem; font-weight: 500;
+    color: var(--fg);
+  }
+  .canvas-step-pair {
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── Validate block ── */
+  .validate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .validate-block h3 {
+    font-family: var(--font-sans); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.5rem;
+  }
+  .validate-block .hypothesis {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--salmon);
+    border-radius: 8px; padding: 0.9rem 1.1rem;
+    margin-bottom: 0.9rem; font-size: 0.95rem;
+  }
+  .validate-block.uc5 .hypothesis { border-left-color: var(--secondary); }
+  .validate-block ul.questions li {
+    font-size: 0.9rem; color: var(--muted-fg);
+    padding-left: 1.1rem; margin-bottom: 0.35rem;
+  }
+  .validate-block ul.questions li::before {
+    width: 4px; height: 4px; top: 0.55rem; background: var(--muted);
+  }
+
+  /* UC badge */
+  .uc-tag {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 0.28rem 0.6rem; border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+  .uc-tag.uc4 { background: rgba(255,140,125,0.15); color: #b84a3b; }
+  .uc-tag.uc5 { background: rgba(79,32,53,0.15); color: var(--secondary); }
+
+  /* Comparison table */
+  .compare-table {
+    width: 100%; border-collapse: collapse;
+    margin-top: 1rem; font-size: 0.88rem;
+  }
+  .compare-table th, .compare-table td {
+    text-align: left; padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-table th {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); font-weight: 700;
+  }
+  .compare-table td strong { color: var(--fg); }
+  .compare-table tr td:first-child {
+    font-family: var(--font-mono); font-size: 0.68rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted-fg);
+  }
+
+  /* ─── Editable cells ─── */
+  [contenteditable="true"] { outline: none; transition: background 0.15s ease, box-shadow 0.15s ease; cursor: text; border-radius: 4px; }
+  .uca-hint[contenteditable="true"] { padding: 0.15rem 0.35rem; margin: -0.15rem -0.35rem; }
+  .uca-hint[contenteditable="true"]:hover { background: rgba(255,140,125,0.06); }
+  .uca-hint[contenteditable="true"]:focus { background: rgba(255,140,125,0.12); box-shadow: inset 0 -1px 0 var(--salmon); }
+  .hypothesis[contenteditable="true"]:hover { background: rgba(255,140,125,0.04); }
+  .hypothesis[contenteditable="true"]:focus { box-shadow: 0 0 0 2px rgba(255,140,125,0.3); }
+  .uca-hint.edited, .hypothesis.edited { position: relative; }
+  .uca-hint.edited::before { content: ""; position: absolute; left: -0.6rem; top: 0.45rem; width: 4px; height: 4px; border-radius: 50%; background: var(--mint); }
+  .reset-btn { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; transition: all 0.15s ease; }
+  .reset-btn:hover { color: var(--salmon); border-color: var(--salmon); }
+
+  /* ── Speaker notes ── */
+  .speaker-note {
+    display: none; margin-top: 1.2rem; padding: 1rem 1.2rem;
+    background: rgba(30,0,30,0.04); border-radius: var(--radius);
+    border-left: 3px solid var(--salmon);
+    font-size: 0.85rem; color: var(--muted-fg); line-height: 1.55;
+  }
+  .speaker-note.visible { display: block; }
+  .speaker-note strong {
+    font-size: 0.7rem; font-family: var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+
+  /* ── Fixed elements ── */
+  .logo-area {
+    position: fixed; top: 1.2rem; left: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem; z-index: 100;
+  }
+  .logo-area img { width: 24px; height: 24px; border-radius: 5px; }
+  .logo-area span {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+  }
+
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.5rem; z-index: 100;
+    background: linear-gradient(transparent, rgba(246,250,235,0.95));
+  }
+  .nav-dots { display: flex; gap: 5px; }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); opacity: 0.3;
+    cursor: pointer; transition: all 0.25s ease; border: none;
+  }
+  .nav-dot.active { opacity: 1; background: var(--salmon); transform: scale(1.3); }
+  .nav-dot.visited { opacity: 0.5; }
+  .nav-info {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .nav-help {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); opacity: 0.45;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2rem 1.5rem 4rem; }
+    .two-col, .grid-2, .grid-4, .validate-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <img src="https://hub.tatoma.eu/tatoma-icon.png" alt="Tatoma" onerror="this.style.display='none'">
+  <span>Tatoma × Crowe Foederer · UC4 + UC5</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- 0 · TITLE -->
+  <div class="slide section-divider active">
+    <span class="mono-label">Exploration · 15:45 – 16:15</span>
+    <h1>UC4 + UC5 · Template Fillers</h1>
+    <p style="max-width:38rem; margin:0 auto; text-align:center; font-size:1.1rem;">
+      Two use cases, one shared pattern — source data goes in, template comes out. Thirty minutes to notice where that similarity breaks down, and where the real work actually lives.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center; flex-wrap:wrap;">
+      <span class="chip salmon-bg">Pattern · Template filling</span>
+      <span class="chip purple-bg">Copilot Studio</span>
+      <span class="chip muted-bg">30 min · explore, don't ship</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note · setup</strong>
+      "We've grouped these two on purpose. On the surface they're the same shape — you feed the agent some source documents, it fills a template. But the hard parts diverge sharply. We'll spend the next thirty minutes noticing exactly where, and end with a call on which one is worth building first."<br><br>
+      Keep energy brisk. This segment sits after the long meal break; the group needs to feel forward motion quickly. No deep setup — jump straight into the thesis.
+    </div>
+  </div>
+
+  <!-- 1 · OPENING FRAME -->
+  <div class="slide section-divider">
+    <span class="mono-label">The thesis</span>
+    <h1>Same pattern.<br>Different bottlenecks.</h1>
+    <p style="max-width:44rem; margin:1rem auto 0; text-align:center; font-size:1.1rem;">
+      The valuation model asks the agent to run an <em>advisory conversation</em>. The teaser asks it to run a <em>document pipeline</em>. That's a four-week project versus a quarter-long program — even though the flowchart looks identical.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center; flex-wrap:wrap;">
+      <span class="chip salmon-bg">UC4 · judgment-bound</span>
+      <span class="chip purple-bg">UC5 · layout-bound</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note · set the frame out loud</strong>
+      Say this verbatim: <em>"Both look like the same problem — source in, template out. UC4's hard part is getting the WACC judgment out of a human's head. UC5's hard part is just content extraction and layout. Same pattern, different bottlenecks, different readiness."</em><br><br>
+      This is the line you'll come back to at the end when the group decides which to build first. Plant it now; harvest it later.
+    </div>
+  </div>
+
+  <!-- 2 · DUAL CANVAS INTRO -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1rem;">
+      <span class="mono-label" style="color:var(--salmon); margin-bottom:0.4rem;">Two assets · one spine</span>
+      <h2 style="margin-bottom:0.3rem;">Two Use-Case Assets, empty</h2>
+      <p style="max-width:46rem; margin:0 auto; font-size:0.95rem;">Same ten rows. Different content. Our hypotheses in grey — editable. We'll fill both together, and see where they converge and where they diverge.</p>
+    </div>
+
+    <div class="dual-uca">
+      <div class="uca-card uc4">
+        <div class="uca-card-head">
+          <div class="uca-card-title">UC4 · Waarderingsmodel</div>
+          <div class="uca-card-sub">DCF + ValuePlan</div>
+        </div>
+        <div class="uca-grid">
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg><div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-who" spellcheck="false">Valuation lead at Crowe · partner-reviewed · analyst does the first pass</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-problem" spellcheck="false">Typing historicals into a model and arguing WACC in a spreadsheet — not advisory work</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-when" spellcheck="false">Indicative valuation · sign-off preparation · post-DD refresh</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg><div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-where" spellcheck="false">Copilot Studio agent · Office Scripts for cell writes · SharePoint for house standards</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg><div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-inputs" spellcheck="false">Annual reports (3 years) · model template · confirmed WACC parameters</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg><div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-output" spellcheck="false">Filled DCF (Prognose + WACC) · partner-reviewed judgment baked into each parameter</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg><div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-examples" spellcheck="false">Start with DCF (2 sheets) · hold ValuePlan (17 sheets) for phase 2</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-owner" spellcheck="false">Owner: valuation partner · Status: architecture only — build after UC5 pilots</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg><div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-learning" spellcheck="false">Extraction pipeline shared across Copilot Studio agents · WACC UX is new territory</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg><div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-quality" spellcheck="false">Hours saved per valuation · WACC defensibility · partner trust to use live</div></div></div>
+        </div>
+      </div>
+
+      <div class="uca-card uc5">
+        <div class="uca-card-head">
+          <div class="uca-card-title">UC5 · Teaser</div>
+          <div class="uca-card-sub">3-slide PPTX</div>
+        </div>
+        <div class="uca-grid">
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg><div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-who" spellcheck="false">M&amp;A analyst drafting sell-side materials · partner sign-off before send</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-problem" spellcheck="false">Two hours of retyping IM content into the teaser template for every new mandate</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-when" spellcheck="false">Every new sell-side mandate · the moment the IM is drafted</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg><div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-where" spellcheck="false">Copilot Studio · Power Automate flow · SharePoint output library</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg><div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-inputs" spellcheck="false">Information Memorandum · the PPTX template · anonymisation guardrails</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg><div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-output" spellcheck="false">70% draft PPTX · title, overview, metrics, contact slides — 20-min polish left</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg><div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-examples" spellcheck="false">Placeholder tokens in the PPTX · Generative AI node for the prose blocks</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-owner" spellcheck="false">Owner: analyst lead · Status: pilot candidate — build in the next sprint</div></div></div>
+          <div class="uca-row"><svg class="uca-icon" style="color:var(--secondary);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg><div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-learning" spellcheck="false">Establishes the PPTX pipeline for Crowe · reusable for pitchbooks, one-pagers, CIMs</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg><div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-quality" spellcheck="false">Teasers per quarter · minutes of manual polish · adoption rate across the team</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · linked-but-separate, made visual</strong>
+      Don't read the canvases aloud. Just gesture: "Same ten rows, both sides. Different content. Notice UC4's 'where it runs' already mentions Office Scripts, UC5's mentions Power Automate — same ecosystem, different mechanics."<br><br>
+      The point of showing both here is so the group internalises the frame before we dive in. Every following slide has UC4 on the left and UC5 on the right, and we come back to this shape at the end — filled.
+    </div>
+  </div>
+
+  <!-- 3 · ROWS 01 + 02 -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>
+      <span class="canvas-step-label">Who it's for · What problem it solves</span>
+      <span class="canvas-step-pair">fill · validate</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">Whose week does each of these save?</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <span class="uc-tag uc4">UC4 · Waarderingsmodel</span>
+        <h3>Who it's for</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc4-who" spellcheck="false">Valuation lead at Crowe. Analyst does the first pass; <strong>partner signs off on every parameter</strong> before a number leaves the model.</div>
+        <h3>What problem it solves</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc4-problem" spellcheck="false">Hours spent typing historicals into cells and arguing WACC in a spreadsheet — none of it advisory work. Partner time goes to <em>defending</em> numbers instead of <em>choosing</em> them.</div>
+      </div>
+      <div class="validate-block uc5">
+        <span class="uc-tag uc5">UC5 · Teaser</span>
+        <h3>Who it's for</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-who" spellcheck="false">M&amp;A analyst drafting sell-side materials. Low judgment bar, high repetition. <strong>Partner only reviews the final polish</strong> — they don't touch the draft.</div>
+        <h3>What problem it solves</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-problem" spellcheck="false">Two hours per mandate spent retyping IM content into a template that never structurally changes. Mechanical work, done by the wrong person.</div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the first divergence</strong>
+      This is where the "same pattern" cover starts to crack. Both have an analyst as primary user, but the <em>partner's involvement profile</em> is completely different — constant review for UC4, final polish for UC5. That alone predicts the build cost.<br><br>
+      <strong>Probe Bram:</strong> "For the valuation model, is every parameter partner-reviewed, or only the high-stakes ones? Because that changes whether we need the adaptive-card conversation pattern I'll show in a minute."<br><br>
+      <strong>Probe on the teaser:</strong> "Who actually retypes the IM into it today? If it's already a junior, we're saving junior time, which is the right economics but a smaller headline than saving partner time."
+    </div>
+  </div>
+
+  <!-- 4 · ROWS 03 + 04 -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span class="canvas-step-label">When to use it · Where it runs</span>
+      <span class="canvas-step-pair">fill · validate</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">In the deal timeline, and on what stack?</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <span class="uc-tag uc4">UC4 · Waarderingsmodel</span>
+        <h3>When to use it</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc4-when" spellcheck="false">Indicative valuation at mandate start. Sign-off prep pre-NBO. Refresh after DD findings land. <strong>Not</strong> during negotiation — by then the judgment is frozen.</div>
+        <h3>Where it runs</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc4-where" spellcheck="false">Copilot Studio topic · Power Automate child flow · <strong>Office Scripts</strong> on the Excel model via named ranges · Dataverse for house WACC standards.</div>
+      </div>
+      <div class="validate-block uc5">
+        <span class="uc-tag uc5">UC5 · Teaser</span>
+        <h3>When to use it</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-when" spellcheck="false">Every new sell-side mandate. The moment the IM reaches a reviewable draft. Frequent, repeatable, low-stakes per run.</div>
+        <h3>Where it runs</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-where" spellcheck="false">Copilot Studio topic · Power Automate flow · placeholder-token replace on the PPTX · SharePoint output library with a return-link card.</div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the tooling map</strong>
+      Both live entirely inside the Microsoft stack. No Azure Functions yet, no custom connectors yet — deliberate. The first versions should only use building blocks Crowe already has licences for.<br><br>
+      <strong>Office Scripts is the unlock for the valuation model.</strong> Named ranges + one script that accepts a JSON payload is far more robust than addressing cells by row/column in the flow itself. Pause on that phrase so it sticks.<br><br>
+      <strong>For the teaser, PPTX "merge fields" don't really exist</strong> — the token-replace approach (treat the .pptx as a zip, find/replace in slide XML) is the pragmatic option. Flag this when someone asks "why not a connector?"
+    </div>
+  </div>
+
+  <!-- 5 · ROW 05 · INPUTS -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+      <span class="canvas-step-label">Required inputs</span>
+      <span class="canvas-step-pair">fill · then load</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">What each agent has to chew on</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <span class="uc-tag uc4">UC4 · Waarderingsmodel</span>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc4-inputs" spellcheck="false" style="background:var(--card); border:1px solid var(--border); border-left:3px solid var(--salmon); border-radius:8px; padding:0.9rem 1.1rem; margin-bottom:0.9rem;"><strong>Hypothesis:</strong> three annual reports, the model template, and a confirmed set of WACC parameters. The historicals are easy; <strong>the parameters are the project</strong>.</div>
+        <div class="grid-4">
+          <div class="card">
+            <span class="mono-label">DCF sheets</span>
+            <div class="big-number">2</div>
+            <p>Prognose + WACC — flat JSON</p>
+          </div>
+          <div class="card">
+            <span class="mono-label">ValuePlan sheets</span>
+            <div class="big-number">17</div>
+            <p>Interdependent · phase 2</p>
+          </div>
+          <div class="card">
+            <span class="mono-label">WACC criteria</span>
+            <div class="big-number">8</div>
+            <p>BDO build-up · human judgment</p>
+          </div>
+          <div class="card">
+            <span class="mono-label">Historicals</span>
+            <div class="big-number">3y</div>
+            <p>RJ-format PDFs · Dutch</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="uc-tag uc5">UC5 · Teaser</span>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-inputs" spellcheck="false" style="background:var(--card); border:1px solid var(--border); border-left:3px solid var(--secondary); border-radius:8px; padding:0.9rem 1.1rem; margin-bottom:0.9rem;"><strong>Hypothesis:</strong> the IM, the PPTX template, and an anonymisation rule. Everything the agent needs is already written down — no additional judgment required.</div>
+        <div class="grid-4">
+          <div class="card">
+            <span class="mono-label">Slides</span>
+            <div class="big-number">3</div>
+            <p>Title · overview · contact</p>
+          </div>
+          <div class="card">
+            <span class="mono-label">Tokens to fill</span>
+            <div class="big-number">~12</div>
+            <p>Name, metrics, description</p>
+          </div>
+          <div class="card">
+            <span class="mono-label">Source length</span>
+            <div class="big-number">33p</div>
+            <p>IM PDF · Dutch, text-based</p>
+          </div>
+          <div class="card">
+            <span class="mono-label">Generated prose</span>
+            <div class="big-number">~200w</div>
+            <p>Business description only</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the readiness gap is visible here</strong>
+      Point at the UC4 cards: "Two sheets, eight judgment criteria, three years of financials — the judgment criteria are what make this a quarter-long project." Point at UC5: "Three slides, twelve tokens, one prose block — a sprint."<br><br>
+      <strong>Ask Bram:</strong> "For the valuation model, do you already have a house-standard WACC table sitting in SharePoint that we could point the agent at on day one?" If yes — the build gets easier. If no — that's the first Dataverse table we build.<br><br>
+      <strong>And for the teaser:</strong> "Do you use the same template across all mandates, or does each partner have their own?" Template proliferation is the hidden cost that kills these pilots.
+    </div>
+  </div>
+
+  <!-- 6 · UC4 · STAGE 1 · READ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span class="canvas-step-label">UC4 · Stage 1 · Read</span>
+      <span class="canvas-step-pair">three years, one pass</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">Extract the historicals before anyone argues</h2>
+    <p style="max-width:46rem; margin-bottom:1rem;">AI Builder + one generative AI node with a locked schema. Three annual reports go in, a typed JSON of five line items × three years comes out. This is the cheap part — and the part a Crowe analyst never has to retype again.</p>
+
+    <div class="demo-box" style="margin-top:0.4rem;">
+      <div class="demo-box-header">
+        <span class="demo-label">Generative AI node · system prompt</span>
+        <span class="demo-surface" style="margin:0;">Copilot Studio · Extract topic</span>
+      </div>
+      <div class="demo-box-body">
+        <div class="demo-prompt" style="max-height:20rem;">
+          <button class="copy-btn" data-target="uc4-read-prompt">Copy</button>
+          <span class="p-tag">Stage 1 · Read prompt</span>
+          <span class="prompt-text" id="uc4-read-prompt">You are an M&amp;A analyst extracting three years of financials from a target's annual reports.
+
+INPUT: three PDF annual reports attached to the conversation (FY-3, FY-2, FY-1).
+
+Return ONLY valid JSON matching this schema — no prose, no markdown fences:
+
+{
+  "prognose": {
+    "revenue":   [FY-3, FY-2, FY-1],
+    "cogs":      [FY-3, FY-2, FY-1],
+    "personnel": [FY-3, FY-2, FY-1],
+    "opex":      [FY-3, FY-2, FY-1],
+    "da":        [FY-3, FY-2, FY-1],
+    "tax_rate":  &lt;effective rate, last year, decimal&gt;
+  },
+  "notes": {
+    "reclassifications": "one line describing any prior-year restatement, or null",
+    "confidence": "high | medium | low"
+  }
+}
+
+Rules
+- Normalise line items to template labels (personeelskosten → personnel, afschrijvingen → da).
+- If a line item is missing for any year, use null — never guess.
+- Reconcile prior-year restatements silently; note them in notes.reclassifications.
+- Amounts in EUR, integers, no thousand separators.
+- Output is consumed downstream as {{extracted}}.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · why Stage 1 is the easy one</strong>
+      This is the stage Bram has seen before — AI Builder territory. Point at the locked schema and say: "The discipline is that the output is typed. Stage 3 can't be robust if Stage 1 isn't."<br><br>
+      <strong>Flag:</strong> Copilot Studio's generative node will occasionally wrap the JSON in markdown fences even when told not to. Either strip them in the next step or repeat the "no fences" rule — the prompt above already does.
+    </div>
+  </div>
+
+  <!-- 7 · UC4 · STAGE 2 · DECIDE -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span class="canvas-step-label">UC4 · Stage 2 · Decide</span>
+      <span class="canvas-step-pair">where the partner lives</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">The WACC conversation is the product</h2>
+    <p style="max-width:46rem; margin-bottom:0.8rem;">Eight adaptive cards, one partner, one loop. The agent proposes a value grounded in the IM or house-standards, cites the signal, and yields to a partner override without argument. This is the conversation-design work that makes UC4 a project, not a sprint.</p>
+
+    <div class="demo-box" style="margin-top:0.4rem; margin-bottom:1rem;">
+      <div class="demo-box-header">
+        <span class="demo-label">Topic · system prompt</span>
+        <span class="demo-surface" style="margin:0;">Copilot Studio · WACC topic</span>
+      </div>
+      <div class="demo-box-body">
+        <div class="demo-prompt" style="max-height:18rem;">
+          <button class="copy-btn" data-target="uc4-decide-prompt">Copy</button>
+          <span class="p-tag">Stage 2 · Decide prompt</span>
+          <span class="prompt-text" id="uc4-decide-prompt">You help a partner confirm eight company-specific risk criteria for a WACC calculation.
+
+CONTEXT
+- {{extracted}} : the typed historicals from Stage 1.
+- {{im_text}}   : the Information Memorandum, searchable.
+- {{house}}     : house-standard defaults per firm-size bucket.
+
+For each of the eight criteria in order — illiquidity, customer_concentration, supplier_dependence, management_dep, activity_diversif, market_barriers, track_record, flexibility — run this loop:
+
+1. Propose a value with ONE line of reasoning grounded in {{im_text}} or {{house}}.
+   Example: "top-3 customers = 62% of revenue → customer_concentration 1.5%".
+2. Render an adaptive card: slider (pre-filled), rationale field (pre-filled), source citation.
+3. Wait for partner input. Accept any override silently — never argue, never re-propose.
+4. Record the final value + the partner's one-line rationale to Dataverse.
+
+Never auto-fill `flexibility` — always ask with no default.
+After all eight are confirmed, ask: "Shall I write this to the valuation model?" Do not advance to Stage 3 until the partner answers yes.
+
+Output to Stage 3 as {{wacc_confirmed}}: an object of the eight keys with decimal values.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:0.4rem;">
+      <div>
+        <span class="mono-label" style="color:var(--salmon);">The eight criteria · grounded suggestions</span>
+        <ul style="margin-top:0.4rem; font-size:0.82rem;">
+          <li><strong>Illiquidity</strong> — by firm-size bucket, default +1.0%</li>
+          <li><strong>Customer concentration</strong> — from top-N revenue share in the IM</li>
+          <li><strong>Supplier dependence</strong> — from sourcing footnotes</li>
+          <li><strong>Management dependency</strong> — from the "key persons" paragraph</li>
+          <li><strong>Activity diversification</strong> — from segment disclosures</li>
+          <li><strong>Market barriers</strong> — qualitative with a confidence flag</li>
+          <li><strong>Track record</strong> — from the revenue/EBITDA trend</li>
+          <li><strong>Flexibility</strong> — always partner input, never auto-filled</li>
+        </ul>
+      </div>
+      <div>
+        <span class="mono-label" style="color:var(--salmon);">Copilot Studio building blocks</span>
+        <ul style="margin-top:0.4rem; font-size:0.82rem;">
+          <li><strong>Topic + adaptive card</strong> — one card per criterion, slider + rationale</li>
+          <li><strong>Variables &amp; entities</strong> — carry {{extracted}} across turns without re-asking</li>
+          <li><strong>Generative answers</strong> — grounded on a SharePoint library of past valuation memos</li>
+          <li><strong>Dataverse table</strong> — shared state between stages</li>
+          <li><strong>Child Power Automate flow</strong> — fires Stage 3 only after the partner says yes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · this is where the valuation agent is actually hard</strong>
+      Emphasise: "This is not a prompt-engineering problem. It's a <em>conversation-design</em> problem." The agent has to know how to suggest, how to cite, and how to gracefully yield.<br><br>
+      <strong>Ask Bram:</strong> "For the eight criteria — how much is house view versus per-partner preference? If every partner runs it differently, the agent needs a partner-selectable profile; if there's a house standard, it's easier."<br><br>
+      <strong>If someone asks "why not let it set WACC on its own?":</strong> because the output is defensible <em>only</em> if the partner can point at each number and say why. The agent's job is to make that defence faster, not replace it.
+    </div>
+  </div>
+
+  <!-- 7b · UC4 · STAGE 3 · WRITE -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+      <span class="canvas-step-label">UC4 · Stage 3 · Write</span>
+      <span class="canvas-step-pair">named ranges, not coordinates</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">The JSON contract is the handshake</h2>
+    <p style="max-width:46rem; margin-bottom:0.8rem;">One merge step, one Office Scripts call. A generative node stitches Stage 1 output + Stage 2 decisions + house-standards into the payload the script expects. Because the script reads named ranges, the model template can version-bump without breaking anything upstream.</p>
+
+    <div class="two-col" style="margin-top:0.4rem; align-items:start;">
+      <div>
+        <span class="mono-label" style="color:var(--salmon);">Generative AI node · merge prompt</span>
+        <div class="demo-box" style="margin-top:0.4rem;">
+          <div class="demo-box-header">
+            <span class="demo-label">Assemble the payload</span>
+            <span class="demo-surface" style="margin:0;">Copilot Studio</span>
+          </div>
+          <div class="demo-box-body">
+            <div class="demo-prompt" style="max-height:18rem;">
+              <button class="copy-btn" data-target="uc4-write-prompt">Copy</button>
+              <span class="p-tag">Stage 3 · Write prompt</span>
+              <span class="prompt-text" id="uc4-write-prompt">Assemble the Office Scripts payload for the valuation model.
+
+INPUT
+- {{extracted}}       : historicals from Stage 1
+- {{wacc_confirmed}}  : partner-confirmed criteria from Stage 2
+- {{house_standards}} : risk_free, market_prem, size_prem from Dataverse (by firm-size bucket)
+
+OUTPUT: valid JSON, exactly this shape — no prose, no fences:
+
+{
+  "prognose": { ...from {{extracted}}.prognose },
+  "wacc": {
+    "risk_free":    &lt;decimal from house_standards&gt;,
+    "market_prem":  &lt;decimal from house_standards&gt;,
+    "size_prem":    &lt;decimal from house_standards by firm-size bucket&gt;,
+    "company_risk": { ...eight keys from {{wacc_confirmed}} }
+  }
+}
+
+Rules
+- Every numeric value is a decimal (0.0272, not "2.72%").
+- If any of the eight criteria in {{wacc_confirmed}} is missing, halt and raise an error — never default silently.
+- Pass the result into the child Power Automate flow verbatim.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="mono-label" style="color:var(--salmon);">Reference · payload the Office Script consumes</span>
+        <div class="demo-box" style="margin-top:0.4rem;">
+          <div class="demo-box-header">
+            <span class="demo-label">Reference · Power Automate action</span>
+            <span class="demo-surface" style="margin:0;">Excel Online · Run script</span>
+          </div>
+          <div class="demo-box-body">
+            <div class="demo-prompt" style="max-height:18rem;">
+              <button class="copy-btn" data-target="uc4-payload">Copy</button>
+              <span class="p-tag">JSON · input to the Excel script</span>
+              <span class="prompt-text" id="uc4-payload">{
+  "prognose": {
+    "revenue":      [6420000, 7250000, 7540000],
+    "cogs":         [1890000, 2110000, 2180000],
+    "personnel":    [2010000, 2250000, 2370000],
+    "opex":         [ 780000,  820000,  860000],
+    "da":           [ 140000,  155000,  165000],
+    "tax_rate":     0.25
+  },
+  "wacc": {
+    "risk_free":    0.0272,
+    "market_prem":  0.05,
+    "size_prem":    0.0559,
+    "company_risk": {
+      "illiquidity":           0.010,
+      "customer_concentration":0.015,
+      "supplier_dependence":   0.005,
+      "management_dep":        0.010,
+      "activity_diversif":     0.005,
+      "market_barriers":       0.005,
+      "track_record":          0.005,
+      "flexibility":           0.005
+    }
+  }
+}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the unlock you want Bram to take home</strong>
+      Say this line: <em>"Once you've agreed on a JSON contract against named ranges, filling any Excel model is a solved problem."</em> Pause on it — this is the takeaway.<br><br>
+      The reference payload on the right is copy-able for a reason — a Crowe engineer can paste it into a sticky note, build the matching Office Script this week, and the agent is then purely a UI problem.<br><br>
+      <strong>Known Copilot Studio limitation:</strong> agents can't natively read a complex Excel back for verification. Writes via Office Scripts are fine; audit-after-write is clunky. Build a human confirmation step into the adaptive card before firing Stage 3.
+    </div>
+  </div>
+
+  <!-- 8 · TRANSITION -->
+  <div class="slide section-divider">
+    <span class="mono-label">Bridge</span>
+    <h1>UC4 asks eight questions.<br>UC5 asks zero.</h1>
+    <p style="max-width:42rem; margin:1rem auto 0; text-align:center;">
+      That's the diagnostic. When the agent doesn't need to run a conversation, you can ship it. UC5 is the side of the pattern where the work is just piping content into a template — so let's see it built.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center;">
+      <span class="chip purple-bg">Next · UC5 live prototype</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note · the pivot</strong>
+      Say the headline aloud. It's the cleanest summary of why the two use cases diverge in effort: judgment surface area.<br><br>
+      From here, energy shifts — less architecture talk, more "let's try it." If the build falls over, that's expected and fine; the goal for the next twelve minutes is to get a 3-slide deck produced by a flow, not to ship it.
+    </div>
+  </div>
+
+  <!-- 9 · UC5 EXPECTED OUTPUT -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+      <span class="canvas-step-label">Expected output · UC5 Teaser · validated live</span>
+      <span class="canvas-step-pair">the prototype</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">The hypothesis, and the flow we'll run</h2>
+
+    <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-output" spellcheck="false" style="background:var(--card); border:1px solid var(--border); border-left:3px solid var(--secondary); border-radius:8px; padding:0.9rem 1.1rem; margin:0.6rem 0 1rem;"><strong>Our hypothesis:</strong> a 70% draft teaser PPTX — project name, business description, key metrics, EBITDA data points — populated from the IM in under two minutes. The 30% left is visual polish: chart styling, logos, final tone pass.</div>
+
+    <div class="demo-box">
+      <div class="demo-box-header">
+        <span class="demo-label">Live · Copilot Studio + Power Automate</span>
+        <span class="demo-surface" style="margin:0;">validating UC5 · Expected output</span>
+      </div>
+      <div class="demo-box-body">
+        <div class="demo-files">
+          <span class="demo-file">Teaser - Project X (template NL).pptx</span>
+          <span class="demo-file">2025 IM - Project Faraday.pdf</span>
+        </div>
+        <div class="demo-prompt">
+          <button class="copy-btn" data-target="uc5-generative-node">Copy</button>
+          <span class="p-tag">Generative AI node · prompt</span>
+          <span class="prompt-text" id="uc5-generative-node">You are drafting a sell-side teaser in Dutch for KleurRijker B.V. (code name "Project Faraday"), based on the attached Information Memorandum.
+
+Return a JSON object with exactly these keys. Do not include any other keys, and do not return prose outside the JSON:
+
+{
+  "project_name":         string,   // project code name
+  "company_name":         string,   // legal entity name
+  "headline":             string,   // &lt;= 90 characters — "Onderneming te koop: ..."
+  "business_description": string,   // 2 paragraphs, 140–180 words total, Dutch, neutral tone, no superlatives
+  "metric_revenue":       string,   // format "€X.XM" using 2024 actual
+  "metric_ebitda":        string,   // format "€X.XM" using 2024 actual
+  "metric_margin":        string,   // format "XX%" using 2024 actual
+  "metric_fte":           integer,  // headcount
+  "ebitda_trend":         [{ "year": integer, "ebitda_eur": integer }, ...]
+}
+
+Ground every value in the IM. If a value is not present, return null — do not invent. Keep the description factual and free of puffery.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · how this slide is used live</strong>
+      Put the generative node prompt on screen, hit <kbd>Copy</kbd>, paste it into the Generative AI node in Copilot Studio. The output lands in a variable; a Power Automate flow takes that variable plus the PPTX template from SharePoint, token-replaces, saves a new file, returns the link.<br><br>
+      <strong>If the build stalls</strong> (authentication, connector licences, trust prompt on an AI Builder step) — don't force it. Flip to the next slide's token schema and walk through it as a whiteboard. The group values learning where it breaks more than a polished click-through.<br><br>
+      <strong>What to watch for in the output:</strong> realistic metric values, Dutch that sounds like Bram would write, EBITDA trend points that map cleanly to the chart data source, no hallucinated customers or locations.
+    </div>
+  </div>
+
+  <!-- 10 · UC5 TOKEN TEMPLATE -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l3-3h10l3 3v13H4z"/><path d="M9 12h6M9 16h4"/></svg>
+      <span class="canvas-step-label">UC5 · the token-replace pattern</span>
+      <span class="canvas-step-pair">how the PPTX gets filled</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">Placeholder tokens the flow swaps in</h2>
+    <p style="max-width:46rem; margin-bottom:0.8rem;">The template carries tokens directly in its text frames. The flow unzips the .pptx, finds and replaces on the slide XML, rezips, saves. 30–50 lines of code, no custom connector, no Azure Function.</p>
+
+    <div class="two-col" style="margin-top:0.4rem;">
+      <div>
+        <span class="mono-label" style="color:var(--secondary);">Tokens in the template</span>
+        <div class="demo-box" style="margin-top:0.4rem; border-color: var(--secondary);">
+          <div class="demo-box-header" style="background: rgba(79,32,53,0.06); border-bottom-color: rgba(79,32,53,0.15);">
+            <span class="demo-label" style="color: var(--secondary);">Template · .pptx slide text</span>
+            <span class="demo-surface" style="margin:0;">paste into the template</span>
+          </div>
+          <div class="demo-box-body">
+            <div class="demo-prompt">
+              <button class="copy-btn" data-target="uc5-tokens" style="background:rgba(79,32,53,0.22); color:var(--secondary);">Copy</button>
+              <span class="p-tag">Tokens · replace in-place</span>
+              <span class="prompt-text" id="uc5-tokens">Slide 1 · Title
+  {{project_name}}
+
+Slide 2 · Overview &amp; metrics
+  Onderneming te koop: {{company_name}}
+  {{business_description}}
+
+  Omzet (2024):   {{metric_revenue}}
+  EBITDA (2024):  {{metric_ebitda}}
+  Marge:          {{metric_margin}}
+  FTE:            {{metric_fte}}
+
+  EBITDA-trend:   {{ebitda_trend}}    // chart data source
+
+Slide 3 · Contact &amp; services
+  (fixed — no tokens)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="mono-label" style="color:var(--secondary);">The 70 / 30 split</span>
+        <div class="card" style="margin-bottom:0.8rem;">
+          <h3 style="font-size:1rem; margin-bottom:0.4rem;">Automatable · ~70%</h3>
+          <p style="font-size:0.86rem;">Project and company name, headline, 2-paragraph description, metric values, year labels, currency formatting, EBITDA data points.</p>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--muted);">
+          <h3 style="font-size:1rem; margin-bottom:0.4rem;">Manual polish · ~30%</h3>
+          <p style="font-size:0.86rem;">EBITDA chart styling (unless we go to python-pptx), partner logos, tone nudges, spacing and font QA, the anonymisation sign-off.</p>
+        </div>
+        <div style="margin-top:0.9rem;">
+          <span class="chip mint">Two-hour task → 20-minute review</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the honest scope</strong>
+      The token-replace pattern is deliberately unsexy. Walk through it as "the boring version that ships." Compare briefly to the alternatives: Word template + convert (loses visual fidelity), python-pptx in an Azure Function (nice in v2 once the chart becomes a real requirement).<br><br>
+      <strong>The headline framing line</strong> — "two-hour task becomes twenty-minute review" — is the one that wins adoption inside the team. Say it slowly. Let Bram nod or push back on the numbers.<br><br>
+      <strong>Watch for the "can we do a full CIM?" question.</strong> Answer: same pattern, bigger deck, hits connector file-size caps; doable with the Azure Function version, not with v1.
+    </div>
+  </div>
+
+  <!-- 11 · THE MOMENT -->
+  <div class="slide section-divider">
+    <span class="mono-label">Validated (or edited)</span>
+    <h1>Two hours of retyping.<br>Twenty minutes of review.</h1>
+    <p style="max-width:42rem; margin:1rem auto 0; text-align:center;">
+      The hypothesis held — or it didn't, and we edit the expected-output row before moving on. Either way, UC5's bottleneck is just the polish queue. That's a very different shape of problem from UC4's partner conversation.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center; flex-wrap:wrap;">
+      <span class="chip mint">UC5 · expected output confirmed</span>
+      <span class="chip muted-bg">UC4 · architected, not built</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Turn to the room: "Would you ship that teaser with twenty minutes of cleanup? If yes, write that into the expected-output row of the UC5 canvas. If no, tell us what's missing — and we'll edit the hypothesis together."<br><br>
+      Then anchor the contrast: "Notice that nothing we just saw required a partner to approve a judgment. That's the whole difference with UC4."
+    </div>
+  </div>
+
+  <!-- 12 · ROW 07 · PATTERNS -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+      <span class="canvas-step-label">Examples &amp; tips</span>
+      <span class="canvas-step-pair">fill · patterns to reuse</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">Patterns to capture on each canvas</h2>
+
+    <div class="grid-2" style="margin-top:1rem;">
+      <div class="card">
+        <span class="chip salmon-bg">UC4 · pattern A</span>
+        <h3 style="margin-top:0.6rem;">Adaptive-card parameter loop</h3>
+        <p>One card per judgment criterion: grounded suggestion + slider + confirm. Reusable for any valuation parameter a partner would never let an agent set alone.</p>
+      </div>
+      <div class="card">
+        <span class="chip salmon-bg">UC4 · pattern B</span>
+        <h3 style="margin-top:0.6rem;">Named-range payload write</h3>
+        <p>One Office Scripts call per sheet, accepting a typed JSON payload. Immune to cell-coordinate drift when the model template version-bumps.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--secondary);">
+        <span class="chip purple-bg">UC5 · pattern A</span>
+        <h3 style="margin-top:0.6rem;">Token-in-template PPTX fill</h3>
+        <p>Author the template with <code style="font-family:var(--font-mono); font-size:0.8rem;">{{token}}</code> placeholders. Agent produces typed JSON; flow does find/replace on slide XML. Robust and boring.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--secondary);">
+        <span class="chip purple-bg">UC5 · pattern B</span>
+        <h3 style="margin-top:0.6rem;">Typed-JSON generative node</h3>
+        <p>Force the Generative AI node to return a strict JSON shape — not prose. Makes downstream replace/parse deterministic. Reuse the shape for any templated sell-side deliverable.</p>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · this is the takeaway layer</strong>
+      The patterns listed here are what we put on each canvas. They're reusable — the adaptive-card parameter loop will reappear the moment anything else needs partner judgment in the flow, and the typed-JSON generative node is the pattern for any templated output.<br><br>
+      <strong>Ask Bram:</strong> "Which of these four patterns would you actually open next Monday?" The answer tells you where the team's centre of gravity sits — and which pilot to lead with.
+    </div>
+  </div>
+
+  <!-- 13 · WHICH FIRST -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+      <span class="canvas-step-label">Quality &amp; reuse signals · which first?</span>
+      <span class="canvas-step-pair">fill · decide</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">Effort vs. value — and who ships first</h2>
+
+    <div class="two-col" style="margin-top:0.8rem;">
+      <div>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Build</th>
+              <th>Maintain</th>
+              <th>Value / run</th>
+              <th>Runs / month</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>UC5 Teaser</strong></td>
+              <td>Low · 1–2 sprints</td>
+              <td>Low</td>
+              <td>Medium · ~90 min saved</td>
+              <td>Many</td>
+            </tr>
+            <tr>
+              <td><strong>UC4 DCF</strong></td>
+              <td>Medium · 3–4 sprints + WACC UX</td>
+              <td>Medium</td>
+              <td>High · 3–6 hours saved</td>
+              <td>Fewer</td>
+            </tr>
+            <tr>
+              <td><strong>UC4 ValuePlan</strong></td>
+              <td>High · phase 2</td>
+              <td>High</td>
+              <td>Very high · if it works</td>
+              <td>Rare</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+          <span class="chip mint">Recommendation · UC5 first</span>
+          <span class="chip salmon-bg">Then UC4 DCF</span>
+          <span class="chip muted-bg">ValuePlan · on the roadmap</span>
+        </div>
+      </div>
+      <div>
+        <p style="margin-bottom:0.8rem;"><strong>Prompt questions for the room</strong> — pick two, not all:</p>
+        <ul>
+          <li>Which of these would save <em>you personally</em> the most time in a typical month?</li>
+          <li>Which would your team adopt fastest — who opens the agent next Monday?</li>
+          <li>If the teaser ships at 70%, is that a win, or does "not fully finished" slow adoption?</li>
+          <li>For the DCF: is there a house view on the eight criteria, or does every partner do it differently?</li>
+          <li>What would make you trust an agent-filled DCF enough to take it into a live engagement?</li>
+          <li>If we could only build one this quarter, which — and what would your team say?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the decision moment</strong>
+      This is the eight-minute discussion anchor. Put the table up, pick two prompt questions, let Bram and Marieke talk. Capture whatever they land on directly in the canvas — the winner gets written into the "Owner &amp; status" row before the slide changes.<br><br>
+      <strong>Our call, if asked:</strong> UC5 first (4–6 weeks) as the flagship Copilot Studio pilot. It ships, builds muscle memory, and reuses patterns the next use case needs. UC4 DCF as the second project once that muscle memory exists. ValuePlan stays on the roadmap — not first-half-of-year work.<br><br>
+      <strong>Don't sell.</strong> If they pick UC4 for strategic reasons — partner-time value, valuations being a visible advisory offering — that's also defensible. The point is they leave with <em>a</em> pick, not <em>our</em> pick.
+    </div>
+  </div>
+
+  <!-- 14 · OWNER + LEARNING -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="canvas-step-label">Owner &amp; status · Related learning</span>
+      <span class="canvas-step-pair">commit · bridge</span>
+    </div>
+    <h2 style="margin-top:0.4rem;">Name an owner. Name the next deal.</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <span class="uc-tag uc4">UC4 · Waarderingsmodel</span>
+        <h3>Owner &amp; status</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc4-owner" spellcheck="false"><strong>Owner:</strong> valuation partner.<br><strong>Status:</strong> architecture agreed · build deferred until UC5 is in pilot. First target: DCF on the next indicative valuation.</div>
+        <h3>Related learning</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc4-learning" spellcheck="false">Extraction pipeline shared with other Copilot Studio agents — don't build it twice. The adaptive-card conversation pattern is new ground and will reappear wherever the agent has to ask a partner.</div>
+      </div>
+      <div class="validate-block uc5">
+        <span class="uc-tag uc5">UC5 · Teaser</span>
+        <h3>Owner &amp; status</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-owner" spellcheck="false"><strong>Owner:</strong> analyst lead.<br><strong>Status:</strong> pilot candidate · 4–6 weeks. First target: the next mandate with a signed teaser template.</div>
+        <h3>Related learning</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="uc5-learning" spellcheck="false">Establishes Crowe's PPTX pipeline — the token-replace pattern carries to pitchbooks, one-pagers, and a lightweight CIM. The typed-JSON generative node is a reusable skill across the firm.</div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the commit line</strong>
+      "Before we wrap: two names. Who owns each of these as a pilot? And what's the next live deal where we'd try them?" Put real names on the canvas. A canvas without an owner is a poster.<br><br>
+      <strong>Bridge forward:</strong> "The next segment looks at a different shape of problem — the pattern breaks where the input volume itself is the hard part. But the canvas we just filled is how we'll frame that one too."
+    </div>
+  </div>
+
+  <!-- 15 · DUAL FILLED CANVAS -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1rem;">
+      <span class="mono-label" style="color:var(--mint); margin-bottom:0.4rem;">End of the segment · two artifacts</span>
+      <h2 style="margin-bottom:0.3rem;">The canvases, filled</h2>
+      <p style="max-width:46rem; margin:0 auto; font-size:0.95rem;">Two rows added to Crowe's use-case library. Same shape, different content. One ready to pilot; one architected and waiting.</p>
+    </div>
+
+    <div class="dual-uca">
+      <div class="uca-card uc4 done">
+        <div class="uca-card-head">
+          <div class="uca-card-title">UC4 · Waarderingsmodel</div>
+          <div class="uca-card-sub">architected · phase 2</div>
+        </div>
+        <div class="uca-grid">
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg><div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-who" spellcheck="false">Valuation lead at Crowe · partner-reviewed · analyst does the first pass</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-problem" spellcheck="false">Typing historicals into a model and arguing WACC in a spreadsheet — not advisory work</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-when" spellcheck="false">Indicative valuation · sign-off preparation · post-DD refresh</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg><div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-where" spellcheck="false">Copilot Studio agent · Office Scripts for cell writes · SharePoint for house standards</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg><div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-inputs" spellcheck="false">Annual reports (3 years) · model template · confirmed WACC parameters</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg><div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-output" spellcheck="false"><strong>Architected, not built.</strong> Filled DCF (Prognose + WACC), partner-reviewed via adaptive cards, written through Office Scripts.</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg><div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-examples" spellcheck="false">Adaptive-card parameter loop · named-range payload write</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-owner" spellcheck="false">Valuation partner · build deferred until UC5 is in pilot</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg><div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-learning" spellcheck="false">Shared extraction pipeline · new ground: the partner-in-the-loop adaptive card</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg><div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc4-quality" spellcheck="false">Hours per valuation · WACC defensibility · partner trust to use live</div></div></div>
+        </div>
+      </div>
+
+      <div class="uca-card uc5 done">
+        <div class="uca-card-head">
+          <div class="uca-card-title">UC5 · Teaser</div>
+          <div class="uca-card-sub">pilot candidate · 4–6 weeks</div>
+        </div>
+        <div class="uca-grid">
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg><div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-who" spellcheck="false">M&amp;A analyst drafting sell-side materials · partner sign-off before send</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-problem" spellcheck="false">Two hours of retyping IM content into the teaser template for every new mandate</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-when" spellcheck="false">Every new sell-side mandate · the moment the IM is drafted</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg><div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-where" spellcheck="false">Copilot Studio · Power Automate flow · SharePoint output library</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg><div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-inputs" spellcheck="false">Information Memorandum · the PPTX template · anonymisation guardrails</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg><div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-output" spellcheck="false"><strong>Validated live.</strong> 70% draft PPTX in under two minutes · 20 min of polish before send</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg><div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-examples" spellcheck="false">Token-in-template PPTX fill · typed-JSON generative node</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-owner" spellcheck="false">Analyst lead · pilot on the next live mandate</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg><div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-learning" spellcheck="false">Establishes the PPTX pipeline · carries to pitchbooks and one-pagers</div></div></div>
+          <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg><div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="uc5-quality" spellcheck="false">Teasers per quarter · minutes of polish · team adoption rate</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the exit</strong>
+      Hold on this slide for thirty seconds. "Two rows in Crowe's use-case library, same shape, different readiness. One ships next month; one waits its turn. And the shape itself is the reusable thing — any future template-filler slots straight into this canvas."
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <div class="nav-info"><span id="slide-num">01</span> / <span id="slide-total">16</span></div>
+  <div class="nav-dots" id="nav-dots"></div>
+  <div class="nav-help">← →  ·  N  speaker notes  ·  F  fullscreen</div>
+  <button class="reset-btn" id="reset-canvas" title="Clear all edits">Reset canvas</button>
+</div>
+
+<script>
+(function(){
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsWrap = document.getElementById('nav-dots');
+  const numEl = document.getElementById('slide-num');
+  const totalEl = document.getElementById('slide-total');
+  totalEl.textContent = String(slides.length).padStart(2,'0');
+
+  const STORAGE_PREFIX = 'tatoma-uc4uc5-';
+  const editableEls = [...document.querySelectorAll('[data-canvas-key], [data-hyp-key]')];
+
+  function keyFor(el) {
+    if (el.dataset.canvasKey) return STORAGE_PREFIX + 'canvas-' + el.dataset.canvasKey;
+    if (el.dataset.hypKey) return STORAGE_PREFIX + 'hyp-' + el.dataset.hypKey;
+    return null;
+  }
+
+  editableEls.forEach(el => {
+    const k = keyFor(el);
+    const saved = localStorage.getItem(k);
+    if (saved !== null) {
+      el.innerHTML = saved;
+      el.classList.add('edited');
+    }
+  });
+
+  editableEls.forEach(el => {
+    el.addEventListener('input', () => {
+      const k = keyFor(el);
+      localStorage.setItem(k, el.innerHTML);
+      el.classList.add('edited');
+      if (el.dataset.canvasKey) {
+        document.querySelectorAll(`[data-canvas-key="${el.dataset.canvasKey}"]`).forEach(twin => {
+          if (twin !== el) {
+            twin.innerHTML = el.innerHTML;
+            twin.classList.add('edited');
+          }
+        });
+      }
+    });
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.execCommand('insertLineBreak');
+      }
+    });
+  });
+
+  const resetBtn = document.getElementById('reset-canvas');
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('Clear all canvas edits? The slides will revert to the starting hypotheses.')) return;
+    editableEls.forEach(el => { localStorage.removeItem(keyFor(el)); });
+    location.reload();
+  });
+
+  slides.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='nav-dot';
+    b.setAttribute('aria-label','Slide '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    dotsWrap.appendChild(b);
+  });
+  const dots = [...dotsWrap.children];
+
+  let idx = 0;
+  let notesVisible = false;
+
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===idx));
+    dots.forEach((d,i)=>{
+      d.classList.toggle('active', i===idx);
+      d.classList.toggle('visited', i<idx);
+    });
+    numEl.textContent = String(idx+1).padStart(2,'0');
+  }
+  function go(n){ idx = Math.max(0, Math.min(slides.length-1, n)); render(); }
+
+  document.addEventListener('keydown', e=>{
+    const t = e.target;
+    if (t && t.isContentEditable) {
+      if (e.key === 'Escape') { t.blur(); e.preventDefault(); }
+      return;
+    }
+    if (e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown') { e.preventDefault(); go(idx+1); }
+    else if (e.key==='ArrowLeft' || e.key==='PageUp') { e.preventDefault(); go(idx-1); }
+    else if (e.key==='Home') go(0);
+    else if (e.key==='End') go(slides.length-1);
+    else if (e.key==='n' || e.key==='N') {
+      notesVisible = !notesVisible;
+      document.querySelectorAll('.speaker-note').forEach(n=>n.classList.toggle('visible', notesVisible));
+    }
+    else if (e.key==='f' || e.key==='F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      navigator.clipboard.writeText(target.innerText).then(()=>{
+        btn.classList.add('copied');
+        const prev = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = prev; }, 1400);
+      });
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

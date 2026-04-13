@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC3 · Cijferopstelling Build — Tatoma × Crowe Foederer</title>
+
+<!-- Tatoma fonts -->
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<style>
+  :root {
+    --bg: #F6FAEB;
+    --fg: #1D021F;
+    --card: #FFFFFF;
+    --primary: #FF8E7D;
+    --secondary: #4F2035;
+    --muted: #A397A3;
+    --muted-fg: #4C3C47;
+    --dark-magenta: #1E001E;
+    --salmon: #FF8C7D;
+    --mint: #0EE17E;
+    --border: rgba(163,151,163,0.25);
+    --radius: 0.75rem;
+    --font-serif: "Canela", Georgia, "Times New Roman", serif;
+    --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Slide engine ── */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3.5rem 5.5rem 5rem;
+    opacity: 0; transform: translateY(24px); pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(.25,.46,.45,.94),
+                transform 0.5s cubic-bezier(.25,.46,.45,.94);
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .slide.exit-up { opacity: 0; transform: translateY(-24px); }
+
+  .slide.section-divider {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .slide.section-divider h1 { font-size: clamp(3rem, 6vw, 5.5rem); }
+
+  /* ── Typography ── */
+  h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; line-height: 1.15; }
+  h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
+  h2 { font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+  h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); margin-bottom: 0.6rem; }
+
+  p, li { font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.6; color: var(--muted-fg); }
+  strong { font-weight: 600; color: var(--fg); }
+
+  .mono-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.6rem; display: block;
+  }
+
+  .chip {
+    display: inline-block; padding: 0.25rem 0.8rem;
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    border-radius: 999px;
+    background: var(--dark-magenta); color: var(--salmon);
+  }
+  .chip.mint { background: rgba(14,225,126,0.12); color: #08924f; }
+  .chip.salmon-bg { background: rgba(255,140,125,0.15); color: #b84a3b; }
+  .chip.muted-bg { background: rgba(163,151,163,0.15); color: var(--muted-fg); }
+  .chip.purple-bg { background: rgba(79,32,53,0.15); color: var(--secondary); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.6rem 1.8rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,0,30,0.06); }
+  .card h3 { margin-bottom: 0.4rem; }
+  .card p, .card li { font-size: 0.92rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+  /* ── Lists ── */
+  ul { list-style: none; padding: 0; }
+  ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+  ul li::before {
+    content: ""; position: absolute; left: 0; top: 0.6rem;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--salmon);
+  }
+
+  /* ── Big numbers ── */
+  .big-number {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: 3.2rem; line-height: 1; color: var(--fg); margin-bottom: 0.2rem;
+  }
+
+  /* ── Demo box ── */
+  .demo-box {
+    background: var(--card);
+    border: 2px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-top: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(255,140,125,0.1);
+  }
+  .demo-box-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255,140,125,0.06);
+    border-bottom: 1px solid rgba(255,140,125,0.15);
+  }
+  .demo-box-header .demo-label {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--salmon);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .demo-box-header .demo-label::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--salmon); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .demo-box-body { padding: 1rem 1.2rem; }
+  .demo-box-body .demo-files {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+  }
+  .demo-file {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.7rem; border-radius: 6px;
+    background: rgba(30,0,30,0.04); font-size: 0.78rem; color: var(--muted-fg);
+    font-family: var(--font-mono); letter-spacing: 0.02em;
+  }
+  .demo-file::before { content: "📄"; font-size: 0.7rem; }
+
+  .demo-prompt {
+    position: relative;
+    background: var(--fg); color: rgba(246,250,235,0.92);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem 1rem;
+    font-size: 0.78rem; line-height: 1.6;
+    font-family: var(--font-mono); letter-spacing: 0.01em;
+    max-height: 13rem; overflow-y: auto;
+  }
+  .demo-prompt::-webkit-scrollbar { width: 6px; }
+  .demo-prompt::-webkit-scrollbar-thumb { background: rgba(246,250,235,0.2); border-radius: 3px; }
+  .demo-prompt .p-tag {
+    display: block;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: rgba(246,250,235,0.4);
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(246,250,235,0.1);
+    padding-right: 3.5rem;
+  }
+  .demo-prompt .prompt-text {
+    display: block;
+    white-space: pre-wrap;
+  }
+
+  .copy-btn {
+    position: absolute; top: 0.55rem; right: 0.55rem;
+    background: rgba(255,140,125,0.22); border: none; border-radius: 6px;
+    padding: 0.35rem 0.7rem; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--salmon); transition: background 0.2s;
+    z-index: 2;
+  }
+  .copy-btn:hover { background: rgba(255,140,125,0.4); }
+  .copy-btn.copied { background: rgba(14,225,126,0.3); color: #0EE17E; }
+
+  .demo-surface {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    margin-top: 0.6rem; display: block;
+  }
+
+  /* ── Use-Case Asset canvas ── */
+  .uca-slide { padding-top: 2.4rem; padding-bottom: 4.5rem; justify-content: flex-start; }
+  .uca-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.8rem 2rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    max-width: 68rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .uca-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 2.5rem;
+  }
+  .uca-row {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.35rem 0;
+  }
+  .uca-icon {
+    width: 1.7rem; height: 1.7rem;
+    color: var(--salmon);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .uca-icon.mint-icon { color: var(--mint); }
+  .uca-label {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--fg);
+    line-height: 1.25;
+  }
+  .uca-hint {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--muted-fg);
+    line-height: 1.45;
+    margin-top: 0.15rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 900px) {
+    .uca-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Canvas-step header (anchors each slide to a canvas row) ── */
+  .canvas-step {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .canvas-step-num {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--salmon);
+    background: rgba(255,140,125,0.1); border-radius: 4px;
+    padding: 0.3rem 0.55rem;
+  }
+  .canvas-step-icon { width: 1.4rem; height: 1.4rem; color: var(--salmon); flex-shrink: 0; }
+  .canvas-step-icon.mint-icon { color: var(--mint); }
+  .canvas-step-label {
+    font-family: var(--font-sans); font-size: 1rem; font-weight: 500;
+    color: var(--fg);
+  }
+  .canvas-step-pair {
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── Validate block (hypothesis + questions per row) ── */
+  .validate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .validate-block { }
+  .validate-block h3 {
+    font-family: var(--font-sans); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.5rem;
+  }
+  .validate-block .hypothesis {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--salmon);
+    border-radius: 8px; padding: 0.9rem 1.1rem;
+    margin-bottom: 0.9rem; font-size: 0.95rem;
+  }
+  .validate-block ul.questions { margin-top: 0.3rem; }
+  .validate-block ul.questions li {
+    font-size: 0.9rem; color: var(--muted-fg);
+    padding-left: 1.1rem; margin-bottom: 0.35rem;
+  }
+  .validate-block ul.questions li::before {
+    width: 4px; height: 4px; top: 0.55rem; background: var(--muted);
+  }
+
+  /* ── Mini-canvas row for slide headers ── */
+  .mini-canvas-nav {
+    display: flex; gap: 0.35rem; justify-content: center;
+    margin-top: 0.8rem; flex-wrap: wrap;
+  }
+  .mini-canvas-dot {
+    width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: rgba(163,151,163,0.15); color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  }
+  .mini-canvas-dot.done { background: rgba(255,140,125,0.2); color: var(--salmon); }
+  .mini-canvas-dot.active { background: var(--salmon); color: #fff; transform: scale(1.15); }
+  .mini-canvas-dot.mint-done { background: rgba(14,225,126,0.2); color: #08924f; }
+
+  /* ── Speaker notes ── */
+
+  /* ─── Editable canvas cells ─────────────────────────── */
+  [contenteditable="true"] { outline: none; transition: background 0.15s ease, box-shadow 0.15s ease; cursor: text; border-radius: 4px; }
+  .uca-hint[contenteditable="true"] { padding: 0.15rem 0.35rem; margin: -0.15rem -0.35rem; }
+  .uca-hint[contenteditable="true"]:hover { background: rgba(255,140,125,0.06); }
+  .uca-hint[contenteditable="true"]:focus { background: rgba(255,140,125,0.12); box-shadow: inset 0 -1px 0 var(--salmon); }
+  .hypothesis[contenteditable="true"]:hover { background: rgba(255,140,125,0.04); }
+  .hypothesis[contenteditable="true"]:focus { box-shadow: 0 0 0 2px rgba(255,140,125,0.3); }
+  .uca-hint.edited, .hypothesis.edited { position: relative; }
+  .uca-hint.edited::before { content: ""; position: absolute; left: -0.6rem; top: 0.45rem; width: 4px; height: 4px; border-radius: 50%; background: var(--mint); }
+  .reset-btn { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; transition: all 0.15s ease; }
+  .reset-btn:hover { color: var(--salmon); border-color: var(--salmon); }
+
+  .speaker-note {
+    display: none; margin-top: 1.2rem; padding: 1rem 1.2rem;
+    background: rgba(30,0,30,0.04); border-radius: var(--radius);
+    border-left: 3px solid var(--salmon);
+    font-size: 0.85rem; color: var(--muted-fg); line-height: 1.55;
+  }
+  .speaker-note.visible { display: block; }
+  .speaker-note strong {
+    font-size: 0.7rem; font-family: var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+
+  /* ── Architecture diagram (ASCII-style) ── */
+  .arch-diagram {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.2rem 1.4rem; margin-top: 1rem;
+    font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.55;
+    color: var(--muted-fg); white-space: pre; overflow-x: auto;
+  }
+
+  /* ── Architecture diagram (SVG pipeline) ── */
+  .pipeline-svg {
+    width: 100%; height: auto; max-height: 22rem;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem; margin-top: 1rem;
+  }
+  .pipeline-svg text { font-family: var(--font-mono); font-size: 11px; fill: var(--fg); }
+  .pipeline-svg text.meta { fill: var(--muted); font-size: 9px; letter-spacing: 0.08em; }
+  .pipeline-svg rect.node { fill: var(--card); stroke: var(--salmon); stroke-width: 1.4; rx: 8; }
+  .pipeline-svg rect.input { fill: rgba(255,140,125,0.08); }
+  .pipeline-svg rect.output { fill: rgba(14,225,126,0.08); stroke: var(--mint); }
+  .pipeline-svg path.edge { fill: none; stroke: var(--muted); stroke-width: 1.2; marker-end: url(#arrow); }
+
+  /* ── Step list for build plan ── */
+  .step-list { display: grid; gap: 0.8rem; margin-top: 0.8rem; }
+  .step-row {
+    display: grid; grid-template-columns: 3rem 1fr auto; gap: 0.9rem;
+    align-items: start; padding: 0.8rem 1rem;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    border-left: 3px solid var(--salmon);
+  }
+  .step-row .step-num {
+    font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;
+    color: var(--salmon); letter-spacing: 0.1em;
+  }
+  .step-row .step-body { font-size: 0.88rem; }
+  .step-row .step-body strong { display: block; font-size: 0.95rem; margin-bottom: 0.1rem; }
+  .step-row .step-time {
+    font-family: var(--font-mono); font-size: 0.65rem; color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap;
+  }
+
+  /* ── Fixed elements ── */
+  .logo-area {
+    position: fixed; top: 1.2rem; left: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem; z-index: 100;
+  }
+  .logo-area img { width: 24px; height: 24px; border-radius: 5px; }
+  .logo-area span {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+  }
+
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.5rem; z-index: 100;
+    background: linear-gradient(transparent, rgba(246,250,235,0.95));
+  }
+  .nav-dots { display: flex; gap: 5px; }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); opacity: 0.3;
+    cursor: pointer; transition: all 0.25s ease; border: none;
+  }
+  .nav-dot.active { opacity: 1; background: var(--salmon); transform: scale(1.3); }
+  .nav-dot.visited { opacity: 0.5; }
+  .nav-info {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .nav-help {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); opacity: 0.45;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2rem 1.5rem 4rem; }
+    .two-col, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <img src="https://hub.tatoma.eu/tatoma-icon.png" alt="Tatoma" onerror="this.style.display='none'">
+  <span>Tatoma × Crowe Foederer · UC3</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 0 · TITLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider active">
+    <span class="mono-label">Live Build · Part 2 · 40 min</span>
+    <h1>UC3 · Cijferopstelling</h1>
+    <p style="max-width:40rem; margin:0 auto; text-align:center; font-size:1.1rem;">
+      From a Dutch annual report PDF to a populated P&amp;L and balance sheet template — built in front of you, in Copilot Studio, in twenty minutes.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center; flex-wrap:wrap;">
+      <span class="chip salmon-bg">Pattern 3 · Structured extraction</span>
+      <span class="chip muted-bg">Copilot Studio + Power Automate</span>
+      <span class="chip muted-bg">KleurRijker BV 2024</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note · the switch</strong>
+      This is where we cross the bridge. Part 1 was Claude. Part 2 is your stack. Same canvas, same case — different toolbox. The goal of the next 40 minutes is not to ship production software; it's to show the pattern end-to-end inside Copilot Studio so you know what "good" looks like before IT scopes the pilot.<br><br>
+      Total: 8 min framing · 20 min build · 12 min test &amp; discuss. We'll cheat a little by pre-staging the boring parts so we can spend live time on the interesting nodes.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 1 · CANVAS INTRO · we fill this together -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1.2rem;">
+      <span class="mono-label" style="color:var(--salmon); margin-bottom:0.4rem;">Use-Case Asset · 10 rows</span>
+      <h2 style="margin-bottom:0.3rem;">UC3 · Use-Case Asset</h2>
+      <p style="max-width:44rem; margin:0 auto; font-size:0.98rem;">Ten rows. Today's validation of <em>Expected output</em> is a populated Excel file, not a chat answer.</p>
+    </div>
+
+    <div class="uca-card">
+      <div class="uca-grid">
+        <!-- 1 · Who it's for -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>
+          <div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="who" spellcheck="false">M&amp;A analyst filling the cijferopstelling for the IM pack · reviewed by the deal lead</div></div>
+        </div>
+        <!-- 2 · Problem -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+          <div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="problem" spellcheck="false">Retyping 25–30 P&amp;L and balance sheet lines × 3 years from PDFs into a template — error-prone, slow, unloved work</div></div>
+        </div>
+        <!-- 3 · When -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="when" spellcheck="false">Every new deal, as soon as the annual reports land · also before IC and before valuation</div></div>
+        </div>
+        <!-- 4 · Where -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg>
+          <div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="where" spellcheck="false">Copilot Studio agent → Power Automate flow → AI Builder (GPT-4.1, or Claude Sonnet 4 via the multi-model lineup) → Excel Online · all inside Crowe's M365 tenant</div></div>
+        </div>
+        <!-- 5 · Inputs -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+          <div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="inputs" spellcheck="false">Annual report PDF (Dutch RJ, text-based) + the blank Excel template + target year</div></div>
+        </div>
+        <!-- 6 · Output -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+          <div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="output" spellcheck="false">Populated Template cijferopstellingIM.xlsx — W&amp;V + Balans filled, confidence flags, ambiguity notes, link returned to the user</div></div>
+        </div>
+        <!-- 7 · Examples -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+          <div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="examples" spellcheck="false">Today's build on KleurRijker 2024 · same pattern extends to UC4 valuation model + UC6 audit file normalizations</div></div>
+        </div>
+        <!-- 8 · Owner -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="owner" spellcheck="false">Owner: Bram (M&amp;A) + IT sponsor for tenant · Status: live prototype → pilot on next deal</div></div>
+        </div>
+        <!-- 9 · Learning -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg>
+          <div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="learning" spellcheck="false">Feeds UC4 (valuation) · the "agent calls flow" pattern is the reusable spine for UC5 and UC6</div></div>
+        </div>
+        <!-- 10 · Quality -->
+        <div class="uca-row">
+          <svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+          <div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="quality" spellcheck="false">Accuracy vs. manual typing · minutes saved per deal · how many rows pass without human edit · review-workflow fit</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the same spine, different stack</strong>
+      Don't re-teach the canvas. Say: "same ten rows — today we'll move fast through 01–05, then spend most of our time on rows 06 and 07, because that's where the build lives."<br><br>
+      The <em>interesting</em> row today is 04. Everything you're about to see — Copilot Studio, Power Automate, AI Builder — is the concrete answer to "where it runs" inside your tenant.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 2 · ROWS 01 + 02 · WHO + PROBLEM -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>
+      <span class="canvas-step-label">Who it's for · What problem it solves</span>
+      <span class="canvas-step-pair">fill · validate</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">The unloved hour of the deal week</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <h3>Who it's for</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="who" spellcheck="false">M&amp;A <strong>analyst</strong> filling the cijferopstelling for the IM pack. <strong>Deal lead</strong> reviews. Possibly extends to audit colleagues who handle the same step during DD.</div>
+      </div>
+      <div class="validate-block">
+        <h3>What problem it solves</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="problem" spellcheck="false">Retyping <strong>~25–30 line items × 3 years</strong> from annual report PDFs into the template. Error-prone, slow, and nobody enjoys doing it — but the rest of the IM pack depends on it.</div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · fill it out loud</strong>
+      Probe: is it always the analyst, or does the deal lead touch it first? If it's shared, the failure mode is worse — two people both "sort-of" checking.<br><br>
+      Ask for a time estimate: "how long does the cijferopstelling for a 3-year KleurRijker-sized deal actually take today?" Write the number on the canvas — that's the before-number for the pilot.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 3 · ROWS 03 + 04 · WHEN + WHERE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span class="canvas-step-label">When to use it · Where it runs</span>
+      <span class="canvas-step-pair">fill · validate</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Inside your tenant, end to end</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <h3>When to use it</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="when" spellcheck="false">As soon as the annual reports land in the data room. Then again <strong>before IC</strong>, and again <strong>before valuation</strong> (UC4 eats this output).</div>
+      </div>
+      <div class="validate-block">
+        <h3>Where it runs</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="where" spellcheck="false"><strong>Copilot Studio</strong> agent → <strong>Power Automate</strong> flow → <strong>AI Builder</strong> (GPT-4.1 or Claude Sonnet 4) → <strong>Excel Online</strong>. Everything stays inside Crowe's M365 tenant.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.2rem; display:flex; gap:0.4rem; flex-wrap:wrap;">
+      <span class="chip muted-bg">M365 tenant only</span>
+      <span class="chip muted-bg">No data leaves Crowe</span>
+      <span class="chip muted-bg">Reusable pattern</span>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the honest conversation</strong>
+      This is the slide where row 04 stops being abstract. Walk them through the four boxes once, then park it — the next slide is the proper architecture diagram.<br><br>
+      Probe: what have you already built in Copilot Studio? Where did it stall? If IT is in the room, invite them in — governance, DLP, environment choice all live here.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4 · ARCHITECTURE DIAGRAM -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg>
+      <span class="canvas-step-label">Architecture · five nodes end-to-end</span>
+      <span class="canvas-step-pair">what we're building</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Five nodes. One per job.</h2>
+
+    <svg class="pipeline-svg" viewBox="0 0 980 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#A397A3"/>
+        </marker>
+      </defs>
+
+      <!-- Node 1: Copilot Studio agent -->
+      <rect class="node input" x="20" y="70" width="170" height="80"/>
+      <text x="105" y="95" text-anchor="middle" class="meta">TRIGGER</text>
+      <text x="105" y="115" text-anchor="middle" font-weight="700">Copilot Studio</text>
+      <text x="105" y="135" text-anchor="middle" fill="#4C3C47">chat + file</text>
+
+      <!-- Node 2: PDF extraction -->
+      <rect class="node" x="218" y="70" width="170" height="80"/>
+      <text x="303" y="95" text-anchor="middle" class="meta">EXTRACT</text>
+      <text x="303" y="115" text-anchor="middle" font-weight="700">PDF text</text>
+      <text x="303" y="135" text-anchor="middle" fill="#4C3C47">AI Builder / PDF action</text>
+
+      <!-- Node 3: AI Builder GPT -->
+      <rect class="node" x="416" y="70" width="170" height="80"/>
+      <text x="501" y="95" text-anchor="middle" class="meta">REASON</text>
+      <text x="501" y="115" text-anchor="middle" font-weight="700">Create text with GPT</text>
+      <text x="501" y="135" text-anchor="middle" fill="#4C3C47">AI Builder prompt</text>
+
+      <!-- Node 4: Excel mapping -->
+      <rect class="node" x="614" y="70" width="170" height="80"/>
+      <text x="699" y="95" text-anchor="middle" class="meta">MAP</text>
+      <text x="699" y="115" text-anchor="middle" font-weight="700">Parse JSON</text>
+      <text x="699" y="135" text-anchor="middle" fill="#4C3C47">Excel Online · Update row</text>
+
+      <!-- Node 5: Output -->
+      <rect class="node output" x="812" y="70" width="148" height="80"/>
+      <text x="886" y="95" text-anchor="middle" class="meta">OUTPUT</text>
+      <text x="886" y="115" text-anchor="middle" font-weight="700">Excel file</text>
+      <text x="886" y="135" text-anchor="middle" fill="#4C3C47">OneDrive / SharePoint</text>
+
+      <!-- Edges -->
+      <path class="edge" d="M190 110 L216 110"/>
+      <path class="edge" d="M388 110 L414 110"/>
+      <path class="edge" d="M586 110 L612 110"/>
+      <path class="edge" d="M784 110 L810 110"/>
+
+      <!-- Power Automate flow bar under nodes 2–5 -->
+      <rect class="node" x="218" y="180" width="742" height="30" style="stroke-dasharray:4 3;"/>
+      <text x="589" y="200" text-anchor="middle" class="meta">POWER AUTOMATE FLOW · CALLED BY THE AGENT</text>
+      <path class="edge" d="M303 180 L303 152"/>
+      <path class="edge" d="M501 180 L501 152"/>
+      <path class="edge" d="M699 180 L699 152"/>
+      <path class="edge" d="M886 180 L886 152"/>
+    </svg>
+
+    <div class="two-col" style="margin-top:1.4rem;">
+      <div>
+        <p><strong>Why this stack.</strong> A Copilot Studio agent gives us the chat UX. A Power Automate flow is the tool it calls. AI Builder's "Create text with GPT" is the fastest way to a reliable JSON extraction without custom code. Excel Online closes the loop with a real file.</p>
+      </div>
+      <div>
+        <p><strong>Two alternatives we rejected.</strong> A flow without an agent — works but unimpressive as a live demo. A declarative agent with document upload — fast to build, but it can't write into a template at precise cells. Our pick is the only path that's end-to-end.</p>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · draw this on the whiteboard too</strong>
+      Walk the arrows, one at a time, ten seconds each. Name each node with a verb: <em>trigger, extract, reason, map, output</em>. That vocabulary shows up again in the build steps.<br><br>
+      If they push on "why not just the AI Builder prompt alone?" — answer: because we need a <strong>file on disk</strong> at the end, not a chat answer. The mapping node is what turns this from a demo into a deliverable.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 5 · ROW 05 · REQUIRED INPUTS (case facts) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+      <span class="canvas-step-label">Required inputs</span>
+      <span class="canvas-step-pair">fill · then load</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">What we feed it — today, concretely</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="inputs" spellcheck="false" style="background:var(--card); border:1px solid var(--border); border-left:3px solid var(--salmon); border-radius:8px; padding:0.9rem 1.1rem; margin-bottom:1rem;"><strong>Hypothesis:</strong> one annual report PDF + the blank template + target year is enough. No pre-OCR, no splitting.
+        </div>
+        <p>Primary demo file: <strong>KleurRijker BV 2024.pdf</strong>. It shows 2024 and 2023 side-by-side, so one PDF gives us two template columns. The 2023 and 2025-concept PDFs sit in the folder as fallbacks.</p>
+        <div style="margin-top:1.2rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+          <span class="chip muted-bg">Dutch · text-based PDF</span>
+          <span class="chip muted-bg">RJ format</span>
+          <span class="chip muted-bg">2 years per file</span>
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <span class="mono-label">Template sheets</span>
+          <div class="big-number">5</div>
+          <p>W&amp;V · Prognose · Balans · Klanten · Leveranciers</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">Template rows</span>
+          <div class="big-number">~30</div>
+          <p>Per year column</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">Coverage target</span>
+          <div class="big-number">80–90%</div>
+          <p>Of fields auto-fillable</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">Wired live today</span>
+          <div class="big-number">6</div>
+          <p>Rows, to fit the time box</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · what's in / what's out</strong>
+      Explicitly not in scope today: the <em>Prognose</em> sheet (no source data in the PDF), and <em>Klanten/Leveranciers</em> (those come from audit files in UC6). Call it out so the room knows we're not hiding it — we're scoping.<br><br>
+      Pre-prep note: the template's W&amp;V and Balans sheets need to be <em>Excel tables</em> (Insert → Table) with a "Label" key column so the Excel Online "Update a row" action can find them. Done on Monday evening.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 6 · BUILD PLAN · 20-MINUTE LIVE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+      <span class="canvas-step-label">Build plan · 20 minutes, seven steps</span>
+      <span class="canvas-step-pair">hands on keyboard</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">What we build live</h2>
+
+    <div class="step-list">
+      <div class="step-row">
+        <div class="step-num">01</div>
+        <div class="step-body"><strong>Create the agent flow</strong>Copilot Studio → Tools → Add a tool → New agent flow. Trigger is <em>"When an agent calls the flow"</em> (prewired). Inputs: <em>PdfFile</em> (File), <em>Year</em> (Text). Final action is <em>"Respond to the agent"</em> with outputs <em>ResultFileUrl</em>, <em>Summary</em>. Keep it synchronous — under the 100-second limit.</div>
+        <div class="step-time">~3 min</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">02</div>
+        <div class="step-body"><strong>Extract PDF text</strong>AI Builder → <em>"Recognize text in an image or a PDF document"</em>. Our PDFs are text-based so the native extraction works; OCR is the fallback if we ever hit a scanned report.</div>
+        <div class="step-time">~3 min</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">03</div>
+        <div class="step-body"><strong>AI extraction prompt</strong>AI Builder → <em>"Run a prompt"</em> (formerly "Create text with GPT") → New custom prompt. Inputs: <em>annualReportText</em>, <em>targetYear</em>. Set output format: click the Output icon → JSON → Edit → paste a schema sample. Dry-run once inside the prompt designer.</div>
+        <div class="step-time">~6 min</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">04</div>
+        <div class="step-body"><strong>Use the structured output</strong>Because we set JSON in step 3, the prompt's fields are exposed as dynamic values downstream — no separate Parse JSON action needed. If we stayed on plain-text output, add Data Operation → Parse JSON here instead.</div>
+        <div class="step-time">~2 min</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">05</div>
+        <div class="step-body"><strong>Write to Excel</strong>Excel Online (Business) → Update a row. Table <em>tblWV</em>, key column "Label". <strong>Wire 6 rows live:</strong> Netto-omzet, Brutowinst, Personeelskosten, EBITDA, Totaal activa, Eigen vermogen. The rest is identical copy-paste — say so, don't do it.</div>
+        <div class="step-time">~4 min</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">06</div>
+        <div class="step-body"><strong>Return to the agent</strong>OneDrive → Create share link. Trigger response: <em>ResultFileUrl</em> + a one-line <em>Summary</em>.</div>
+        <div class="step-time">~1 min</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">07</div>
+        <div class="step-body"><strong>Wire it up in Copilot Studio</strong>Add a topic, trigger on "cijferopstelling" / "extract financials", pass file + year to the flow, render the returned link. Publish to test.</div>
+        <div class="step-time">~1 min</div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the 20-minute clock</strong>
+      Start a visible timer. Narrate what you're doing at each step in plain language, not Microsoft product-speak. If a step runs long, drop something from step 05 — that's the intended shock absorber.<br><br>
+      <strong>Pre-staged</strong>: OneDrive folder, template with tables, a signed-in environment, a known-good fallback flow called <code>UC3-Cijferopstelling-READY</code>. Doing any of that live would blow the time box.<br><br>
+      <strong>Docs to skim before the session:</strong><br>
+      &nbsp;· <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/flow-agent" target="_blank">Add an agent flow to an agent</a> — step 1<br>
+      &nbsp;· <a href="https://learn.microsoft.com/en-us/ai-builder/flow-text-recognition" target="_blank">Recognize text in an image or a PDF document</a> — step 2<br>
+      &nbsp;· <a href="https://learn.microsoft.com/en-us/ai-builder/use-a-custom-prompt-in-flow" target="_blank">Use your prompt in Power Automate</a> — step 3<br>
+      &nbsp;· <a href="https://github.com/MicrosoftDocs/ai-builder/blob/main/ai-builder-docs/change-prompt-output.md" target="_blank">Change prompt output format (JSON)</a> — step 3<br>
+      &nbsp;· <a href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/prompt-model-availability" target="_blank">Prompt model availability &amp; updates</a> — model choice (GPT-4.1 / Claude Sonnet 4)
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7 · ROW 06 · EXPECTED OUTPUT · THE EXTRACTION PROMPT -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+      <span class="canvas-step-label">Expected output &nbsp;·&nbsp; the extraction prompt</span>
+      <span class="canvas-step-pair">the core</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">The one prompt that does the thinking</h2>
+
+    <div class="hypothesis" contenteditable="true" data-hyp-key="output" spellcheck="false" style="background:var(--card); border:1px solid var(--border); border-left:3px solid var(--mint); border-radius:8px; padding:0.9rem 1.1rem; margin:0.8rem 0 1rem; font-size:0.95rem;"><strong>Our hypothesis:</strong> a single GPT-4.1 prompt (or Claude Sonnet 4 via the multi-model lineup), with the full PDF text and the target year, returns a structured JSON of the 30-odd fields — with null for missing, a <em>confidence</em> tag, and ambiguity <em>notes</em>.
+    </div>
+
+    <div class="demo-box">
+      <div class="demo-box-header">
+        <span class="demo-label">AI Builder · Create text with GPT</span>
+        <span class="demo-surface" style="margin:0;">paste into the prompt designer</span>
+      </div>
+      <div class="demo-box-body">
+        <div class="demo-files">
+          <span class="demo-file">KleurRijker BV 2024.pdf</span>
+          <span class="demo-file">Template cijferopstellingIM.xlsx</span>
+        </div>
+        <div class="demo-prompt">
+          <button class="copy-btn" data-target="uc3-extract">Copy</button>
+          <span class="p-tag">AI Builder · Custom GPT prompt</span>
+          <span class="prompt-text" id="uc3-extract">You are a financial analyst assistant extracting data from a Dutch annual report (jaarrekening, Dutch RJ / Richtlijnen Jaarverslaggeving format).
+
+INPUT
+- Full text of the annual report: {{annualReportText}}
+- Target reporting year: {{targetYear}}
+
+TASK
+Extract the financial figures for {{targetYear}} that match the line items below.
+All figures are in EUR. If the report shows amounts in thousands, convert to full
+euros. If a line item is not present in the report, return null — do NOT guess.
+
+OUTPUT
+Return ONLY valid JSON, no prose, using this exact schema:
+
+{
+  "year": &lt;number&gt;,
+  "sourceDocument": "&lt;filename or title found in the document&gt;",
+  "currency": "EUR",
+  "unitsInReport": "units" | "thousands",
+  "profitAndLoss": {
+    "nettoOmzet": &lt;number|null&gt;,                 // Net revenue
+    "kostprijsVanDeOmzet": &lt;number|null&gt;,        // Cost of goods sold
+    "brutowinst": &lt;number|null&gt;,                 // Gross profit
+    "personeelskosten": &lt;number|null&gt;,           // Personnel costs (lasten uit hoofde van personeelsbeloningen)
+    "lonenEnSalarissen": &lt;number|null&gt;,
+    "socialeLasten": &lt;number|null&gt;,
+    "pensioenlasten": &lt;number|null&gt;,
+    "afschrijvingen": &lt;number|null&gt;,             // Depreciation and amortisation
+    "huisvestingskosten": &lt;number|null&gt;,
+    "verkoopkosten": &lt;number|null&gt;,
+    "autokosten": &lt;number|null&gt;,
+    "kantoorkosten": &lt;number|null&gt;,
+    "algemeneKosten": &lt;number|null&gt;,
+    "overigeBedrijfskosten": &lt;number|null&gt;,
+    "ebitda": &lt;number|null&gt;,
+    "ebit": &lt;number|null&gt;,
+    "financieleBatenEnLasten": &lt;number|null&gt;,
+    "resultaatVoorBelastingen": &lt;number|null&gt;,
+    "belastingen": &lt;number|null&gt;,
+    "resultaatNaBelastingen": &lt;number|null&gt;
+  },
+  "balanceSheet": {
+    "materieleVasteActiva": &lt;number|null&gt;,
+    "immaterieleVasteActiva": &lt;number|null&gt;,
+    "financieleVasteActiva": &lt;number|null&gt;,
+    "voorraden": &lt;number|null&gt;,
+    "vorderingen": &lt;number|null&gt;,
+    "liquideMiddelen": &lt;number|null&gt;,
+    "totaalActiva": &lt;number|null&gt;,
+    "eigenVermogen": &lt;number|null&gt;,
+    "voorzieningen": &lt;number|null&gt;,
+    "langlopendeSchulden": &lt;number|null&gt;,
+    "kortlopendeSchulden": &lt;number|null&gt;,
+    "totaalPassiva": &lt;number|null&gt;
+  },
+  "notes": [
+    "&lt;short free-text note for anything ambiguous or worth flagging&gt;"
+  ],
+  "confidence": "high" | "medium" | "low"
+}
+
+RULES
+1. Dutch reports often show two years side-by-side. Extract only the {{targetYear}} column.
+2. Preserve sign conventions from the report (costs as positive numbers when shown that way).
+3. If a value is aggregated in the report (e.g., "Overige kosten" combines several
+   template line items), put the total in the closest matching field and add a
+   short entry to "notes".
+4. If the audit report, directors' report, or disclaimer section contradicts the
+   figures, trust the financial statements section.
+5. Set confidence = "low" if more than 3 fields are null or if the report structure
+   deviates significantly from Dutch RJ format.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the prompt is the product</strong>
+      The prompt — not the flow — is the reusable artifact here. Everything else is plumbing. Point at the three design choices the room should notice: (1) <em>return null, don't guess</em>, (2) <em>notes array</em> for ambiguity, (3) <em>confidence</em> tag for downstream review.<br><br>
+      If the room's finance people want to argue about which line items belong — great, that's the right conversation. The prompt is meant to be edited. Suggest: "we'll version this in a SharePoint list so your team owns it, not us."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 8 · TEST · RUN IT LIVE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+      <span class="canvas-step-label">Test phase · run, compare, discuss</span>
+      <span class="canvas-step-pair">12 min</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Does it actually work on your PDF?</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <p><strong>Run (≈4 min).</strong> Open the published agent in Teams. Upload KleurRijker BV 2024.pdf. Ask: "extract the financials for 2023." Narrate the flow steps as they execute. Wait 30–60 seconds. Click the returned share link — the template opens with values populated.</p>
+        <p style="margin-top:0.8rem;"><strong>Compare to UC1 (≈3 min).</strong> Pull up the IM review output from this morning side-by-side. Did both agree on netto-omzet and brutowinst? Where did they diverge? Which one flagged ambiguity better?</p>
+      </div>
+      <div>
+        <p><strong>Discuss (≈5 min).</strong></p>
+        <ul>
+          <li>What would you accept without human review?</li>
+          <li>Where are the gaps (forecast, klanten/leveranciers) and what's the right follow-up pattern for each?</li>
+          <li>How do we surface the <em>confidence</em> and <em>notes</em> fields in a review workflow?</li>
+          <li>Scale: 3 years × 30 rows — one GPT call per PDF or fan-out?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · let the stream be the show</strong>
+      Hit send, then stop talking. The flow has to run — don't narrate over the wait. If it takes more than 90 seconds, start the compare-to-UC1 conversation while it finishes; don't stare at the spinner.<br><br>
+      Expected divergences between UC1 and UC3: Claude tends to narrate uncertainty in prose; this pipeline puts it in the <code>notes</code> array and <code>confidence</code> field. Call out that this is a deliberate design choice — it's what makes the output reviewable at scale.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 9 · THE MOMENT (post-build pause) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Validated</span>
+    <h1>Twenty minutes of build.<br>Thirty lines of data.</h1>
+    <p style="max-width:40rem; margin:1rem auto 0; text-align:center;">
+      The hypothesis held — or it didn't, and we edit it before moving on. Either way, the pattern now lives inside your tenant, on your stack, writing to your template.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center; flex-wrap:wrap;">
+      <span class="chip mint">Output · confirmed</span>
+      <span class="chip muted-bg">or · edit the hypothesis together</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note · the payoff</strong>
+      Turn to Bram: "Is this the shape of the deliverable? What's missing from row 06 hypothesis?" If he edits — write the edit into the canvas. That <em>is</em> the session's takeaway.<br><br>
+      <strong>Fallback ladder — if the build broke before we got here.</strong> Don't hide a pivot; say "we're hitting X, let's switch to Y." Hard rule: no single step gets more than 2 minutes of troubleshooting.<br>
+      &nbsp;· <strong>1. Switch to the pre-built flow</strong> <code>UC3-Cijferopstelling-READY</code>, prepped Monday evening — run it and walk through node by node.<br>
+      &nbsp;· <strong>2. Drop Excel, keep extraction</strong> — if Excel Online auth fails, return the raw JSON in the agent response. Story still lands.<br>
+      &nbsp;· <strong>3. Whiteboard the architecture</strong> — if the flow editor misbehaves, walk the five-node diagram by hand with the extraction prompt as the centrepiece.<br>
+      &nbsp;· <strong>4. Play the screen recording</strong> — Israel records a 2-min capture on Monday evening as the ultimate safety net.<br>
+      &nbsp;· <strong>5. Turn it into a discussion</strong> — "what did we learn about building this in Copilot Studio vs. Claude?" Dev experience, governance, prompt portability. Genuinely valuable either way.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 11 · ROW 10 · QUALITY & REUSE SIGNALS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+      <span class="canvas-step-label">Quality &amp; reuse signals</span>
+      <span class="canvas-step-pair">fill · discuss</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">How would you know this worked on the next deal?</h2>
+
+    <div class="two-col" style="margin-top:1.2rem;">
+      <div>
+        <p style="margin-bottom:1rem;"><strong>Quality signals</strong> — what makes one run "good"?</p>
+        <ul>
+          <li>How many of the ~30 rows pass without a human edit?</li>
+          <li>Where does the prompt always need tweaking — which line items are genuinely ambiguous in Dutch RJ?</li>
+          <li>How do the <em>confidence</em> tag and <em>notes</em> array surface in your review workflow?</li>
+        </ul>
+      </div>
+      <div>
+        <p style="margin-bottom:1rem;"><strong>Reuse signals</strong> — does the pattern stick?</p>
+        <ul>
+          <li>Minutes saved per deal vs. typing it by hand.</li>
+          <li>Does the output plug into UC4 (valuation) without reformatting?</li>
+          <li>Is the prompt owned by M&amp;A, or by a central AI team? Who versions it?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the quiet slide</strong>
+      Don't steer. If Bram volunteers "this saves an analyst an afternoon per deal" — that goes on the canvas as a reuse signal. If he's cautious — "I'd want a human-review UI before I let it near a live IM" — that's a signal too, and it scopes the pilot.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 12 · ROWS 08 + 09 · OWNER + RELATED LEARNING -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="canvas-step-label">Owner &amp; status · Related learning</span>
+      <span class="canvas-step-pair">commit · bridge</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Who owns it, and what does it feed?</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <h3>Owner &amp; status</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="owner" spellcheck="false"><strong>Owner:</strong> Bram (Crowe M&amp;A) for the prompt and template. <strong>IT sponsor</strong> for environment, DLP, and AI Builder credits. <strong>Status:</strong> live prototype → pilot on next deal where annual reports land.</div>
+      </div>
+      <div class="validate-block">
+        <h3>Related learning</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="learning" spellcheck="false">Feeds <strong>UC4</strong> (waarderingsmodel — same extracted numbers power DCF + ValuePlan). The "agent → flow → AI Builder → file" pattern is the reusable spine for <strong>UC5</strong> (teaser generation) and <strong>UC6</strong> (audit-file normalizations).</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:0.5rem; margin-top:1.4rem; flex-wrap:wrap;">
+      <span class="chip salmon-bg">Up next · UC4 · Waarderingsmodel</span>
+      <span class="chip muted-bg">Pattern 3 · Structured extraction</span>
+      <span class="chip muted-bg">Reuses today's output</span>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the commit moment</strong>
+      Two asks before we break: (1) name the owner — Bram most likely — and the IT counterpart. (2) Name the next deal where we'd run this for real. A name on the canvas is the difference between "cool demo" and "pilot project."<br><br>
+      Bridge to UC4: "same canvas shape, and the numbers we just extracted are the inputs to the valuation model. Watch how rows carry over."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 13 · FILLED CANVAS · takeaway -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1rem;">
+      <span class="mono-label" style="color:var(--mint); margin-bottom:0.4rem;">End of UC3 · the artifact</span>
+      <h2 style="margin-bottom:0.3rem;">The canvas, filled</h2>
+      <p style="max-width:42rem; margin:0 auto; font-size:0.98rem;">A built prototype sits behind the output row. UC4 reuses today's numbers as its input.</p>
+    </div>
+
+    <div class="uca-card">
+      <div class="uca-grid">
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg><div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="who" spellcheck="false">M&amp;A analyst filling the cijferopstelling for the IM pack · reviewed by the deal lead</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="problem" spellcheck="false">Retyping 25–30 P&amp;L and balance sheet lines × 3 years from PDFs into a template — error-prone, slow, unloved work</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="when" spellcheck="false">Every new deal, as soon as the annual reports land · also before IC and before valuation</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg><div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="where" spellcheck="false">Copilot Studio agent → Power Automate flow → AI Builder (GPT-4.1, or Claude Sonnet 4 via the multi-model lineup) → Excel Online · all inside Crowe's M365 tenant</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg><div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="inputs" spellcheck="false">Annual report PDF + blank template + target year</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg><div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="output" spellcheck="false"><strong>Built live on KleurRijker 2024.</strong> Populated W&amp;V + Balans with confidence flags and ambiguity notes.</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg><div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="examples" spellcheck="false">The extraction prompt is the reusable piece · pattern extends to UC4, UC5, UC6</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="owner" spellcheck="false">Bram (M&amp;A) + IT sponsor · pilot on next deal</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg><div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="learning" spellcheck="false">→ UC4 (valuation) · → UC5 (teaser) · → UC6 (audit files)</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg><div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="quality" spellcheck="false">Rows passing without human edit · minutes saved per deal · review-workflow fit · prompt ownership</div></div></div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the exit</strong>
+      Hold the filled canvas for 30 seconds. Say: "second row of your use-case library, built in front of you — this time on your stack. UC4 reuses the output; UC5 and UC6 reuse the pattern." Hand over.
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <div class="nav-info"><span id="slide-num">01</span> / <span id="slide-total">13</span></div>
+  <div class="nav-dots" id="nav-dots"></div>
+  <div class="nav-help">← →  ·  N  speaker notes  ·  F  fullscreen</div>
+  <button class="reset-btn" id="reset-canvas" title="Clear all edits">Reset canvas</button>
+</div>
+
+<script>
+(function(){
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsWrap = document.getElementById('nav-dots');
+  const numEl = document.getElementById('slide-num');
+  const totalEl = document.getElementById('slide-total');
+  totalEl.textContent = String(slides.length).padStart(2,'0');
+
+
+  // ─── Canvas persistence (localStorage) ───
+  const STORAGE_PREFIX = 'tatoma-uc3-';
+  const editableEls = [...document.querySelectorAll('[data-canvas-key], [data-hyp-key]')];
+
+  function keyFor(el) {
+    if (el.dataset.canvasKey) return STORAGE_PREFIX + 'canvas-' + el.dataset.canvasKey;
+    if (el.dataset.hypKey) return STORAGE_PREFIX + 'hyp-' + el.dataset.hypKey;
+    return null;
+  }
+
+  // Restore on load
+  editableEls.forEach(el => {
+    const k = keyFor(el);
+    const saved = localStorage.getItem(k);
+    if (saved !== null) {
+      el.innerHTML = saved;
+      el.classList.add('edited');
+    }
+  });
+
+  // Save on input + sync siblings with same canvas-key
+  editableEls.forEach(el => {
+    el.addEventListener('input', () => {
+      const k = keyFor(el);
+      localStorage.setItem(k, el.innerHTML);
+      el.classList.add('edited');
+      // Sync other cells with same canvas-key (slide 1 ↔ last slide)
+      if (el.dataset.canvasKey) {
+        document.querySelectorAll(`[data-canvas-key="${el.dataset.canvasKey}"]`).forEach(twin => {
+          if (twin !== el) {
+            twin.innerHTML = el.innerHTML;
+            twin.classList.add('edited');
+          }
+        });
+      }
+    });
+    // Prevent Enter from creating <div> — use <br>
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.execCommand('insertLineBreak');
+      }
+    });
+  });
+
+  // Reset button
+  const resetBtn = document.getElementById('reset-canvas');
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('Clear all canvas edits? The slides will revert to the starting hypotheses.')) return;
+    editableEls.forEach(el => { localStorage.removeItem(keyFor(el)); });
+    location.reload();
+  });
+
+  slides.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='nav-dot';
+    b.setAttribute('aria-label','Slide '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    dotsWrap.appendChild(b);
+  });
+  const dots = [...dotsWrap.children];
+
+  let idx = 0;
+  let notesVisible = false;
+
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===idx));
+    dots.forEach((d,i)=>{
+      d.classList.toggle('active', i===idx);
+      d.classList.toggle('visited', i<idx);
+    });
+    numEl.textContent = String(idx+1).padStart(2,'0');
+  }
+  function go(n){ idx = Math.max(0, Math.min(slides.length-1, n)); render(); }
+
+  document.addEventListener('keydown', e=>{
+    // Don't hijack keys while the user is typing into an editable cell.
+    const t = e.target;
+    if (t && t.isContentEditable) {
+      if (e.key === 'Escape') { t.blur(); e.preventDefault(); }
+      return;
+    }
+    if (e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown') { e.preventDefault(); go(idx+1); }
+    else if (e.key==='ArrowLeft' || e.key==='PageUp') { e.preventDefault(); go(idx-1); }
+    else if (e.key==='Home') go(0);
+    else if (e.key==='End') go(slides.length-1);
+    else if (e.key==='n' || e.key==='N') {
+      notesVisible = !notesVisible;
+      document.querySelectorAll('.speaker-note').forEach(n=>n.classList.toggle('visible', notesVisible));
+    }
+    else if (e.key==='f' || e.key==='F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      navigator.clipboard.writeText(target.innerText).then(()=>{
+        btn.classList.add('copied');
+        const prev = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = prev; }, 1400);
+      });
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

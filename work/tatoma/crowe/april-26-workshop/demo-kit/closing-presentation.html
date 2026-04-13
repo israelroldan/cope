@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wrap-up & Next Steps — Tatoma × Crowe Foederer</title>
+
+<!-- Tatoma fonts -->
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<style>
+  :root {
+    --bg: #F6FAEB;
+    --fg: #1D021F;
+    --card: #FFFFFF;
+    --primary: #FF8E7D;
+    --secondary: #4F2035;
+    --muted: #A397A3;
+    --muted-fg: #4C3C47;
+    --dark-magenta: #1E001E;
+    --salmon: #FF8C7D;
+    --mint: #0EE17E;
+    --ms-blue: #4A7CDB;
+    --border: rgba(163,151,163,0.25);
+    --radius: 0.75rem;
+    --font-serif: "Canela", Georgia, "Times New Roman", serif;
+    --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .deck { position: relative; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3.5rem 5.5rem 5rem;
+    opacity: 0; transform: translateY(24px); pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(.25,.46,.45,.94),
+                transform 0.5s cubic-bezier(.25,.46,.45,.94);
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .slide.exit-up { opacity: 0; transform: translateY(-24px); }
+
+  .slide.section-divider { justify-content: center; align-items: center; text-align: center; }
+  .slide.section-divider h1 { font-size: clamp(3rem, 6vw, 5.5rem); }
+
+  h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; line-height: 1.15; }
+  h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
+  h2 { font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+  h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); margin-bottom: 0.6rem; }
+
+  p, li { font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.6; color: var(--muted-fg); }
+  strong { font-weight: 600; color: var(--fg); }
+
+  .mono-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.6rem; display: block;
+  }
+
+  .chip {
+    display: inline-block; padding: 0.25rem 0.8rem;
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    border-radius: 999px;
+    background: var(--dark-magenta); color: var(--salmon);
+  }
+  .chip.mint { background: rgba(14,225,126,0.12); color: #08924f; }
+  .chip.salmon-bg { background: rgba(255,140,125,0.15); color: #b84a3b; }
+  .chip.muted-bg { background: rgba(163,151,163,0.15); color: var(--muted-fg); }
+  .chip.ms-bg { background: rgba(74,124,219,0.14); color: #2d57a8; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.3rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,0,30,0.06); }
+  .card h3 { margin-bottom: 0.4rem; }
+  .card p { font-size: 0.92rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+  ul { list-style: none; padding: 0; }
+  ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+  ul li::before {
+    content: ""; position: absolute; left: 0; top: 0.6rem;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--salmon);
+  }
+
+  /* Recap list — six use cases in one tight grid */
+  .recap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; max-width: 56rem; }
+  .recap-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--secondary);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.1rem;
+  }
+  .recap-item.ms { border-left-color: var(--ms-blue); }
+  .recap-item.muted { border-left-color: var(--muted); }
+  .recap-item .uc-tag {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); margin-bottom: 0.25rem; display: block;
+  }
+  .recap-item h4 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 0.95rem; margin-bottom: 0.25rem;
+  }
+  .recap-item p { font-size: 0.85rem; margin: 0; line-height: 1.45; }
+
+  /* Compound workflow */
+  .compound-flow {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.6rem; flex-wrap: wrap; margin: 1.5rem 0;
+  }
+  .compound-step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.7rem 1.1rem;
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.03em; color: var(--fg);
+    position: relative;
+  }
+  .compound-step .order {
+    position: absolute; top: -8px; left: -8px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--salmon); color: var(--fg);
+    font-size: 0.65rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+  }
+  .compound-arrow { color: var(--muted); font-size: 1.1rem; }
+
+  /* Timeline (weeks) */
+  .weeks-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; max-width: 54rem; }
+  .week-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-top: 3px solid var(--ms-blue);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+  }
+  .week-card .week-num {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--ms-blue); display: block; margin-bottom: 0.4rem;
+  }
+  .week-card h4 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 0.95rem; margin-bottom: 0.3rem;
+  }
+  .week-card p { font-size: 0.82rem; margin: 0; line-height: 1.45; color: var(--muted-fg); }
+
+  /* Pullquote */
+  .pullquote {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: clamp(1.4rem, 2.4vw, 2rem); line-height: 1.35;
+    color: var(--fg); max-width: 46rem;
+    border-left: 3px solid var(--salmon);
+    padding: 0.4rem 0 0.4rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  /* Priority question — the hero slide */
+  .big-question {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: clamp(2rem, 3.8vw, 3.4rem); line-height: 1.2;
+    max-width: 44rem; text-align: center; margin: 0 auto;
+    color: var(--fg);
+  }
+  .big-question .highlight {
+    background: linear-gradient(180deg, transparent 60%, rgba(255,140,125,0.35) 60%);
+    padding: 0 0.15em;
+  }
+
+  /* Split responsibilities */
+  .split-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; max-width: 54rem; }
+  .split-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem 1.3rem;
+  }
+  .split-card.tatoma { border-top: 3px solid var(--salmon); }
+  .split-card.crowe { border-top: 3px solid var(--ms-blue); }
+  .split-card.together { border-top: 3px solid var(--mint); }
+  .split-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .split-card ul li { font-size: 0.85rem; margin-bottom: 0.4rem; padding-left: 1.2rem; }
+  .split-card.crowe ul li::before { background: var(--ms-blue); }
+  .split-card.together ul li::before { background: var(--mint); }
+
+  /* Speaker notes */
+  .speaker-note {
+    display: none; margin-top: 1.2rem; padding: 1rem 1.2rem;
+    background: rgba(30,0,30,0.04); border-radius: var(--radius);
+    border-left: 3px solid var(--salmon);
+    font-size: 0.85rem; color: var(--muted-fg); line-height: 1.55;
+  }
+  .speaker-note.visible { display: block; }
+  .speaker-note strong {
+    font-size: 0.7rem; font-family: var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+
+  /* Fixed elements */
+  .logo-area {
+    position: fixed; top: 1.2rem; left: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem; z-index: 100;
+  }
+  .logo-area img { width: 24px; height: 24px; border-radius: 5px; }
+  .logo-area span {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+  }
+
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.5rem; z-index: 100;
+    background: linear-gradient(transparent, rgba(246,250,235,0.95));
+  }
+  .nav-dots { display: flex; gap: 5px; }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); opacity: 0.3;
+    cursor: pointer; transition: all 0.25s ease; border: none;
+  }
+  .nav-dot.active { opacity: 1; background: var(--salmon); transform: scale(1.3); }
+  .nav-dot.visited { opacity: 0.5; }
+  .nav-info {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .nav-help {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); opacity: 0.45;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2rem 1.5rem 4rem; }
+    .two-col, .grid-2, .grid-3, .recap-grid, .split-grid, .weeks-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <img src="https://hub.tatoma.eu/tatoma-icon.png" alt="Tatoma" onerror="this.style.display='none'">
+  <span>Tatoma × Crowe Foederer · Wrap-up</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 0 · TITLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider active">
+    <span class="mono-label">16:50 – 17:00 · 10 minutes</span>
+    <h1>Where we go<br>from here</h1>
+    <p style="max-width:34rem; margin:0 auto; text-align:center; font-size:1.1rem;">
+      Four hours in. Six use cases explored. One pilot to pick.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center;">
+      <span class="chip salmon-bg">Recap</span>
+      <span class="chip">Priority</span>
+      <span class="chip ms-bg">Pilot</span>
+      <span class="chip mint">Next</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Energy is low-ish — they're tired but satisfied. Don't relive the afternoon. Pivot fast. By the end of 10 minutes you want: (1) a priority pick, (2) a yes to the pilot, (3) a date on the calendar.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 1 · RECAP - SIX USE CASES -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">3 minutes · one sentence each</span>
+    <h2>What we did today</h2>
+
+    <div class="recap-grid" style="margin-top:1rem;">
+      <div class="recap-item">
+        <span class="uc-tag">UC1 · Claude</span>
+        <h4>IM Review</h4>
+        <p>33-page Dutch IM analyzed from a buyer's perspective in under two minutes. Real reasoning.</p>
+      </div>
+      <div class="recap-item">
+        <span class="uc-tag">UC2 · Claude</span>
+        <h4>NBO vs. Term Sheet</h4>
+        <p>EUR 150K earn-out gap, management fee mismatch, working capital language — all surfaced.</p>
+      </div>
+      <div class="recap-item ms">
+        <span class="uc-tag">UC3 · Copilot Studio</span>
+        <h4>Cijferopstelling</h4>
+        <p>Built live. Not perfect — but pattern proven. We know what production-ready takes.</p>
+      </div>
+      <div class="recap-item ms">
+        <span class="uc-tag">UC4 · Copilot Studio</span>
+        <h4>Waarderingsmodel</h4>
+        <p>DCF is automatable soon. Full ValuePlan is a longer horizon. Shape of the work is clear.</p>
+      </div>
+      <div class="recap-item ms">
+        <span class="uc-tag">UC5 · Copilot Studio</span>
+        <h4>Teaser</h4>
+        <p>Quick-win candidate — 3 slides, clean template, IM as source. Low effort, visible impact.</p>
+      </div>
+      <div class="recap-item muted">
+        <span class="uc-tag">UC6 · Architecture</span>
+        <h4>Audit files</h4>
+        <p>88 MB XML, 99K GL lines. Preprocessing pipeline sketched. Real engineering, not no-code.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1.3rem; max-width:46rem; font-style:italic; color:var(--muted);">"We're not going to relive the afternoon — you lived it. One sentence per use case, then the headline."</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 2 · THE HEADLINE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">The headline</span>
+    <h1 style="font-size: clamp(2.2rem, 4.2vw, 3.8rem); max-width:38rem;">
+      AI can meaningfully<br>accelerate your<br>M&amp;A workflows —<br><span style="color:var(--salmon);">today, not someday.</span>
+    </h1>
+    <p style="max-width:34rem; margin:1.5rem auto 0; text-align:center;">
+      Some of it is ready to ship. Some of it needs real engineering. None of it is science fiction anymore.
+    </p>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Say this slowly. Make eye contact. Then pause. This is the frame they carry back to the firm.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 3 · THE QUESTION -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">3 minutes · to answer out loud</span>
+    <div class="big-question">
+      If you could have <span class="highlight">one of these six use cases</span> working in production next month — actually used by your team on a live deal — <span class="highlight">which one is it?</span>
+    </div>
+    <p style="max-width:32rem; margin:2rem auto 0; text-align:center; color:var(--muted-fg);">
+      Not a prototype. Not a demo. In production. Pick one.
+    </p>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Don't let them hedge. "UC3 or UC5" — push: pick one, we'll revisit the other next. Write it on the whiteboard. Then ask for #2 and #3 — you need a pipeline, not just a pilot. Prompts if stuck: "Which saves the most hours per deal?" "Which is most visible to clients?" "Which is the easiest internal win?"
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4 · THE PILOT PROPOSAL -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">Our proposal</span>
+    <h2>A 4-week pilot on your #1</h2>
+    <p style="max-width:42rem; margin-bottom:1.3rem;">Two weeks to a working POC. Two more to harden it into something your team actually uses on the next deal that comes in.</p>
+
+    <div class="weeks-grid" style="margin-bottom:1.5rem;">
+      <div class="week-card">
+        <span class="week-num">Week 1</span>
+        <h4>Environment ready</h4>
+        <p>First working flow end-to-end. Rough, but it runs.</p>
+      </div>
+      <div class="week-card">
+        <span class="week-num">Week 2</span>
+        <h4>POC on real data</h4>
+        <p>Run it on one real deal. Assess quality honestly.</p>
+      </div>
+      <div class="week-card">
+        <span class="week-num">Week 3</span>
+        <h4>Harden</h4>
+        <p>Error handling, edge cases, prompt tuning, UI polish.</p>
+      </div>
+      <div class="week-card">
+        <span class="week-num">Week 4</span>
+        <h4>MVP review</h4>
+        <p>Decide: ship to the team, extend scope, or pivot.</p>
+      </div>
+    </div>
+
+    <p style="max-width:44rem; font-style:italic; color:var(--muted);">Weekly 45-minute sync. Open Teams channel in between. No disappearing into a black box.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 5 · THE SPLIT -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">How we work together</span>
+    <h2>Who does what</h2>
+
+    <div class="split-grid" style="margin-top:1rem;">
+      <div class="split-card tatoma">
+        <span class="chip salmon-bg" style="margin-bottom:0.5rem;">Tatoma builds</span>
+        <h3>The technical work</h3>
+        <ul>
+          <li>Copilot Studio flow, agent, custom AI Builder models</li>
+          <li>SharePoint / template structure if needed</li>
+          <li>One-page runbook anyone on your team can use</li>
+          <li>Weekly check-ins, transparent progress</li>
+        </ul>
+      </div>
+      <div class="split-card crowe">
+        <span class="chip ms-bg" style="margin-bottom:0.5rem;">Crowe tests</span>
+        <h3>The real-world feedback</h3>
+        <ul>
+          <li>2–3 real deals as test material (NDA / anonymized as you prefer)</li>
+          <li>Bram &amp; Marieke run the flow on actual work</li>
+          <li>Honest feedback — "this is useless" in week 2, not week 4</li>
+          <li>Flag what breaks, what underperforms</li>
+        </ul>
+      </div>
+      <div class="split-card together">
+        <span class="chip mint" style="margin-bottom:0.5rem;">Together we iterate</span>
+        <h3>The loop</h3>
+        <ul>
+          <li>Weekly 45-min sync — what broke, what worked, what's next</li>
+          <li>Open Slack / Teams channel for in-between questions</li>
+          <li>4-week review decides the next move</li>
+          <li>Proposal with scope &amp; pricing tomorrow</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "Let's put the 4-week review on the calendar right now. Tuesday May 12 or Wednesday May 13 — which works?" Get the commitment before energy drops. If neither works, don't leave without an alternative.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 6 · THE COMPOUND VISION -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">Where this actually goes</span>
+    <h2>The use cases aren't separate</h2>
+    <p style="max-width:44rem; margin-bottom:1rem;">Today we looked at them one at a time. They're not a menu. They're a pipeline — each one feeds the next.</p>
+
+    <div class="compound-flow">
+      <div class="compound-step"><span class="order">1</span>Audit files</div>
+      <span class="compound-arrow">→</span>
+      <div class="compound-step"><span class="order">2</span>Cijferopstelling</div>
+      <span class="compound-arrow">→</span>
+      <div class="compound-step"><span class="order">3</span>Valuation</div>
+      <span class="compound-arrow">→</span>
+      <div class="compound-step"><span class="order">4</span>IM</div>
+      <span class="compound-arrow">→</span>
+      <div class="compound-step"><span class="order">5</span>Teaser</div>
+    </div>
+
+    <p class="pullquote" style="margin-top:1.5rem;">
+      Do them all, and a deal that takes your team three weeks of grunt work to prepare becomes three days of expert review on AI-generated drafts.
+    </p>
+
+    <p style="max-width:44rem; margin-top:1rem;"><strong>That's the actual prize.</strong> Today was the first brick.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7 · THANK YOU / CLOSE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">17:00 · that's a wrap</span>
+    <h1>Thank you.</h1>
+    <p style="max-width:38rem; margin:0 auto 1.5rem; text-align:center; font-size:1.15rem;">
+      Real data. Real deals. Four hours of real engagement. That's why today was useful instead of generic.
+    </p>
+    <p style="max-width:36rem; margin:0 auto; text-align:center; font-family: var(--font-serif); font-weight:100; font-size: clamp(1.4rem, 2.4vw, 2rem); color:var(--fg);">
+      We're excited to build this with you.<br>
+      <span style="color:var(--salmon);">Let's go make something real.</span>
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:2rem; justify-content:center;">
+      <span class="chip mint">Pilot · week of April 20</span>
+      <span class="chip ms-bg">Review · May 12–13</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Shake hands, close laptops, don't linger. End on energy, not logistics. If you have to send anything by email, do it from the train on the way home.
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <div class="nav-dots" id="navDots"></div>
+  <div class="nav-info" id="navInfo">1 / 8</div>
+  <div class="nav-help">← → &nbsp;·&nbsp; N = notes</div>
+</div>
+
+<script>
+(function() {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+
+  function goTo(n) {
+    if (n < 0 || n >= slides.length) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit-up');
+    const old = current;
+    current = n;
+    slides[current].classList.add('active');
+    setTimeout(() => slides[old].classList.remove('exit-up'), 550);
+    updateNav();
+  }
+
+  function updateNav() {
+    document.getElementById('navInfo').textContent = `${current + 1} / ${slides.length}`;
+    document.querySelectorAll('.nav-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+      d.classList.toggle('visited', i < current);
+    });
+  }
+
+  const dotsEl = document.getElementById('navDots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
+    else if (e.key === 'n' || e.key === 'N') {
+      const note = slides[current].querySelector('.speaker-note');
+      if (note) note.classList.toggle('visible');
+    }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const d = tx - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 60) d > 0 ? goTo(current + 1) : goTo(current - 1);
+  });
+})();
+</script>
+
+</body>
+</html>

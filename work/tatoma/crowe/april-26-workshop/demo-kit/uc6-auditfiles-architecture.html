@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC6 · Auditfiles Architecture — Tatoma × Crowe Foederer</title>
+
+<!-- Tatoma fonts -->
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<style>
+  :root {
+    --bg: #F6FAEB;
+    --fg: #1D021F;
+    --card: #FFFFFF;
+    --primary: #FF8E7D;
+    --secondary: #4F2035;
+    --muted: #A397A3;
+    --muted-fg: #4C3C47;
+    --dark-magenta: #1E001E;
+    --salmon: #FF8C7D;
+    --mint: #0EE17E;
+    --border: rgba(163,151,163,0.25);
+    --radius: 0.75rem;
+    --font-serif: "Canela", Georgia, "Times New Roman", serif;
+    --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Slide engine ── */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3.5rem 5.5rem 5rem;
+    opacity: 0; transform: translateY(24px); pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(.25,.46,.45,.94),
+                transform 0.5s cubic-bezier(.25,.46,.45,.94);
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .slide.exit-up { opacity: 0; transform: translateY(-24px); }
+
+  .slide.section-divider {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .slide.section-divider h1 { font-size: clamp(3rem, 6vw, 5.5rem); }
+
+  /* ── Typography ── */
+  h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; line-height: 1.15; }
+  h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
+  h2 { font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+  h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); margin-bottom: 0.6rem; }
+
+  p, li { font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.6; color: var(--muted-fg); }
+  strong { font-weight: 600; color: var(--fg); }
+
+  .mono-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.6rem; display: block;
+  }
+
+  .chip {
+    display: inline-block; padding: 0.25rem 0.8rem;
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    border-radius: 999px;
+    background: var(--dark-magenta); color: var(--salmon);
+  }
+  .chip.mint { background: rgba(14,225,126,0.12); color: #08924f; }
+  .chip.salmon-bg { background: rgba(255,140,125,0.15); color: #b84a3b; }
+  .chip.muted-bg { background: rgba(163,151,163,0.15); color: var(--muted-fg); }
+  .chip.purple-bg { background: rgba(79,32,53,0.15); color: var(--secondary); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.6rem 1.8rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,0,30,0.06); }
+  .card h3 { margin-bottom: 0.4rem; }
+  .card p, .card li { font-size: 0.92rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+  /* ── Lists ── */
+  ul { list-style: none; padding: 0; }
+  ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+  ul li::before {
+    content: ""; position: absolute; left: 0; top: 0.6rem;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--salmon);
+  }
+
+  /* ── Big numbers ── */
+  .big-number {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: 3.2rem; line-height: 1; color: var(--fg); margin-bottom: 0.2rem;
+  }
+
+  /* ── Demo box ── */
+  .demo-box {
+    background: var(--card);
+    border: 2px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-top: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(255,140,125,0.1);
+  }
+  .demo-box-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255,140,125,0.06);
+    border-bottom: 1px solid rgba(255,140,125,0.15);
+  }
+  .demo-box-header .demo-label {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--salmon);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .demo-box-header .demo-label::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--salmon); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .demo-box-body { padding: 1rem 1.2rem; }
+  .demo-box-body .demo-files {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+  }
+  .demo-file {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.7rem; border-radius: 6px;
+    background: rgba(30,0,30,0.04); font-size: 0.78rem; color: var(--muted-fg);
+    font-family: var(--font-mono); letter-spacing: 0.02em;
+  }
+  .demo-file::before { content: "📄"; font-size: 0.7rem; }
+
+  .demo-prompt {
+    position: relative;
+    background: var(--fg); color: rgba(246,250,235,0.92);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem 1rem;
+    font-size: 0.78rem; line-height: 1.6;
+    font-family: var(--font-mono); letter-spacing: 0.01em;
+    max-height: 13rem; overflow-y: auto;
+  }
+  .demo-prompt::-webkit-scrollbar { width: 6px; }
+  .demo-prompt::-webkit-scrollbar-thumb { background: rgba(246,250,235,0.2); border-radius: 3px; }
+  .demo-prompt .p-tag {
+    display: block;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: rgba(246,250,235,0.4);
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(246,250,235,0.1);
+    padding-right: 3.5rem;
+  }
+  .demo-prompt .prompt-text {
+    display: block;
+    white-space: pre-wrap;
+  }
+
+  .copy-btn {
+    position: absolute; top: 0.55rem; right: 0.55rem;
+    background: rgba(255,140,125,0.22); border: none; border-radius: 6px;
+    padding: 0.35rem 0.7rem; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--salmon); transition: background 0.2s;
+    z-index: 2;
+  }
+  .copy-btn:hover { background: rgba(255,140,125,0.4); }
+  .copy-btn.copied { background: rgba(14,225,126,0.3); color: #0EE17E; }
+
+  .demo-surface {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    margin-top: 0.6rem; display: block;
+  }
+
+  /* ── Use-Case Asset canvas ── */
+  .uca-slide { padding-top: 2.4rem; padding-bottom: 4.5rem; justify-content: flex-start; }
+  .uca-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.8rem 2rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    max-width: 68rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .uca-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 2.5rem;
+  }
+  .uca-row {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.35rem 0;
+  }
+  .uca-icon {
+    width: 1.7rem; height: 1.7rem;
+    color: var(--salmon);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .uca-icon.mint-icon { color: var(--mint); }
+  .uca-label {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--fg);
+    line-height: 1.25;
+  }
+  .uca-hint {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--muted-fg);
+    line-height: 1.45;
+    margin-top: 0.15rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 900px) {
+    .uca-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Canvas-step header (anchors each slide to a canvas row) ── */
+  .canvas-step {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .canvas-step-num {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--salmon);
+    background: rgba(255,140,125,0.1); border-radius: 4px;
+    padding: 0.3rem 0.55rem;
+  }
+  .canvas-step-icon { width: 1.4rem; height: 1.4rem; color: var(--salmon); flex-shrink: 0; }
+  .canvas-step-icon.mint-icon { color: var(--mint); }
+  .canvas-step-label {
+    font-family: var(--font-sans); font-size: 1rem; font-weight: 500;
+    color: var(--fg);
+  }
+  .canvas-step-pair {
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── Validate block (hypothesis + questions per row) ── */
+  .validate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .validate-block { }
+  .validate-block h3 {
+    font-family: var(--font-sans); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.5rem;
+  }
+  .validate-block .hypothesis {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--salmon);
+    border-radius: 8px; padding: 0.9rem 1.1rem;
+    margin-bottom: 0.9rem; font-size: 0.95rem;
+  }
+  .validate-block ul.questions { margin-top: 0.3rem; }
+  .validate-block ul.questions li {
+    font-size: 0.9rem; color: var(--muted-fg);
+    padding-left: 1.1rem; margin-bottom: 0.35rem;
+  }
+  .validate-block ul.questions li::before {
+    width: 4px; height: 4px; top: 0.55rem; background: var(--muted);
+  }
+
+  /* ── Mini-canvas row for slide headers ── */
+  .mini-canvas-nav {
+    display: flex; gap: 0.35rem; justify-content: center;
+    margin-top: 0.8rem; flex-wrap: wrap;
+  }
+  .mini-canvas-dot {
+    width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: rgba(163,151,163,0.15); color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  }
+  .mini-canvas-dot.done { background: rgba(255,140,125,0.2); color: var(--salmon); }
+  .mini-canvas-dot.active { background: var(--salmon); color: #fff; transform: scale(1.15); }
+  .mini-canvas-dot.mint-done { background: rgba(14,225,126,0.2); color: #08924f; }
+
+  /* ── Speaker notes ── */
+
+  /* ─── Editable canvas cells ─────────────────────────── */
+  [contenteditable="true"] { outline: none; transition: background 0.15s ease, box-shadow 0.15s ease; cursor: text; border-radius: 4px; }
+  .uca-hint[contenteditable="true"] { padding: 0.15rem 0.35rem; margin: -0.15rem -0.35rem; }
+  .uca-hint[contenteditable="true"]:hover { background: rgba(255,140,125,0.06); }
+  .uca-hint[contenteditable="true"]:focus { background: rgba(255,140,125,0.12); box-shadow: inset 0 -1px 0 var(--salmon); }
+  .hypothesis[contenteditable="true"]:hover { background: rgba(255,140,125,0.04); }
+  .hypothesis[contenteditable="true"]:focus { box-shadow: 0 0 0 2px rgba(255,140,125,0.3); }
+  .uca-hint.edited, .hypothesis.edited { position: relative; }
+  .uca-hint.edited::before { content: ""; position: absolute; left: -0.6rem; top: 0.45rem; width: 4px; height: 4px; border-radius: 50%; background: var(--mint); }
+  .reset-btn { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; transition: all 0.15s ease; }
+  .reset-btn:hover { color: var(--salmon); border-color: var(--salmon); }
+
+  .speaker-note {
+    display: none; margin-top: 1.2rem; padding: 1rem 1.2rem;
+    background: rgba(30,0,30,0.04); border-radius: var(--radius);
+    border-left: 3px solid var(--salmon);
+    font-size: 0.85rem; color: var(--muted-fg); line-height: 1.55;
+  }
+  .speaker-note.visible { display: block; }
+  .speaker-note strong {
+    font-size: 0.7rem; font-family: var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+
+  /* ── Fixed elements ── */
+  .logo-area {
+    position: fixed; top: 1.2rem; left: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem; z-index: 100;
+  }
+  .logo-area img { width: 24px; height: 24px; border-radius: 5px; }
+  .logo-area span {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+  }
+
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.5rem; z-index: 100;
+    background: linear-gradient(transparent, rgba(246,250,235,0.95));
+  }
+  .nav-dots { display: flex; gap: 5px; }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); opacity: 0.3;
+    cursor: pointer; transition: all 0.25s ease; border: none;
+  }
+  .nav-dot.active { opacity: 1; background: var(--salmon); transform: scale(1.3); }
+  .nav-dot.visited { opacity: 0.5; }
+  .nav-info {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .nav-help {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); opacity: 0.45;
+  }
+
+  /* ── Architecture-specific bits ── */
+  .arch-table {
+    width: 100%; border-collapse: collapse; margin-top: 0.8rem;
+    font-size: 0.88rem;
+  }
+  .arch-table th, .arch-table td {
+    text-align: left; padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  .arch-table th {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .arch-table td strong { color: var(--fg); }
+  .arch-table tr.pick td { background: rgba(14,225,126,0.06); }
+  .arch-table tr.pick td:first-child { border-left: 3px solid var(--mint); }
+
+  .pipeline-svg {
+    width: 100%; height: auto; max-height: 22rem;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem;
+  }
+  .pipeline-svg text { font-family: var(--font-mono); font-size: 11px; fill: var(--fg); }
+  .pipeline-svg text.meta { fill: var(--muted); font-size: 9px; letter-spacing: 0.08em; }
+  .pipeline-svg rect.node { fill: var(--card); stroke: var(--salmon); stroke-width: 1.4; rx: 8; }
+  .pipeline-svg rect.input { fill: rgba(255,140,125,0.08); }
+  .pipeline-svg rect.output { fill: rgba(14,225,126,0.08); stroke: var(--mint); }
+  .pipeline-svg path.edge { fill: none; stroke: var(--muted); stroke-width: 1.2; marker-end: url(#arrow); }
+
+  .filter-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0.9rem; margin-top: 0.8rem;
+  }
+  .filter-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--salmon);
+    border-radius: 8px; padding: 0.9rem 1.1rem;
+  }
+  .filter-card .filter-name {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; color: var(--salmon);
+    margin-bottom: 0.35rem; display: block;
+  }
+  .filter-card p { font-size: 0.82rem; line-height: 1.45; }
+
+  .timeline-row {
+    display: grid; grid-template-columns: 7rem 1fr 6rem;
+    gap: 1rem; padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .timeline-row:last-child { border-bottom: none; }
+  .timeline-row .phase {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--salmon); padding-top: 0.1rem;
+  }
+  .timeline-row .scope { font-size: 0.88rem; color: var(--muted-fg); }
+  .timeline-row .scope strong { color: var(--fg); }
+  .timeline-row .effort {
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted-fg);
+    text-align: right; padding-top: 0.1rem;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2rem 1.5rem 4rem; }
+    .two-col, .grid-2, .grid-4, .filter-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <img src="https://hub.tatoma.eu/tatoma-icon.png" alt="Tatoma" onerror="this.style.display='none'">
+  <span>Tatoma × Crowe Foederer · UC6</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 0 · TITLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider active">
+    <span class="mono-label">Architecture discussion · 20 minutes</span>
+    <h1>UC6 · Auditfiles</h1>
+    <p style="max-width:38rem; margin:0 auto; text-align:center; font-size:1.1rem;">
+      Four XAF files too large for any AI to read directly. What does the pipeline around them need to look like — in Crowe's Microsoft stack?
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center; flex-wrap:wrap;">
+      <span class="chip salmon-bg">Pattern · preprocess → filter → agent</span>
+      <span class="chip muted-bg">Project Faraday · 4 years of XAF</span>
+      <span class="chip purple-bg">Azure · Copilot Studio</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note · framing</strong>
+      This is the most technical use case and the one with the biggest long-term payoff — XAF 3.2 is a Dutch standard, so whatever we build here works for any Exact Online, AFAS, or Twinfield client afterwards.<br><br>
+      Twenty minutes, three parts: five on the challenge, ten on the pipeline, five on where it lives at Crowe. Keep row references out of the on-screen text — they only exist in these notes.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 1 · CANVAS INTRO -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1.2rem;">
+      <span class="mono-label" style="color:var(--salmon); margin-bottom:0.4rem;">Use-Case Asset · starting hypotheses</span>
+      <h2 style="margin-bottom:0.3rem;">Auditfiles, on one page</h2>
+      <p style="max-width:44rem; margin:0 auto; font-size:0.98rem;">Same canvas shape, different use case. The grey text is our starting guess — push back on any of it. What leaves the room is this card, edited.</p>
+    </div>
+
+    <div class="uca-card">
+      <div class="uca-grid">
+        <!-- 1 · Who it's for -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>
+          <div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="who" spellcheck="false">Crowe M&amp;A due-diligence team · audit partner on sign-off · Technology team as pipeline owner</div></div>
+        </div>
+        <!-- 2 · Problem -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+          <div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="problem" spellcheck="false">88 MB XAF files and ~99K GL lines per year — no model can swallow them raw, and auditors skim-read them manually</div></div>
+        </div>
+        <!-- 3 · When -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="when" spellcheck="false">Every M&amp;A engagement where audit files are available · early DD, before the numbers round</div></div>
+        </div>
+        <!-- 4 · Where -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg>
+          <div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="where" spellcheck="false">Azure (SharePoint trigger · Function · Blob) + Copilot Studio agent in Crowe's M365 tenant</div></div>
+        </div>
+        <!-- 5 · Inputs -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+          <div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="inputs" spellcheck="false">4× XAF 3.2 files · Crowe normalization checklist · GL code map (management fee, related-party, one-off)</div></div>
+        </div>
+        <!-- 6 · Output -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+          <div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="output" spellcheck="false">Word memo + Excel working paper · flagged lines, normalization candidates, YoY trend table — in auditor format</div></div>
+        </div>
+        <!-- 7 · Examples -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+          <div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="examples" spellcheck="false">Six named filters · manual entries · threshold transactions · period 13 · YoY balances · flagged GL codes</div></div>
+        </div>
+        <!-- 8 · Owner -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="owner" spellcheck="false">Start: Tatoma managed service · migrate: Crowe Technology · MVP 6–8 weeks</div></div>
+        </div>
+        <!-- 9 · Learning -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg>
+          <div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="learning" spellcheck="false">XAF 3.2 is a Dutch standard — same pipeline works for any Exact / AFAS / Twinfield client</div></div>
+        </div>
+        <!-- 10 · Quality -->
+        <div class="uca-row">
+          <svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+          <div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="quality" spellcheck="false">Flag-to-accept ratio · auditor hours saved per engagement · # clients reusing the pipeline</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · this is the shape, not the story</strong>
+      Don't read it out. Skim it. "Grey text is our guess — the aim is to leave the room with a version that reflects how Crowe would actually run this." The Expected-output row is the one the architecture discussion is really servicing; the Owner row is where the pilot commitment lands.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 2 · THE SCALE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+      <span class="canvas-step-label">The files on the table</span>
+      <span class="canvas-step-pair">the challenge</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Four years. Four files. One refusal to fit.</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <p>KleurRijker's Exact Online export produces one XAF 3.2 file per fiscal year, 2022–2025. Transaction volume has grown <strong>~50%</strong> in four years.</p>
+        <div style="margin-top:1rem;">
+          <table class="arch-table" style="font-size:0.82rem;">
+            <thead><tr><th>Year</th><th>Size</th><th>Transactions</th><th>GL lines</th></tr></thead>
+            <tbody>
+              <tr><td>2022</td><td>63 MB</td><td>13,383</td><td>66,730</td></tr>
+              <tr><td>2023</td><td>76 MB</td><td>17,202</td><td>83,919</td></tr>
+              <tr><td>2024</td><td>86 MB</td><td>19,243</td><td>95,509</td></tr>
+              <tr><td>2025</td><td>88 MB</td><td>20,077</td><td>98,694</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <span class="mono-label">Largest file</span>
+          <div class="big-number">88MB</div>
+          <p>XML · XAF 3.2 standard</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">GL lines · 2025</span>
+          <div class="big-number">99K</div>
+          <p>Plus ~20K subledger lines</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">Tokens · one year</span>
+          <div class="big-number">800K+</div>
+          <p>Raw XML, parsed</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">Customers &amp; suppliers</span>
+          <div class="big-number">16.8K</div>
+          <p>Per year · ballpark</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · ground the scale</strong>
+      Put the numbers on screen and pause. The point lands on its own. "99 thousand general-ledger lines for a single year — nobody reads all of that by hand, and no AI can either."<br><br>
+      If asked about totals across all four years: roughly 3.4 million XML lines. The pipeline collapses that to the few hundred rows auditors actually want to look at.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 3 · WHY DIRECT UPLOAD FAILS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+      <span class="canvas-step-label">Why you can't just upload it</span>
+      <span class="canvas-step-pair">the challenge</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Not a Claude limit. Not a Copilot limit. A physics limit.</h2>
+
+    <div class="grid-2" style="margin-top:1rem;">
+      <div class="card">
+        <span class="chip salmon-bg">Context window</span>
+        <h3 style="margin-top:0.6rem;">The ceiling</h3>
+        <p>Frontier models top out at 200K–1M tokens. One XAF year alone consumes 600K–900K. Four years never co-exist in any single prompt — on any platform.</p>
+      </div>
+      <div class="card">
+        <span class="chip salmon-bg">Signal-to-noise</span>
+        <h3 style="margin-top:0.6rem;">The attention tax</h3>
+        <p>Even with headroom, 99K routine postings drown out the 50 lines that matter. Anomalies disappear into the mass.</p>
+      </div>
+      <div class="card">
+        <span class="chip salmon-bg">Cost &amp; latency</span>
+        <h3 style="margin-top:0.6rem;">The running cost</h3>
+        <p>A full-file prompt would run to tens of euros and minutes per turn. Not viable for interactive auditor work.</p>
+      </div>
+      <div class="card">
+        <span class="chip salmon-bg">XML verbosity</span>
+        <h3 style="margin-top:0.6rem;">The tax on format</h3>
+        <p>XAF is tag-heavy — <code>&lt;trLine&gt;</code>, <code>&lt;amnt&gt;</code>, <code>&lt;desc&gt;</code>. A good 60–70% of the bytes are structure, not analytic content.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1.2rem; max-width:42rem;">
+      The conclusion isn't "use a bigger model." It's <strong>pre-filter the data before the model ever sees it</strong> — and that's what the rest of this discussion is about.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note · kill the "but what if we used GPT-X" question early</strong>
+      Expect someone to ask whether a bigger-window model solves it. Answer directly: even with a 1M-token model, you'd still burn €15–€30 per run, wait three minutes, and get a worse answer than a preprocessed one. The bottleneck is <em>relevance</em>, not capacity.<br><br>
+      Second likely question: "Can't we just convert it to CSV first?" That <em>is</em> preprocessing — we'll formalise that in the pipeline slide. It's the right instinct.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4 · PIPELINE DIAGRAM -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg>
+      <span class="canvas-step-label">The pipeline, end to end</span>
+      <span class="canvas-step-pair">architecture</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Five stages. Each one does less than the one before.</h2>
+
+    <svg class="pipeline-svg" viewBox="0 0 980 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#A397A3"/>
+        </marker>
+      </defs>
+
+      <!-- Node 1: XAF files -->
+      <rect class="node input" x="20" y="70" width="160" height="80"/>
+      <text x="100" y="95" text-anchor="middle" class="meta">INPUT</text>
+      <text x="100" y="115" text-anchor="middle" font-weight="700">XAF files</text>
+      <text x="100" y="135" text-anchor="middle" fill="#4C3C47">4 × 63–88 MB</text>
+
+      <!-- Node 2: Preprocessing -->
+      <rect class="node" x="210" y="70" width="170" height="80"/>
+      <text x="295" y="95" text-anchor="middle" class="meta">AZURE FUNCTION</text>
+      <text x="295" y="115" text-anchor="middle" font-weight="700">Preprocess</text>
+      <text x="295" y="135" text-anchor="middle" fill="#4C3C47">XML → filters</text>
+
+      <!-- Node 3: Subsets -->
+      <rect class="node" x="410" y="70" width="160" height="80"/>
+      <text x="490" y="95" text-anchor="middle" class="meta">ARTIFACTS</text>
+      <text x="490" y="115" text-anchor="middle" font-weight="700">Filtered subsets</text>
+      <text x="490" y="135" text-anchor="middle" fill="#4C3C47">CSV / JSON</text>
+
+      <!-- Node 4: AI agent -->
+      <rect class="node" x="600" y="70" width="170" height="80"/>
+      <text x="685" y="95" text-anchor="middle" class="meta">COPILOT STUDIO</text>
+      <text x="685" y="115" text-anchor="middle" font-weight="700">Agent analysis</text>
+      <text x="685" y="135" text-anchor="middle" fill="#4C3C47">3 topics</text>
+
+      <!-- Node 5: Output -->
+      <rect class="node output" x="800" y="70" width="160" height="80"/>
+      <text x="880" y="95" text-anchor="middle" class="meta">OUTPUT</text>
+      <text x="880" y="115" text-anchor="middle" font-weight="700">Report</text>
+      <text x="880" y="135" text-anchor="middle" fill="#4C3C47">.docx + .xlsx</text>
+
+      <!-- Edges -->
+      <path class="edge" d="M180 110 L208 110"/>
+      <path class="edge" d="M380 110 L408 110"/>
+      <path class="edge" d="M570 110 L598 110"/>
+      <path class="edge" d="M770 110 L798 110"/>
+
+      <!-- Orchestrator under Function/Subsets -->
+      <rect class="node" x="295" y="180" width="280" height="30" style="stroke-dasharray:4 3;"/>
+      <text x="435" y="200" text-anchor="middle" class="meta">LOGIC APPS · ORCHESTRATOR · SHAREPOINT TRIGGER</text>
+      <path class="edge" d="M295 180 L295 152"/>
+      <path class="edge" d="M490 180 L490 152"/>
+    </svg>
+
+    <p style="margin-top:0.8rem; max-width:46rem; font-size:0.92rem;">
+      Auditor drops the XAFs into SharePoint. Logic Apps triggers the Azure Function. The Function parses the XML with streaming <code>iterparse</code>, writes six small CSV/JSON artifacts. Copilot Studio picks those up and produces the report — saved back into the same client folder.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note · walk the arrows once, slowly</strong>
+      The reduction story is the headline: 3.4 million XML lines in, ~few hundred KB of relevant rows out. Everything downstream is operating on data that already fits in any model's context window, so we get to choose the model for <em>quality</em>, not capacity.<br><br>
+      Logic Apps is drawn dashed because it's the thinnest piece — it's the glue, not the value. If Crowe prefers Power Automate as the trigger, that's fine; the Function does the real work either way.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 5 · PREPROCESSING OPTIONS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg>
+      <span class="canvas-step-label">Preprocessing — four options in the Microsoft stack</span>
+      <span class="canvas-step-pair">architecture</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Low-code is tempting. 88 MB of XML isn't low-code.</h2>
+
+    <table class="arch-table">
+      <thead>
+        <tr><th style="width:16rem;">Option</th><th>Best when</th><th>Watch-out</th></tr>
+      </thead>
+      <tbody>
+        <tr class="pick">
+          <td><strong>Azure Function · Python</strong><br><span class="chip mint" style="margin-top:0.3rem;">Our pick</span></td>
+          <td>Streaming XML parse with <code>lxml.iterparse</code> · custom filter logic · fastest to build · full control</td>
+          <td>Developer-owned repo · not low-code · Crowe Technology needs to host or inherit it</td>
+        </tr>
+        <tr>
+          <td><strong>Power Automate + custom connector</strong></td>
+          <td>Business users want a no-code trigger and flow</td>
+          <td>Struggles at 88 MB XML — real risk of timeouts and memory limits</td>
+        </tr>
+        <tr>
+          <td><strong>Azure Data Factory</strong></td>
+          <td>This becomes a repeatable ETL across many clients</td>
+          <td>Heavier setup · XAF parsing still needs a custom activity underneath</td>
+        </tr>
+        <tr>
+          <td><strong>Logic Apps</strong> (orchestrator only)</td>
+          <td>Coordinating trigger, Function, and notifications</td>
+          <td>Not the parser itself — delegates to the Function</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:1rem; max-width:44rem; font-size:0.92rem;">
+      Honest recommendation: <strong>Azure Function in Python, orchestrated by Logic Apps.</strong> Start small. Graduate to ADF only if and when this becomes a multi-client pipeline.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note · where the honest conversation happens</strong>
+      Don't dress up Power Automate. It will time out on an 88 MB file. If Crowe's IT pushes hard for it anyway, the compromise is: Power Automate as the <em>trigger</em>, which then calls an Azure Function to do the actual parse. That's a perfectly fine pattern — it just means accepting that "no-code" ends at the flow definition, not at the parser.<br><br>
+      If they ask about Fabric / Synapse — same answer as ADF. Heavier than we need for one client; worth the setup when we're serving ten.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 6 · THE FILTERS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+      <span class="canvas-step-label">What the Function extracts</span>
+      <span class="canvas-step-pair">architecture</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Six filters. Six small artifacts the agent can actually read.</h2>
+
+    <div class="filter-grid">
+      <div class="filter-card">
+        <span class="filter-name">manual_entries.csv</span>
+        <p>Every posting with journal type "Memoriaal" and a non-empty narrative. Where humans intervened — almost always where the interesting questions live.</p>
+      </div>
+      <div class="filter-card">
+        <span class="filter-name">large_transactions.csv</span>
+        <p>Lines with <code>|amount| &gt; threshold</code>. Threshold configurable — EUR 5K or 10K, depending on Crowe's materiality rule.</p>
+      </div>
+      <div class="filter-card">
+        <span class="filter-name">period_13_entries.csv</span>
+        <p>Closing-period postings: accruals, year-end cut-off, management overlays. Favourite habitat of earnings management.</p>
+      </div>
+      <div class="filter-card">
+        <span class="filter-name">balance_by_account_yoy.csv</span>
+        <p>Debit/credit aggregated per GL code per year across all four files. The trend table — where real DD value lives.</p>
+      </div>
+      <div class="filter-card">
+        <span class="filter-name">flagged_accounts.csv</span>
+        <p>Lines whose GL code matches a watch-list: management fees, related-party, intercompany, loans to shareholders. Needs the code map from Crowe.</p>
+      </div>
+      <div class="filter-card">
+        <span class="filter-name">metadata.json</span>
+        <p>Row counts, totals, file hash. Reproducibility and an audit trail the auditors can keep in the working paper.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1rem; max-width:44rem; font-size:0.9rem;">
+      Rough reduction: <strong>3.4 million XML lines → a few hundred KB of rows</strong>. Comfortably inside any model's window, and most of it actually relevant.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note · this is where Crowe's tacit knowledge lives</strong>
+      The filters are deliberately plain. The <em>parameters</em> — which GL codes count as related-party, which journals count as manual, which amount is material for this deal — are where Crowe's expertise has to come in. We can't guess that; Bram and Marieke have to hand us the list.<br><br>
+      Ask directly: "Do you have a standard normalization checklist today? Even an internal slide deck or template works." If yes, that's week-zero input. If no — that's a conversation to have before the pilot starts.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7 · AI ANALYSIS LAYER · PROMPT SAMPLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+      <span class="canvas-step-label">The agent, in shape</span>
+      <span class="canvas-step-pair">architecture</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">One agent, three topics, one prompt per topic.</h2>
+
+    <p style="max-width:44rem;">The Copilot Studio agent receives the filtered CSVs and runs one of three skills: anomaly detection, normalization suggestions, year-over-year trend analysis. Each skill is a named prompt — here's the anomaly skill in Dutch, production-shape.</p>
+
+    <div class="demo-box">
+      <div class="demo-box-header">
+        <span class="demo-label">Copilot Studio · anomaly detection skill</span>
+        <span class="demo-surface" style="margin:0;">prompt template</span>
+      </div>
+      <div class="demo-box-body">
+        <div class="demo-files">
+          <span class="demo-file">manual_entries.csv</span>
+          <span class="demo-file">large_transactions.csv</span>
+          <span class="demo-file">metadata.json</span>
+        </div>
+        <div class="demo-prompt">
+          <button class="copy-btn" data-target="uc6-anomaly">Copy</button>
+          <span class="p-tag">Copilot Studio · Nederlands</span>
+          <span class="prompt-text" id="uc6-anomaly">Je bent een senior auditor bij Crowe Foederer. Je krijgt twee CSV-bestanden aangeleverd: handmatige journaalposten (Memoriaal) met omschrijving, en transacties boven de materialiteitsgrens van EUR {threshold}.
+
+Beoordeel de regels en rangschik ze op verdachtheid voor een M&amp;A due diligence. Let in het bijzonder op:
+
+1. Ronde bedragen (exact 1.000, 10.000, 25.000) en bedragen vlak onder de materialiteitsgrens.
+2. Boekingen in de laatste twee weken van het boekjaar of in periode 13.
+3. Omschrijvingen met signaalwoorden: "correctie", "dubbel", "tbv", "privé", "tgv DGA", "herrubricering", "overboeking".
+4. Tegenrekeningen die slechts één of twee keer per jaar voorkomen (mogelijk gelieerde partij of eenmalige post).
+5. Boekingen zonder document-referentie (docRef leeg) boven de materialiteitsgrens.
+
+Geef per gevlagde regel: regel-ID, datum, bedrag, grootboekrekening, omschrijving, één zin waarom deze opvalt, en een kans-score (laag / middel / hoog). Groepeer per thema. Schrijf in het Nederlands.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap;">
+      <span class="chip purple-bg">Skill 1 · anomaly detection</span>
+      <span class="chip purple-bg">Skill 2 · normalization suggestions</span>
+      <span class="chip purple-bg">Skill 3 · YoY trend analysis</span>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · this is the most concrete moment of the whole session</strong>
+      Copy-paste this prompt into the workshop chat afterwards — it's the one piece of today Crowe can take home and iterate on tonight. Three things to point at while it's on screen:<br><br>
+      · The prompt assumes the filter already ran — there is no "open the 88 MB file" instruction anywhere.<br>
+      · <code>{threshold}</code> is a placeholder — Copilot Studio topics parameterise cleanly.<br>
+      · The output shape is auditor-native: line-ID, amount, GL, one-line reason, confidence. That maps straight into the Excel working paper.<br><br>
+      The other two skills follow the same shape — say that, but don't show them all; we're selling the pattern, not the bestiary.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 8 · OUTPUT -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+      <span class="canvas-step-label">What lands on the auditor's desk</span>
+      <span class="canvas-step-pair">architecture</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Two files, one folder, existing format.</h2>
+
+    <div class="two-col" style="margin-top:0.8rem;">
+      <div class="card">
+        <span class="chip salmon-bg">Word</span>
+        <h3 style="margin-top:0.6rem;">DD memo · narrative</h3>
+        <p>One-pager plus annexes. Flagged items grouped by theme, the three highest-priority normalization candidates with reasoning, YoY highlights. Drops into the existing DD working-paper template.</p>
+      </div>
+      <div class="card">
+        <span class="chip mint">Excel</span>
+        <h3 style="margin-top:0.6rem;">Working paper · line-by-line</h3>
+        <p>Every flagged line with columns for <strong>Auditor decision</strong> (Accept / Reject / Follow up) and <strong>Normalization amount</strong>. This is the document auditors already use — we just pre-fill it.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1rem; max-width:44rem; font-size:0.92rem;">
+      Both files land back in the same SharePoint client folder as the source XAFs. No new tool. No new portal. The engagement team sees the output where they already look.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the integration story is the adoption story</strong>
+      Auditors won't log into a new app. Output has to show up where they already work — SharePoint, Teams, the existing working-paper template. This is the difference between a demo that wins the room today and a tool that's still running in Q4.<br><br>
+      Ask Bram and Marieke to share the actual DD working-paper template. That's the one asset that turns this from "prototype" into "drop-in."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 9 · WHERE IT LIVES · OWNER + INTEGRATION -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="canvas-step-label">Who owns it · how it plugs in</span>
+      <span class="canvas-step-pair">the discussion</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Managed service now, Crowe-owned later.</h2>
+
+    <div class="validate-grid" style="margin-top:1rem;">
+      <div class="validate-block">
+        <h3>Ownership path</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="owner" spellcheck="false"><strong>Phase 1 · Tatoma managed service.</strong> Crowe uploads files; we return the artifacts and run the agent. Fast to stand up, validates the value.<br><br><strong>Phase 2 · Crowe Technology owns it.</strong> Repo + runbook handover. Function and filters live in a Crowe-managed Azure subscription.</div>
+      </div>
+      <div class="validate-block">
+        <h3>Integration with existing workflow</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="learning" spellcheck="false">Trigger: SharePoint client folder (already used). Output: same folder, existing Word/Excel templates. Questions from the agent: reachable in <strong>Teams</strong>, so auditors stay in their chat client.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:0.5rem; margin-top:1.2rem; flex-wrap:wrap;">
+      <span class="chip muted-bg">One-off for Faraday?</span>
+      <span class="chip salmon-bg">Or · repeatable pipeline across every XAF 3.2 client</span>
+    </div>
+
+    <p style="margin-top:0.8rem; max-width:44rem; font-size:0.92rem;">
+      XAF 3.2 is a <strong>Belastingdienst-mandated Dutch standard</strong> — Exact Online, AFAS, Twinfield all produce it. Built once, the pipeline compounds across every Crowe M&amp;A engagement from this one forward.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the ownership decision is the commercial decision</strong>
+      Managed service is easier to start; Crowe-owned is where the long-term value sits. Explicitly frame the two phases so no one in the room feels locked into either one.<br><br>
+      Probe: does Crowe Technology have Python / Azure Function skills today, or is that a hire / upskill path? Answer shapes how quickly we can migrate out of Phase 1.<br><br>
+      The reusability point at the bottom is the real business case. Say it out loud: "You build this with us once, on Faraday. Next Exact client, the same Function runs — nothing new to write."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 10 · TIMELINE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span class="canvas-step-label">MVP timeline</span>
+      <span class="canvas-step-pair">the discussion</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Six to eight weeks. Three weeks of build, the rest is validation.</h2>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.3rem; margin-top:0.8rem;">
+      <div class="timeline-row">
+        <span class="phase">Week 0</span>
+        <span class="scope">Workshop output — <strong>filter shortlist, thresholds, GL code map</strong> confirmed with Bram. Normalization checklist requested.</span>
+        <span class="effort">in-session</span>
+      </div>
+      <div class="timeline-row">
+        <span class="phase">Weeks 1–2</span>
+        <span class="scope">Azure Function v1 parsing one XAF year. Produces <code>manual_entries</code>, <code>large_transactions</code>, <code>balance_by_account_yoy</code>.</span>
+        <span class="effort">~1 dev-week</span>
+      </div>
+      <div class="timeline-row">
+        <span class="phase">Week 3</span>
+        <span class="scope">Copilot Studio agent v1 · three topics · tested end-to-end against KleurRijker 2024.</span>
+        <span class="effort">~3 dev-days</span>
+      </div>
+      <div class="timeline-row">
+        <span class="phase">Week 4</span>
+        <span class="scope">Output templates (Word + Excel), Logic Apps orchestrator, SharePoint trigger wired up.</span>
+        <span class="effort">~3 dev-days</span>
+      </div>
+      <div class="timeline-row">
+        <span class="phase">Weeks 5–6</span>
+        <span class="scope"><strong>Internal pilot on Project Faraday</strong> — auditors use it live, feedback loop, prompt tuning.</span>
+        <span class="effort">validation</span>
+      </div>
+      <div class="timeline-row">
+        <span class="phase">Weeks 7–8</span>
+        <span class="scope">Harden for a second client. Add <code>period_13</code> + <code>flagged_accounts</code> filters. Handover docs.</span>
+        <span class="effort">~1 dev-week</span>
+      </div>
+    </div>
+
+    <p style="margin-top:0.9rem; max-width:44rem; font-size:0.88rem;">
+      Realistic only if Week 0 delivers the normalization checklist and GL code map. Without them, everything slips a fortnight.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note · set expectations honestly</strong>
+      Three dev-weeks of build, three of validation. That's the shape of a good audit-tech pilot — not a two-week hackathon.<br><br>
+      The critical-path dependency is Crowe's input in Week 0: the normalization checklist and the GL code map. If those don't materialise, Weeks 1–2 start with us guessing, which burns the pilot's credibility. Flag it explicitly.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 11 · QUALITY & REUSE SIGNALS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+      <span class="canvas-step-label">Quality &amp; reuse signals</span>
+      <span class="canvas-step-pair">the discussion</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">How would you know this worked, six months in?</h2>
+
+    <div class="two-col" style="margin-top:1.2rem;">
+      <div>
+        <p style="margin-bottom:1rem;"><strong>Quality signals</strong> — what makes one run "good"?</p>
+        <ul>
+          <li>Of the lines the agent flags, what share does the auditor <em>accept</em> as worth a follow-up?</li>
+          <li>Are the false negatives the ones that would have embarrassed the engagement team?</li>
+          <li>Does the normalization memo need heavy editing before the partner signs off, or light?</li>
+        </ul>
+      </div>
+      <div>
+        <p style="margin-bottom:1rem;"><strong>Reuse signals</strong> — does the pipeline stick?</p>
+        <ul>
+          <li>What share of M&amp;A engagements with XAF availability run through it per quarter?</li>
+          <li>How many hours per engagement does it save — analyst, manager, partner?</li>
+          <li>Who's asking for it outside M&amp;A — audit, tax, advisory?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · quiet part of the session</strong>
+      Don't steer. Bram and Marieke know what "worth it" looks like in their practice — we don't. Write whatever they say on the canvas verbatim.<br><br>
+      If someone volunteers a number — "if it saves two days per engagement I'd run it on every deal" — <em>write that down</em>. That's the success metric that survives the workshop.<br><br>
+      If nobody volunteers numbers, the fallback ask is: "pick one quality metric and one reuse metric we should measure after the pilot." That's enough to move forward.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 12 · FILLED CANVAS · takeaway -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1rem;">
+      <span class="mono-label" style="color:var(--mint); margin-bottom:0.4rem;">End of UC6 · the artifact</span>
+      <h2 style="margin-bottom:0.3rem;">The canvas, filled</h2>
+      <p style="max-width:42rem; margin:0 auto; font-size:0.98rem;">This is what leaves the room for UC6. After the workshop we clean it up and send it back — the auditfiles entry in Crowe's use-case library, ready to hang next to the others.</p>
+    </div>
+
+    <div class="uca-card">
+      <div class="uca-grid">
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg><div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="who" spellcheck="false">Crowe M&amp;A DD team · audit partner on sign-off · Technology team as pipeline owner</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="problem" spellcheck="false">88 MB XAF files and ~99K GL lines — no model can swallow them raw, auditors skim-read manually</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="when" spellcheck="false">Every M&amp;A engagement where audit files are available · early DD</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg><div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="where" spellcheck="false">Azure (Function + Blob + SharePoint trigger) + Copilot Studio in Crowe's M365 tenant</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg><div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="inputs" spellcheck="false">4× XAF 3.2 · Crowe normalization checklist · GL code map</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg><div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="output" spellcheck="false"><strong>Word memo + Excel working paper.</strong> Flagged lines, normalization candidates, YoY trend — auditor-native format.</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg><div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="examples" spellcheck="false">Six filters · anomaly / normalization / YoY skills · threshold configurable</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="owner" spellcheck="false">Phase 1: Tatoma managed service · Phase 2: Crowe Technology · MVP 6–8 weeks</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg><div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="learning" spellcheck="false">XAF 3.2 is a Dutch standard — pipeline reuses across every Exact / AFAS / Twinfield client</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg><div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="quality" spellcheck="false">Flag-to-accept ratio · hours saved per engagement · # clients reusing the pipeline</div></div></div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the exit</strong>
+      Hold the canvas for 30 seconds. "This is what leaves the room for the auditfiles case. Six to eight weeks from here to a pilot, if Crowe's normalization checklist and GL code map are in our hands by next week."<br><br>
+      After the workshop, this slide becomes the deliverable: clean it up, export it, send to Bram alongside the filter spec.
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <div class="nav-info"><span id="slide-num">01</span> / <span id="slide-total">13</span></div>
+  <div class="nav-dots" id="nav-dots"></div>
+  <div class="nav-help">← →  ·  N  speaker notes  ·  F  fullscreen</div>
+  <button class="reset-btn" id="reset-canvas" title="Clear all edits">Reset canvas</button>
+</div>
+
+<script>
+(function(){
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsWrap = document.getElementById('nav-dots');
+  const numEl = document.getElementById('slide-num');
+  const totalEl = document.getElementById('slide-total');
+  totalEl.textContent = String(slides.length).padStart(2,'0');
+
+
+  // ─── Canvas persistence (localStorage) ───
+  const STORAGE_PREFIX = 'tatoma-uc6-';
+  const editableEls = [...document.querySelectorAll('[data-canvas-key], [data-hyp-key]')];
+
+  function keyFor(el) {
+    if (el.dataset.canvasKey) return STORAGE_PREFIX + 'canvas-' + el.dataset.canvasKey;
+    if (el.dataset.hypKey) return STORAGE_PREFIX + 'hyp-' + el.dataset.hypKey;
+    return null;
+  }
+
+  // Restore on load
+  editableEls.forEach(el => {
+    const k = keyFor(el);
+    const saved = localStorage.getItem(k);
+    if (saved !== null) {
+      el.innerHTML = saved;
+      el.classList.add('edited');
+    }
+  });
+
+  // Save on input + sync siblings with same canvas-key
+  editableEls.forEach(el => {
+    el.addEventListener('input', () => {
+      const k = keyFor(el);
+      localStorage.setItem(k, el.innerHTML);
+      el.classList.add('edited');
+      // Sync other cells with same canvas-key (intro canvas ↔ filled canvas)
+      if (el.dataset.canvasKey) {
+        document.querySelectorAll(`[data-canvas-key="${el.dataset.canvasKey}"]`).forEach(twin => {
+          if (twin !== el) {
+            twin.innerHTML = el.innerHTML;
+            twin.classList.add('edited');
+          }
+        });
+      }
+    });
+    // Prevent Enter from creating <div> — use <br>
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.execCommand('insertLineBreak');
+      }
+    });
+  });
+
+  // Reset button
+  const resetBtn = document.getElementById('reset-canvas');
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('Clear all canvas edits? The slides will revert to the starting hypotheses.')) return;
+    editableEls.forEach(el => { localStorage.removeItem(keyFor(el)); });
+    location.reload();
+  });
+
+  slides.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='nav-dot';
+    b.setAttribute('aria-label','Slide '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    dotsWrap.appendChild(b);
+  });
+  const dots = [...dotsWrap.children];
+
+  let idx = 0;
+  let notesVisible = false;
+
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===idx));
+    dots.forEach((d,i)=>{
+      d.classList.toggle('active', i===idx);
+      d.classList.toggle('visited', i<idx);
+    });
+    numEl.textContent = String(idx+1).padStart(2,'0');
+  }
+  function go(n){ idx = Math.max(0, Math.min(slides.length-1, n)); render(); }
+
+  document.addEventListener('keydown', e=>{
+    // Don't hijack keys while the user is typing into an editable cell.
+    // Esc still works to blur out of the field.
+    const t = e.target;
+    if (t && t.isContentEditable) {
+      if (e.key === 'Escape') { t.blur(); e.preventDefault(); }
+      return;
+    }
+    if (e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown') { e.preventDefault(); go(idx+1); }
+    else if (e.key==='ArrowLeft' || e.key==='PageUp') { e.preventDefault(); go(idx-1); }
+    else if (e.key==='Home') go(0);
+    else if (e.key==='End') go(slides.length-1);
+    else if (e.key==='n' || e.key==='N') {
+      notesVisible = !notesVisible;
+      document.querySelectorAll('.speaker-note').forEach(n=>n.classList.toggle('visible', notesVisible));
+    }
+    else if (e.key==='f' || e.key==='F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      navigator.clipboard.writeText(target.innerText).then(()=>{
+        btn.classList.add('copied');
+        const prev = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = prev; }, 1400);
+      });
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

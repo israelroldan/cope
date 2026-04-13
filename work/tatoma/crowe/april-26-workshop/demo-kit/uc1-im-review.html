@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UC1 · IM Review — Tatoma × Crowe Foederer</title>
+
+<!-- Tatoma fonts -->
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<style>
+  :root {
+    --bg: #F6FAEB;
+    --fg: #1D021F;
+    --card: #FFFFFF;
+    --primary: #FF8E7D;
+    --secondary: #4F2035;
+    --muted: #A397A3;
+    --muted-fg: #4C3C47;
+    --dark-magenta: #1E001E;
+    --salmon: #FF8C7D;
+    --mint: #0EE17E;
+    --border: rgba(163,151,163,0.25);
+    --radius: 0.75rem;
+    --font-serif: "Canela", Georgia, "Times New Roman", serif;
+    --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Slide engine ── */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3.5rem 5.5rem 5rem;
+    opacity: 0; transform: translateY(24px); pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(.25,.46,.45,.94),
+                transform 0.5s cubic-bezier(.25,.46,.45,.94);
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .slide.exit-up { opacity: 0; transform: translateY(-24px); }
+
+  .slide.section-divider {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .slide.section-divider h1 { font-size: clamp(3rem, 6vw, 5.5rem); }
+
+  /* ── Typography ── */
+  h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; line-height: 1.15; }
+  h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
+  h2 { font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+  h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); margin-bottom: 0.6rem; }
+
+  p, li { font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.6; color: var(--muted-fg); }
+  strong { font-weight: 600; color: var(--fg); }
+
+  .mono-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.6rem; display: block;
+  }
+
+  .chip {
+    display: inline-block; padding: 0.25rem 0.8rem;
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    border-radius: 999px;
+    background: var(--dark-magenta); color: var(--salmon);
+  }
+  .chip.mint { background: rgba(14,225,126,0.12); color: #08924f; }
+  .chip.salmon-bg { background: rgba(255,140,125,0.15); color: #b84a3b; }
+  .chip.muted-bg { background: rgba(163,151,163,0.15); color: var(--muted-fg); }
+  .chip.purple-bg { background: rgba(79,32,53,0.15); color: var(--secondary); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.6rem 1.8rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,0,30,0.06); }
+  .card h3 { margin-bottom: 0.4rem; }
+  .card p, .card li { font-size: 0.92rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+  /* ── Lists ── */
+  ul { list-style: none; padding: 0; }
+  ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+  ul li::before {
+    content: ""; position: absolute; left: 0; top: 0.6rem;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--salmon);
+  }
+
+  /* ── Big numbers ── */
+  .big-number {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: 3.2rem; line-height: 1; color: var(--fg); margin-bottom: 0.2rem;
+  }
+
+  /* ── Demo box ── */
+  .demo-box {
+    background: var(--card);
+    border: 2px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-top: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(255,140,125,0.1);
+  }
+  .demo-box-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255,140,125,0.06);
+    border-bottom: 1px solid rgba(255,140,125,0.15);
+  }
+  .demo-box-header .demo-label {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--salmon);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .demo-box-header .demo-label::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--salmon); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .demo-box-body { padding: 1rem 1.2rem; }
+  .demo-box-body .demo-files {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+  }
+  .demo-file {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.7rem; border-radius: 6px;
+    background: rgba(30,0,30,0.04); font-size: 0.78rem; color: var(--muted-fg);
+    font-family: var(--font-mono); letter-spacing: 0.02em;
+  }
+  .demo-file::before { content: "📄"; font-size: 0.7rem; }
+
+  .demo-prompt {
+    position: relative;
+    background: var(--fg); color: rgba(246,250,235,0.92);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem 1rem;
+    font-size: 0.78rem; line-height: 1.6;
+    font-family: var(--font-mono); letter-spacing: 0.01em;
+    max-height: 13rem; overflow-y: auto;
+  }
+  .demo-prompt::-webkit-scrollbar { width: 6px; }
+  .demo-prompt::-webkit-scrollbar-thumb { background: rgba(246,250,235,0.2); border-radius: 3px; }
+  .demo-prompt .p-tag {
+    display: block;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: rgba(246,250,235,0.4);
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(246,250,235,0.1);
+    padding-right: 3.5rem;
+  }
+  .demo-prompt .prompt-text {
+    display: block;
+    white-space: pre-wrap;
+  }
+
+  .copy-btn {
+    position: absolute; top: 0.55rem; right: 0.55rem;
+    background: rgba(255,140,125,0.22); border: none; border-radius: 6px;
+    padding: 0.35rem 0.7rem; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--salmon); transition: background 0.2s;
+    z-index: 2;
+  }
+  .copy-btn:hover { background: rgba(255,140,125,0.4); }
+  .copy-btn.copied { background: rgba(14,225,126,0.3); color: #0EE17E; }
+
+  .demo-surface {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    margin-top: 0.6rem; display: block;
+  }
+
+  /* ── Use-Case Asset canvas ── */
+  .uca-slide { padding-top: 2.4rem; padding-bottom: 4.5rem; justify-content: flex-start; }
+  .uca-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.8rem 2rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    max-width: 68rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .uca-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem 2.5rem;
+  }
+  .uca-row {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.35rem 0;
+  }
+  .uca-icon {
+    width: 1.7rem; height: 1.7rem;
+    color: var(--salmon);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .uca-icon.mint-icon { color: var(--mint); }
+  .uca-label {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--fg);
+    line-height: 1.25;
+  }
+  .uca-hint {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--muted-fg);
+    line-height: 1.45;
+    margin-top: 0.15rem;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 900px) {
+    .uca-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Canvas-step header (anchors each slide to a canvas row) ── */
+  .canvas-step {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .canvas-step-num {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.15em; color: var(--salmon);
+    background: rgba(255,140,125,0.1); border-radius: 4px;
+    padding: 0.3rem 0.55rem;
+  }
+  .canvas-step-icon { width: 1.4rem; height: 1.4rem; color: var(--salmon); flex-shrink: 0; }
+  .canvas-step-icon.mint-icon { color: var(--mint); }
+  .canvas-step-label {
+    font-family: var(--font-sans); font-size: 1rem; font-weight: 500;
+    color: var(--fg);
+  }
+  .canvas-step-pair {
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── Validate block (hypothesis + questions per row) ── */
+  .validate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .validate-block { }
+  .validate-block h3 {
+    font-family: var(--font-sans); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.5rem;
+  }
+  .validate-block .hypothesis {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--salmon);
+    border-radius: 8px; padding: 0.9rem 1.1rem;
+    margin-bottom: 0.9rem; font-size: 0.95rem;
+  }
+  .validate-block ul.questions { margin-top: 0.3rem; }
+  .validate-block ul.questions li {
+    font-size: 0.9rem; color: var(--muted-fg);
+    padding-left: 1.1rem; margin-bottom: 0.35rem;
+  }
+  .validate-block ul.questions li::before {
+    width: 4px; height: 4px; top: 0.55rem; background: var(--muted);
+  }
+
+  /* ── Mini-canvas row for slide headers ── */
+  .mini-canvas-nav {
+    display: flex; gap: 0.35rem; justify-content: center;
+    margin-top: 0.8rem; flex-wrap: wrap;
+  }
+  .mini-canvas-dot {
+    width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: rgba(163,151,163,0.15); color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  }
+  .mini-canvas-dot.done { background: rgba(255,140,125,0.2); color: var(--salmon); }
+  .mini-canvas-dot.active { background: var(--salmon); color: #fff; transform: scale(1.15); }
+  .mini-canvas-dot.mint-done { background: rgba(14,225,126,0.2); color: #08924f; }
+
+  /* ── Speaker notes ── */
+
+  /* ─── Editable canvas cells ─────────────────────────── */
+  [contenteditable="true"] { outline: none; transition: background 0.15s ease, box-shadow 0.15s ease; cursor: text; border-radius: 4px; }
+  .uca-hint[contenteditable="true"] { padding: 0.15rem 0.35rem; margin: -0.15rem -0.35rem; }
+  .uca-hint[contenteditable="true"]:hover { background: rgba(255,140,125,0.06); }
+  .uca-hint[contenteditable="true"]:focus { background: rgba(255,140,125,0.12); box-shadow: inset 0 -1px 0 var(--salmon); }
+  .hypothesis[contenteditable="true"]:hover { background: rgba(255,140,125,0.04); }
+  .hypothesis[contenteditable="true"]:focus { box-shadow: 0 0 0 2px rgba(255,140,125,0.3); }
+  .uca-hint.edited, .hypothesis.edited { position: relative; }
+  .uca-hint.edited::before { content: ""; position: absolute; left: -0.6rem; top: 0.45rem; width: 4px; height: 4px; border-radius: 50%; background: var(--mint); }
+  .reset-btn { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; transition: all 0.15s ease; }
+  .reset-btn:hover { color: var(--salmon); border-color: var(--salmon); }
+
+  .speaker-note {
+    display: none; margin-top: 1.2rem; padding: 1rem 1.2rem;
+    background: rgba(30,0,30,0.04); border-radius: var(--radius);
+    border-left: 3px solid var(--salmon);
+    font-size: 0.85rem; color: var(--muted-fg); line-height: 1.55;
+  }
+  .speaker-note.visible { display: block; }
+  .speaker-note strong {
+    font-size: 0.7rem; font-family: var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+
+  /* ── Fixed elements ── */
+  .logo-area {
+    position: fixed; top: 1.2rem; left: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem; z-index: 100;
+  }
+  .logo-area img { width: 24px; height: 24px; border-radius: 5px; }
+  .logo-area span {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+  }
+
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.5rem; z-index: 100;
+    background: linear-gradient(transparent, rgba(246,250,235,0.95));
+  }
+  .nav-dots { display: flex; gap: 5px; }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); opacity: 0.3;
+    cursor: pointer; transition: all 0.25s ease; border: none;
+  }
+  .nav-dot.active { opacity: 1; background: var(--salmon); transform: scale(1.3); }
+  .nav-dot.visited { opacity: 0.5; }
+  .nav-info {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .nav-help {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); opacity: 0.45;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2rem 1.5rem 4rem; }
+    .two-col, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <img src="https://hub.tatoma.eu/tatoma-icon.png" alt="Tatoma" onerror="this.style.display='none'">
+  <span>Tatoma × Crowe Foederer · UC1</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 0 · TITLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider active">
+    <span class="mono-label">Live Demo · 13:00 – 13:35</span>
+    <h1>UC1 · IM Review</h1>
+    <p style="max-width:36rem; margin:0 auto; text-align:center; font-size:1.1rem;">
+      A 33-page Information Memorandum, in Dutch, reviewed from a potential buyer's perspective — live, on your own case data.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center;">
+      <span class="chip salmon-bg">Pattern 1 · Document Analysis</span>
+      <span class="chip muted-bg">Project Faraday</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "This is the first of two live demos. Your data, your document — we haven't pre-processed anything. Claude reads the PDF exactly as it landed in Bram's inbox."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 1 · CANVAS INTRO · we fill this together -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1.2rem;">
+      <span class="mono-label" style="color:var(--salmon); margin-bottom:0.4rem;">The spine of this session</span>
+      <h2 style="margin-bottom:0.3rem;">UC1 · Use-Case Asset</h2>
+      <p style="max-width:44rem; margin:0 auto; font-size:0.98rem;">Ten rows. Each one is a question we'll answer together in the next 25 minutes. The demo in the middle is how we validate row 06 — <em>Expected output</em> — live. What leaves the room is this canvas, filled.</p>
+    </div>
+
+    <div class="uca-card">
+      <div class="uca-grid">
+        <!-- 1 · Who it's for -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>
+          <div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="who" spellcheck="false">Buy-side M&amp;A lead at Crowe · analyst support role · Bram / Marieke as the primary user</div></div>
+        </div>
+        <!-- 2 · Problem -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+          <div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="problem" spellcheck="false">First-pass IM review eats half a day of senior time — before the real analysis even starts</div></div>
+        </div>
+        <!-- 3 · When -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="when" spellcheck="false">Day 1 of a deal · intake triage · IC prep · before the Q&amp;A round with the seller</div></div>
+        </div>
+        <!-- 4 · Where -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg>
+          <div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="where" spellcheck="false">Today → Claude Chat · later → Copilot Studio in Crowe's M365 tenant</div></div>
+        </div>
+        <!-- 5 · Inputs -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+          <div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="inputs" spellcheck="false">IM PDF (Dutch, text-based) · optional: buyer profile, sector lens, house playbook</div></div>
+        </div>
+        <!-- 6 · Output -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+          <div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="output" spellcheck="false">Structured buyer memo · risks, DD questions, normalization verdicts, missing info — in Dutch</div></div>
+        </div>
+        <!-- 7 · Examples -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+          <div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="examples" spellcheck="false">Today's demo on Project Faraday · same pattern works for annual reports &amp; sell-side teasers</div></div>
+        </div>
+        <!-- 8 · Owner -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="owner" spellcheck="false">Owner: Bram (Crowe M&amp;A) · Status: prototype → pilot candidate</div></div>
+        </div>
+        <!-- 9 · Learning -->
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg>
+          <div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="learning" spellcheck="false">Feeds UC2 (NBO vs. term sheet) · pattern reused in UC5 teaser generation</div></div>
+        </div>
+        <!-- 10 · Quality -->
+        <div class="uca-row">
+          <svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+          <div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="quality" spellcheck="false">How often reused · senior edit time saved · client-facing yes/no · repeat deals benefiting</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · this is the spine</strong>
+      Don't explain each row here. Just show the shape. "Every use case we care about looks like this. For the next 25 minutes we're going to fill it — out loud, with you, for IM review."<br><br>
+      <strong>Reassure on the hypotheses:</strong> the grey text is <em>our guess</em> — they're there so you have something to push against. The goal is not to be right; it's to land on a version Bram and Marieke would actually hang on the wall.<br><br>
+      <strong>The demo's job:</strong> the live run on Faraday is not the point of the session — it's how we validate row 06. We'll come back here at the end with the canvas filled.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 2 · ROWS 01 + 02 · WHO + PROBLEM -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>
+      <span class="canvas-step-label">Who it's for · What problem it solves</span>
+      <span class="canvas-step-pair">fill · validate</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Who's at the sharp end of this?</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <h3>Who it's for</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="who" spellcheck="false">Buy-side M&amp;A lead at Crowe. Analyst-level support role. <strong>Bram / Marieke</strong> as primary users, with the output reviewed by a partner before it goes client-side.</div>
+      </div>
+      <div class="validate-block">
+        <h3>What problem it solves</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="problem" spellcheck="false">First-pass IM review eats <strong>half a day of senior time</strong> before the real thinking starts. The partner ends up reading the full document just to know which parts deserve their time.</div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · fill it out loud</strong>
+      This is where you <em>write on the canvas</em>. Literally — have the tablet or a whiteboard ready. Repeat back what Bram says in his words, not ours. If they say "it's actually the audit partner who catches the accounting flag," write that down.<br><br>
+      <strong>Row 01 probe:</strong> is that the right user? Are there others — audit partners, sector leads — who'd want this too?<br>
+      <strong>Row 02 probe:</strong> is "half a day" right? Or more like an hour on the partner's side plus a junior week?<br><br>
+      Typical landing: confirm buy-side lead + analyst, add partner as a secondary user. Problem shifts from "time" to "<em>partner</em> time being used on the wrong part of the doc."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 3 · ROWS 03 + 04 · WHEN + WHERE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span class="canvas-step-label">When to use it · Where it runs</span>
+      <span class="canvas-step-pair">fill · validate</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Where in the deal, and on whose laptop?</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <h3>When to use it</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="when" spellcheck="false">Day 1 of a deal. Intake triage. IC prep. Before the Q&amp;A round with the seller. <em>Not</em> during negotiations — by then it's too late.</div>
+      </div>
+      <div class="validate-block">
+        <h3>Where it runs</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="where" spellcheck="false">Today → <strong>Claude Chat</strong> (what we're about to demo). Later → <strong>Copilot Studio</strong> inside Crowe's M365 tenant, so the IM never leaves the firm.</div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the honest conversation</strong>
+      <strong>Row 03 probe:</strong> which of those moments pays back the most? Push them to pick one.<br>
+      <strong>Row 04 probe:</strong> what have they already built in Copilot Studio? Where did it stall?<br><br>
+      Row 04 is where Part 2 of the day comes into focus. If they say "we tried Copilot, it couldn't read the PDF properly" or "our IT won't let us upload outside the tenant" — <em>that</em> is the bridge into the afternoon architecture conversation.<br><br>
+      Don't defend Claude here. Acknowledge: "right, and the point of today is not to replace what you have — it's to show the pattern working end-to-end, so you know what <em>good</em> looks like before we decide where it lives."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4 · ROW 05 · REQUIRED INPUTS (case facts) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+      <span class="canvas-step-label">Required inputs</span>
+      <span class="canvas-step-pair">fill · then load</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">What we feed it — today, concretely</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="inputs" spellcheck="false" style="background:var(--card); border:1px solid var(--border); border-left:3px solid var(--salmon); border-radius:8px; padding:0.9rem 1.1rem; margin-bottom:1rem;"><strong>Hypothesis:</strong> IM PDF (Dutch, text-based) is enough. Optional: buyer profile, sector lens, house playbook.
+        </div>
+        <p>Today we run it with exactly <strong>one input</strong>: the raw IM Bram sent. No preprocessing, no OCR step, no splitting. If that works, everything else is a bonus layer.</p>
+        <div style="margin-top:1.2rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+          <span class="chip muted-bg">33 pages</span>
+          <span class="chip muted-bg">Dutch · text-based PDF</span>
+          <span class="chip muted-bg">1.2 MB</span>
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <span class="mono-label">Pages</span>
+          <div class="big-number">33</div>
+          <p>Well inside context window</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">Revenue 2024</span>
+          <div class="big-number">€7.5M</div>
+          <p>Flat forecast into 2025</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">EBITDA 2024</span>
+          <div class="big-number">€2.3M</div>
+          <p>~30% margin — high</p>
+        </div>
+        <div class="card">
+          <span class="mono-label">Headcount</span>
+          <div class="big-number">27</div>
+          <p>FTE · tight Dutch labour market</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Ask: "In a real deal, what else would you hand an analyst along with the IM?" They'll name things — prior deal memos, sector reports, a buyer thesis. Write them down as "v2 inputs" on the canvas. This is how the asset grows.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 5 · ROW 06 · EXPECTED OUTPUT · LIVE VALIDATION -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+      <span class="canvas-step-label">Expected output &nbsp;·&nbsp; validated live</span>
+      <span class="canvas-step-pair">the demo</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">The hypothesis, and how we'll prove it</h2>
+
+    <div class="hypothesis" contenteditable="true" data-hyp-key="output" spellcheck="false" style="background:var(--card); border:1px solid var(--border); border-left:3px solid var(--mint); border-radius:8px; padding:0.9rem 1.1rem; margin:0.8rem 0 1rem; font-size:0.95rem;"><strong>Our hypothesis:</strong> a structured buyer memo in Dutch — risks, DD questions, normalization verdicts, missing info — page-cited, confidence-tagged, 60–120 seconds from upload.
+    </div>
+
+    <div class="demo-box">
+      <div class="demo-box-header">
+        <span class="demo-label">Live · Claude Chat</span>
+        <span class="demo-surface" style="margin:0;">validating Row 06</span>
+      </div>
+      <div class="demo-box-body">
+        <div class="demo-files">
+          <span class="demo-file">2025 IM - Project Faraday.pdf</span>
+        </div>
+        <div class="demo-prompt">
+          <button class="copy-btn" data-target="uc1-primary">Copy</button>
+          <span class="p-tag">Paste into Claude · Nederlands</span>
+          <span class="prompt-text" id="uc1-primary">Je bent een M&amp;A-adviseur aan de kopers-kant. In de bijlage vind je het Information Memorandum voor Project Faraday (KleurRijker B.V.).
+
+Maak een gestructureerde review van dit IM vanuit het perspectief van een potentiële koper. Behandel daarbij expliciet:
+
+1. Belangrijkste risico's en aandachtspunten (klantconcentratie, key-man risico, arbeidsmarkt, regionale afhankelijkheid, groei-aannames).
+2. Beoordeling van de financiële kerncijfers: omzettrend 2023–2025, EBITDA-marge, werkkapitaal, en realisme van de 2025 Latest Estimate vs. historie.
+3. Kritische beoordeling van de 8 normalisaties op de EBITDA — welke zijn goed onderbouwd, welke zou je challengen, en waarom?
+4. Due diligence-vragen die je als koper beantwoord wilt zien vóór een bindend bod — gegroepeerd per thema.
+5. Ontbrekende informatie: wat verwacht je in een IM dat hier niet (of te kort) in staat?
+
+Wees concreet, verwijs waar mogelijk naar paginanummers, en geef aan hoe zeker je bent. Schrijf in het Nederlands.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the demo is an experiment, not a performance</strong>
+      Frame it exactly that way: "we wrote a hypothesis for row 06 — now we test it against your document, in front of you." Hit send, then stop talking. Let the stream be the show.<br><br>
+      <strong>While it runs,</strong> keep the canvas visible. Point at row 06 and say "we'll come back here in two minutes and decide: does this output match what you'd accept as a first draft, or does the hypothesis need editing?"
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 6 · THE MOMENT (post-demo pause) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Validated</span>
+    <h1>Half a day of work.<br>Two minutes of reading.</h1>
+    <p style="max-width:40rem; margin:1rem auto 0; text-align:center;">
+      The hypothesis held. Or it didn't — and we rewrite row 06 before moving on. Either way, this is roughly what a junior analyst delivers in half a day. Not final. A strong first draft for a senior to sharpen.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center; flex-wrap:wrap;">
+      <span class="chip mint">Expected output · confirmed</span>
+      <span class="chip muted-bg">or · edit the hypothesis together</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Turn to Bram: "Does this match what you'd call a usable first draft? What's missing from the hypothesis?" If he edits it — great, write the edit into row 06. That <em>is</em> the deliverable of this session.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7 · ROW 07 · EXAMPLES & TIPS (hands-on) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+      <span class="canvas-step-label">Examples &amp; tips</span>
+      <span class="canvas-step-pair">fill · hands-on</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Now your turn — drill somewhere</h2>
+    <p style="max-width:40rem; margin-bottom:1rem;">Pick whichever angle matters. Each follow-up becomes a reusable <em>tip</em> on the canvas — a prompt pattern we know works for row 07.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <span class="chip purple-bg">A</span>
+        <h3 style="margin-top:0.6rem;">Scrutinise the normalizations</h3>
+        <p>Table per adjustment: IM rationale, your verdict (accept / challenge / reject), supporting documents a buyer would demand.</p>
+      </div>
+      <div class="card">
+        <span class="chip purple-bg">B</span>
+        <h3 style="margin-top:0.6rem;">The biggest single risk</h3>
+        <p>Pick one risk that could kill the deal or move the price. Cite passages. Price it, or mitigate it in the SPA.</p>
+      </div>
+      <div class="card">
+        <span class="chip purple-bg">C</span>
+        <h3 style="margin-top:0.6rem;">Structured DD question list</h3>
+        <p>Grouped by workstream — Commercial, Financial, Tax, Legal, HR, IT, ESG. Priority and source tags, linked to specific IM passages.</p>
+      </div>
+      <div class="card">
+        <span class="chip purple-bg">D</span>
+        <h3 style="margin-top:0.6rem;">Challenge the projections</h3>
+        <p>Stress-test 2025 LE against 2023/2024. Revenue per FTE, margin trajectory, WC ratios. What multiple would you defend?</p>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Whichever they pick, the real artifact is the prompt. Copy it into row 07 of the canvas afterwards as a named pattern — "the normalizations drill," "the risk-priced trade." Full prompt text lives in UC1-demo-script.md.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 8 · ROW 10 · QUALITY & REUSE SIGNALS (discussion) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+      <span class="canvas-step-label">Quality &amp; reuse signals</span>
+      <span class="canvas-step-pair">fill · discuss</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">How would you know this worked in six months?</h2>
+
+    <div class="two-col" style="margin-top:1.2rem;">
+      <div>
+        <p style="margin-bottom:1rem;"><strong>Quality signals</strong> — what makes one run "good"?</p>
+        <ul>
+          <li>How close is it to a junior's first memo, in tone and completeness?</li>
+          <li>Where would you trust it, and where do you always want a senior overlay?</li>
+          <li>How many edits before it's client-ready?</li>
+        </ul>
+      </div>
+      <div>
+        <p style="margin-bottom:1rem;"><strong>Reuse signals</strong> — does the pattern stick?</p>
+        <ul>
+          <li>How many deals per quarter would you run it on?</li>
+          <li>Does it belong at intake, IC prep, or the Q&amp;A round?</li>
+          <li>Who else at Crowe would benefit — audit partners, sector teams?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      This is the quietest, most important part of the canvas. Don't steer. If Bram volunteers "this is 4 hours of analyst time done in 2 minutes" — <em>that</em> number goes on the canvas as a reuse signal. If he's cautious — "I'd want it on three deals before I trust it" — that's a signal too. Write whatever they say.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 9 · ROWS 08 + 09 · OWNER + RELATED LEARNING -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div class="canvas-step">
+      <svg class="canvas-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+      <span class="canvas-step-label">Owner &amp; status · Related learning</span>
+      <span class="canvas-step-pair">commit · bridge</span>
+    </div>
+    <h2 style="margin-top:0.6rem;">Who owns it, and what does it feed?</h2>
+
+    <div class="validate-grid" style="margin-top:1.2rem;">
+      <div class="validate-block">
+        <h3>Owner &amp; status</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="owner" spellcheck="false"><strong>Owner:</strong> Bram (Crowe M&amp;A).<br><strong>Status:</strong> prototype → pilot candidate. Next step: run it on the next live IM that lands, compare to the junior's version, iterate.</div>
+      </div>
+      <div class="validate-block">
+        <h3>Related learning</h3>
+        <div class="hypothesis" contenteditable="true" data-hyp-key="learning" spellcheck="false">Feeds <strong>UC2</strong> (NBO ↔ term sheet comparison — up next at 13:35). Same pattern reappears in <strong>UC5</strong> (sell-side teaser generation). The prompt skeleton we just validated is the reusable piece.</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:0.5rem; margin-top:1.4rem; flex-wrap:wrap;">
+      <span class="chip salmon-bg">Up next · UC2 · 13:35</span>
+      <span class="chip muted-bg">Van Grunsven · €18M incl. earn-out</span>
+      <span class="chip muted-bg">Pattern 2 · cross-document comparison</span>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the commit moment</strong>
+      <strong>Row 08 probe:</strong> commit a name and a next action — without these, the canvas is a poster.<br>
+      <strong>Row 09 probe:</strong> the canvas isn't just one use case — it's a node in a graph. Which other rows might carry over to UC2 as-is?<br><br>
+      "Before we break, two things. One: who owns this as a pilot — meaning, who runs it on the next real deal?" (Almost certainly Bram.) "Two: what's the next deal where we'd try it?" Get a name. Put it on the canvas.<br><br>
+      Then pivot to UC2: "same canvas shape, different use case. And you'll see a couple of rows carry straight over."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 10 · FILLED CANVAS · takeaway -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide uca-slide">
+    <div style="text-align:center; margin-bottom:1rem;">
+      <span class="mono-label" style="color:var(--mint); margin-bottom:0.4rem;">End of UC1 · the artifact</span>
+      <h2 style="margin-bottom:0.3rem;">The canvas, filled</h2>
+      <p style="max-width:42rem; margin:0 auto; font-size:0.98rem;">This is what leaves the room. After the workshop we send it back cleaned up — the seed of Crowe's internal use-case library. UC2 adds the second entry.</p>
+    </div>
+
+    <div class="uca-card">
+      <div class="uca-grid">
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg><div><div class="uca-label">Who it's for</div><div class="uca-hint" contenteditable="true" data-canvas-key="who" spellcheck="false">Buy-side M&amp;A lead at Crowe · analyst support role · Bram / Marieke as the primary user</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg><div><div class="uca-label">What problem it solves</div><div class="uca-hint" contenteditable="true" data-canvas-key="problem" spellcheck="false">First-pass IM review eats half a day of senior time — before the real analysis even starts</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><div class="uca-label">When to use it</div><div class="uca-hint" contenteditable="true" data-canvas-key="when" spellcheck="false">Day 1 of a deal · intake triage · IC prep · before the Q&amp;A round with the seller</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg><div><div class="uca-label">Where it runs</div><div class="uca-hint" contenteditable="true" data-canvas-key="where" spellcheck="false">Today → Claude Chat · later → Copilot Studio in Crowe's M365 tenant</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg><div><div class="uca-label">Required inputs</div><div class="uca-hint" contenteditable="true" data-canvas-key="inputs" spellcheck="false">IM PDF · + v2 inputs named by the room</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg><div><div class="uca-label">Expected output</div><div class="uca-hint" contenteditable="true" data-canvas-key="output" spellcheck="false"><strong>Validated live on Project Faraday.</strong> Dutch buyer memo — risks, DD, normalization verdicts, missing info.</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg><div><div class="uca-label">Examples &amp; tips</div><div class="uca-hint" contenteditable="true" data-canvas-key="examples" spellcheck="false">Primary prompt + the follow-ups the room picked</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="uca-label">Owner &amp; status</div><div class="uca-hint" contenteditable="true" data-canvas-key="owner" spellcheck="false">Bram · pilot on next live IM</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg><div><div class="uca-label">Related learning</div><div class="uca-hint" contenteditable="true" data-canvas-key="learning" spellcheck="false">→ UC2 (NBO ↔ term sheet) · → UC5 (teaser)</div></div></div>
+        <div class="uca-row"><svg class="uca-icon mint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg><div><div class="uca-label">Quality &amp; reuse signals</div><div class="uca-hint" contenteditable="true" data-canvas-key="quality" spellcheck="false">How often reused · senior edit time saved · client-facing yes/no · repeat deals benefiting</div></div></div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note · the exit</strong>
+      Show the filled canvas for 30 seconds. Say: "this is what you leave with — one row of your use-case library, built in front of you. UC2 adds the next row, same shape." Then hand over to UC2.<br><br>
+      After the workshop, this slide becomes the deliverable: clean it up, export it, send it to Bram as the UC1 asset definition.
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar">
+  <div class="nav-info"><span id="slide-num">01</span> / <span id="slide-total">09</span></div>
+  <div class="nav-dots" id="nav-dots"></div>
+  <div class="nav-help">← →  ·  N  speaker notes  ·  F  fullscreen</div>
+  <button class="reset-btn" id="reset-canvas" title="Clear all edits">Reset canvas</button>
+</div>
+
+<script>
+(function(){
+  const slides = [...document.querySelectorAll('.slide')];
+  const dotsWrap = document.getElementById('nav-dots');
+  const numEl = document.getElementById('slide-num');
+  const totalEl = document.getElementById('slide-total');
+  totalEl.textContent = String(slides.length).padStart(2,'0');
+
+
+  // ─── Canvas persistence (localStorage) ───
+  const STORAGE_PREFIX = 'tatoma-uc1-';
+  const editableEls = [...document.querySelectorAll('[data-canvas-key], [data-hyp-key]')];
+
+  function keyFor(el) {
+    if (el.dataset.canvasKey) return STORAGE_PREFIX + 'canvas-' + el.dataset.canvasKey;
+    if (el.dataset.hypKey) return STORAGE_PREFIX + 'hyp-' + el.dataset.hypKey;
+    return null;
+  }
+
+  // Restore on load
+  editableEls.forEach(el => {
+    const k = keyFor(el);
+    const saved = localStorage.getItem(k);
+    if (saved !== null) {
+      el.innerHTML = saved;
+      el.classList.add('edited');
+    }
+  });
+
+  // Save on input + sync siblings with same canvas-key
+  editableEls.forEach(el => {
+    el.addEventListener('input', () => {
+      const k = keyFor(el);
+      localStorage.setItem(k, el.innerHTML);
+      el.classList.add('edited');
+      // Sync other cells with same canvas-key (slide 1 ↔ slide 10)
+      if (el.dataset.canvasKey) {
+        document.querySelectorAll(`[data-canvas-key="${el.dataset.canvasKey}"]`).forEach(twin => {
+          if (twin !== el) {
+            twin.innerHTML = el.innerHTML;
+            twin.classList.add('edited');
+          }
+        });
+      }
+    });
+    // Prevent Enter from creating <div> — use <br>
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.execCommand('insertLineBreak');
+      }
+    });
+  });
+
+  // Reset button
+  const resetBtn = document.getElementById('reset-canvas');
+  resetBtn.addEventListener('click', () => {
+    if (!confirm('Clear all canvas edits? The slides will revert to the starting hypotheses.')) return;
+    editableEls.forEach(el => { localStorage.removeItem(keyFor(el)); });
+    location.reload();
+  });
+
+  slides.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='nav-dot';
+    b.setAttribute('aria-label','Slide '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    dotsWrap.appendChild(b);
+  });
+  const dots = [...dotsWrap.children];
+
+  let idx = 0;
+  let notesVisible = false;
+
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===idx));
+    dots.forEach((d,i)=>{
+      d.classList.toggle('active', i===idx);
+      d.classList.toggle('visited', i<idx);
+    });
+    numEl.textContent = String(idx+1).padStart(2,'0');
+  }
+  function go(n){ idx = Math.max(0, Math.min(slides.length-1, n)); render(); }
+
+  document.addEventListener('keydown', e=>{
+    // Don't hijack keys while the user is typing into an editable cell.
+    // Esc still works to blur out of the field.
+    const t = e.target;
+    if (t && t.isContentEditable) {
+      if (e.key === 'Escape') { t.blur(); e.preventDefault(); }
+      return;
+    }
+    if (e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown') { e.preventDefault(); go(idx+1); }
+    else if (e.key==='ArrowLeft' || e.key==='PageUp') { e.preventDefault(); go(idx-1); }
+    else if (e.key==='Home') go(0);
+    else if (e.key==='End') go(slides.length-1);
+    else if (e.key==='n' || e.key==='N') {
+      notesVisible = !notesVisible;
+      document.querySelectorAll('.speaker-note').forEach(n=>n.classList.toggle('visible', notesVisible));
+    }
+    else if (e.key==='f' || e.key==='F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      navigator.clipboard.writeText(target.innerText).then(()=>{
+        btn.classList.add('copied');
+        const prev = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent = prev; }, 1400);
+      });
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
