@@ -115,11 +115,19 @@ Each venture feeds the others. A competency rubric from StudyStars becomes a Tat
 
 ---
 
-## Palu Labs
+## Palu Labs (ZZP handelsnaam)
 
-**What:** Israel's personal consultancy and experimentation vehicle under Jolie Invest BV. Freelance work, side projects, and ideas in incubation.
+**What:** Israel's personal consultancy and experimentation vehicle. Operates as handelsnaam under his ZZP (eenmanszaak), not a BV — decision 2026-04-13 to keep operations under ZZP for now rather than opening a werk-BV. Publishes Pimpi products, Snackjes/Snackbak, isro.me/print, and invoices freelance engineering/consultancy.
 
-**Role:** Proving ground. Most experiments won't graduate. Track which ones generate energy and learning, not just which ones "succeed."
+**Corporate context:**
+- **Jolie Invest BV** — holding (in oprichting, 2026-04-13). Being set up primarily to receive the Tatoma BV share transfer. No werk-BV subsidiary for now.
+- **Palu Labs** — ZZP handelsnaam, not incorporated. May migrate to a werk-BV under Jolie Invest later if Pimpi revenue, product liability, or a co-founder joining makes incorporation worthwhile.
+
+**Open risks (conscious trade-off):**
+- Personal liability for Pimpi/Snackjes/print products — not shielded by BV
+- Israel's personal name appears on KvK uittreksel as owner of "Palu Labs" handelsnaam (app stores, privacy policies, and formal legal docs still surface the personal name even when public-facing branding says "Palu Labs")
+
+**Role:** Proving ground + publishing vehicle. Most experiments won't graduate. Track which ones generate energy and learning, not just which ones "succeed."
 
 **Known experiments:**
 - Snackbak — physics game with Dutch snack theming. Canvas, collision detection, 3D transforms, SVG optimization.

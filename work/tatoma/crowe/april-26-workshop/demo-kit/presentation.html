@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome & Why Claude — Tatoma × Crowe Foederer</title>
+
+<!-- Tatoma fonts -->
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<style>
+  :root {
+    --bg: #F6FAEB;
+    --fg: #1D021F;
+    --card: #FFFFFF;
+    --primary: #FF8E7D;
+    --secondary: #4F2035;
+    --muted: #A397A3;
+    --muted-fg: #4C3C47;
+    --dark-magenta: #1E001E;
+    --salmon: #FF8C7D;
+    --mint: #0EE17E;
+    --border: rgba(163,151,163,0.25);
+    --radius: 0.75rem;
+    --font-serif: "Canela", Georgia, "Times New Roman", serif;
+    --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Slide engine ── */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 3.5rem 5.5rem 5rem;
+    opacity: 0; transform: translateY(24px); pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(.25,.46,.45,.94),
+                transform 0.5s cubic-bezier(.25,.46,.45,.94);
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .slide.exit-up { opacity: 0; transform: translateY(-24px); }
+
+  .slide.section-divider {
+    justify-content: center; align-items: center; text-align: center;
+  }
+  .slide.section-divider h1 { font-size: clamp(3rem, 6vw, 5.5rem); }
+
+  /* ── Typography ── */
+  h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; line-height: 1.15; }
+  h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
+  h2 { font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+  h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); margin-bottom: 0.6rem; }
+
+  p, li { font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.6; color: var(--muted-fg); }
+  strong { font-weight: 600; color: var(--fg); }
+
+  .mono-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.6rem; display: block;
+  }
+
+  .chip {
+    display: inline-block; padding: 0.25rem 0.8rem;
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    border-radius: 999px;
+    background: var(--dark-magenta); color: var(--salmon);
+  }
+  .chip.mint { background: rgba(14,225,126,0.12); color: #08924f; }
+  .chip.salmon-bg { background: rgba(255,140,125,0.15); color: #b84a3b; }
+  .chip.muted-bg { background: rgba(163,151,163,0.15); color: var(--muted-fg); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.6rem 1.8rem;
+    box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,0,30,0.06); }
+  .card h3 { margin-bottom: 0.4rem; }
+  .card p { font-size: 0.95rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+  /* ── Lists ── */
+  ul { list-style: none; padding: 0; }
+  ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+  ul li::before {
+    content: ""; position: absolute; left: 0; top: 0.6rem;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--salmon);
+  }
+
+  /* ── Big numbers ── */
+  .big-number {
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: 3.2rem; line-height: 1; color: var(--fg); margin-bottom: 0.2rem;
+  }
+
+  /* ── Flow arrows ── */
+  .flow { display: flex; align-items: center; gap: 0.8rem; margin: 1rem 0; flex-wrap: wrap; }
+  .flow-step {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 500;
+  }
+  .flow-arrow { color: var(--muted); font-size: 1.1rem; }
+
+  /* ── Demo box (the key new component) ── */
+  .demo-box {
+    background: var(--card);
+    border: 2px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-top: 1.2rem;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(255,140,125,0.1);
+  }
+  .demo-box-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255,140,125,0.06);
+    border-bottom: 1px solid rgba(255,140,125,0.15);
+  }
+  .demo-box-header .demo-label {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--salmon);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .demo-box-header .demo-label::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--salmon); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .demo-box-body { padding: 1rem 1.2rem; }
+  .demo-box-body .demo-files {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+  }
+  .demo-file {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.7rem; border-radius: 6px;
+    background: rgba(30,0,30,0.04); font-size: 0.78rem; color: var(--muted-fg);
+    font-family: var(--font-mono); letter-spacing: 0.02em;
+  }
+  .demo-file::before { content: "📄"; font-size: 0.7rem; }
+  .demo-file.xlsx::before { content: "📊"; }
+
+  .demo-prompt {
+    position: relative;
+    background: var(--fg); color: rgba(246,250,235,0.92);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem 1rem;
+    font-size: 0.78rem; line-height: 1.6;
+    font-family: var(--font-mono); letter-spacing: 0.01em;
+    max-height: 11rem; overflow-y: auto;
+    cursor: pointer;
+  }
+  .demo-prompt:hover { color: rgba(246,250,235,1); }
+  .demo-prompt::-webkit-scrollbar { width: 6px; }
+  .demo-prompt::-webkit-scrollbar-thumb { background: rgba(246,250,235,0.2); border-radius: 3px; }
+  .demo-prompt .p-tag {
+    display: block;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: rgba(246,250,235,0.4);
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(246,250,235,0.1);
+    padding-right: 3.5rem; /* leaves room for copy button */
+  }
+  .demo-prompt .prompt-text {
+    display: block;
+    white-space: pre-wrap;
+  }
+
+  .copy-btn {
+    position: absolute; top: 0.55rem; right: 0.55rem;
+    background: rgba(255,140,125,0.22); border: none; border-radius: 6px;
+    padding: 0.35rem 0.7rem; cursor: pointer;
+    font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--salmon); transition: background 0.2s;
+    z-index: 2;
+  }
+  .copy-btn:hover { background: rgba(255,140,125,0.4); }
+  .copy-btn.copied { background: rgba(14,225,126,0.3); color: #0EE17E; }
+
+  .demo-surface {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    margin-top: 0.6rem; display: block;
+  }
+
+  /* ── Compare table ── */
+  .compare-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  .compare-table th {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+    text-align: left; padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 0.6rem 0.8rem; font-size: 0.9rem;
+    border-bottom: 1px solid var(--border); color: var(--muted-fg); vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  /* ── Timeline ── */
+  .timeline { display: flex; flex-direction: column; }
+  .timeline-item {
+    display: grid; grid-template-columns: 90px 1.5rem 1fr;
+    align-items: start; padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-time {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.06em; color: var(--muted); padding-top: 0.1rem;
+  }
+  .timeline-dot {
+    width: 9px; height: 9px; border-radius: 50%; margin-top: 0.2rem; justify-self: center;
+  }
+  .timeline-dot.purple { background: var(--secondary); }
+  .timeline-dot.blue { background: #4A7CDB; }
+  .timeline-dot.salmon { background: var(--salmon); }
+  .timeline-dot.muted { background: var(--muted); }
+  .timeline-content h4 {
+    font-family: var(--font-sans); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.1rem;
+  }
+  .timeline-content p { font-size: 0.8rem; color: var(--muted); margin: 0; }
+
+  /* ── Speaker notes ── */
+  .speaker-note {
+    display: none; margin-top: 1.2rem; padding: 1rem 1.2rem;
+    background: rgba(30,0,30,0.04); border-radius: var(--radius);
+    border-left: 3px solid var(--salmon);
+    font-size: 0.85rem; color: var(--muted-fg); line-height: 1.55;
+  }
+  .speaker-note.visible { display: block; }
+  .speaker-note strong {
+    font-size: 0.7rem; font-family: var(--font-mono);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+
+  /* ── Fixed elements ── */
+  .logo-area {
+    position: fixed; top: 1.2rem; left: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem; z-index: 100;
+  }
+  .logo-area img { width: 24px; height: 24px; border-radius: 5px; }
+  .logo-area span {
+    font-family: var(--font-mono); font-size: 0.65rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+  }
+
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 1.5rem; z-index: 100;
+    background: linear-gradient(transparent, rgba(246,250,235,0.95));
+  }
+  .nav-dots { display: flex; gap: 5px; }
+  .nav-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--muted); opacity: 0.3;
+    cursor: pointer; transition: all 0.25s ease; border: none;
+  }
+  .nav-dot.active { opacity: 1; background: var(--salmon); transform: scale(1.3); }
+  .nav-dot.visited { opacity: 0.5; }
+  .nav-info {
+    font-family: var(--font-mono); font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .nav-help {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); opacity: 0.45;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 2rem 1.5rem 4rem; }
+    .two-col, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <img src="https://hub.tatoma.eu/tatoma-icon.png" alt="Tatoma" onerror="this.style.display='none'">
+  <span>Tatoma × Crowe Foederer</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 0 · TITLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider active">
+    <span class="mono-label">April 14, 2026 · 12:30 – 17:00</span>
+    <h1>AI for M&A Advisory</h1>
+    <p style="max-width:34rem; margin:0 auto; text-align:center; font-size:1.1rem;">
+      A hands-on working session exploring how AI can accelerate your M&A workflows — using your own data.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center;">
+      <span class="chip">Tatoma</span>
+      <span class="chip muted-bg">Crowe Foederer</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "Welcome, thanks for making the time." Quick intros — one sentence each. "You know M&A better than we do. We know the AI side. Today we bring those together."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 1 · AGENDA -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">Agenda</span>
+    <h2>First our world, then yours</h2>
+    <p style="max-width:36rem; margin-bottom:1.5rem;">Two parts. First, we show you how we work — two live demos on your data. After the break, we switch to Copilot Studio and start building in your Microsoft environment.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="timeline-time">12:30</span>
+        <div class="timeline-dot salmon"></div>
+        <div class="timeline-content"><h4>Welcome & Why Claude</h4><p>Context, capabilities, patterns</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">13:00</span>
+        <div class="timeline-dot purple"></div>
+        <div class="timeline-content"><h4>Live Demo — IM Review</h4><p>33-page IM analyzed from buyer's perspective</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">13:35</span>
+        <div class="timeline-dot purple"></div>
+        <div class="timeline-content"><h4>Live Demo — Bid Letter vs. Term Sheet</h4><p>Cross-document discrepancy check</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">14:15</span>
+        <div class="timeline-dot muted"></div>
+        <div class="timeline-content"><h4>Transition</h4><p>From Claude patterns to Copilot Studio</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">14:35</span>
+        <div class="timeline-dot blue"></div>
+        <div class="timeline-content"><h4>Copilot Studio — Live Prototyping</h4><p>Financial extraction, valuation, teaser, audit files</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">16:50</span>
+        <div class="timeline-dot muted"></div>
+        <div class="timeline-content"><h4>Wrap-up & Next Steps</h4><p>Priorities, pilot project, timeline</p></div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "This is not a presentation you can lean back and watch. We want you asking questions, trying things, pushing back."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 2 · SECTION: WHY CLAUDE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Section 1</span>
+    <h1>Why Claude?</h1>
+    <p style="max-width:30rem; margin:0 auto; text-align:center;">
+      What makes it our tool of choice for knowledge work — and why it matters for M&A.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 3 · CLAUDE CAPABILITIES -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">About Claude</span>
+    <h2>It reads the way a consultant reads</h2>
+    <p style="max-width:40rem; margin-bottom:1.5rem;">
+      Built by Anthropic. Not keyword scanning — contextual reasoning over long, complex documents. Give it a 33-page IM and it comes back with analysis you can take seriously.
+    </p>
+
+    <div class="grid-2" style="max-width:52rem;">
+      <div class="card">
+        <span class="mono-label">Long documents</span>
+        <div class="big-number">200K</div>
+        <p>tokens of context — roughly a 400-page IM in one pass. No chunking, no "did it actually see page 27?" — the whole document stays in working memory.</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">Critical reading</span>
+        <div class="big-number" style="font-size:2.4rem;">Catches gaps</div>
+        <p>Holds long documents in memory and notices what a tired analyst might miss on page 27 — weak normalization justifications, terms defined inconsistently across files.</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">Dutch language</span>
+        <div class="big-number">NL</div>
+        <p>Reads and writes Dutch fluently. Annual reports, templates, jaarrekening terminology — no translation step. (For dense legal reasoning we still sometimes prompt in English and have it answer in Dutch.)</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">Structured output</span>
+        <div class="big-number" style="font-size:2.1rem;">→ Table</div>
+        <p>Ask for a risk register, comparison matrix, or filled Excel template and you get it in that shape — not prose you then have to reformat. You still review the contents, but the structure is done.</p>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Keep it grounded in their world — "You know ChatGPT, Copilot. Good tools. But for work where accuracy and nuance matter, Claude is in a different league. The difference isn't speed — it's quality of analysis."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4 · HOW TATOMA USES IT -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">Our daily workflow</span>
+    <h2>Not an experiment — a workhorse</h2>
+
+    <div class="two-col" style="margin-top:1.2rem;">
+      <div>
+        <p style="margin-bottom:1.2rem;">At Tatoma, Claude is how we work every day. Contract analysis, financial documentation, proposals, report reviews. What took a day takes an hour — with better structure.</p>
+        <ul>
+          <li><strong>Three surfaces</strong> for different needs — each one tuned for a different kind of work</li>
+          <li><strong>Always honest about limits</strong> — AI output is a strong first draft, never a final answer</li>
+          <li><strong>The demos today use all three</strong> — you'll see each one in action</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:0.8rem;">
+          <span class="chip" style="margin-bottom:0.6rem;">Claude Chat</span>
+          <p>Quick analysis and reasoning. Upload a document, get insight. This is where we'll do the two live demos.</p>
+        </div>
+        <div class="card" style="margin-bottom:0.8rem;">
+          <span class="chip mint" style="margin-bottom:0.6rem;">Claude Cowork</span>
+          <p>File-heavy work. Reads docs, fills templates, creates deliverables. Like a capable junior with perfect attention to detail.</p>
+        </div>
+        <div class="card">
+          <span class="chip muted-bg" style="margin-bottom:0.6rem;">Claude Code</span>
+          <p>Technical workflows. Data pipelines, parsing large files. The engineering layer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 5 · SECTION: PATTERNS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Section 2</span>
+    <h1>The Patterns<br>That Matter</h1>
+    <p style="max-width:32rem; margin:0 auto; text-align:center;">
+      Four universal AI work patterns. They work in Claude. They work in Copilot Studio. The platform is a choice — the pattern is universal.
+    </p>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "What I'm about to show you aren't Claude features. They're work patterns — ways of using AI that work regardless of the platform. And I'll demo each one live so you can see for yourself."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 6 · PATTERN 1: DOCUMENT ANALYSIS + LIVE DEMO -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.4rem;">
+      <span class="chip salmon-bg">Pattern 1</span>
+      <span class="mono-label" style="margin:0;">Document Analysis</span>
+    </div>
+    <h2>Upload → Analyze → Structured Insight</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <p>Give the AI a document and ask for analysis from a specific perspective. An IM, annual report, NBO — it reads the full thing and comes back with structured findings.</p>
+        <ul style="margin-top:0.8rem;">
+          <li>"Review this IM from a buyer's perspective"</li>
+          <li>"Assess the EBITDA normalizations"</li>
+          <li>"Summarize the financial health in one page"</li>
+        </ul>
+        <p style="margin-top:0.8rem;"><strong>In the real demos:</strong> this is UC1 — the 33-page IM review with Crowe's actual data.</p>
+      </div>
+
+      <div class="demo-box">
+        <div class="demo-box-header">
+          <span class="demo-label">Live demo — switch to Claude Chat</span>
+        </div>
+        <div class="demo-box-body">
+          <div class="demo-files">
+            <span class="demo-file">sample-company-profile.md</span>
+          </div>
+          <div class="demo-prompt" id="prompt-1" onclick="copyPrompt(this)">
+            <span class="p-tag">Prompt</span>
+            <button class="copy-btn" onclick="event.stopPropagation(); copyPrompt(document.getElementById('prompt-1'))">Copy</button>
+<span class="prompt-text">You are an experienced M&A advisor reviewing this Information Memorandum on behalf of a potential buyer.
+
+Please provide:
+  1. Executive summary of the company (3–4 sentences)
+  2. Key strengths that make this an attractive acquisition
+  3. Key risks and red flags — be specific, cite numbers
+  4. Questions you would raise in the next management meeting
+  5. Your assessment of the EBITDA normalizations — which do you accept, which would you challenge, and why?
+
+Be direct and analytical. This is for an internal buyer memo, not a polite response to the seller.</span>
+          </div>
+          <span class="demo-surface">Upload file → paste prompt → let it run while you talk</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7 · PATTERN 2: CROSS-DOC COMPARISON + DEMO -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.4rem;">
+      <span class="chip salmon-bg">Pattern 2</span>
+      <span class="mono-label" style="margin:0;">Cross-Document Comparison</span>
+    </div>
+    <h2>Two Documents → Discrepancies → Risks</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <p>Upload two versions of a deal document. Ask: what changed? Where are the differences? Which party benefits?</p>
+        <ul style="margin-top:0.8rem;">
+          <li>Bid letter vs. term sheet</li>
+          <li>Draft agreement vs. signed version</li>
+          <li>Two competing offers side by side</li>
+        </ul>
+        <p style="margin-top:0.8rem;">In M&A, a EUR 150K earn-out gap or a shifted non-compete can change the whole dynamic.</p>
+        <p style="margin-top:0.5rem;"><strong>In the real demos:</strong> this is UC2 — NBO vs. Term Sheet for Van Grunsven.</p>
+      </div>
+
+      <div class="demo-box">
+        <div class="demo-box-header">
+          <span class="demo-label">Live demo — switch to Claude Chat</span>
+        </div>
+        <div class="demo-box-body">
+          <div class="demo-files">
+            <span class="demo-file">letter-of-intent-v1.md</span>
+            <span class="demo-file">share-purchase-agreement-v1.md</span>
+          </div>
+          <div class="demo-prompt" id="prompt-2" onclick="copyPrompt(this)">
+            <span class="p-tag">Prompt</span>
+            <button class="copy-btn" onclick="event.stopPropagation(); copyPrompt(document.getElementById('prompt-2'))">Copy</button>
+<span class="prompt-text">I'm uploading two deal documents for the same transaction:
+  1. Letter of Intent (LOI) — dated Jan 15, 2026
+  2. Share Purchase Agreement (SPA) — dated Mar 10, 2026
+
+Compare these clause by clause. For every discrepancy, tell me:
+  • What the LOI says
+  • What the SPA says
+  • Who benefits from the change (buyer or seller)
+  • Whether this is a material change
+
+Present as a structured table. Don't skip minor differences — in M&A, the details matter.</span>
+          </div>
+          <span class="demo-surface">Upload both files → paste prompt → 25 discrepancies planted</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 8 · PATTERN 3: TEMPLATE FILLING + DEMO -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.4rem;">
+      <span class="chip mint">Pattern 3</span>
+      <span class="mono-label" style="margin:0;">Template Filling</span>
+    </div>
+    <h2>Source Data + Template → Populated Deliverable</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <p>You have a source document (annual report, IM) and an empty template (Excel, PowerPoint). The AI reads the source, understands the template structure, and fills it in.</p>
+        <ul style="margin-top:0.8rem;">
+          <li>Not copy-paste — it maps the right data to the right cells</li>
+          <li>Flags where data is missing or needs estimation</li>
+          <li>This pattern scales across all your deliverables</li>
+        </ul>
+        <p style="margin-top:0.8rem;"><strong>Later today:</strong> this is UC3 (cijferopstelling) — we'll build this in Copilot Studio.</p>
+      </div>
+
+      <div class="demo-box" style="border-color: #0EE17E;">
+        <div class="demo-box-header" style="background: rgba(14,225,126,0.06); border-bottom-color: rgba(14,225,126,0.15);">
+          <span class="demo-label" style="color: #08924f;">Live demo — switch to Claude Cowork<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#0EE17E; margin-left:0.5rem; animation:pulse 2s infinite;"></span></span>
+        </div>
+        <div class="demo-box-body">
+          <div class="demo-files">
+            <span class="demo-file">source-annual-report.md</span>
+            <span class="demo-file xlsx">financial-overview-template.xlsx</span>
+          </div>
+          <div class="demo-prompt" id="prompt-3" onclick="copyPrompt(this)">
+            <span class="p-tag">Prompt</span>
+            <button class="copy-btn" onclick="event.stopPropagation(); copyPrompt(document.getElementById('prompt-3'))">Copy</button>
+<span class="prompt-text">I'm giving you two files:
+  1. Annual report for BrightPath Solutions B.V. — source data
+  2. Excel template with empty cells for a financial overview
+
+Read the annual report and fill in the template. The blue cells with yellow background are the input cells. Fill:
+  • P&L for all three years (2023 → 2025)
+  • Balance Sheet for 2025 and 2024
+  • Key Metrics wherever the data allows
+
+Use exact figures from the report. Where you estimate, explain your calculation.</span>
+          </div>
+          <span class="demo-surface">Drop both files into Cowork → paste prompt → produces filled Excel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 9 · PATTERN 4: DATA EXTRACTION + DEMO -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <div style="display:flex; align-items:center; gap:0.8rem; margin-bottom:0.4rem;">
+      <span class="chip muted-bg">Pattern 4</span>
+      <span class="mono-label" style="margin:0;">Data Extraction</span>
+    </div>
+    <h2>Unstructured Mess → Clean Structured Data</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <p>Messy, unstructured files — handwritten DD notes, audit exports, PDF reports — converted into structured, analyzable data.</p>
+        <ul style="margin-top:0.8rem;">
+          <li>XAF with 99K journal entries → anomaly summary</li>
+          <li>Site visit scribbles → risk register + action items</li>
+          <li>Everyone has notes like these — let's see what AI does with them</li>
+        </ul>
+        <p style="margin-top:0.8rem;"><strong>Later today:</strong> this is UC6 (audit files) — we'll architect the pipeline together.</p>
+      </div>
+
+      <div class="demo-box" style="border-color: var(--muted);">
+        <div class="demo-box-header" style="background: rgba(163,151,163,0.06); border-bottom-color: rgba(163,151,163,0.15);">
+          <span class="demo-label" style="color: var(--muted-fg);">Live demo — Cowork or Chat</span>
+        </div>
+        <div class="demo-box-body">
+          <div class="demo-files">
+            <span class="demo-file">messy-due-diligence-notes.md</span>
+          </div>
+          <div class="demo-prompt" id="prompt-4" onclick="copyPrompt(this)">
+            <span class="p-tag">Prompt</span>
+            <button class="copy-btn" onclick="event.stopPropagation(); copyPrompt(document.getElementById('prompt-4'))">Copy</button>
+<span class="prompt-text">These are raw notes from a due diligence site visit. They're messy and conversational — that's how real DD notes look.
+
+Extract and organize into a structured risk register with columns:
+  Risk ID │ Category │ Description │ Severity │ Financial impact │ Source │ Recommended action
+
+Sort by severity. Don't miss anything — read carefully, including the confidential asides.</span>
+          </div>
+          <span class="demo-surface">Upload the messy notes → chaos to structure in seconds</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 10 · PATTERNS SUMMARY -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">The framework</span>
+    <h2>Four patterns, one approach</h2>
+    <p style="max-width:38rem; margin-bottom:1.5rem;">Everything we do this afternoon falls into one of these four. Whether you use Claude or Copilot Studio — the approach is the same.</p>
+
+    <div class="grid-4" style="max-width:52rem; margin-bottom:1.5rem;">
+      <div class="card" style="text-align:center; padding:1.4rem;">
+        <div style="font-size:1.6rem; margin-bottom:0.3rem;">📄</div>
+        <h3 style="font-size:1rem;">Analyze</h3>
+        <p style="font-size:0.8rem;">Document → insight</p>
+      </div>
+      <div class="card" style="text-align:center; padding:1.4rem;">
+        <div style="font-size:1.6rem; margin-bottom:0.3rem;">⚖️</div>
+        <h3 style="font-size:1rem;">Compare</h3>
+        <p style="font-size:0.8rem;">Two docs → discrepancies</p>
+      </div>
+      <div class="card" style="text-align:center; padding:1.4rem;">
+        <div style="font-size:1.6rem; margin-bottom:0.3rem;">📋</div>
+        <h3 style="font-size:1rem;">Fill</h3>
+        <p style="font-size:0.8rem;">Source + template → deliverable</p>
+      </div>
+      <div class="card" style="text-align:center; padding:1.4rem;">
+        <div style="font-size:1.6rem; margin-bottom:0.3rem;">⛏️</div>
+        <h3 style="font-size:1rem;">Extract</h3>
+        <p style="font-size:0.8rem;">Mess → structured data</p>
+      </div>
+    </div>
+
+    <table class="compare-table" style="max-width:52rem;">
+      <thead>
+        <tr><th>Pattern</th><th>This afternoon</th><th>Platform</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Analyze</strong></td>
+          <td>UC1 — IM Review (buyer's perspective)</td>
+          <td><span class="chip" style="font-size:0.55rem;">Claude</span></td>
+        </tr>
+        <tr>
+          <td><strong>Compare</strong></td>
+          <td>UC2 — Bid letter vs. term sheet</td>
+          <td><span class="chip" style="font-size:0.55rem;">Claude</span></td>
+        </tr>
+        <tr>
+          <td><strong>Fill</strong></td>
+          <td>UC3–5 — Financials, valuation, teaser</td>
+          <td><span class="chip muted-bg" style="font-size:0.55rem;">Copilot Studio</span></td>
+        </tr>
+        <tr>
+          <td><strong>Extract</strong></td>
+          <td>UC6 — Audit files (XAF → structured)</td>
+          <td><span class="chip muted-bg" style="font-size:0.55rem;">Copilot Studio</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "The platform is a choice. The pattern is universal." Pause — check if there are questions before moving on to the real demos.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 11 · SECTION: LET'S GO -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Section 3</span>
+    <h1>Let's see it work</h1>
+    <p style="max-width:32rem; margin:0 auto; text-align:center;">
+      Two live demos. Your data. Your documents. You judge the results.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 12 · WHAT'S NEXT -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">Up next</span>
+    <h2>Two demos, then we build</h2>
+    <p style="max-width:40rem; margin-bottom:1.5rem;">We're going live on your Project Faraday and Van Grunsven materials. Not test data — your real case files.</p>
+
+    <div class="grid-2" style="max-width:52rem; margin-bottom:1.5rem;">
+      <div class="card" style="border-top:3px solid var(--secondary);">
+        <span class="mono-label">Demo 1 — 35 min</span>
+        <h3 style="font-size:1.3rem;">IM Review</h3>
+        <p>Upload the 33-page KleurRijker IM. Claude analyzes from a buyer's perspective. You judge the reasoning.</p>
+        <div style="margin-top:0.8rem;">
+          <span class="chip" style="font-size:0.55rem; margin-right:0.3rem;">8 min demo</span>
+          <span class="chip mint" style="font-size:0.55rem; margin-right:0.3rem;">12 min hands-on</span>
+          <span class="chip muted-bg" style="font-size:0.55rem;">15 min discussion</span>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--secondary);">
+        <span class="mono-label">Demo 2 — 25 min</span>
+        <h3 style="font-size:1.3rem;">Bid Letter vs. Term Sheet</h3>
+        <p>NBO + Term Sheet for Van Grunsven. Claude finds discrepancies. You verify the findings.</p>
+        <div style="margin-top:0.8rem;">
+          <span class="chip" style="font-size:0.55rem; margin-right:0.3rem;">7 min demo</span>
+          <span class="chip mint" style="font-size:0.55rem; margin-right:0.3rem;">8 min hands-on</span>
+          <span class="chip muted-bg" style="font-size:0.55rem;">10 min discussion</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="max-width:52rem; background:rgba(255,140,125,0.05); border-color:var(--salmon);">
+      <p style="color:var(--fg);"><strong>After the break</strong> — we switch to Copilot Studio for the remaining use cases. The goal isn't to have everything finished by five. The goal is for you to see how it works, what's possible, and where we start.</p>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "During every demo, you get to try things yourselves. Your own questions, your own prompts. In the Copilot Studio sessions, we're truly building together — you know the business, we know the tooling." Pause. "Ready? Let's start with the IM."
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Nav bar ── -->
+<div class="nav-bar">
+  <div class="nav-dots" id="navDots"></div>
+  <div class="nav-info" id="navInfo">1 / 13</div>
+  <div class="nav-help">← → &nbsp;·&nbsp; N = notes &nbsp;·&nbsp; click prompt to copy</div>
+</div>
+
+<script>
+(function() {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+
+  function goTo(n) {
+    if (n < 0 || n >= slides.length) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit-up');
+    setTimeout(() => slides[current === n ? 0 : current].classList.remove('exit-up'), 550);
+    const old = current;
+    current = n;
+    slides[current].classList.add('active');
+    setTimeout(() => slides[old].classList.remove('exit-up'), 550);
+    updateNav();
+  }
+
+  function updateNav() {
+    document.getElementById('navInfo').textContent = `${current + 1} / ${slides.length}`;
+    document.querySelectorAll('.nav-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+      d.classList.toggle('visited', i < current);
+    });
+  }
+
+  const dotsEl = document.getElementById('navDots');
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
+    else if (e.key === 'n' || e.key === 'N') {
+      const note = slides[current].querySelector('.speaker-note');
+      if (note) note.classList.toggle('visible');
+    }
+    else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const d = tx - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 60) d > 0 ? goTo(current + 1) : goTo(current - 1);
+  });
+})();
+
+function copyPrompt(el) {
+  // Grab the prompt text from the .prompt-text child, fall back to first text node
+  const textEl = el.querySelector('.prompt-text');
+  const text = (textEl ? textEl.innerText : el.childNodes[0].textContent).trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.querySelector('.copy-btn');
+    if (btn) {
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    }
+  });
+}
+</script>
+
+</body>
+</html>
