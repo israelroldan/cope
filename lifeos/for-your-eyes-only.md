@@ -32,7 +32,7 @@ on a production database.
 
 ### 2. Revenue concentration is dangerous
 
-100% of income from Tatoma. Zero from StudyStars, Pimpi, Palu Labs, Cope.
+100% of income from Tatoma. Zero from StudyStars, Pimpi, Kimbi Games, Literary Sculptor, or Palú Labs freelance. Cope is not a product.
 You said it yourself: paycheck to paycheck, hoping the equity pays out.
 
 The equity risk compounds with the single-point-of-failure risk. If your
@@ -56,9 +56,10 @@ But the pattern across your portfolio is: build → refine → build more → re
 more → … → monetize later. "Later" keeps getting pushed because there's always
 another feature, another venture, another improvement.
 
-TLOM has facilitator scripts but no paying cohort. Pimpi Sparks is live but
-free. Pimpi Card is in private alpha. The Book Doctor is a toolkit without
-customers. Cope is infrastructure for you, not a product for others.
+StudyStars/TLOM has facilitator scripts but no paying cohort. Pimpi Sparks is
+live but free. Pimpi Card is in private alpha. The Literary Sculptor is a
+toolkit without customers. Snackjes! is live on the App Store but not
+monetised. Cope is infrastructure for you, not a product for others.
 
 **What this means:** You don't have a building problem. You have a finishing-
 and-selling problem. The next EUR you earn should probably come from something

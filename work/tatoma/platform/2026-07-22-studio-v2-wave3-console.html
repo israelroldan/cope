@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Studio v2 Wave 3</title>
+<style>
+  :root{
+    --serif:"Canela",Georgia,"Times New Roman",serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"TSTARMonoRound",ui-monospace,"SF Mono",Menlo,monospace;
+
+    --bg:#faf6f4; --fg:#1d0a14; --card:#fff; --muted:#f3e3dc; --muted-fg:#6e5b61;
+    --border:#ecdcd5; --chip:rgba(29,10,20,.05);
+    --primary:#ff8c7d; --secondary:#1f0a16; --on-secondary:#fbefe9;
+    --open:#8a8194;  --open-soft:#efe9ee;
+    --wip:#c08a3e;   --wip-soft:#f6ecd9;
+    --done:#3f7d5a;  --done-soft:#e1efe5;
+    --gap:#b86a55;   --gap-soft:#f6e4dd;
+    --tone-olive:#e8e6cb; --tone-sage:#d1dcc5; --tone-blush:#f7e2da; --tone-muted:#f3e3dc;
+    --shadow:0 1px 2px rgba(29,10,20,.05);
+  }
+  body.dark{
+    --bg:#1a0511; --fg:#fbefe9; --card:#2b1220; --muted:#3a1f2e; --muted-fg:#c9b6bf;
+    --border:#43293a; --chip:rgba(251,239,233,.08); --secondary:#0f030b;
+    --open:#a99bab;  --open-soft:#3a2c38;
+    --wip:#e0a95c;   --wip-soft:#4a3419;
+    --done:#7fbf98;  --done-soft:#1d3a2a;
+    --gap:#e2937b;   --gap-soft:#4a241a;
+    --shadow:0 1px 3px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.5;
+    transition:background .25s,color .25s}
+  h1,h2,h3{font-family:var(--serif);font-weight:300;letter-spacing:-.015em;margin:0}
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+  button,input,textarea{font-family:inherit;color:inherit}
+
+  /* 1 · chrome */
+  .chrome{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--border);
+    padding:16px 28px 14px;display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .chrome h1{font-size:27px;line-height:1.1}
+  .statline{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-top:6px;display:flex;align-items:center;gap:10px}
+  .pbar{width:120px;height:4px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .pbar > i{display:block;height:100%;background:var(--primary);transition:width .35s}
+  .ctrls{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;
+    border:1px solid var(--border);border-radius:99px;padding:6px 13px;background:transparent;
+    color:var(--muted-fg);cursor:pointer;white-space:nowrap}
+  .pill:hover{border-color:var(--fg);color:var(--fg)}
+  .pill.on{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+  input.pill{width:100px;text-transform:none;letter-spacing:0;cursor:text}
+  input.pill:focus{outline:none;border-color:var(--primary)}
+
+  .wrap{padding:20px 28px 90px;max-width:1760px;margin:0 auto}
+  .eyebrow{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted-fg);margin:0 0 9px}
+
+  /* 2 · spotlight */
+  .spot{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:22px}
+  .tile{border-radius:12px;padding:10px 12px;border:1px solid var(--border);background:var(--card);
+    cursor:pointer;transition:transform .2s,box-shadow .2s;min-width:0}
+  .tile:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(29,10,20,.12)}
+  .tile .le{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .mn{font-family:var(--mono);font-size:12.5px;font-weight:700;margin-top:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .sb{font-size:13px;color:var(--muted-fg);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile.t-wip{border-color:var(--wip);background:var(--wip-soft)}
+  .tile.t-wip .le{color:var(--wip)}
+  .tile.t-cp{border-color:var(--primary)}
+  .tile.t-done{background:var(--done-soft);opacity:.8}
+  .tile.t-parked{background:var(--bg);opacity:.65}
+  .tile .warn{color:var(--gap);font-weight:700}
+
+  /* 3 · seam ledger */
+  .ledger{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:22px}
+  .lhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .lhead h2{font-size:19px}
+  .lsum{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted-fg)}
+  .lhead .pill{margin-left:auto}
+  .srow{display:flex;align-items:center;gap:9px;border-radius:11px;padding:8px 13px;margin-top:7px;
+    cursor:pointer;border:1px solid transparent;min-width:0}
+  .srow:hover{background:var(--chip)}
+  .srow.armed{border-color:var(--gap);background:var(--gap-soft)}
+  .srow.cleared{opacity:.45}
+  .spill{font-family:var(--mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    border-radius:99px;padding:3px 8px;white-space:nowrap}
+  .sp-armed{background:var(--gap);color:#fff}
+  .sp-live{background:var(--gap-soft);color:var(--gap)}
+  .sp-waiting{background:var(--open-soft);color:var(--open)}
+  .sp-cleared{background:var(--done-soft);color:var(--done)}
+  .sn{font-family:var(--mono);font-size:11px;font-weight:700}
+  .sfile{font-family:var(--mono);font-size:11px;color:var(--muted-fg);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-width:270px}
+  .tchip{font-family:var(--mono);font-size:9.5px;font-weight:700;border-radius:99px;padding:2px 7px;cursor:pointer;white-space:nowrap}
+  .tc-todo{background:var(--open-soft);color:var(--open)}
+  .tc-wip{background:var(--wip-soft);color:var(--wip)}
+  .tc-done{background:var(--done-soft);color:var(--done)}
+  .sverd{font-size:13px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sdetail{border-radius:9px;background:var(--gap-soft);padding:11px 14px;margin:6px 0 4px;font-size:12.5px;line-height:1.55}
+  .lempty{font-size:12px;font-style:italic;color:var(--muted-fg);padding:10px 2px}
+
+  /* 4 · wave map */
+  .board{display:grid;grid-template-columns:190px repeat(4,minmax(0,1fr));gap:13px;align-items:start}
+  .col{min-width:0}
+  .chead{font-family:var(--mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+    margin:0 2px 10px;display:flex;justify-content:space-between;gap:6px}
+  .cempty{border:1px dashed var(--border);border-radius:12px;padding:16px 8px;text-align:center;
+    font-size:11.5px;font-style:italic;color:var(--muted-fg)}
+
+  .card{background:var(--card);border-radius:13px;padding:13px 15px 12px;margin-bottom:9px;box-shadow:var(--shadow);
+    overflow:hidden;cursor:pointer;border-top:4px solid transparent;transition:box-shadow .2s,transform .2s}
+  .card:hover{box-shadow:0 6px 20px rgba(29,10,20,.13)}
+  .card.cp{border-top-color:var(--primary)}
+  .card.s-done{opacity:.55}
+  .ctop{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .cid{font-family:var(--mono);font-size:12px;font-weight:700}
+  .pick{font-family:var(--mono);font-size:9.5px;background:var(--secondary);color:var(--on-secondary);
+    border-radius:99px;padding:2px 7px}
+  .urg{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--wip-soft);color:var(--wip);
+    border-radius:99px;padding:2px 7px;letter-spacing:.06em}
+  .stat-c{margin-left:auto;border:0;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center}
+  .dot0{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--open);background:transparent;
+    transition:border-color .15s,background .15s}
+  .stat-c:hover .dot0{border-color:var(--wip);background:var(--wip-soft)}
+  .stat-l{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;border-radius:99px;padding:3px 9px}
+  .stat-l::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor}
+  .sl-wip{background:var(--wip-soft);color:var(--wip)}
+  .sl-done{background:var(--done-soft);color:var(--done)}
+  .ctitle{font-family:var(--serif);font-size:15.5px;line-height:1.3;letter-spacing:-.01em;margin:9px 0 8px}
+  .cmeta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .lane-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;color:#1d0a14}
+  .seam-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;
+    background:var(--gap-soft);color:var(--gap)}
+  .blk-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;
+    background:var(--open-soft);color:var(--open)}
+  .ag-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;background:var(--muted);color:var(--muted-fg)}
+
+  .exp{margin-top:11px;padding-top:11px;border-top:1px solid var(--border);cursor:default}
+  .surf{font-family:var(--mono);font-size:10px;background:var(--chip);border-radius:8px;padding:9px 11px;
+    max-height:110px;overflow:auto;line-height:1.5;margin-top:8px}
+  .surf .k,.nk{display:block;font-family:var(--mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-bottom:4px}
+  .note{border-left:3px solid var(--gap);padding-left:10px;font-size:12px;line-height:1.55;color:var(--muted-fg);margin-top:10px}
+  .deliv{font-size:12px;font-style:italic;color:var(--done);margin-top:8px}
+  .agi{width:100%;font-family:var(--mono);font-size:11px;padding:7px 12px;border:1px solid var(--border);
+    border-radius:99px;background:var(--bg);margin-top:11px}
+  .agi:focus,.nts:focus{outline:none;border-color:var(--primary)}
+  .nts{width:100%;min-height:36px;font-size:11.5px;padding:8px 11px;border:1px dashed var(--border);
+    border-radius:10px;background:var(--bg);margin-top:7px;resize:vertical}
+  .arow{display:flex;align-items:center;gap:11px;margin-top:12px}
+  .disp{width:44px;height:44px;flex-shrink:0;border-radius:99px;border:0;background:var(--primary);color:#1d0a14;
+    font-size:18px;cursor:pointer;transition:transform .2s}
+  .disp:hover{transform:scale(1.07)}
+  .ahint{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg)}
+  .lnk{margin-left:auto;font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--border);
+    border-radius:99px;padding:4px 9px;color:var(--muted-fg)}
+  .lnk:hover{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+
+  /* 5 · dispatch drawer */
+  .scrim{position:fixed;inset:0;background:rgba(29,10,20,.45);z-index:40}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:390px;background:var(--secondary);color:var(--on-secondary);
+    padding:26px;box-shadow:-12px 0 40px rgba(0,0,0,.3);z-index:41;overflow-y:auto}
+  .dtop{display:flex;align-items:center;gap:8px}
+  .deye{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--primary)}
+  .dx{margin-left:auto;background:transparent;border:0;color:var(--on-secondary);font-size:16px;cursor:pointer;opacity:.7}
+  .dx:hover{opacity:1}
+  .drawer h2{font-size:25px;margin-top:14px}
+  .dsub{font-size:13.5px;opacity:.75;margin-top:4px;line-height:1.45}
+  .warn{border-radius:10px;padding:11px 13px;margin-top:12px;font-size:12.5px;line-height:1.5}
+  .w-armed{background:var(--gap);color:#fff}
+  .w-soft{background:var(--gap-soft);color:#1d0a14}
+  .w-blk{background:var(--wip-soft);color:#1d0a14}
+  .step{border:1px solid rgba(251,239,233,.22);border-radius:11px;padding:11px 13px;margin-top:11px;
+    display:flex;align-items:center;gap:10px}
+  .step .sl{font-family:var(--mono);font-size:10.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cpy{font-family:var(--mono);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    background:var(--primary);color:#1d0a14;border:0;border-radius:99px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+  .stepin{background:transparent;border:0;border-bottom:1px solid rgba(251,239,233,.4);color:var(--on-secondary);
+    font-family:var(--mono);font-size:11px;padding:3px 0;flex:1;min-width:0}
+  .stepin:focus{outline:none;border-bottom-color:var(--primary)}
+  .markwip{width:100%;margin-top:18px;background:var(--primary);color:#1d0a14;border:0;border-radius:12px;
+    padding:14px;font-family:var(--mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
+  .markwip:hover{filter:brightness(1.05)}
+  .dfoot{display:flex;align-items:center;gap:8px;margin-top:14px}
+  .ghost{font-family:var(--mono);font-size:9.5px;background:transparent;border:1px solid rgba(251,239,233,.3);
+    color:var(--on-secondary);border-radius:99px;padding:5px 10px;cursor:pointer}
+  .ghost:hover{background:rgba(251,239,233,.1)}
+  .dfoot a{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--on-secondary);opacity:.75;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="chrome">
+  <div>
+    <h1>Studio v2 Wave 3 <span style="opacity:.45">— The remaining 21 in 8 dispatch groups: one lane = one agent = one PR</span></h1>
+    <div class="statline"><span id="stats"></span><span class="pbar"><i id="pfill"></i></span></div>
+  </div>
+  <div class="ctrls">
+    <button class="pill" id="cpBtn">crit path</button>
+    <input class="pill" id="agFilter" placeholder="agent…"/>
+    <button class="pill" id="themeBtn">◐ dark</button>
+    <button class="pill" id="copyBtn">copy state</button>
+    <button class="pill" id="resetBtn">reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="eyebrow">Next up, per lane · click a tile to act</p>
+  <div class="spot" id="spot"></div>
+
+  <div class="ledger">
+    <div class="lhead">
+      <h2>Seams</h2>
+      <span class="lsum" id="lsum"></span>
+      <button class="pill" id="quietBtn"></button>
+    </div>
+    <div id="srows"></div>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<div id="overlay"></div>
+
+<script>
+/* ══ CONFIG — retarget for a different tracker/workspace ══ */
+const CFG={
+  prefix:"TTM",                                            // issue key prefix
+  url:id=>`https://linear.app/tatoma/issue/TTM-${id}`,     // issue link
+  worktree:(id,branch)=>`git fetch origin && git worktree add ../cp-ttm-${id} -b ${branch} origin/main`,
+  prompt:(id,title)=>`hey dear friend, can you please help me take a look at and tackle ${CFG.prefix}-${id} — ${title} (${CFG.url(id)})`,
+};
+
+/* ══ SEED — regenerated from Linear by the tracker skill. Never hand-edit render code. ══ */
+const STREAMS = {
+  R: { name: "Readiness flow restructure", tone: "var(--tone-olive)" },
+  I: { name: "Immersive activity polish", tone: "var(--tone-sage)" },
+  P: { name: "Profile pair", tone: "var(--tone-blush)" },
+  H: { name: "Home rooms", tone: "var(--tone-olive)" },
+  D: { name: "Studio one-offs", tone: "var(--tone-muted)" },
+  S: { name: "Sharing & prompts", tone: "var(--tone-sage)" },
+  C: { name: "Admin & reporting cleanup", tone: "var(--tone-blush)" },
+  Q: { name: "Proposals & investigation", tone: "var(--tone-muted)" },
+};
+
+const T = [
+  // ---- R: the AI-readiness flow as ONE arc (proposal, then the screens inside it) ----
+  { id: 940, s: "R", t: "AI readiness: split 'how you work with AI' from the knowledge test",
+    surf: "academy: learn/interactive-lesson-flow.tsx, academy: activities/evaluate/*, course structure (authoring MCP)",
+    note: "GROUP R = one agent, one PR arc: 940 -> 949 -> 946. PRE-SPEC first: propose the split (sequence, framing, transitions), get a nod, then restructure. 949/946 are screens inside whatever flow survives, hence they wait. SEAM1: R owns the flow shape; I lane adds intro visuals after it settles. This is course content + runner: coordinate with the authoring side.",
+    branch: "israel/ttm-940-ai-readiness-split-how-you-work-with-ai-from-the-knowledge",
+    blk: [], soft: [], cp: true, size: "L",
+    deliver: "Approved proposal, then two shorter coherent parts instead of one 14-question mix." },
+  { id: 949, s: "R", t: "AI readiness outro: consolidate the stacked 'you are done' screens",
+    surf: "academy: learn/course-recap-screen.tsx, academy: embed/learn/[courseSlug]/complete, academy catalogues",
+    note: "GROUP R, second: the outro concludes whatever 940 shapes. Maarten hedged ('maybe it is ok'), light touch. SEAM2: this card owns course-recap-screen.tsx; if P's 936 confirmation turns out to live there too, P lands after this. SEAM3 academy catalogues.",
+    branch: "israel/ttm-949-ai-readiness-outro-consolidate-the-stacked-you-are-done-info",
+    blk: [], soft: [940], cp: true, size: "S",
+    deliver: "Each outro screen has a distinct job; the duplicate pair is folded into the academy/tasks screens." },
+  { id: 946, s: "R", t: "AI readiness: intermediate message screen looks visually off",
+    surf: "academy: activities/observe/content-card.tsx, academy: learn/interactive-lesson-flow.tsx",
+    note: "GROUP R, last. RE-VERIFY against main first: TTM-941's rework already restyled this flow and the ticket screenshot predates it — the screen may already be fixed or gone after 940's split.",
+    branch: "israel/ttm-946-ai-readiness-intermediate-message-screen-looks-visually-off",
+    blk: [], soft: [940], cp: true, size: "S",
+    deliver: "The message screen matches the immersive flow (or is confirmed already fixed)." },
+
+  // ---- I: additive visual polish on immersive activities ----
+  { id: 931, s: "I", t: "Immersive intro screens: add visual guidance (currently text-only)",
+    surf: "academy: activities/observe/content-card.tsx, academy: learn/interactive-lesson-flow.tsx, academy catalogues",
+    note: "GROUP I = one agent, one PR: 931 -> 933. Both are additive visual treatments on academy activities. SEAM1: R lane restructures the same flow — this card lands AFTER 940's shape settles (soft dep), or its intro visuals may decorate screens that move. SEAM3 academy catalogues.",
+    branch: "israel/ttm-931-immersive-intro-screens-add-visual-guidance-currently-text",
+    blk: [], soft: [940], cp: false, size: "M",
+    deliver: "Every major immersive section opens with a supporting visual, consistently treated." },
+  { id: 933, s: "I", t: "Immersive selections: add a check indicator on selected options",
+    surf: "academy: activities/evaluate/* (selection components)",
+    note: "GROUP I, second. Icon component, not a glyph in copy (house style). Independent of the flow shape, safe any time.",
+    branch: "israel/ttm-933-immersive-selections-add-a-check-indicator-on-selected",
+    blk: [], soft: [], cp: false, size: "S",
+    deliver: "Selected options carry an explicit selected indicator." },
+
+  // ---- P: the profile pair (the doc literally cross-references these two items) ----
+  { id: 927, s: "P", t: "Profile screen: visual cohesion and scannability pass",
+    surf: "studio: home/focused-profile.tsx, studio: home/editable-deepening-profile.tsx + deepening-profile-content.tsx",
+    note: "GROUP P = one agent, one PR: 927 + 936. Maarten's doc item for 936 says 'see previous comment about this screen' pointing at 927 — one design language decision covers both, even though they live in different apps (studio profile + academy confirmation). Decide the visual system here, apply it in both. SEAM4 studio catalogues.",
+    branch: "israel/ttm-927-profile-screen-visual-cohesion-and-scannability-pass",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "One visual language for filled/unfilled/derived profile elements; the screen scans at a glance." },
+  { id: 936, s: "P", t: "Profile confirmation screen: inconsistent content and layout between visits",
+    surf: "academy: activities/evaluate/two-axis-placement.tsx, possibly academy: learn/course-recap-screen.tsx",
+    note: "GROUP P, second: apply 927's design decision to the in-course confirmation. Keep the day-to-day-summary variant; fix the label-left/matrix-right split. SEAM2: if this lives in course-recap-screen.tsx, land after R's 949 (verify first).",
+    branch: "israel/ttm-936-profile-confirmation-screen-inconsistent-content-and-layout",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Confirmation shows the same best content every visit, in 927's visual language." },
+
+  // ---- H: the home rooms pair ----
+  { id: 932, s: "H", t: "Expanded academy room on home: tidy the course layout",
+    surf: "studio: home/playbook-learning-room.tsx",
+    note: "GROUP H = one agent, one PR: 932 + 958, both inside the rooms system TTM-920 rebuilt. No duplicate courses; two suggestions + a full-academy action.",
+    branch: "israel/ttm-932-expanded-academy-room-on-home-tidy-the-course-layout",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Tidy, deduplicated academy room with a clear path to the full academy." },
+  { id: 958, s: "H", t: "Academy intro -> full home: animate academy into place, steer beginners",
+    surf: "studio: home/room-stage.tsx, studio: home/playbook-rooms.tsx",
+    note: "GROUP H, second. PRE-SPEC the transition treatment first. TTM-920 made collapsed/expanded one tree — build on that, never reintroduce separate trees. Beginner steering depends on AI-readiness placement.",
+    branch: "israel/ttm-958-transition-from-academy-intro-screen-to-full-home-animate",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Decided transition implemented; low-readiness users land nudged toward academy." },
+
+  // ---- D: two independent studio one-offs (one worktree, commit per ticket) ----
+  { id: 954, s: "D", t: "Onboarding UI previews: fixed-size, clearly non-interactive mockup frame",
+    surf: "studio: onboarding/onboarding-modal.tsx",
+    note: "GROUP D = one agent, commit per ticket: 954 + 928 (unrelated small studio fixes sharing a worktree). Pick ONE modal size (currently max-w-lg vs h-[85vh] max-w-4xl per screen) and add a preview cue.",
+    branch: "israel/ttm-954-onboarding-ui-previews-fixed-size-clearly-non-interactive",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "One consistent preview size; nobody tries to click the preview." },
+  { id: 928, s: "D", t: "'Go deeper' screen: back button appears inconsistently",
+    surf: "studio: discover/voice/deepen-voice.tsx (escape hatch ~:164-284)",
+    note: "GROUP D, second. Identify which entry paths hide the back button; make it consistent.",
+    branch: "israel/ttm-928-go-deeper-screen-back-button-appears-inconsistently",
+    blk: [], soft: [], cp: false, size: "S",
+    deliver: "Back behavior consistent across every entry path." },
+
+  // ---- S: prompts app sweep ----
+  { id: 947, s: "S", t: "Sharing surfaces: unify icons, colors, styling across prompt and library sharing",
+    surf: "prompts: sharing/share-dialog.tsx + share-panel.tsx, prompts: library/CreateLibraryModal.tsx + EditLibraryModal.tsx",
+    note: "GROUP S = one agent, one PR: 947 -> 925 -> 971, all in apps/prompts. Decide the shared convention FIRST (deferred from wave 2 for exactly this decision); TTM-871 already polished the panel, verify current state before restyling.",
+    branch: "israel/ttm-947-sharing-surfaces-unify-icons-colors-and-styling-across",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "One visual convention for share surfaces, applied to both prompt and library sharing." },
+  { id: 925, s: "S", t: "'See related task' opens a new tab: intentional?",
+    surf: "prompts: library/prompt-modal.tsx (seeRelatedTask ~:227)",
+    note: "GROUP S, second. TTM-966 added prompt permalinks, so same-tab navigation now has a clean return path; decide and apply consistently.",
+    branch: "israel/ttm-925-see-related-task-opens-a-new-tab-intentional",
+    blk: [], soft: [], cp: false, size: "S",
+    deliver: "Related-entity links navigate consistently, choice documented." },
+  { id: 971, s: "S", t: "Refinement's RCTFT fallback fabricates the false-record class TTM-962 removed",
+    surf: "prompts: lib/prompts/refine-prompt.ts (~:88-94) + refine-prompt.test.ts",
+    note: "GROUP S, last (same app, different layer: data honesty, not UI). Latent, prod probe showed 0 rows — re-run it before assuming. On detection failure write only detected fields or null; never invented Role/Format/Tone, never task=rawBody. Add the detection-failure test.",
+    branch: "israel/ttm-971-refinements-rctft-fallback-fabricates-the-same-class-of",
+    blk: [], soft: [], cp: false, size: "S",
+    deliver: "Failed detection writes an honest partial or null record; failure path tested." },
+
+  // ---- C: admin icons + reporting terminology ----
+  { id: 952, s: "C", t: "Sidebar 'Scores': align name with The Number, fix the house icon",
+    surf: "packages/core: sidebar-config.ts (~:129, the-number)",
+    note: "GROUP C = one agent, one PR: 952 + 955 (one commit, same file) then 950. Code already sets Hash/Globe yet prod showed houses — FIRST verify prod-behind vs icon-resolution fallback; the fix may be a promote, not code.",
+    branch: "israel/ttm-952-sidebar-scores-item-name-inconsistent-with-the-number-icon",
+    blk: [], soft: [], cp: false, size: "S",
+    deliver: "Scores named consistently with The Number, representative icon, verified on prod." },
+  { id: 955, s: "C", t: "Admin sidebar: Sites section uses a home/house icon",
+    surf: "packages/core: sidebar-config.ts (~:218, admin-sites)",
+    note: "GROUP C, same commit as 952, same verify-prod-first caveat.",
+    branch: "israel/ttm-955-admin-sidebar-sites-section-uses-a-homehouse-icon",
+    blk: [], soft: [], cp: false, size: "S",
+    deliver: "Sites icon representative, verified rendering on prod." },
+  { id: 950, s: "C", t: "Studio reporting: 'prompts' tile, 'use cases' terminology, styling drift",
+    surf: "academy: reports/use-cases-dashboard.tsx, academy: app/(main)/reports/*, academy catalogues (reports keys)",
+    note: "GROUP C, second PR (different app). Owns the ONE allowed rename this wave: 'use cases' -> tasks terminology, atomic in this PR, nobody else touches reports keys (SEAM3). Reports live in the ACADEMY app despite the Studio framing.",
+    branch: "israel/ttm-950-studio-reporting-prompts-tile-links-to-the-library-use-cases",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "'Prompts' shows a real report or is removed; 'use cases' becomes tasks; styling matches Studio." },
+
+  // ---- Q: the thinking lane — proposals + measurement, deliverables are documents/tickets ----
+  { id: 957, s: "Q", t: "Perceived speed: measure the main journey, file targeted follow-ups",
+    surf: "investigation: home load, room expand, task create, prompt generate, library",
+    note: "GROUP Q = one strategist agent, four separate deliverables (no shared code): 957 -> 926 -> 934 -> 937. This one: measure the five main interactions, top-3 slowest get tickets in Perf/Infra-Plumbing. Output is numbers + tickets, not code.",
+    branch: "israel/ttm-957-overall-perceived-speed-faster-than-before-still-not-snappy",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Measured baseline + filed follow-up tickets for the worst offenders." },
+  { id: 926, s: "Q", t: "Sidebar entry point for Pulse (and reporting's move there, over time)",
+    surf: "proposal; if built: packages/core sidebar-config.ts, packages/ui platform-sidebar.tsx",
+    note: "GROUP Q, second. PRE-SPEC: placement (admin section vs own section), external-jump affordance, what moves first. May deliberately exit as a written proposal. SEAM5: if it ships code, land after C's icon commit (same file).",
+    branch: "israel/ttm-926-sidebar-entry-point-for-pulse-and-move-reporting-there-over",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "A decided proposal (and the sidebar entry itself only if timing is right)." },
+  { id: 934, s: "Q", t: "After first task: promote ways to use it — revive the de-listed elevation doors",
+    surf: "studio: plays/try/doors.tsx + door-card.tsx, studio: lib/discover/doors/*, studio: api/discover/door-analysis, studio catalogues (doorComingSoon/doorStubToast keys)",
+    note: "GROUP Q, third. DIRECTION DECIDED (2026-07-22): revive the de-listed elevation doors as the extension/apps surface instead of inventing a banner — TTM-847 removed the RENDER, not the machinery (doors.tsx, door-card.tsx, lib/discover/doors/* with tests, the plays.door_analysis column, catalogue copy all still on main). Open questions on the ticket: which DoorKinds have real destinations (re-listing a dead one reproduces the original defect), LLM analysis vs static harness doors, placement now that 960 freed the below-cards slot, repeat suppression. SEAM4 studio catalogues.",
+    branch: "israel/ttm-934-after-first-task-start-promoting-ways-to-use-it-chrome",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Doors re-listed for DoorKinds with real destinations; dead ones stay dark; placement + suppression decided." },
+  { id: 937, s: "Q", t: "Academy page: surface recommended courses; represent certificates",
+    surf: "academy: app/(main)/home/page.tsx (~:52-124), academy: learn/course-card.tsx",
+    note: "GROUP Q, last. Recommendations = same source as the home room suggestions. Certificates half depends on Aimee's strategy and may exit as a proposal; do not invent a certificate model. SEAM3 academy catalogues.",
+    branch: "israel/ttm-937-academy-page-surface-recommended-courses-represent-multi",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Recommended courses on the academy landing page; certificates aligned with strategy or explicitly parked." },
+];
+
+const SEAMS = [
+  { n: 1, file: "academy: learn/interactive-lesson-flow.tsx + activities/observe/content-card.tsx",
+    cards: [940, 946, 931],
+    verdict: "R owns the flow shape; I's intro visuals land after 940 settles (soft dep).",
+    detail: "940 restructures the readiness flow and 946 fixes a screen inside it; 931 (lane I) decorates intro screens across the SAME runner and content-card component. If 931 lands first its visuals may decorate screens 940 then moves or deletes. Encoded as 931 soft-dep 940. 933 is exempt: selection indicators are flow-shape independent." },
+  { n: 2, file: "academy: learn/course-recap-screen.tsx",
+    cards: [949, 936],
+    verdict: "R's 949 owns the recap screen; P's 936 verifies where the confirmation lives before touching it.",
+    detail: "949 consolidates the outro screens in course-recap-screen.tsx. 936's profile confirmation may or may not render there (verify against main first — its primary surface is two-axis-placement.tsx). If it does, P lands its recap edits after 949. Not encoded as a hard dep because the overlap is unconfirmed." },
+  { n: 3, file: "academy message catalogues (en/nl/da)",
+    cards: [949, 931, 950, 937],
+    verdict: "Append-only namespaced blocks; C's 950 owns the reports namespace and does the one atomic terminology rename.",
+    detail: "Groups R, I, C and Q all touch academy catalogues. Rule proven over two waves: append-only under a group-local namespace, never rename — EXCEPT 950, whose whole point is renaming 'use cases' terminology; it owns the reports namespace atomically in its PR. Key parity across all three locales + pnpm i18n-check --full before each PR." },
+  { n: 4, file: "studio message catalogues (en/nl/da)",
+    cards: [927, 954, 934],
+    verdict: "Append-only, one namespaced block per group, all three locales.",
+    detail: "P (profile copy), D (onboarding preview cue) and Q's 934 (door copy — note doorComingSoon/doorStubToast keys already exist, reuse before minting) all append studio keys. Same append-only rule; check whether 934 can reuse the existing door copy instead of adding keys." },
+  { n: 5, file: "packages/core: sidebar-config.ts",
+    cards: [952, 955, 926],
+    verdict: "C's icon commit lands first; 926 only touches this file if its proposal is approved to build.",
+    detail: "952+955 are one commit in sidebar-config.ts. 926's Pulse entry would add an entry to the same file, but its deliverable is a proposal first — if it graduates to code, rebase on C's commit. No dep encoded; the proposal gate is the real sequencing." },
+];
+
+
+/* ══ STATE ══ */
+const KEY="ttm-studio-v2-wave3-grouped-console-v1"; // bump on re-seed from Linear
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function cs(id){if(!state.cards[id])state.cards[id]={status:"todo",agent:"",notes:""};return state.cards[id];}
+const st=id=>cs(id).status;
+const card=id=>T.find(x=>x.id==id);
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+/* ephemeral */
+let expanded=null, drawerId=null, openSeam=null, showQuiet=false, cpOnly=false, agQ="";
+
+/* ══ COMPUTED ══ */
+const deps=t=>[...(t.blk||[]),...(t.soft||[])];
+const waveMemo=new Map();
+function wave(t,seen=new Set()){
+  if(waveMemo.has(t.id))return waveMemo.get(t.id);
+  if(seen.has(t.id))return 0;                       // cycle guard
+  seen.add(t.id);
+  const pend=deps(t).filter(d=>st(d)!=="done");
+  const w=pend.length?1+Math.max(...pend.map(d=>{const c=card(d);return c?wave(c,seen):0})):0;
+  waveMemo.set(t.id,w);return w;
+}
+function column(t){
+  const s=st(t.id);
+  if(s==="done")return "DONE";
+  if(s==="wip")return "IN FLIGHT";
+  const w=wave(t);
+  return w===0?"START NOW":w===1?"ONE STEP AWAY":"LATER";
+}
+const unblocks=t=>T.filter(x=>st(x.id)!=="done"&&deps(x).includes(t.id)).length;
+function sortCol(a,b){
+  if(!!a.cp!==!!b.cp)return a.cp?-1:1;
+  const ua=a.tag==="urgent",ub=b.tag==="urgent";
+  if(ua!==ub)return ua?-1:1;
+  const d=unblocks(b)-unblocks(a); if(d)return d;
+  return a.id-b.id;
+}
+/* seam state machine */
+function seamState(sm){
+  const open=sm.cards.filter(id=>st(id)!=="done");
+  const wip=sm.cards.filter(id=>st(id)==="wip");
+  if(open.length<=1)return "cleared";
+  if(wip.length>=2)return "armed";
+  if(wip.length===1)return "live";
+  return "waiting";
+}
+const RANK={armed:0,live:1,waiting:2,cleared:3};
+const seamsOf=id=>SEAMS.filter(s=>s.cards.includes(id));
+
+/* ══ RENDER ══ */
+function visible(t){
+  if(cpOnly&&!t.cp)return false;
+  if(agQ&&!(cs(t.id).agent||"").toLowerCase().includes(agQ))return false;
+  return true;
+}
+function render(){
+  waveMemo.clear();
+  const done=T.filter(t=>st(t.id)==="done").length;
+  const wip=T.filter(t=>st(t.id)==="wip").length;
+  const ready=T.filter(t=>st(t.id)==="todo"&&wave(t)===0).length;
+  const blocked=T.filter(t=>st(t.id)==="todo"&&wave(t)>0).length;
+  document.getElementById("stats").textContent=`${done}/${T.length} done · ${wip} in flight · ${ready} ready · ${blocked} blocked`;
+  document.getElementById("pfill").style.width=(done/T.length*100)+"%";
+  renderSpot();renderLedger();renderBoard();renderDrawer();
+}
+
+/* 2 · spotlight */
+function renderSpot(){
+  const el=document.getElementById("spot");el.innerHTML="";
+  for(const k of Object.keys(STREAMS)){
+    const S=STREAMS[k];
+    const mine=T.filter(t=>t.s===k);
+    const wips=mine.filter(t=>st(t.id)==="wip");
+    const ready=mine.filter(t=>st(t.id)==="todo"&&wave(t)===0).sort(sortCol);
+    const openN=mine.filter(t=>st(t.id)!=="done").length;
+    let cls="",mn="",sb="",act=null;
+    if(wips.length){
+      cls="t-wip";
+      mn="wip: "+wips.map(t=>t.id).join(", ");
+      const names=wips.map(t=>cs(t.id).agent).filter(Boolean);
+      sb=names.length?names.join(", "):`<span class="warn">no agent!</span>`;
+      act={kind:"jump",id:wips[0].id};
+    }else if(ready.length){
+      const t=ready[0];
+      cls=t.cp?"t-cp":"";
+      mn="#1 · "+t.id;
+      sb=t.cp?"crit path":t.tag==="urgent"?"urgent":unblocks(t)?`unblocks ${unblocks(t)}`:"quick win";
+      act={kind:"dispatch",id:t.id};
+    }else if(!openN){
+      cls="t-done";mn="done ✓";sb="lane closed";
+    }else{
+      cls="t-parked";
+      const nx=mine.filter(t=>st(t.id)!=="done").sort((a,b)=>wave(a)-wave(b))[0];
+      mn="parked";
+      sb=nx?`${nx.id} awaits ${deps(nx).filter(d=>st(d)!=="done").join(", ")}`:"—";
+      act=nx?{kind:"jump",id:nx.id}:null;
+    }
+    const d=document.createElement("div");
+    d.className="tile "+cls;
+    d.innerHTML=`<div class="le">${k} · ${S.name}</div><div class="mn">${mn}</div><div class="sb">${sb}</div>`;
+    if(act)d.onclick=()=>act.kind==="dispatch"?openDrawer(act.id):jump(act.id);
+    el.appendChild(d);
+  }
+}
+
+/* 3 · seam ledger */
+function renderLedger(){
+  const rows=document.getElementById("srows");rows.innerHTML="";
+  const withState=SEAMS.map(s=>({...s,state:seamState(s)}))
+    .sort((a,b)=>RANK[a.state]-RANK[b.state]||a.n-b.n);
+  const c={armed:0,live:0,waiting:0,cleared:0};withState.forEach(s=>c[s.state]++);
+  document.getElementById("lsum").textContent=`${c.armed} armed · ${c.live} live · ${c.waiting} waiting · ${c.cleared} cleared`;
+  const quiet=withState.filter(s=>s.state==="waiting"||s.state==="cleared").length;
+  const qb=document.getElementById("quietBtn");
+  qb.textContent=showQuiet?"collapse":`show ${quiet} quiet`;
+  qb.onclick=()=>{showQuiet=!showQuiet;renderLedger();};
+
+  const shown=withState.filter(s=>showQuiet||s.state==="armed"||s.state==="live"||s.n===openSeam);
+  if(!shown.length){
+    rows.innerHTML=`<div class="lempty">No seam is live — nothing to coordinate right now. They surface here the moment two sides are in flight.</div>`;
+    return;
+  }
+  shown.forEach(s=>{
+    const r=document.createElement("div");
+    r.className="srow "+s.state;
+    r.innerHTML=`<span class="spill sp-${s.state}">${s.state}</span>
+      <span class="sn">S${s.n}</span>
+      <span class="sfile" title="${s.file}">${s.file}</span>
+      ${s.cards.map(id=>`<span class="tchip tc-${st(id)}" data-jump="${id}">${id}</span>`).join("")}
+      <span class="sverd" title="${s.verdict.replace(/"/g,"&quot;")}">${s.verdict}</span>`;
+    r.onclick=e=>{if(e.target.dataset.jump)return;openSeam=openSeam===s.n?null:s.n;renderLedger();};
+    rows.appendChild(r);
+    if(openSeam===s.n){
+      const d=document.createElement("div");d.className="sdetail";d.textContent=s.detail||s.verdict;
+      rows.appendChild(d);
+    }
+  });
+  rows.querySelectorAll("[data-jump]").forEach(c=>c.onclick=e=>{e.stopPropagation();jump(+c.dataset.jump);});
+}
+
+/* 4 · board */
+const COLS=[["DONE","var(--done)"],["IN FLIGHT","var(--wip)"],["START NOW","var(--fg)"],
+            ["ONE STEP AWAY","var(--muted-fg)"],["LATER","var(--muted-fg)"]];
+function renderBoard(){
+  const b=document.getElementById("board");b.innerHTML="";
+  COLS.forEach(([name,col])=>{
+    const items=T.filter(t=>column(t)===name&&visible(t)).sort(sortCol);
+    const d=document.createElement("div");d.className="col";
+    const count=name==="DONE"?`${T.filter(t=>st(t.id)==="done").length}/${T.length}`:items.length;
+    d.innerHTML=`<div class="chead" style="color:${col}"><span>${name}</span><span>${count}</span></div>`;
+    if(!items.length){d.insertAdjacentHTML("beforeend",`<div class="cempty">nothing here</div>`);}
+    items.forEach((t,i)=>d.appendChild(cardEl(t,name==="START NOW"?i+1:null)));
+    b.appendChild(d);
+  });
+}
+function cardEl(t,pick){
+  const s=st(t.id),c=cs(t.id),ex=expanded===t.id;
+  const el=document.createElement("div");
+  el.className="card"+(t.cp?" cp":"")+(s==="done"?" s-done":"");
+  el.id="card-"+t.id;
+  const sms=seamsOf(t.id).filter(x=>seamState(x)!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const spend=(t.soft||[]).filter(d=>st(d)!=="done");
+  const statCtl=s==="todo"
+    ? `<button class="stat-c" data-st="${t.id}" aria-label="Mark in progress"><span class="dot0"></span></button>`
+    : `<button class="stat-c" data-st="${t.id}"><span class="stat-l sl-${s}">${s}</span></button>`;
+  el.innerHTML=`
+    <div class="ctop">
+      ${pick?`<span class="pick">#${pick}</span>`:""}
+      <span class="cid">${CFG.prefix}-${t.id}</span>
+      ${t.tag==="urgent"?`<span class="urg">⚡ urgent</span>`:""}
+      ${statCtl}
+    </div>
+    <div class="ctitle">${t.t}</div>
+    <div class="cmeta">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}" title="${STREAMS[t.s].name}">${t.s}</span>
+      ${sms.length?`<span class="seam-p">${sms.length} seam${sms.length>1?"s":""}</span>`:""}
+      ${pend.length?`<span class="blk-p">← ${pend.join(", ")}</span>`:""}
+      ${spend.length?`<span class="blk-p">after ${spend.join(", ")}</span>`:""}
+      ${c.agent?`<span class="ag-p">${c.agent}</span>`:""}
+    </div>
+    ${ex?expandedHTML(t,c,sms):""}`;
+  el.onclick=e=>{if(e.target.closest("[data-st]")||e.target.closest(".exp"))return;
+    expanded=expanded===t.id?null:t.id;render();};
+  el.querySelector("[data-st]").onclick=e=>{e.stopPropagation();cs(t.id).status=NEXT[s];save();render();};
+  if(ex){
+    el.querySelector(".agi").onchange=e=>{cs(t.id).agent=e.target.value;save();render();};
+    el.querySelector(".nts").onchange=e=>{cs(t.id).notes=e.target.value;save();};
+    el.querySelector(".disp").onclick=e=>{e.stopPropagation();openDrawer(t.id);};
+    el.querySelectorAll("[data-seam]").forEach(x=>x.onclick=e=>{
+      e.stopPropagation();openSeam=+x.dataset.seam;showQuiet=true;renderLedger();
+      document.querySelector(".ledger").scrollIntoView({behavior:"smooth",block:"center"});});
+  }
+  return el;
+}
+function expandedHTML(t,c,sms){
+  return `<div class="exp">
+    <div class="cmeta" style="margin-bottom:9px">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}">${t.s} · ${STREAMS[t.s].name}</span>
+      ${sms.map(s=>`<span class="seam-p" data-seam="${s.n}" style="cursor:pointer">S${s.n}</span>`).join("")}
+    </div>
+    <div class="surf"><span class="k">surface</span>${t.surf}</div>
+    <div class="note"><span class="nk">note</span>${t.note}</div>
+    ${t.deliver?`<div class="deliv">▸ ${t.deliver}</div>`:""}
+    <input class="agi" placeholder="agent / who…" value="${(c.agent||"").replace(/"/g,"&quot;")}"/>
+    <textarea class="nts" placeholder="where it's at / handoff notes…">${c.notes||""}</textarea>
+    <div class="arow">
+      <button class="disp" title="Dispatch">→</button>
+      <span class="ahint">dispatch</span>
+      <a class="lnk" href="${CFG.url(t.id)}" target="_blank" onclick="event.stopPropagation()">Linear ↗</a>
+    </div>
+  </div>`;
+}
+
+/* 5 · drawer */
+function openDrawer(id){drawerId=id;expanded=id;render();}
+function renderDrawer(){
+  const o=document.getElementById("overlay");
+  if(drawerId===null){o.innerHTML="";return;}
+  const t=card(drawerId),c=cs(t.id);
+  const sms=seamsOf(t.id).map(s=>({...s,state:seamState(s)})).filter(s=>s.state!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const prompt=CFG.prompt(t.id,t.t);
+  const wt=CFG.worktree(t.id,t.branch);
+  o.innerHTML=`
+    <div class="scrim" id="scrim"></div>
+    <div class="drawer">
+      <div class="dtop"><span class="deye">Dispatch</span><button class="dx" id="dx">✕</button></div>
+      <h2>${CFG.prefix}-${t.id}</h2>
+      <p class="dsub">${t.t}</p>
+      ${pend.length?`<div class="warn w-blk"><b>Blocked</b> — still awaits ${pend.map(x=>CFG.prefix+"-"+x).join(", ")}. Dispatch anyway only if you mean it.</div>`:""}
+      ${sms.map(s=>`<div class="warn ${s.state==="armed"?"w-armed":"w-soft"}"><b>S${s.n}${s.state==="armed"?" · ARMED":""} —</b> ${s.verdict}</div>`).join("")}
+      <div class="step"><span class="sl">1 · kickoff prompt</span><button class="cpy" data-c="prompt">copy</button></div>
+      <div class="step"><span class="sl">2 · git worktree add…</span><button class="cpy" data-c="wt">copy</button></div>
+      <div class="step"><span class="sl" style="flex:0 0 auto">3 · agent</span>
+        <input class="stepin" id="dag" placeholder="who's on it?" value="${(c.agent||"").replace(/"/g,"&quot;")}"/></div>
+      <button class="markwip" id="mw">Mark wip &amp; close →</button>
+      <div class="dfoot">
+        <button class="ghost" data-c="br">copy branch name</button>
+        <a href="${CFG.url(t.id)}" target="_blank">Linear ↗</a>
+      </div>
+    </div>`;
+  const close=()=>{drawerId=null;render();};
+  document.getElementById("scrim").onclick=close;
+  document.getElementById("dx").onclick=close;
+  document.getElementById("dag").onchange=e=>{cs(t.id).agent=e.target.value;save();};
+  document.getElementById("mw").onclick=()=>{cs(t.id).status="wip";save();close();};
+  o.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+    const txt=b.dataset.c==="prompt"?prompt:b.dataset.c==="wt"?wt:t.branch;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const old=b.textContent;b.textContent="copied ✓";setTimeout(()=>b.textContent=old,1100);});
+  });
+}
+
+/* ══ NAV / CHROME ══ */
+function jump(id){
+  drawerId=null;expanded=id;render();
+  const el=document.getElementById("card-"+id);
+  if(!el)return;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-150,behavior:"smooth"});
+  el.style.outline="2px solid var(--primary)";el.style.outlineOffset="2px";
+  setTimeout(()=>el.style.outline="",1400);
+}
+function applyTheme(){
+  const dark=state.themeOverride==="dark";
+  document.body.classList.toggle("dark",dark);
+  document.getElementById("themeBtn").textContent=dark?"☀ warm":"◐ dark";
+}
+document.getElementById("cpBtn").onclick=e=>{cpOnly=!cpOnly;e.target.classList.toggle("on",cpOnly);render();};
+document.getElementById("agFilter").oninput=e=>{agQ=e.target.value.trim().toLowerCase();render();};
+document.getElementById("themeBtn").onclick=()=>{
+  state.themeOverride=state.themeOverride==="dark"?"warm":"dark";save();applyTheme();};
+document.getElementById("copyBtn").onclick=e=>{
+  navigator.clipboard.writeText(JSON.stringify(state.cards,null,2)).then(()=>{
+    e.target.textContent="copied ✓";setTimeout(()=>e.target.textContent="copy state",1100);});};
+document.getElementById("resetBtn").onclick=()=>{
+  if(confirm("Reset all statuses, agents & notes?")){state={cards:{},themeOverride:state.themeOverride};save();render();}};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&drawerId!==null){drawerId=null;render();}});
+
+applyTheme();render();
+</script>
+</body>
+</html>

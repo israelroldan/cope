@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Studio Phase 4 parallel workstreams — TTM-246→258</title>
+<style>
+  :root{
+    --bg:#f6faeb; --fg:#1d021f; --card:#fff; --salmon:#ff8e7d; --mint:#cdeccd;
+    --muted:#a397a3; --eggplant:#4c3c47; --magenta:#1E001E;
+    --todo:#c9c2cb; --wip:#e9a23b; --done:#3ba55d; --blocked:#d9534f; --ready:#2e7d32;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.45}
+  a{color:inherit}
+  header{position:sticky;top:0;z-index:20;background:var(--magenta);color:var(--bg);padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.01em}
+  .timer{font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:8px}
+  .bar{width:160px;height:7px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
+  .bar > i{display:block;height:100%;background:var(--salmon)}
+  header button,.tool button{font-family:var(--sans);font-size:11px;border:0;border-radius:6px;padding:4px 9px;cursor:pointer;background:rgba(255,255,255,.16);color:var(--bg)}
+  .tool{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#fff7f5;border-bottom:1px solid #f0d9d4;position:sticky;top:39px;z-index:19}
+  .tool button{background:#fff;color:var(--fg);border:1px solid var(--muted)}
+  .tool label{font-size:11px;display:inline-flex;gap:5px;align-items:center}
+  .wrap{padding:14px 16px 60px}
+  .panel{background:var(--card);border:1px solid rgba(163,151,163,.45);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+  .panel h2{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);color:var(--eggplant)}
+  .seam{padding:8px 10px;border-left:3px solid var(--salmon);background:rgba(255,142,125,.07);border-radius:0 8px 8px 0;margin:8px 0}
+  .seam b{font-family:var(--mono);font-size:11px}
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:1px 6px;border-radius:5px;background:rgba(29,2,31,.07);margin:1px 2px;cursor:pointer}
+  .chip.hot{background:var(--salmon)}
+  ul.rules{margin:4px 0 0;padding-left:18px} ul.rules li{margin:3px 0}
+  .board{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start}
+  @media(max-width:1100px){.board{grid-template-columns:repeat(2,1fr)}}
+  .lane{background:rgba(255,255,255,.5);border:1px solid rgba(163,151,163,.4);border-radius:12px;padding:8px}
+  .lane > h3{margin:2px 4px 8px;font-size:12px;display:flex;justify-content:space-between;align-items:baseline}
+  .lane > h3 small{font-weight:400;color:var(--eggplant);font-size:10.5px;font-family:var(--mono)}
+  .card{background:var(--card);border:1px solid rgba(163,151,163,.5);border-radius:10px;padding:9px;margin-bottom:8px;border-left:4px solid var(--todo)}
+  .card.s-wip{border-left-color:var(--wip)} .card.s-done{border-left-color:var(--done);opacity:.62}
+  .card .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .card .id{font-family:var(--mono);font-weight:700;font-size:11px}
+  .st{font-family:var(--mono);font-size:10px;border:0;border-radius:5px;padding:2px 7px;cursor:pointer;color:#fff;text-transform:uppercase;letter-spacing:.06em}
+  .st-todo{background:var(--todo);color:var(--fg)} .st-wip{background:var(--wip)} .st-done{background:var(--done)}
+  .card .ti{font-weight:600;margin:5px 0 4px;font-size:12.5px;line-height:1.3}
+  .meta{font-size:11px;color:var(--eggplant);margin:3px 0}
+  .meta .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .badge{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:4px;font-weight:700}
+  .b-ready{background:rgba(46,125,50,.14);color:var(--ready)} .b-block{background:rgba(217,83,79,.13);color:var(--blocked)}
+  .pick{font-family:var(--mono);font-size:10px;background:var(--fg);color:var(--bg);border-radius:4px;padding:1px 5px}
+  .agent{width:100%;font-size:11px;padding:3px 6px;border:1px solid var(--muted);border-radius:6px;margin:4px 0;font-family:var(--mono)}
+  .notes{width:100%;min-height:30px;font-size:11px;padding:4px 6px;border:1px dashed var(--muted);border-radius:6px;resize:vertical;font-family:var(--sans);margin-top:2px}
+  .links{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .links a,.links button{font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--muted);border-radius:5px;padding:2px 6px;background:#fff;color:var(--fg);cursor:pointer}
+  .ext{font-size:10.5px;color:var(--blocked);margin-top:3px}
+  .legend{font-family:var(--mono);font-size:10.5px;color:var(--eggplant)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Studio Phase 4 · parallel workstreams</h1>
+  <div class="timer">
+    <span id="elapsed">0:00:00</span> / 6:00:00
+    <span class="bar"><i id="barfill" style="width:0%"></i></span>
+    <button id="resetTimer">reset timer</button>
+  </div>
+  <div style="margin-left:auto" class="legend">TTM-246→258 · parent TTM-171 · click status to cycle · autosaves locally</div>
+</header>
+
+<div class="tool">
+  <label><input type="checkbox" id="readyOnly"/> ready only</label>
+  <label>agent <input id="agentFilter" placeholder="filter…" style="width:90px;font-size:11px"/></label>
+  <span style="margin-left:auto"></span>
+  <button id="copyState">copy state JSON</button>
+  <button id="resetAll">reset all</button>
+</div>
+
+<div class="wrap">
+  <div class="panel">
+    <h2>Coordination seams — where parallel agents collide</h2>
+    <div class="seam"><b>1 · build-surface.tsx</b> — Stream A reshapes the in-flight/choosing branch (<span class="chip hot" data-jump="248">248</span> removes the chooser) while Stream B edits the ready-to-pick branch (<span class="chip hot" data-jump="252">252</span> kennismaking container). Same file, different functions. Land A's reshape first; B rebases 252.</div>
+    <div class="seam"><b>2 · synthesis-choreography.tsx</b> — internal to Stream A: <span class="chip hot" data-jump="247">247</span> (min-duration + copy) then <span class="chip hot" data-jump="246">246</span> (background decouple) edit the same component. NOT parallel — one owner, sequence 247 → 246.</div>
+    <div class="seam"><b>3 · editable-task-list.tsx</b> — Stream B's <span class="chip hot" data-jump="253">253</span>, <span class="chip hot" data-jump="255">255</span>, <span class="chip hot" data-jump="254">254</span> all edit this one file. One owner; they're small, just sequence the commits.</div>
+    <div class="seam"><b>4 · app/(main)/layout.tsx</b> — Stream C's <span class="chip hot" data-jump="256">256</span> edits the immersivePathPattern (drops /skills); Stream A's <span class="chip hot" data-jump="246">246</span> may touch the mosaic-curtain randomiser. Land 256's 1-liner first; implement 246 as a loading-local bg layer to dodge the file entirely.</div>
+    <div class="seam"><b>5 · @tatomahq/ui CollapsibleRow</b> — Stream C's <span class="chip hot" data-jump="251">251</span> builds the shared collapse primitive; Stream B's <span class="chip hot" data-jump="252">252</span> reuses it → 252 is blocked by 251. (Also compose-home-view.ts: A's 247/248 reshape the synthesis state, C's 251 adds collapse-default fields — different concerns, just coordinate.)</div>
+  </div>
+
+  <div class="panel">
+    <h2>Cross-stream ordering, quick wins &amp; worktrees</h2>
+    <ul class="rules">
+      <li><b>Land the two unblockers early:</b> <span class="chip" data-jump="251">251</span> (the shared CollapsibleRow, which 252 needs) and <span class="chip" data-jump="256">256</span> (the 1-line route move). Do them once, others build on top.</li>
+      <li><b>Stream A is a chain, not a fan-out:</b> <span class="chip" data-jump="248">248</span> → <span class="chip" data-jump="247">247</span> → <span class="chip" data-jump="246">246</span>. 248 reshapes the flow (chooser → direct to detail), 247 makes the choreography the whole success moment, 246 polishes the background.</li>
+      <li><b>Quick wins to bank first:</b> <span class="chip" data-jump="253">253</span> (title-only rows) and <span class="chip" data-jump="255">255</span> (add-task placeholder) are tiny; <span class="chip" data-jump="258">258</span> (hub redirect) is small but mind the no-org loop.</li>
+      <li><b>Migration hygiene:</b> <span class="chip" data-jump="250">250</span> grabs its number with <code>ls packages/database/supabase/migrations | tail</code> right before committing — dodge parallel-branch number collisions.</li>
+      <li><b>Resolve the open question first:</b> <span class="chip" data-jump="249">249</span> assumes a "next lesson" tile exists at lesson-end — confirm before building (today's tiles are profile-recap tiles).</li>
+      <li><b><span class="chip" data-jump="257">257</span> runs last</b> — it's an umbrella tracker, depends on 256, and spawns its own findings session. No code until its sub-issues are filed.</li>
+      <li><b>Worktrees:</b> run A / B / C / D as four parallel worktrees off <code>main</code> (E is a tracker). Per-stream "copy worktree" below creates it. Team precedent (#906) bundled atomic sub-issues into <i>one PR per stream</i> with a commit per ticket — recommended here too.</li>
+    </ul>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+const LINEAR="https://linear.app/tatoma/issue/";
+const STREAMS={
+  A:{name:"A · Build loading & transition",sub:"choreography · bg · chooser→detail"},
+  B:{name:"B · Build picker surface",sub:"ready-to-pick · tasks · CTA"},
+  C:{name:"C · Shell, home & routing",sub:"collapse · immersive · hub redirect"},
+  D:{name:"D · Academy player",sub:"recap CTA · auto-advance"},
+  E:{name:"E · Tracker (later)",sub:"prompts fold-in"},
+};
+// blockedBy = TTM ids that must be done; ext = external/non-ticket caveat
+const T=[
+ {id:248,s:"A",t:"Drop interim chooser, go straight to /skills/[id]",surf:"build-surface.tsx (choosing), compose-home-view.ts, activate route, synthesize-picks",note:"SEAM1 build-surface · FIRST in A — reshapes the flow; relocate the 4 activate side-effects, don't delete them",branch:"israel/ttm-248-studio-discoverbuild-drop-interim-pick-your-first-skill",spec:"(Linear issue)",blk:[]},
+ {id:247,s:"A",t:"Generation choreography: min-duration + single-task copy",surf:"synthesis-choreography.tsx, studio.json (en/nl/da), compose-home-view.ts",note:"SEAM2 choreography · after 248 (it becomes the entire success moment once the chooser is gone)",branch:"israel/ttm-247-studio-discoverbuild-refresh-generation-choreography-slower",spec:"(Linear issue)",blk:[248]},
+ {id:246,s:"A",t:"Decouple loading background from poll (10s fade)",surf:"synthesis-choreography.tsx, (maybe) layout.tsx, @tatomahq/ui platform-layout",note:"SEAM2 choreography · SEAM4 layout.tsx w/256 · prefer a loading-local crossfade layer to avoid touching layout.tsx",branch:"israel/ttm-246-studio-discoverbuild-decouple-loading-background-rotation",spec:"(Linear issue)",blk:[247]},
+
+ {id:253,s:"B",t:"Task rows show title only (still store the rest)",surf:"editable-task-list.tsx (TaskRow)",note:"SEAM3 editable-task-list · QUICK WIN · hide frequency/notes/pains, keep persisting",branch:"israel/ttm-253-studio-discoverbuild-task-items-show-title-only-keep-storing",spec:"(Linear issue)",blk:[]},
+ {id:255,s:"B",t:"Add-task as a clickable placeholder row",surf:"editable-task-list.tsx",note:"SEAM3 editable-task-list · QUICK WIN · presentational only, keep add/reconcile logic",branch:"israel/ttm-255-studio-discoverbuild-add-task-as-a-clickable-placeholder",spec:"(Linear issue)",blk:[]},
+ {id:254,s:"B",t:"Picker header + CTA copy + 'provide more context' link",surf:"studio.json (en/nl/da), editable-task-list.tsx, profile-blocks.tsx, home-headline.tsx",note:"SEAM3 editable-task-list · i18n seam w/247 (diff keys) · role deepen ALWAYS, even if already done",branch:"israel/ttm-254-studio-discoverbuild-picker-header-cta-copy-provide-more",spec:"(Linear issue)",blk:[]},
+ {id:252,s:"B",t:"Kennismaking as a completed, collapsed container",surf:"build-surface.tsx (ready-to-pick), ProfileBlocks, @tatomahq/ui CollapsibleRow",note:"SEAM1 build-surface w/A · SEAM5 reuses 251's CollapsibleRow",branch:"israel/ttm-252-studio-discoverbuild-show-kennismaking-as-a-completed",spec:"(Linear issue)",blk:[251]},
+
+ {id:251,s:"C",t:"Home: collapsible first-two rows by completion stage",surf:"conveyor.ts, home-conveyor.tsx, compose-home-view.ts, @tatomahq/ui accordion",note:"builds the shared CollapsibleRow (252 reuses it) · SEAM5 compose-home-view w/A · land early · do NOT revive disclosure_state",branch:"israel/ttm-251-studio-home-collapsible-first-two-rows-collapse-by-default",spec:"(Linear issue)",blk:[]},
+ {id:256,s:"C",t:"Experiment detail /skills/[id] in the main layout",surf:"app/(main)/layout.tsx (immersivePathPattern), split-shell.tsx, @tatomahq/ui platform-layout",note:"SEAM4 layout.tsx w/246 · land the 1-line pattern move early · DON'T break the split-shell ancestor chain (remount footgun)",branch:"israel/ttm-256-studio-render-the-experiment-detail-page-skillsid-in-the",spec:"(Linear issue)",blk:[]},
+ {id:258,s:"C",t:"Hub /home permanent redirect to studio /home",surf:"apps/hub page.tsx + (main)/home/page.tsx, studio home no-org guard",note:"watch the no-org redirect LOOP (studio /home sends org-less users back to hub) · trace role/org paths",branch:"israel/ttm-258-hub-permanently-redirect-home-to-studio-home-retire-the-hub",spec:"(Linear issue)",blk:[]},
+
+ {id:249,s:"D",t:"Lesson-end Continue button on the next item's recap tile",surf:"apps/academy interactive-lesson-flow.tsx, recap-tiles-row.tsx, @tatomahq/ui profile-block, lesson-screen.tsx",note:"OPEN Q: does a 'next lesson' tile exist at lesson-end? confirm before building · tile CTA slot already exists",branch:"israel/ttm-249-academy-host-the-lesson-end-continue-button-inside-the-recap",spec:"(Linear issue)",blk:[]},
+ {id:250,s:"D",t:"Activity auto_advance config + disable for onboarding cards",surf:"apps/academy activities.ts schema, ObserveActivityPage, NEW DB migration (all locales)",note:"feature ADD, not a flag flip (cards are hardcoded today) · migration deploys en/nl/da · grab next mig # late",branch:"israel/ttm-250-academy-make-auto-advance-activity-level-configurable",spec:"(Linear issue)",blk:[]},
+
+ {id:257,s:"E",t:"Fold prompts editor into experiment detail (UMBRELLA TRACKER)",surf:"(tracker — spawns its own sub-findings)",note:"depends on 256 (main layout gives room) · big data-model call: embed UcaPrompt[] vs prompts_items + FK",branch:"israel/ttm-257-fold-the-prompt-editing-experience-into-the-studio",spec:"(Linear issue)",blk:[256],ext:"tracker — run its own findings session; no code until sub-issues are filed"},
+];
+
+const KEY="ttm-phase4-tracker-v1";
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{}; // id -> {status,agent,notes}
+if(!state.timerStart) state.timerStart=Date.now();
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function cardState(id){return state.cards[id]||(state.cards[id]={status:"todo",agent:"",notes:""});}
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+function isDone(id){return (state.cards[id]&&state.cards[id].status)==="done";}
+function readiness(t){
+  const pend=t.blk.filter(b=>!isDone(b));
+  if(t.ext) return {ok:false,label:"BLOCKED: "+t.ext};
+  if(pend.length) return {ok:false,label:"BLOCKED by "+pend.map(x=>"TTM-"+x).join(", ")};
+  return {ok:true,label:"READY"};
+}
+// Pick-up order within a lane: in-progress -> ready -> blocked (soonest to
+// unblock first) -> done. Lower = pick up sooner.
+function pickPriority(t){
+  const st=cardState(t.id).status;
+  if(st==="done") return 3;
+  if(st==="wip") return 0;
+  return readiness(t).ok ? 1 : 2;
+}
+function pendingCount(t){ return t.blk.filter(b=>!isDone(b)).length + (t.ext?1:0); }
+function byPickup(a,b){
+  const pa=pickPriority(a), pb=pickPriority(b);
+  if(pa!==pb) return pa-pb;
+  if(pa===2){ const d=pendingCount(a)-pendingCount(b); if(d) return d; } // blocked: fewer pending first
+  return a.id-b.id;
+}
+
+function render(){
+  const board=document.getElementById("board");
+  board.innerHTML="";
+  const readyOnly=document.getElementById("readyOnly").checked;
+  const af=document.getElementById("agentFilter").value.trim().toLowerCase();
+  for(const sk of Object.keys(STREAMS)){
+    const lane=document.createElement("div");lane.className="lane";
+    lane.innerHTML=`<h3>${STREAMS[sk].name}<small>${STREAMS[sk].sub}</small></h3>`;
+    let pick=0;
+    T.filter(t=>t.s===sk).sort(byPickup).forEach(t=>{
+      const cs=cardState(t.id), rd=readiness(t);
+      if(readyOnly && (!rd.ok || cs.status==="done")) return;
+      if(af && !(cs.agent||"").toLowerCase().includes(af)) return;
+      const n = cs.status==="done" ? "" : `<span class="pick">#${++pick}</span> `;
+      const c=document.createElement("div");
+      c.className="card s-"+cs.status; c.id="card-"+t.id;
+      c.innerHTML=`
+        <div class="top">
+          <span class="id">${n}TTM-${t.id}</span>
+          <button class="st st-${cs.status}" data-st="${t.id}">${cs.status}</button>
+        </div>
+        <div class="ti">${t.t}</div>
+        <div>${rd.ok?'<span class="badge b-ready">READY</span>':'<span class="badge b-block">'+rd.label+'</span>'}</div>
+        <div class="meta"><span class="k">surface</span> ${t.surf}</div>
+        <div class="meta"><span class="k">note</span> ${t.note}</div>
+        ${t.ext?`<div class="ext">⚠ ${t.ext}</div>`:""}
+        <input class="agent" placeholder="agent / who…" data-ag="${t.id}" value="${(cs.agent||"").replace(/"/g,'&quot;')}"/>
+        <textarea class="notes" placeholder="where it's at / handoff notes…" data-nt="${t.id}">${cs.notes||""}</textarea>
+        <div class="links">
+          <a href="${LINEAR}TTM-${t.id}" target="_blank">Linear ↗</a>
+          <button data-pr="${t.id}" title="copy the kickoff prompt for an agent">copy prompt</button>
+          <button data-co="${t.id}" title="copy git worktree create for this branch">copy worktree</button>
+          <button data-cp="${t.branch}">branch</button>
+        </div>`;
+      lane.appendChild(c);
+    });
+    board.appendChild(lane);
+  }
+  bind();
+}
+function bind(){
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const id=b.dataset.st;cardState(id).status=NEXT[cardState(id).status];save();render();});
+  document.querySelectorAll("[data-ag]").forEach(i=>i.onchange=()=>{cardState(i.dataset.ag).agent=i.value;save();});
+  document.querySelectorAll("[data-nt]").forEach(x=>x.onchange=()=>{cardState(x.dataset.nt).notes=x.value;save();});
+  document.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>copy(b.dataset.cp,b));
+  document.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.pr);
+    copy(`hey dear friend, can you please help me take a look at and tackle TTM-${t.id} — ${t.t} (${LINEAR}TTM-${t.id})`,b);
+  });
+  document.querySelectorAll("[data-co]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.co);
+    copy(`git fetch origin && git worktree add ../cp-ttm-${t.id} -b ${t.branch} origin/main`,b);
+  });
+}
+function copy(txt,btn){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent="copied";setTimeout(()=>btn.textContent=o,900);});}
+
+document.querySelectorAll("[data-jump]").forEach(ch=>ch.onclick=()=>{const el=document.getElementById("card-"+ch.dataset.jump);if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid var(--salmon)";setTimeout(()=>el.style.outline="",1400);}});
+
+document.getElementById("readyOnly").onchange=render;
+document.getElementById("agentFilter").oninput=render;
+document.getElementById("resetTimer").onclick=()=>{state.timerStart=Date.now();save();};
+document.getElementById("copyState").onclick=()=>navigator.clipboard.writeText(JSON.stringify(state,null,2));
+document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all statuses, agents, notes & timer?")){state={cards:{},timerStart:Date.now()};save();render();}};
+
+function tick(){
+  const ms=Date.now()-state.timerStart, s=Math.floor(ms/1000);
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
+  document.getElementById("elapsed").textContent=`${h}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  document.getElementById("barfill").style.width=Math.min(100,ms/(6*3600*1000)*100)+"%";
+}
+setInterval(tick,1000);tick();
+render();
+</script>
+</body>
+</html>

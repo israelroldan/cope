@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UCA states &amp; stages — overview (TTM-289 prep)</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --panel-2: #1d212b;
+    --line: #2a2f3a;
+    --ink: #e7e9ee;
+    --ink-soft: #aab1c0;
+    --ink-faint: #727a8a;
+    --accent: #7aa2ff;
+    --live: #4ade80;
+    --vestige: #f59e0b;
+    --danger: #f87171;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 56px 28px 120px; }
+  header.page { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 40px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+  h1 { font-size: 30px; margin: 12px 0 8px; font-weight: 650; letter-spacing: -0.01em; }
+  .sub { color: var(--ink-soft); max-width: 70ch; font-size: 15px; }
+  .meta { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .chip { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; background: var(--panel); }
+
+  h2 { font-size: 13px; font-family: var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin: 52px 0 18px; font-weight: 600; }
+  h2 .n { color: var(--accent); }
+
+  .axes { display: grid; gap: 14px; }
+  .axis { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; position: relative; overflow: hidden; }
+  .axis::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--ink-faint); }
+  .axis.live::before { background: var(--live); }
+  .axis.vestige::before { background: var(--vestige); }
+  .axis-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .axis-title { font-size: 17px; font-weight: 620; }
+  .axis-title .where { font-family: var(--mono); font-size: 12.5px; color: var(--accent); font-weight: 500; }
+  .tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-soft); white-space: nowrap; }
+  .tag.live { color: var(--live); border-color: color-mix(in srgb, var(--live) 40%, var(--line)); }
+  .tag.vestige { color: var(--vestige); border-color: color-mix(in srgb, var(--vestige) 40%, var(--line)); }
+  .flow { font-family: var(--mono); font-size: 13.5px; margin: 14px 0 10px; color: var(--ink); display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; }
+  .val { background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
+  .val.collide { border-color: color-mix(in srgb, var(--danger) 55%, var(--line)); color: #ffd9d9; }
+  .arrow { color: var(--ink-faint); }
+  .axis p { margin: 8px 0 0; color: var(--ink-soft); font-size: 14px; }
+  .axis .ref { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); }
+  code { font-family: var(--mono); font-size: .92em; background: var(--panel-2); padding: 1px 5px; border-radius: 5px; border: 1px solid var(--line); }
+
+  .callout { border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--line)); background: color-mix(in srgb, var(--danger) 7%, var(--panel)); border-radius: 14px; padding: 18px 22px; }
+  .callout ul { margin: 6px 0 0; padding-left: 18px; }
+  .callout li { margin: 8px 0; color: var(--ink-soft); }
+  .callout li b { color: var(--ink); }
+  .pill-word { font-family: var(--mono); background: color-mix(in srgb, var(--danger) 14%, var(--panel-2)); border: 1px solid color-mix(in srgb, var(--danger) 45%, var(--line)); color: #ffd9d9; padding: 1px 7px; border-radius: 5px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); background: var(--panel); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+  td .ref { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); }
+  .axisref { font-family: var(--mono); font-weight: 700; font-size: 13px; }
+  .axisref.a1 { color: var(--vestige); } .axisref.a2 { color: var(--live); }
+  .axisref.a3 { color: var(--accent); } .axisref.a4 { color: var(--ink-soft); } .axisref.a5 { color: #c79bff; }
+
+  .card-demo { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .skillcard { background: #fff; color: #18181b; border-radius: 14px; padding: 18px 20px; width: 300px; border: 1px solid #e4e4e7; }
+  .skillcard h3 { margin: 0; font-size: 17px; font-family: Georgia, serif; font-weight: 600; }
+  .skillcard p { margin: 6px 0 0; font-size: 12.5px; color: #71717a; }
+  .skillcard .pills { display: flex; gap: 8px; margin-top: 16px; }
+  .sp { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; border-radius: 999px; padding: 3px 9px; }
+  .sp.status { background: #f4f4f5; color: #18181b; }
+  .sp.status .dot { width: 6px; height: 6px; border-radius: 999px; background: #a1a1aa; display: inline-block; }
+  .sp.skel { background: #eef2ff; color: #3730a3; border: 1px dashed #a5b4fc; }
+  .demo-note { font-size: 13.5px; color: var(--ink-soft); max-width: 32ch; }
+
+  .holdouts { display: grid; gap: 10px; }
+  .holdout { display: flex; gap: 14px; align-items: flex-start; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--vestige); border-radius: 10px; padding: 14px 18px; }
+  .holdout .num { font-family: var(--mono); color: var(--vestige); font-weight: 700; font-size: 13px; padding-top: 1px; }
+  .holdout div p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+  .holdout div p b { color: var(--ink); }
+
+  .net { background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--line); border-radius: 16px; padding: 24px 26px; }
+  .net h3 { margin: 0 0 12px; font-size: 16px; }
+  .net .keep { display: grid; gap: 10px; }
+  .net .keep div { display: flex; gap: 12px; align-items: baseline; font-size: 14.5px; }
+  .net .keep .lab { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .keep .lab.keep-tag { color: var(--live); border: 1px solid color-mix(in srgb, var(--live) 40%, var(--line)); }
+  .keep .lab.drop-tag { color: var(--vestige); border: 1px solid color-mix(in srgb, var(--vestige) 40%, var(--line)); }
+  .net p { color: var(--ink-soft); font-size: 14px; }
+
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font-size: 12.5px; color: var(--ink-faint); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  footer { margin-top: 60px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--ink-faint); font-size: 12.5px; font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page">
+    <div class="eyebrow">TTM-289 · findings-session prep · read-only investigation</div>
+    <h1>UCA states &amp; stages — what a skill actually carries</h1>
+    <p class="sub">A single Use Case Asset is tracked by <strong>five independent state axes</strong>. They were added at different times and overlap in vocabulary — which is why the create/edit surface reads as confusing. This maps each axis, where they collide, what the user sees, and which parts are holdouts from the past.</p>
+    <div class="meta">
+      <span class="chip">apps/studio</span>
+      <span class="chip">packages/database</span>
+      <span class="chip">2026-06-04</span>
+    </div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--live)"></span> live / drives the product</span>
+      <span><span class="swatch" style="background:var(--vestige)"></span> vestigial / holdout</span>
+      <span><span class="swatch" style="background:var(--accent)"></span> generation lifecycle</span>
+      <span><span class="swatch" style="background:var(--danger)"></span> vocabulary collision</span>
+    </div>
+  </header>
+
+  <h2><span class="n">01</span> &nbsp;The five axes</h2>
+  <div class="axes">
+
+    <div class="axis vestige">
+      <div class="axis-head">
+        <div class="axis-title"><span class="axisref a1">AXIS 1</span> — Substrate maturity &nbsp;<span class="where">use_case_assets.status</span></div>
+        <span class="tag vestige">mostly vestigial</span>
+      </div>
+      <div class="flow">
+        <span class="val">hypothesis</span><span class="arrow">→</span>
+        <span class="val">prototype</span><span class="arrow">→</span>
+        <span class="val">pilot</span><span class="arrow">→</span>
+        <span class="val collide">adopted</span><span class="arrow">→</span>
+        <span class="val">abandoned</span>
+      </div>
+      <p>Original UCA Canvas PRD / WS2 maturity funnel. Stamps <code>validated_at</code> on any non-hypothesis, <code>archived_at</code> on abandoned. Gated by <code>acceptance_criteria</code> / <code>acceptance_threshold</code> (TTM-86).</p>
+      <p><b>Reality:</b> only <code>hypothesis</code> (set at synthesis) and <code>pilot</code> (<code>experiment/actions.ts:79</code>, build path) are ever written by the current flow. <code>prototype</code> is set by <em>nothing</em>; <code>adopted</code>/<code>abandoned</code> only via legacy academy/REST paths.</p>
+      <p class="ref">packages/database/src/use-case-assets.ts:50 · UCA_STATUSES · transitionStatus :401</p>
+    </div>
+
+    <div class="axis live">
+      <div class="axis-head">
+        <div class="axis-title"><span class="axisref a2">AXIS 2</span> — Journey loop stage &nbsp;<span class="where">studio_loop_state.stage</span></div>
+        <span class="tag live">the live axis</span>
+      </div>
+      <div class="flow">
+        <span class="val">seeded</span><span class="arrow">→</span>
+        <span class="val">opened</span><span class="arrow">→</span>
+        <span class="val">refined</span><span class="arrow">→</span>
+        <span class="val">built</span><span class="arrow">→</span>
+        <span class="val">evaluated</span><span class="arrow">→</span>
+        <span class="val collide">adopted</span>
+      </div>
+      <p>Separate table (migration 021/028). Drives the experiment page step strip and the home activation engine. Forward-only, idempotent (<code>advanceLoopStage</code>).</p>
+      <p><b>By design orthogonal to Axis 1</b> — <code>studio-loop.ts:7-8</code>: <em>"the Studio journey <code>stage</code> is orthogonal to the substrate UCA maturity <code>status</code> — never derive one from the other."</em> The split is intentional; the doc itself flags it as a footgun.</p>
+      <p class="ref">packages/database/src/studio-loop.ts:18 · LoopStage / LOOP_STAGE_ORDER</p>
+    </div>
+
+    <div class="axis live">
+      <div class="axis-head">
+        <div class="axis-title"><span class="axisref a3">AXIS 3</span> — Generation lifecycle &nbsp;<span class="where">metadata.is_skeleton</span></div>
+        <span class="tag live">live</span>
+      </div>
+      <div class="flow">
+        <span class="val">is_skeleton: true</span><span class="arrow" style="font-family:var(--sans)">(framing only)</span><span class="arrow">→</span>
+        <span class="val">is_skeleton: false</span><span class="arrow" style="font-family:var(--sans)">(built)</span>
+      </div>
+      <p>Boolean on the metadata JSONB. <code>true</code> right after synthesis (skeleton); flipped to <code>false</code> by full-gen after "Build it". Surfaced as the <code>SkeletonPill</code>.</p>
+      <p class="ref">full-gen.ts:197 (flip) · synthesize-and-persist.ts:366 (set)</p>
+    </div>
+
+    <div class="axis">
+      <div class="axis-head">
+        <div class="axis-title"><span class="axisref a4">AXIS 4</span> — Per-canvas-row state &nbsp;<span class="where">canvas.rows[*].state</span></div>
+        <span class="tag">partly vestigial</span>
+      </div>
+      <div class="flow">
+        <span class="val collide">hypothesis</span><span class="arrow">→</span>
+        <span class="val">validated</span>
+        <span class="arrow" style="font-family:var(--sans);margin-left:8px">× 12 rows, each independently</span>
+      </div>
+      <p>Each of the 12 canvas rows carries its own hypothesis/validated flag (PRD §5). In the single-task flow these effectively all stay <code>hypothesis</code>. The canvas <em>also</em> has an <code>owner</code> row literally titled <b>"Owner &amp; status"</b> — a third place "status" lives.</p>
+      <p class="ref">packages/database/src/use-case-assets.ts · ucaRowStateSchema</p>
+    </div>
+
+    <div class="axis">
+      <div class="axis-head">
+        <div class="axis-title"><span class="axisref a5">AXIS 5</span> — Task origin (pre-UCA) &nbsp;<span class="where">task.origin</span></div>
+        <span class="tag">live (task list)</span>
+      </div>
+      <div class="flow">
+        <span class="val">predicted</span>
+        <span class="arrow" style="font-family:var(--sans)">— edit / add →</span>
+        <span class="val">user</span>
+      </div>
+      <p>Lives on the recurring task in the predicted session, <em>before</em> any UCA exists. This is the "SUGGESTED" badge axis (findings TTM-291 / TTM-292). Editing or adding a task flips <code>predicted → user</code> (protected).</p>
+      <p class="ref">apps/studio/src/lib/onboarding/task-model.ts:3 · TaskOrigin</p>
+    </div>
+
+  </div>
+
+  <h2><span class="n">02</span> &nbsp;The collisions — why it reads as confusing</h2>
+  <div class="callout">
+    <ul>
+      <li><b><span class="pill-word">adopted</span> exists in BOTH Axis 1 (status) and Axis 2 (loop stage)</b> — same word, different meaning: "matured &amp; adopted" vs. "completed a lap".</li>
+      <li><b><span class="pill-word">hypothesis</span> exists in BOTH Axis 1 (UCA status) and Axis 4 (per-row state)</b> — and "status" also shows up as a canvas <em>row title</em> ("Owner &amp; status"). Three homes for one word.</li>
+      <li><b>Two maturity-looking ladders that are unrelated.</b> <code>hypothesis</code> (status) and <code>seeded</code> (stage) both just mean "freshly created", but live on different axes you must never derive from each other.</li>
+    </ul>
+  </div>
+
+  <h2><span class="n">03</span> &nbsp;What the user actually sees (the badges)</h2>
+  <table>
+    <thead><tr><th>Badge</th><th>Axis</th><th>Where it renders</th></tr></thead>
+    <tbody>
+      <tr><td><b>StatusPill</b> — "Hypothesis / Prototype / Pilot / Adopted / Abandoned" + colored dot</td><td><span class="axisref a1">1</span></td><td class="ref">every skill card · skill-library.tsx:325</td></tr>
+      <tr><td><b>SkeletonPill</b></td><td><span class="axisref a3">3</span></td><td class="ref">skill card, beside StatusPill · skill-library.tsx:326</td></tr>
+      <tr><td><b>SkillLoopStrip</b> — 01–05 step strip</td><td><span class="axisref a2">2</span></td><td class="ref">experiment / detail page · skill-loop-strip.tsx</td></tr>
+      <tr><td><b>PromptQualityBadge</b> — score / level (TTM-267)</td><td>separate quality axis</td><td class="ref">uca-detail · prompt-quality-badge.tsx</td></tr>
+      <tr><td><b>"SUGGESTED"</b></td><td><span class="axisref a5">5</span></td><td class="ref">task list · /discover/build</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card-demo">
+    <div class="skillcard">
+      <h3>Draft a weekly status update</h3>
+      <p>Turn bullet notes into a polished update for stakeholders.</p>
+      <div class="pills">
+        <span class="sp status"><span class="dot"></span>Hypothesis</span>
+        <span class="sp skel">Skeleton</span>
+      </div>
+    </div>
+    <p class="demo-note">On <b>one</b> card the user sees two pills at once — two different vocabularies for "not finished yet". Then the detail page switches to a <b>third</b> vocabulary (the 5-step loop).</p>
+  </div>
+
+  <h2><span class="n">04</span> &nbsp;Bonus subtlety inside Axis 2</h2>
+  <div class="axis" style="border-left:3px solid var(--accent)">
+    <p style="margin-top:0">The 6 loop stages are squeezed onto a <b>5-step</b> strip (<code>stage-steps.ts</code>). <code>STAGE_TO_STEP</code> collapses <code>seeded</code>+<code>opened</code> → step 1 and <code>evaluated</code>... <code>adopted</code> → step 4; step 5 (Share) never advances. Meanwhile <code>STEP_STAGE</code> ("completing step 1 advances to <code>refined</code>") is off-by-one against <code>STAGE_TO_STEP</code> ("<code>refined</code> opens at step 2"). Internally coherent — completing step N unlocks step N+1 — but another spot where the numbering doesn't line up cleanly.</p>
+  </div>
+
+  <h2><span class="n">05</span> &nbsp;Holdouts from the past — retire / consolidate candidates</h2>
+  <div class="holdouts">
+    <div class="holdout"><div class="num">1</div><div><p><b><code>status = prototype</code></b> — a dead value. Nothing in the product writes it; survives only in the enum, the analytics funnel, and a <code>||</code> guard.</p></div></div>
+    <div class="holdout"><div class="num">2</div><div><p><b>The whole Axis-1 maturity funnel + acceptance gating (TTM-86).</b> Single-task flow only ever sets <code>hypothesis</code>/<code>pilot</code>; <code>analytics-queries.ts</code> computes a hypothesis→prototype→pilot→adopted funnel that's effectively unfed.</p></div></div>
+    <div class="holdout"><div class="num">3</div><div><p><b><code>UcaSource</code> <code>legacy_wizard</code> / <code>session_mode</code></b> — legacy import sources from before the current flow.</p></div></div>
+    <div class="holdout"><div class="num">4</div><div><p><b>Canvas <code>owner</code> "Owner &amp; status" row + per-row <code>validated</code> state.</b> Status/validation concepts embedded in the canvas, redundant with Axis 1 and not exercised by the current flow.</p></div></div>
+  </div>
+
+  <h2><span class="n">06</span> &nbsp;Net — where this could land</h2>
+  <div class="net">
+    <h3>Collapse the user-facing model to two things</h3>
+    <div class="keep">
+      <div><span class="lab keep-tag">keep</span><span><b>Generation lifecycle</b> (Axis 3) — skeleton vs. built. The one thing the user genuinely needs at create time.</span></div>
+      <div><span class="lab keep-tag">keep</span><span><b>Journey loop</b> (Axis 2) — the 01–05 strip on the detail page. Already the live driver.</span></div>
+      <div><span class="lab drop-tag">hide/retire</span><span><b>Substrate maturity</b> (Axis 1) — stop surfacing "Hypothesis" on every card; the StatusPill currently shows an unflattering, mostly-meaningless value for a freshly built skill.</span></div>
+      <div><span class="lab drop-tag">simplify</span><span><b>Per-row hypothesis/validated</b> (Axis 4) and the canvas "Owner &amp; status" row — fold away if the validation flow isn't driven.</span></div>
+    </div>
+    <p style="margin-bottom:0">Axis 5 ("SUGGESTED") is a separate, legitimate signal on the task list — already covered by TTM-291 (hide when all-suggested) and TTM-292.</p>
+  </div>
+
+  <footer>
+    Generated for TTM-289 findings prep · all references file:line against apps/studio + packages/database on main · no code changed
+  </footer>
+
+</div>
+</body>
+</html>

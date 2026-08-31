@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Studio v2 tail</title>
+<style>
+  :root{
+    --serif:"Canela",Georgia,"Times New Roman",serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"TSTARMonoRound",ui-monospace,"SF Mono",Menlo,monospace;
+
+    --bg:#faf6f4; --fg:#1d0a14; --card:#fff; --muted:#f3e3dc; --muted-fg:#6e5b61;
+    --border:#ecdcd5; --chip:rgba(29,10,20,.05);
+    --primary:#ff8c7d; --secondary:#1f0a16; --on-secondary:#fbefe9;
+    --open:#8a8194;  --open-soft:#efe9ee;
+    --wip:#c08a3e;   --wip-soft:#f6ecd9;
+    --done:#3f7d5a;  --done-soft:#e1efe5;
+    --gap:#b86a55;   --gap-soft:#f6e4dd;
+    --tone-olive:#e8e6cb; --tone-sage:#d1dcc5; --tone-blush:#f7e2da; --tone-muted:#f3e3dc;
+    --shadow:0 1px 2px rgba(29,10,20,.05);
+  }
+  body.dark{
+    --bg:#1a0511; --fg:#fbefe9; --card:#2b1220; --muted:#3a1f2e; --muted-fg:#c9b6bf;
+    --border:#43293a; --chip:rgba(251,239,233,.08); --secondary:#0f030b;
+    --open:#a99bab;  --open-soft:#3a2c38;
+    --wip:#e0a95c;   --wip-soft:#4a3419;
+    --done:#7fbf98;  --done-soft:#1d3a2a;
+    --gap:#e2937b;   --gap-soft:#4a241a;
+    --shadow:0 1px 3px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.5;
+    transition:background .25s,color .25s}
+  h1,h2,h3{font-family:var(--serif);font-weight:300;letter-spacing:-.015em;margin:0}
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+  button,input,textarea{font-family:inherit;color:inherit}
+
+  /* 1 · chrome */
+  .chrome{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--border);
+    padding:16px 28px 14px;display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .chrome h1{font-size:27px;line-height:1.1}
+  .statline{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-top:6px;display:flex;align-items:center;gap:10px}
+  .pbar{width:120px;height:4px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .pbar > i{display:block;height:100%;background:var(--primary);transition:width .35s}
+  .ctrls{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;
+    border:1px solid var(--border);border-radius:99px;padding:6px 13px;background:transparent;
+    color:var(--muted-fg);cursor:pointer;white-space:nowrap}
+  .pill:hover{border-color:var(--fg);color:var(--fg)}
+  .pill.on{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+  input.pill{width:100px;text-transform:none;letter-spacing:0;cursor:text}
+  input.pill:focus{outline:none;border-color:var(--primary)}
+
+  .wrap{padding:20px 28px 90px;max-width:1760px;margin:0 auto}
+  .eyebrow{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted-fg);margin:0 0 9px}
+
+  /* 2 · spotlight */
+  .spot{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:22px}
+  .tile{border-radius:12px;padding:10px 12px;border:1px solid var(--border);background:var(--card);
+    cursor:pointer;transition:transform .2s,box-shadow .2s;min-width:0}
+  .tile:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(29,10,20,.12)}
+  .tile .le{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .mn{font-family:var(--mono);font-size:12.5px;font-weight:700;margin-top:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .sb{font-size:13px;color:var(--muted-fg);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile.t-wip{border-color:var(--wip);background:var(--wip-soft)}
+  .tile.t-wip .le{color:var(--wip)}
+  .tile.t-cp{border-color:var(--primary)}
+  .tile.t-done{background:var(--done-soft);opacity:.8}
+  .tile.t-parked{background:var(--bg);opacity:.65}
+  .tile .warn{color:var(--gap);font-weight:700}
+
+  /* 3 · seam ledger */
+  .ledger{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:22px}
+  .lhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .lhead h2{font-size:19px}
+  .lsum{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted-fg)}
+  .lhead .pill{margin-left:auto}
+  .srow{display:flex;align-items:center;gap:9px;border-radius:11px;padding:8px 13px;margin-top:7px;
+    cursor:pointer;border:1px solid transparent;min-width:0}
+  .srow:hover{background:var(--chip)}
+  .srow.armed{border-color:var(--gap);background:var(--gap-soft)}
+  .srow.cleared{opacity:.45}
+  .spill{font-family:var(--mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    border-radius:99px;padding:3px 8px;white-space:nowrap}
+  .sp-armed{background:var(--gap);color:#fff}
+  .sp-live{background:var(--gap-soft);color:var(--gap)}
+  .sp-waiting{background:var(--open-soft);color:var(--open)}
+  .sp-cleared{background:var(--done-soft);color:var(--done)}
+  .sn{font-family:var(--mono);font-size:11px;font-weight:700}
+  .sfile{font-family:var(--mono);font-size:11px;color:var(--muted-fg);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-width:270px}
+  .tchip{font-family:var(--mono);font-size:9.5px;font-weight:700;border-radius:99px;padding:2px 7px;cursor:pointer;white-space:nowrap}
+  .tc-todo{background:var(--open-soft);color:var(--open)}
+  .tc-wip{background:var(--wip-soft);color:var(--wip)}
+  .tc-done{background:var(--done-soft);color:var(--done)}
+  .sverd{font-size:13px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sdetail{border-radius:9px;background:var(--gap-soft);padding:11px 14px;margin:6px 0 4px;font-size:12.5px;line-height:1.55}
+  .lempty{font-size:12px;font-style:italic;color:var(--muted-fg);padding:10px 2px}
+
+  /* 4 · wave map */
+  .board{display:grid;grid-template-columns:190px repeat(4,minmax(0,1fr));gap:13px;align-items:start}
+  .col{min-width:0}
+  .chead{font-family:var(--mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+    margin:0 2px 10px;display:flex;justify-content:space-between;gap:6px}
+  .cempty{border:1px dashed var(--border);border-radius:12px;padding:16px 8px;text-align:center;
+    font-size:11.5px;font-style:italic;color:var(--muted-fg)}
+
+  .card{background:var(--card);border-radius:13px;padding:13px 15px 12px;margin-bottom:9px;box-shadow:var(--shadow);
+    overflow:hidden;cursor:pointer;border-top:4px solid transparent;transition:box-shadow .2s,transform .2s}
+  .card:hover{box-shadow:0 6px 20px rgba(29,10,20,.13)}
+  .card.cp{border-top-color:var(--primary)}
+  .card.s-done{opacity:.55}
+  .ctop{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .cid{font-family:var(--mono);font-size:12px;font-weight:700}
+  .pick{font-family:var(--mono);font-size:9.5px;background:var(--secondary);color:var(--on-secondary);
+    border-radius:99px;padding:2px 7px}
+  .urg{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--wip-soft);color:var(--wip);
+    border-radius:99px;padding:2px 7px;letter-spacing:.06em}
+  .stat-c{margin-left:auto;border:0;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center}
+  .dot0{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--open);background:transparent;
+    transition:border-color .15s,background .15s}
+  .stat-c:hover .dot0{border-color:var(--wip);background:var(--wip-soft)}
+  .stat-l{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;border-radius:99px;padding:3px 9px}
+  .stat-l::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor}
+  .sl-wip{background:var(--wip-soft);color:var(--wip)}
+  .sl-done{background:var(--done-soft);color:var(--done)}
+  .ctitle{font-family:var(--serif);font-size:15.5px;line-height:1.3;letter-spacing:-.01em;margin:9px 0 8px}
+  .cmeta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .lane-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;color:#1d0a14}
+  .seam-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;
+    background:var(--gap-soft);color:var(--gap)}
+  .blk-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;
+    background:var(--open-soft);color:var(--open)}
+  .ag-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;background:var(--muted);color:var(--muted-fg)}
+
+  .exp{margin-top:11px;padding-top:11px;border-top:1px solid var(--border);cursor:default}
+  .surf{font-family:var(--mono);font-size:10px;background:var(--chip);border-radius:8px;padding:9px 11px;
+    max-height:110px;overflow:auto;line-height:1.5;margin-top:8px}
+  .surf .k,.nk{display:block;font-family:var(--mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-bottom:4px}
+  .note{border-left:3px solid var(--gap);padding-left:10px;font-size:12px;line-height:1.55;color:var(--muted-fg);margin-top:10px}
+  .deliv{font-size:12px;font-style:italic;color:var(--done);margin-top:8px}
+  .agi{width:100%;font-family:var(--mono);font-size:11px;padding:7px 12px;border:1px solid var(--border);
+    border-radius:99px;background:var(--bg);margin-top:11px}
+  .agi:focus,.nts:focus{outline:none;border-color:var(--primary)}
+  .nts{width:100%;min-height:36px;font-size:11.5px;padding:8px 11px;border:1px dashed var(--border);
+    border-radius:10px;background:var(--bg);margin-top:7px;resize:vertical}
+  .arow{display:flex;align-items:center;gap:11px;margin-top:12px}
+  .disp{width:44px;height:44px;flex-shrink:0;border-radius:99px;border:0;background:var(--primary);color:#1d0a14;
+    font-size:18px;cursor:pointer;transition:transform .2s}
+  .disp:hover{transform:scale(1.07)}
+  .ahint{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg)}
+  .lnk{margin-left:auto;font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--border);
+    border-radius:99px;padding:4px 9px;color:var(--muted-fg)}
+  .lnk:hover{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+
+  /* 5 · dispatch drawer */
+  .scrim{position:fixed;inset:0;background:rgba(29,10,20,.45);z-index:40}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:390px;background:var(--secondary);color:var(--on-secondary);
+    padding:26px;box-shadow:-12px 0 40px rgba(0,0,0,.3);z-index:41;overflow-y:auto}
+  .dtop{display:flex;align-items:center;gap:8px}
+  .deye{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--primary)}
+  .dx{margin-left:auto;background:transparent;border:0;color:var(--on-secondary);font-size:16px;cursor:pointer;opacity:.7}
+  .dx:hover{opacity:1}
+  .drawer h2{font-size:25px;margin-top:14px}
+  .dsub{font-size:13.5px;opacity:.75;margin-top:4px;line-height:1.45}
+  .warn{border-radius:10px;padding:11px 13px;margin-top:12px;font-size:12.5px;line-height:1.5}
+  .w-armed{background:var(--gap);color:#fff}
+  .w-soft{background:var(--gap-soft);color:#1d0a14}
+  .w-blk{background:var(--wip-soft);color:#1d0a14}
+  .step{border:1px solid rgba(251,239,233,.22);border-radius:11px;padding:11px 13px;margin-top:11px;
+    display:flex;align-items:center;gap:10px}
+  .step .sl{font-family:var(--mono);font-size:10.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cpy{font-family:var(--mono);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    background:var(--primary);color:#1d0a14;border:0;border-radius:99px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+  .stepin{background:transparent;border:0;border-bottom:1px solid rgba(251,239,233,.4);color:var(--on-secondary);
+    font-family:var(--mono);font-size:11px;padding:3px 0;flex:1;min-width:0}
+  .stepin:focus{outline:none;border-bottom-color:var(--primary)}
+  .markwip{width:100%;margin-top:18px;background:var(--primary);color:#1d0a14;border:0;border-radius:12px;
+    padding:14px;font-family:var(--mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
+  .markwip:hover{filter:brightness(1.05)}
+  .dfoot{display:flex;align-items:center;gap:8px;margin-top:14px}
+  .ghost{font-family:var(--mono);font-size:9.5px;background:transparent;border:1px solid rgba(251,239,233,.3);
+    color:var(--on-secondary);border-radius:99px;padding:5px 10px;cursor:pointer}
+  .ghost:hover{background:rgba(251,239,233,.1)}
+  .dfoot a{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--on-secondary);opacity:.75;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="chrome">
+  <div>
+    <h1>Studio v2 tail <span style="opacity:.45">— 8 open, code-verified 2026-08-02</span></h1>
+    <div class="statline"><span id="stats"></span><span class="pbar"><i id="pfill"></i></span></div>
+  </div>
+  <div class="ctrls">
+    <button class="pill" id="cpBtn">crit path</button>
+    <input class="pill" id="agFilter" placeholder="agent…"/>
+    <button class="pill" id="themeBtn">◐ dark</button>
+    <button class="pill" id="copyBtn">copy state</button>
+    <button class="pill" id="resetBtn">reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="eyebrow">Next up, per lane · click a tile to act</p>
+  <div class="spot" id="spot"></div>
+
+  <div class="ledger">
+    <div class="lhead">
+      <h2>Seams</h2>
+      <span class="lsum" id="lsum"></span>
+      <button class="pill" id="quietBtn"></button>
+    </div>
+    <div id="srows"></div>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<div id="overlay"></div>
+
+<script>
+/* ══ CONFIG — retarget for a different tracker/workspace ══ */
+const CFG={
+  prefix:"TTM",                                            // issue key prefix
+  url:id=>`https://linear.app/tatoma/issue/TTM-${id}`,     // issue link
+  worktree:(id,branch)=>`git fetch origin && git worktree add ../cp-ttm-${id} -b ${branch} origin/main`,
+  prompt:(id,title)=>`hey dear friend, can you please help me take a look at and tackle ${CFG.prefix}-${id} — ${title} (${CFG.url(id)})`,
+};
+
+/* ══ SEED — regenerated from Linear by the tracker skill. Never hand-edit render code. ══ */
+const STREAMS = {
+  F: { name: "Foundation / shell", tone: "var(--tone-olive)" },
+  R: { name: "Reports & vocabulary", tone: "var(--tone-sage)" },
+  P: { name: "Prompts pipeline", tone: "var(--tone-blush)" },
+  J: { name: "Journey / promotion", tone: "var(--tone-muted)" },
+  A: { name: "Academy", tone: "var(--tone-sage)" },
+  X: { name: "Cross-app convention", tone: "var(--tone-blush)" },
+  V: { name: "Velocity", tone: "var(--tone-olive)" },
+};
+
+const T = [
+  {
+    id: 1061, s: "F", cp: true, tag: "urgent", size: "S",
+    t: "Pulse nav renders visible-but-denied links for binders /my members",
+    branch: "israel/ttm-1061-pulse-nav-renders-visible-but-denied-links-for-members-whose",
+    surf: "packages/core/src/sidebar-config.ts:152-159 (six ungated items) · packages/core/src/apps.ts:276-279 (carve-out fallthrough) · packages/core/src/layout-helpers.ts:456-462 (isPulseAccessible) · packages/core/src/__tests__/sidebar-config.test.ts",
+    note: "SEAM1 layout-helpers.ts is shared with 957 (Velocity) - this lane edits the gating at :456-462, 957 only adds timing spans at :269-390. Land this first. LANE F ORDER: 1061 then 926; both rewrite sidebar-config.ts and 926 must not ship gating on isPulseAccessible until this lands. Found while pre-speccing 926, not in Maarten's review. A plain admin cannot reproduce it: needs a member, in a feature-binders org, on /my.",
+    deliver: "A member in a feature-binders org sees no Pulse row and no client-portal links they cannot open. Admin / transformation-lead / TATOMA see zero change. Filter tests pin the carve-out so the section cannot silently re-widen.",
+    blk: [], soft: [],
+  },
+  {
+    id: 926, s: "F", cp: true, size: "S",
+    t: "Sidebar entry point for Pulse (and move reporting there over time)",
+    branch: "israel/ttm-926-sidebar-entry-point-for-pulse-and-move-reporting-there-over",
+    surf: "packages/core/src/sidebar-config.ts:10-76 (new SidebarNavItem field) + :135-139 (the item) · packages/ui/src/ui/platform-sidebar.tsx:150-178 (jump affordance) · packages/ui/src/ui/sidebar-icons.ts:35-66 (ICON_MAP entry) · packages/core/src/__tests__/sidebar-config.test.ts",
+    note: "SEAM1 layout-helpers.ts shared with 957. BLOCKED BY 1061: gating this on isPulseAccessible inherits that defect in a more prominent position - gate on requiredRole:'admin' instead, matching what client-portal enforces. Recommended shape is Option A (cross-section nav item in Studio's Admin group), not reviving the dead SectionToggle. TWO SHELL TRAPS: filterSidebarItems reassigns groupAccent to the first visible item of a group, so inserting into Admin can move the accent bar; and the active-state matcher has a known false-positive class for common paths like /home, which is exactly what a Studio item pointing at client-portal /home is. Run pnpm -F @tatomahq/ui verify:css (invisible to CI). Placement / in-tab / symmetry are product calls - do not guess.",
+    deliver: "One reachable, correctly-gated way into Pulse from Studio, with a jump affordance the sidebar currently has no vocabulary for. Reporting migration is explicitly NOT in this card.",
+    blk: [1061], soft: [],
+  },
+  {
+    id: 950, s: "R", size: "M",
+    t: "Studio reporting: prompts tab gate, use-cases terminology, styling drift",
+    branch: "israel/ttm-950-studio-reporting-prompts-tile-links-to-the-library-use-cases",
+    surf: "apps/prompts/src/app/(main)/reports/page.tsx:29-31 (the gate) + :70-77 (hardcoded-English nav) · apps/academy/messages/{en,nl,da}/academy.json (16 keys each) · packages/i18n/messages/{en,nl,da}/platform.json:9,69-73 · packages/ui/src/ui/reports-nav.tsx:10,16 · apps/academy/src/components/features/reports/use-cases-dashboard.tsx · .../milestones-dashboard.tsx · apps/prompts/src/components/features/reports/prompts-dashboard.tsx · packages/ui/src/ui/stat-tile.tsx (NEW)",
+    note: "SEAM2 academy.json is shared with 937 (Academy) - this lane owns academy.reports.*, 937 owns academy.learn.courses.*. Land this first, the rename is the risky half. SUB-SEQUENCE, NOT PARALLEL: (a) gate swap is XS and independently shippable, do it alone and ship it; (b) vocabulary needs the noun decided first - the AC says 'tasks' and the data says SKILLS, the report aggregates the skills table; (c) narrow styling pass ONLY (extract StatTile + DistributionBar, adopt EmptyState) because a Pulse move would throw away a full brand alignment. Do NOT sweep org_use_cases / landscape_business_use_cases - different domain, migration 071 left it alone deliberately. Do NOT fix the twelve CardTitle overrides by editing the shared CardTitle. Run pnpm -F @tatomahq/ui verify:css.",
+    deliver: "Transformation-leads and TATOMA admins can actually open the prompts report. The surviving use-case surface calls skills what the rest of the platform calls them, in all three locales. Two reusable primitives in packages/ui that survive a move to Pulse.",
+    blk: [], soft: [],
+  },
+  {
+    id: 971, s: "P", size: "S",
+    t: "Refinement's RCTFT fallback fabricates a false ingredients record",
+    branch: "israel/ttm-971-refinements-rctft-fallback-fabricates-the-same-class-of",
+    surf: "apps/prompts/src/lib/prompts/refine-prompt.ts:74-94 (the fallback) + :122-129 (the persist) + :84-86 (the swallowed error) · apps/prompts/src/lib/prompts/refine-prompt.test.ts:77-95 (asserts the OLD behaviour, will go red) · apps/prompts/CLAUDE.md",
+    note: "No seams - this lane owns one file nobody else touches. DO IT WHILE THE PROBE IS ZERO: a read-only prod probe on 2026-08-02 found 533 live prompts, 70 with ingredients, and ZERO matching any fabricated shape. Migration 149 cannot catch this shape (it keys on literal empty strings), so once real rows land there is no predicate that can undo them. Re-run the probe at implementation time. Broader than the ticket says: processPromptText returns [MISSING] per field, so a SUCCESSFUL detection with an unfilled tone still persists 'Professional'. The shape to copy is one road over at generate-prompt/route.ts:51-71 ('Empty stays empty').",
+    deliver: "Ingredients persisted only when detected. A missing field stays missing in the record while the generator still gets the raw body as grounding. Four new tests covering detection failure, which has none today.",
+    blk: [], soft: [],
+  },
+  {
+    id: 937, s: "A", size: "S",
+    t: "Academy: surface recommended courses (multi-course certs NOT in scope)",
+    branch: "israel/ttm-937-academy-page-surface-recommended-courses-represent-multi",
+    surf: "apps/academy/src/app/(main)/home/page.tsx:38 (add to the existing Promise.all) + :128 (the band) · apps/academy/src/components/features/learn/recap/recap-learning-room.tsx:72-93 (the treatment to reuse) · apps/academy/messages/{en,nl,da}/academy.json (academy.learn.courses.*)",
+    note: "SEAM2 academy.json shared with 950 - append to academy.learn.courses.* only, and rebase after 950's rename lands. SCOPE IS (a) ONLY. Sub-item (b) multi-course certificates is L, needs new schema, and is blocked on Aimee's content strategy - do not attempt it in this branch. The recommender ALREADY EXISTS and Academy already calls it at tracked-summary.tsx:169: use getStudioRequiredReadingsView, not the role-adaptive feature (that only rewrites activity field text per department). TENANT TRAP: the config is one GLOBAL admin_settings row and the org scoping lives INSIDE buildRequiredReadingItemsForLevel - calling getRequiredReadingsForLevel directly from the page reintroduces a leak. Only 22 of 32 profiles carry an ai_readiness_level, so the empty state is the main product question, not a detail.",
+    deliver: "A recommended band on Academy /home fed by the existing required-readings resolver, matching the recap's visual language, failing soft to empty. No migration, so it ships on the normal train with no promote coupling.",
+    blk: [], soft: [],
+  },
+  {
+    id: 934, s: "J", size: "S",
+    t: "After first task: promote the extension, desktop and MCP",
+    branch: "israel/ttm-934-after-first-task-start-promoting-ways-to-use-it-chrome",
+    surf: "apps/prompts/src/components/features/onboarding/what-are-prompts-modal.tsx (third page) · apps/prompts/src/components/features/library/prompts-page-shell.tsx:75-112 (the introPhase lifecycle to not disturb) · apps/prompts/messages/{en,nl,da}/prompts.json · apps/studio/src/components/features/plays/try/save-to-library.tsx:224-232 (optional) · apps/studio/src/lib/discover/try/library-href.ts",
+    note: "No file seams. THE 2026-07-22 'REVIVE THE DOORS' DIRECTION DOES NOT SURVIVE THE CODE: DoorKind is skill|steps|project|agent|scheduled|repair and none of those IS 'install the extension', so the mapping would be invented, not revived - and re-listing a kind with no destination reproduces the exact defect TTM-847 removed. Host it in the TTM-922 intro modal instead (already first-run-gated, already sequenced ahead of the glow). COORDINATE WITH TTM-964, which already edited this same file. The modal fires for EVERY first-time library visitor, not only post-Studio-save, so the copy must work for someone who arrived from the sidebar. save-to-library.tsx has a deliberately single-return structure protecting a role=status live region - do not add a second return. BLOCKED ON A DECISION: the store build is v0.1.0 from April, missing three months of work.",
+    deliver: "A first-run slide naming where a saved prompt can actually be reached, routing to the existing /apps page, in three locales. Fires exactly once.",
+    blk: [], soft: [],
+  },
+  {
+    id: 925, s: "X", size: "XS",
+    t: "See related task opens a new tab: intentional?",
+    branch: "israel/ttm-925-see-related-task-opens-a-new-tab-intentional",
+    surf: "packages/ui/src/ui/prompt-detail/prompt-detail.tsx:824-839 (the comment and the anchor) · root CLAUDE.md (record the house rule)",
+    note: "SEAM3 tasks/[id]/page.tsx is shared with 957 ONLY IF the platform-wide link audit is taken - the recommended scope dodges it entirely. THE INVESTIGATION IS DONE, ONLY A PRODUCT CALL IS LEFT. It was deliberate twice (92a641429, PR #1384) and the rationale is still in the comment. The finding is that the house rule contradicts itself: 9 of 10 cross-app links are same-tab, INCLUDING the exact reverse hop at tasks/[id]/page.tsx:189. The _blank cases elsewhere are all inside lesson iframes - a framing constraint, not precedent. TTM-930 later built the ?from=library return path, which answers the concern the _blank was protecting. If it stays _blank, still write the rule down. Run pnpm -F @tatomahq/ui verify:css.",
+    deliver: "Either same-tab plus a plain arrow, or _blank kept with the exception documented. Either way the platform stops re-litigating this on every new cross-app link.",
+    blk: [], soft: [],
+  },
+  {
+    id: 957, s: "V", size: "M",
+    t: "Overall perceived speed: turn snappy into a number, then spend it",
+    branch: "israel/ttm-957-overall-perceived-speed-faster-than-before-still-not-snappy",
+    surf: "apps/studio/src/app/(main)/tasks/[id]/page.tsx:61-148 (8 serial awaits, only 4 dependent) · apps/studio/src/app/(main)/home/page.tsx:185,287 (two needless serial hops) · apps/studio/src/components/features/skills/skill-library.tsx:50-105 (triple useEffect after hydration) · apps/studio/src/app/(main)/layout.tsx:19 · packages/core/src/layout-helpers.ts:269-390 (Server-Timing spans, ADDITIVE ONLY) · apps/studio/next.config.ts",
+    note: "SEAM1 layout-helpers.ts shared with F - keep this pass purely additive timing spans and rebase after 1061/926 land the gating edits. SEAM3 tasks/[id]/page.tsx nominally shared with 925, which dodges it under its recommended scope. MEASURE BEFORE YOU TOUCH ANYTHING: Vercel Speed Insights is ALREADY mounted at apps/studio/src/app/layout.tsx:55-56 and collecting; nobody has opened the dashboard. Put p75 TTFB and LCP for /home, /tasks/[id] and /skills on the ticket before writing a line. Server time is the dark half - no OTel, no Server-Timing anywhere in the repo. DO NOT TOUCH room-stage.tsx: four documented invariants in apps/studio/CLAUDE.md from TTM-920, and prior 'improvements' produced blank and warped rooms. Do not bundle the router.refresh polling change into a latency pass. Task page first: best latency removed per unit of risk.",
+    deliver: "A baseline number on the ticket, Server-Timing spans that name which hop costs what, and three concrete waterfall fixes. Then spin off targeted children rather than closing this umbrella.",
+    blk: [], soft: [],
+  },
+];
+
+const SEAMS = [
+  {
+    n: 1,
+    file: "packages/core/src/layout-helpers.ts",
+    cards: [1061, 926, 957],
+    verdict: "Land Foundation first; Velocity stays additive and rebases.",
+    detail: "Foundation edits the gating at :456-462 (isPulseAccessible and consoleDefaultUrl must agree on a destination the viewer can open). Velocity wraps the stages at :269-390 in Server-Timing marks and must not restructure the function. Different regions of one file, so the resolution is ordering plus a scope rule, not serialisation. This file is imported by every (main)/layout.tsx in all 15 Next apps, so anything beyond additive instrumentation from the Velocity side is a monorepo-wide change and needs the full-diff review posture.",
+  },
+  {
+    n: 2,
+    file: "apps/academy/messages/{en,nl,da}/academy.json",
+    cards: [950, 937],
+    verdict: "Reserve the subtrees up front: R owns academy.reports.*, A owns academy.learn.courses.*. R lands first.",
+    detail: "Reports renames 16 keys per locale; Academy appends new ones. The collision is the file, not the keys, so reserving subtrees makes them additive to each other. R goes first because a key-PATH rename breaks missed call sites at runtime, not compile time (next-intl throws on a missing key), and that risk should not be sitting under an unrelated in-flight branch. Both locales currently ship English for the reports nav label, so R's half needs a real nl/da pass rather than a passthrough. i18n parity is gated by i18n-check.yml.",
+  },
+  {
+    n: 3,
+    file: "apps/studio/src/app/(main)/tasks/[id]/page.tsx",
+    cards: [957, 925],
+    verdict: "Dodge: 925's recommended scope never opens this file. Arms only if the platform-wide link audit is taken.",
+    detail: "Velocity rewrites the await chain at :61-148. Cross-app convention only touches prompt-detail.tsx under the recommended fix; the same-tab anchor at :189 is cited as evidence for the house rule, not edited. If the team decides to normalise the rule across all 10 cross-app links, this becomes a real collision and Velocity should land first, since its edit is structural and the link change is three lines.",
+  },
+];
+
+
+/* ══ STATE ══ */
+const KEY="ttm-studio-v2-tail-console-v1"; // bump on re-seed from Linear
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function cs(id){if(!state.cards[id])state.cards[id]={status:"todo",agent:"",notes:""};return state.cards[id];}
+const st=id=>cs(id).status;
+const card=id=>T.find(x=>x.id==id);
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+/* ephemeral */
+let expanded=null, drawerId=null, openSeam=null, showQuiet=false, cpOnly=false, agQ="";
+
+/* ══ COMPUTED ══ */
+const deps=t=>[...(t.blk||[]),...(t.soft||[])];
+const waveMemo=new Map();
+function wave(t,seen=new Set()){
+  if(waveMemo.has(t.id))return waveMemo.get(t.id);
+  if(seen.has(t.id))return 0;                       // cycle guard
+  seen.add(t.id);
+  const pend=deps(t).filter(d=>st(d)!=="done");
+  const w=pend.length?1+Math.max(...pend.map(d=>{const c=card(d);return c?wave(c,seen):0})):0;
+  waveMemo.set(t.id,w);return w;
+}
+function column(t){
+  const s=st(t.id);
+  if(s==="done")return "DONE";
+  if(s==="wip")return "IN FLIGHT";
+  const w=wave(t);
+  return w===0?"START NOW":w===1?"ONE STEP AWAY":"LATER";
+}
+const unblocks=t=>T.filter(x=>st(x.id)!=="done"&&deps(x).includes(t.id)).length;
+function sortCol(a,b){
+  if(!!a.cp!==!!b.cp)return a.cp?-1:1;
+  const ua=a.tag==="urgent",ub=b.tag==="urgent";
+  if(ua!==ub)return ua?-1:1;
+  const d=unblocks(b)-unblocks(a); if(d)return d;
+  return a.id-b.id;
+}
+/* seam state machine */
+function seamState(sm){
+  const open=sm.cards.filter(id=>st(id)!=="done");
+  const wip=sm.cards.filter(id=>st(id)==="wip");
+  if(open.length<=1)return "cleared";
+  if(wip.length>=2)return "armed";
+  if(wip.length===1)return "live";
+  return "waiting";
+}
+const RANK={armed:0,live:1,waiting:2,cleared:3};
+const seamsOf=id=>SEAMS.filter(s=>s.cards.includes(id));
+
+/* ══ RENDER ══ */
+function visible(t){
+  if(cpOnly&&!t.cp)return false;
+  if(agQ&&!(cs(t.id).agent||"").toLowerCase().includes(agQ))return false;
+  return true;
+}
+function render(){
+  waveMemo.clear();
+  const done=T.filter(t=>st(t.id)==="done").length;
+  const wip=T.filter(t=>st(t.id)==="wip").length;
+  const ready=T.filter(t=>st(t.id)==="todo"&&wave(t)===0).length;
+  const blocked=T.filter(t=>st(t.id)==="todo"&&wave(t)>0).length;
+  document.getElementById("stats").textContent=`${done}/${T.length} done · ${wip} in flight · ${ready} ready · ${blocked} blocked`;
+  document.getElementById("pfill").style.width=(done/T.length*100)+"%";
+  renderSpot();renderLedger();renderBoard();renderDrawer();
+}
+
+/* 2 · spotlight */
+function renderSpot(){
+  const el=document.getElementById("spot");el.innerHTML="";
+  for(const k of Object.keys(STREAMS)){
+    const S=STREAMS[k];
+    const mine=T.filter(t=>t.s===k);
+    const wips=mine.filter(t=>st(t.id)==="wip");
+    const ready=mine.filter(t=>st(t.id)==="todo"&&wave(t)===0).sort(sortCol);
+    const openN=mine.filter(t=>st(t.id)!=="done").length;
+    let cls="",mn="",sb="",act=null;
+    if(wips.length){
+      cls="t-wip";
+      mn="wip: "+wips.map(t=>t.id).join(", ");
+      const names=wips.map(t=>cs(t.id).agent).filter(Boolean);
+      sb=names.length?names.join(", "):`<span class="warn">no agent!</span>`;
+      act={kind:"jump",id:wips[0].id};
+    }else if(ready.length){
+      const t=ready[0];
+      cls=t.cp?"t-cp":"";
+      mn="#1 · "+t.id;
+      sb=t.cp?"crit path":t.tag==="urgent"?"urgent":unblocks(t)?`unblocks ${unblocks(t)}`:"quick win";
+      act={kind:"dispatch",id:t.id};
+    }else if(!openN){
+      cls="t-done";mn="done ✓";sb="lane closed";
+    }else{
+      cls="t-parked";
+      const nx=mine.filter(t=>st(t.id)!=="done").sort((a,b)=>wave(a)-wave(b))[0];
+      mn="parked";
+      sb=nx?`${nx.id} awaits ${deps(nx).filter(d=>st(d)!=="done").join(", ")}`:"—";
+      act=nx?{kind:"jump",id:nx.id}:null;
+    }
+    const d=document.createElement("div");
+    d.className="tile "+cls;
+    d.innerHTML=`<div class="le">${k} · ${S.name}</div><div class="mn">${mn}</div><div class="sb">${sb}</div>`;
+    if(act)d.onclick=()=>act.kind==="dispatch"?openDrawer(act.id):jump(act.id);
+    el.appendChild(d);
+  }
+}
+
+/* 3 · seam ledger */
+function renderLedger(){
+  const rows=document.getElementById("srows");rows.innerHTML="";
+  const withState=SEAMS.map(s=>({...s,state:seamState(s)}))
+    .sort((a,b)=>RANK[a.state]-RANK[b.state]||a.n-b.n);
+  const c={armed:0,live:0,waiting:0,cleared:0};withState.forEach(s=>c[s.state]++);
+  document.getElementById("lsum").textContent=`${c.armed} armed · ${c.live} live · ${c.waiting} waiting · ${c.cleared} cleared`;
+  const quiet=withState.filter(s=>s.state==="waiting"||s.state==="cleared").length;
+  const qb=document.getElementById("quietBtn");
+  qb.textContent=showQuiet?"collapse":`show ${quiet} quiet`;
+  qb.onclick=()=>{showQuiet=!showQuiet;renderLedger();};
+
+  const shown=withState.filter(s=>showQuiet||s.state==="armed"||s.state==="live"||s.n===openSeam);
+  if(!shown.length){
+    rows.innerHTML=`<div class="lempty">No seam is live — nothing to coordinate right now. They surface here the moment two sides are in flight.</div>`;
+    return;
+  }
+  shown.forEach(s=>{
+    const r=document.createElement("div");
+    r.className="srow "+s.state;
+    r.innerHTML=`<span class="spill sp-${s.state}">${s.state}</span>
+      <span class="sn">S${s.n}</span>
+      <span class="sfile" title="${s.file}">${s.file}</span>
+      ${s.cards.map(id=>`<span class="tchip tc-${st(id)}" data-jump="${id}">${id}</span>`).join("")}
+      <span class="sverd" title="${s.verdict.replace(/"/g,"&quot;")}">${s.verdict}</span>`;
+    r.onclick=e=>{if(e.target.dataset.jump)return;openSeam=openSeam===s.n?null:s.n;renderLedger();};
+    rows.appendChild(r);
+    if(openSeam===s.n){
+      const d=document.createElement("div");d.className="sdetail";d.textContent=s.detail||s.verdict;
+      rows.appendChild(d);
+    }
+  });
+  rows.querySelectorAll("[data-jump]").forEach(c=>c.onclick=e=>{e.stopPropagation();jump(+c.dataset.jump);});
+}
+
+/* 4 · board */
+const COLS=[["DONE","var(--done)"],["IN FLIGHT","var(--wip)"],["START NOW","var(--fg)"],
+            ["ONE STEP AWAY","var(--muted-fg)"],["LATER","var(--muted-fg)"]];
+function renderBoard(){
+  const b=document.getElementById("board");b.innerHTML="";
+  COLS.forEach(([name,col])=>{
+    const items=T.filter(t=>column(t)===name&&visible(t)).sort(sortCol);
+    const d=document.createElement("div");d.className="col";
+    const count=name==="DONE"?`${T.filter(t=>st(t.id)==="done").length}/${T.length}`:items.length;
+    d.innerHTML=`<div class="chead" style="color:${col}"><span>${name}</span><span>${count}</span></div>`;
+    if(!items.length){d.insertAdjacentHTML("beforeend",`<div class="cempty">nothing here</div>`);}
+    items.forEach((t,i)=>d.appendChild(cardEl(t,name==="START NOW"?i+1:null)));
+    b.appendChild(d);
+  });
+}
+function cardEl(t,pick){
+  const s=st(t.id),c=cs(t.id),ex=expanded===t.id;
+  const el=document.createElement("div");
+  el.className="card"+(t.cp?" cp":"")+(s==="done"?" s-done":"");
+  el.id="card-"+t.id;
+  const sms=seamsOf(t.id).filter(x=>seamState(x)!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const spend=(t.soft||[]).filter(d=>st(d)!=="done");
+  const statCtl=s==="todo"
+    ? `<button class="stat-c" data-st="${t.id}" aria-label="Mark in progress"><span class="dot0"></span></button>`
+    : `<button class="stat-c" data-st="${t.id}"><span class="stat-l sl-${s}">${s}</span></button>`;
+  el.innerHTML=`
+    <div class="ctop">
+      ${pick?`<span class="pick">#${pick}</span>`:""}
+      <span class="cid">${CFG.prefix}-${t.id}</span>
+      ${t.tag==="urgent"?`<span class="urg">⚡ urgent</span>`:""}
+      ${statCtl}
+    </div>
+    <div class="ctitle">${t.t}</div>
+    <div class="cmeta">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}" title="${STREAMS[t.s].name}">${t.s}</span>
+      ${sms.length?`<span class="seam-p">${sms.length} seam${sms.length>1?"s":""}</span>`:""}
+      ${pend.length?`<span class="blk-p">← ${pend.join(", ")}</span>`:""}
+      ${spend.length?`<span class="blk-p">after ${spend.join(", ")}</span>`:""}
+      ${c.agent?`<span class="ag-p">${c.agent}</span>`:""}
+    </div>
+    ${ex?expandedHTML(t,c,sms):""}`;
+  el.onclick=e=>{if(e.target.closest("[data-st]")||e.target.closest(".exp"))return;
+    expanded=expanded===t.id?null:t.id;render();};
+  el.querySelector("[data-st]").onclick=e=>{e.stopPropagation();cs(t.id).status=NEXT[s];save();render();};
+  if(ex){
+    el.querySelector(".agi").onchange=e=>{cs(t.id).agent=e.target.value;save();render();};
+    el.querySelector(".nts").onchange=e=>{cs(t.id).notes=e.target.value;save();};
+    el.querySelector(".disp").onclick=e=>{e.stopPropagation();openDrawer(t.id);};
+    el.querySelectorAll("[data-seam]").forEach(x=>x.onclick=e=>{
+      e.stopPropagation();openSeam=+x.dataset.seam;showQuiet=true;renderLedger();
+      document.querySelector(".ledger").scrollIntoView({behavior:"smooth",block:"center"});});
+  }
+  return el;
+}
+function expandedHTML(t,c,sms){
+  return `<div class="exp">
+    <div class="cmeta" style="margin-bottom:9px">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}">${t.s} · ${STREAMS[t.s].name}</span>
+      ${sms.map(s=>`<span class="seam-p" data-seam="${s.n}" style="cursor:pointer">S${s.n}</span>`).join("")}
+    </div>
+    <div class="surf"><span class="k">surface</span>${t.surf}</div>
+    <div class="note"><span class="nk">note</span>${t.note}</div>
+    ${t.deliver?`<div class="deliv">▸ ${t.deliver}</div>`:""}
+    <input class="agi" placeholder="agent / who…" value="${(c.agent||"").replace(/"/g,"&quot;")}"/>
+    <textarea class="nts" placeholder="where it's at / handoff notes…">${c.notes||""}</textarea>
+    <div class="arow">
+      <button class="disp" title="Dispatch">→</button>
+      <span class="ahint">dispatch</span>
+      <a class="lnk" href="${CFG.url(t.id)}" target="_blank" onclick="event.stopPropagation()">Linear ↗</a>
+    </div>
+  </div>`;
+}
+
+/* 5 · drawer */
+function openDrawer(id){drawerId=id;expanded=id;render();}
+function renderDrawer(){
+  const o=document.getElementById("overlay");
+  if(drawerId===null){o.innerHTML="";return;}
+  const t=card(drawerId),c=cs(t.id);
+  const sms=seamsOf(t.id).map(s=>({...s,state:seamState(s)})).filter(s=>s.state!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const prompt=CFG.prompt(t.id,t.t);
+  const wt=CFG.worktree(t.id,t.branch);
+  o.innerHTML=`
+    <div class="scrim" id="scrim"></div>
+    <div class="drawer">
+      <div class="dtop"><span class="deye">Dispatch</span><button class="dx" id="dx">✕</button></div>
+      <h2>${CFG.prefix}-${t.id}</h2>
+      <p class="dsub">${t.t}</p>
+      ${pend.length?`<div class="warn w-blk"><b>Blocked</b> — still awaits ${pend.map(x=>CFG.prefix+"-"+x).join(", ")}. Dispatch anyway only if you mean it.</div>`:""}
+      ${sms.map(s=>`<div class="warn ${s.state==="armed"?"w-armed":"w-soft"}"><b>S${s.n}${s.state==="armed"?" · ARMED":""} —</b> ${s.verdict}</div>`).join("")}
+      <div class="step"><span class="sl">1 · kickoff prompt</span><button class="cpy" data-c="prompt">copy</button></div>
+      <div class="step"><span class="sl">2 · git worktree add…</span><button class="cpy" data-c="wt">copy</button></div>
+      <div class="step"><span class="sl" style="flex:0 0 auto">3 · agent</span>
+        <input class="stepin" id="dag" placeholder="who's on it?" value="${(c.agent||"").replace(/"/g,"&quot;")}"/></div>
+      <button class="markwip" id="mw">Mark wip &amp; close →</button>
+      <div class="dfoot">
+        <button class="ghost" data-c="br">copy branch name</button>
+        <a href="${CFG.url(t.id)}" target="_blank">Linear ↗</a>
+      </div>
+    </div>`;
+  const close=()=>{drawerId=null;render();};
+  document.getElementById("scrim").onclick=close;
+  document.getElementById("dx").onclick=close;
+  document.getElementById("dag").onchange=e=>{cs(t.id).agent=e.target.value;save();};
+  document.getElementById("mw").onclick=()=>{cs(t.id).status="wip";save();close();};
+  o.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+    const txt=b.dataset.c==="prompt"?prompt:b.dataset.c==="wt"?wt:t.branch;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const old=b.textContent;b.textContent="copied ✓";setTimeout(()=>b.textContent=old,1100);});
+  });
+}
+
+/* ══ NAV / CHROME ══ */
+function jump(id){
+  drawerId=null;expanded=id;render();
+  const el=document.getElementById("card-"+id);
+  if(!el)return;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-150,behavior:"smooth"});
+  el.style.outline="2px solid var(--primary)";el.style.outlineOffset="2px";
+  setTimeout(()=>el.style.outline="",1400);
+}
+function applyTheme(){
+  const dark=state.themeOverride==="dark";
+  document.body.classList.toggle("dark",dark);
+  document.getElementById("themeBtn").textContent=dark?"☀ warm":"◐ dark";
+}
+document.getElementById("cpBtn").onclick=e=>{cpOnly=!cpOnly;e.target.classList.toggle("on",cpOnly);render();};
+document.getElementById("agFilter").oninput=e=>{agQ=e.target.value.trim().toLowerCase();render();};
+document.getElementById("themeBtn").onclick=()=>{
+  state.themeOverride=state.themeOverride==="dark"?"warm":"dark";save();applyTheme();};
+document.getElementById("copyBtn").onclick=e=>{
+  navigator.clipboard.writeText(JSON.stringify(state.cards,null,2)).then(()=>{
+    e.target.textContent="copied ✓";setTimeout(()=>e.target.textContent="copy state",1100);});};
+document.getElementById("resetBtn").onclick=()=>{
+  if(confirm("Reset all statuses, agents & notes?")){state={cards:{},themeOverride:state.themeOverride};save();render();}};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&drawerId!==null){drawerId=null;render();}});
+
+applyTheme();render();
+</script>
+</body>
+</html>

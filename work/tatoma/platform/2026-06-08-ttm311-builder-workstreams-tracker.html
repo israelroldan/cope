@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TTM-311 builder rework — WS1–8 workstreams</title>
+<style>
+  :root{
+    --bg:#f6faeb; --fg:#1d021f; --card:#fff; --salmon:#ff8e7d; --mint:#cdeccd;
+    --muted:#a397a3; --eggplant:#4c3c47; --magenta:#1E001E;
+    --todo:#c9c2cb; --wip:#e9a23b; --done:#3ba55d; --blocked:#d9534f; --ready:#2e7d32;
+    --eng:#3b6ea5; --ux:#9a4dbd;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.45}
+  a{color:inherit}
+  header{position:sticky;top:0;z-index:20;background:var(--magenta);color:var(--bg);padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.01em}
+  header h1 small{font-weight:400;opacity:.6}
+  .prog{font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:8px}
+  .bar{width:200px;height:7px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
+  .bar > i{display:block;height:100%;background:var(--done)}
+  header button,.tool button{font-family:var(--sans);font-size:11px;border:0;border-radius:6px;padding:4px 9px;cursor:pointer;background:rgba(255,255,255,.16);color:var(--bg)}
+  .tool{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#fff7f5;border-bottom:1px solid #f0d9d4;position:sticky;top:39px;z-index:19}
+  .tool button{background:#fff;color:var(--fg);border:1px solid var(--muted)}
+  .tool label{font-size:11px;display:inline-flex;gap:5px;align-items:center}
+  .wrap{padding:14px 16px 60px}
+  .panel{background:var(--card);border:1px solid rgba(163,151,163,.45);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+  .panel h2{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);color:var(--eggplant)}
+  .cp{padding:8px 10px;border-left:3px solid var(--salmon);background:rgba(255,142,125,.08);border-radius:0 8px 8px 0;margin:6px 0;font-family:var(--mono);font-size:12px}
+  .cp b{color:var(--blocked)}
+  .seam{padding:7px 10px;border-left:3px solid var(--eng);background:rgba(59,110,165,.06);border-radius:0 8px 8px 0;margin:7px 0}
+  .seam b{font-family:var(--mono);font-size:11px}
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:1px 6px;border-radius:5px;background:rgba(29,2,31,.07);margin:1px 2px;cursor:pointer}
+  .chip.hot{background:var(--salmon)}
+  .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;align-items:start}
+  .lane{background:rgba(255,255,255,.5);border:1px solid rgba(163,151,163,.4);border-radius:12px;padding:8px}
+  .lane.ux{background:rgba(154,77,189,.05);border-color:rgba(154,77,189,.3)}
+  .lane.def{opacity:.72}
+  .lane > h3{margin:2px 4px 8px;font-size:12px;display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+  .lane > h3 small{font-weight:400;color:var(--eggplant);font-size:10px;font-family:var(--mono);text-align:right}
+  .card{background:var(--card);border:1px solid rgba(163,151,163,.5);border-radius:10px;padding:9px;margin-bottom:8px;border-left:4px solid var(--todo)}
+  .card.s-wip{border-left-color:var(--wip)} .card.s-done{border-left-color:var(--done);opacity:.62}
+  .card .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .card .id{font-family:var(--mono);font-weight:700;font-size:11px}
+  .st{font-family:var(--mono);font-size:10px;border:0;border-radius:5px;padding:2px 7px;cursor:pointer;color:#fff;text-transform:uppercase;letter-spacing:.06em}
+  .st-todo{background:var(--todo);color:var(--fg)} .st-wip{background:var(--wip)} .st-done{background:var(--done)}
+  .card .ti{font-weight:600;margin:5px 0 4px;font-size:12.5px;line-height:1.3}
+  .tags{display:flex;gap:4px;flex-wrap:wrap;margin:3px 0}
+  .tag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.07em;padding:1px 5px;border-radius:4px}
+  .t-size{background:rgba(29,2,31,.08);color:var(--eggplant)}
+  .t-eng{background:rgba(59,110,165,.14);color:var(--eng)} .t-ux{background:rgba(154,77,189,.14);color:var(--ux)}
+  .t-cp{background:var(--salmon);color:var(--magenta);font-weight:700}
+  .t-found{background:rgba(46,125,50,.16);color:var(--ready);font-weight:700}
+  .t-moat{background:#1E001E;color:var(--mint);font-weight:700}
+  .t-defer{background:rgba(163,151,163,.2);color:var(--eggplant)}
+  .t-c6{background:#fff;border:1px solid var(--blocked);color:var(--blocked);font-weight:700}
+  .meta{font-size:11px;color:var(--eggplant);margin:3px 0}
+  .meta .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .badge{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:4px;font-weight:700;margin-top:2px}
+  .b-ready{background:rgba(46,125,50,.14);color:var(--ready)} .b-block{background:rgba(217,83,79,.13);color:var(--blocked)}
+  .pick{font-family:var(--mono);font-size:10px;background:var(--fg);color:var(--bg);border-radius:4px;padding:1px 5px}
+  .agent{width:100%;font-size:11px;padding:3px 6px;border:1px solid var(--muted);border-radius:6px;margin:4px 0;font-family:var(--mono)}
+  .notes{width:100%;min-height:28px;font-size:11px;padding:4px 6px;border:1px dashed var(--muted);border-radius:6px;resize:vertical;font-family:var(--sans);margin-top:2px}
+  .links{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .links a,.links button{font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--muted);border-radius:5px;padding:2px 6px;background:#fff;color:var(--fg);cursor:pointer}
+  .legend{font-family:var(--mono);font-size:10.5px;color:var(--eggplant)}
+</style>
+</head>
+<body>
+<header>
+  <h1>TTM-311 · skeleton → skill builder <small>— WS1–8 (from the TTM-313 spike)</small></h1>
+  <div class="prog">
+    <span id="progtxt">0/0 done</span>
+    <span class="bar"><i id="barfill" style="width:0%"></i></span>
+  </div>
+  <div style="margin-left:auto" class="legend">click status to cycle · autosaves locally</div>
+</header>
+
+<div class="tool">
+  <label><input type="checkbox" id="readyOnly"/> ready only</label>
+  <label><input type="checkbox" id="cpOnly"/> critical path only</label>
+  <label><input type="checkbox" id="hideUx"/> hide UX (TTM-289)</label>
+  <label>agent <input id="agentFilter" placeholder="filter…" style="width:90px;font-size:11px"/></label>
+  <span style="margin-left:auto"></span>
+  <button id="copyState">copy state JSON</button>
+  <button id="resetAll">reset all</button>
+</div>
+
+<div class="wrap">
+  <div class="panel">
+    <h2>What this is</h2>
+    <p style="margin:2px 0 0">The TTM-313 spike (<code>docs/uca-skill-redesign/10-skeleton-skill-builder-spike.md</code>) kept the arc — <b>pick → skeleton → refine → background full-gen → trial gate</b> — and sharpened it on skill-creator principles. It decomposed into <b>~22 issues across WS1–WS8</b> under <span class="chip hot" data-jump="311">TTM-311</span>. WS1–WS7 are <b>engine</b> PRs; <b>WS8 is UX and lands jointly under <span class="chip">TTM-289</span></b>, not as standalone engine PRs. <b>The first-milestone critical path is done:</b> WS1 (<span class="chip hot" data-jump="315">315</span>/<span class="chip hot" data-jump="316">316</span>/<span class="chip hot" data-jump="317">317</span>) + <span class="chip hot" data-jump="318">2.1</span> + <span class="chip hot" data-jump="320">3.1</span> + <span class="chip hot" data-jump="324">4.4</span> all merged, plus <span class="chip hot" data-jump="319">2.2</span> (#1030) and the bundle foundation <span class="chip hot" data-jump="321">4.1</span> (#1031). Both foundations now merged (<span class="chip hot" data-jump="321">4.1</span> #1031, <span class="chip hot" data-jump="331">7.1</span> #1032). <b>21/23 — TTM-311 BUILD COMPLETE.</b> Every workstream WS1–WS8 shipped (335 #1043 closed it out). The only non-done cards are <span class="chip hot" data-jump="333">8.1</span> (re-parented to TTM-289) and D1 (337, deferred). The whole TTM-313 decomposition executed in ~a day. Next body of work = the <b>TTM-289 UI coherence pass</b> (333 is its first sub-issue).</p>
+  </div>
+
+  <div class="panel" style="border-color:rgba(154,77,189,.45);background:rgba(154,77,189,.06)">
+    <h2 style="color:var(--ux)">Next up after this tracker — TTM-289 (UI overhaul, queued in Cycle 6)</h2>
+    <p style="margin:2px 0 0">This engine push has run ahead of the UI: the new authored fields, the in-path gate, the bundle, and mocked trials all land <b>without user-facing surfaces</b>. Those surfaces are the four WS8 issues — <span class="chip">333</span> field editors, <span class="chip">334</span> gate presentation, <span class="chip">335</span> compose panel, <span class="chip">336</span> mocked badge — which land jointly under <b><a href="https://linear.app/tatoma/issue/TTM-289" target="_blank">TTM-289</a></b> (skill creation &amp; editing overhaul, now pulled into Cycle 6, Todo). <b>Most urgent: <span class="chip">334</span></b> — WS3.1's gate (<span class="chip hot" data-jump="320">320</span>) is already live with no presentation, so its failures are currently unsurfaced. Pick up TTM-289 once this tracker's engine work is in.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Recommended critical path — first shippable milestone</h2>
+    <div class="cp"><b>1.1 → 1.3 → 1.2 → 2.1 → 3.1</b>, then <b>4.4</b> (knowledge binding-detection — the only bundle slice with no dep on the bundle model).<br>
+    <span style="color:var(--ready)">In parallel as the larger foundations the rest of WS4–WS6 depend on:</span> <span class="chip hot" data-jump="321">4.1</span> + <span class="chip hot" data-jump="322">4.2</span> (bundle model + adapter extension) and <span class="chip hot" data-jump="331">7.1</span> (employee prefs).</div>
+  </div>
+
+  <div class="panel">
+    <h2>Coordination seams &amp; ordering</h2>
+    <div class="seam"><b>WS4.1 (321) is THE foundation</b> — the bundle data model gates 4.2 / 4.3 / 4.5 / 4.6 and all of WS6. Land it early; everything moat-side waits on it.</div>
+    <div class="seam"><b>7.1 (331) gates the moat leg 4.5</b> — sub-agent/sub-skill reuse can't exist without org-aggregated shareable prefs. Both are deps-free, so start them in parallel up front.</div>
+    <div class="seam" style="border-left-color:var(--ux);background:rgba(154,77,189,.06)"><b>WS8 lands under TTM-289</b> — 333/334/335/336 are UX surfaces for the new fields, gate, compose panel, and mocked badge. Pair them with the matching engine issue (8.1→WS1, 8.2→3.1, 8.3→4.6, 8.4→6.2); don't ship them as standalone engine PRs.</div>
+    <div class="seam"><b>The arc shape STAYS</b> — <code>single-task.ts</code> / <code>full-gen.ts</code> / <code>fillUcaBodies</code> / <code>kickSkeletonFill</code> are kept and sharpened, not replaced. Clean Skill surfaces already (rename landed); dead batch path already deleted (#1021).</div>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+const LINEAR="https://linear.app/tatoma/issue/";
+const STREAMS={
+  WS1:{name:"WS1 · Spine & contract",sub:"feed the starved IR"},
+  WS2:{name:"WS2 · Prompt quality",sub:"skill-creator principles"},
+  WS3:{name:"WS3 · Build-ready gate",sub:"auto, in-path"},
+  WS4:{name:"WS4 · The bundle (moat)",sub:"epic, split 6 ways"},
+  WS5:{name:"WS5 · Publish-thin",sub:"IR freeze line"},
+  WS6:{name:"WS6 · Trial bundle",sub:"equip or mock"},
+  WS7:{name:"WS7 · Foundations",sub:"prereqs"},
+  WS8:{name:"WS8 · UX (TTM-289)",sub:"land jointly",ux:true},
+  DEF:{name:"Deferred",sub:"revisit later",def:true},
+};
+// size S/M/L · stream eng/ux · cp=critical path · tag found/moat/defer · c6=in Cycle 6
+// blk = TTM ids that must be done first (drives readiness)
+const T=[
+ {id:315,s:"WS1",ws:"1.1",size:"S",stream:"eng",cp:true,c6:true,lin:"done",t:"`description` as the spine (first-class authored + gated)",
+  surf:"skeleton authors description w/ trigger language (mig 064) + build-time description quality check",
+  note:"MERGED (#1024) · description is the entire marketplace-trigger mechanism",
+  branch:"israel/ttm-315-ws11-description-as-the-spine-first-class-authored-gated", blk:[]},
+ {id:316,s:"WS1",ws:"1.2",size:"M",stream:"eng",cp:true,lin:"done",t:"Re-introduce skill-level `expected_output` (\"done looks like\")",
+  surf:"un-retire registry row (line 183); IR reads CANVAS_KEY_OUTPUT (null today)",
+  note:"MERGED (#1026) · also what the trial grades against",
+  branch:"israel/ttm-316-ws12-re-introduce-skill-level-expected_output-done-looks", blk:[]},
+ {id:317,s:"WS1",ws:"1.3",size:"S",stream:"eng",cp:true,lin:"done",t:"Add `guardrails` as a real canvas field",
+  surf:"registry + skeleton authors \"do not…\"; IR drops obstacle_plan inference (ir.ts:15)",
+  note:"MERGED (#1025) · fills a starved IR field, removes a publish-time inference",
+  branch:"israel/ttm-317-ws13-add-guardrails-as-a-real-canvas-field", blk:[]},
+
+ {id:318,s:"WS2",ws:"2.1",size:"M",stream:"eng",cp:true,lin:"done",t:"Rewrite the skeleton/framing system prompt",
+  surf:"system-prompt-single-task.md on skill-creator principles",
+  note:"MERGED (#1027) · trigger-lang description, when_to_use synonyms, explain-the-why",
+  branch:"israel/ttm-318-ws21-rewrite-the-skeletonframing-system-prompt-skill-creator", blk:[315,316,317]},
+ {id:319,s:"WS2",ws:"2.2",size:"M",stream:"eng",lin:"done",t:"Rewrite the body/fill prompt",
+  surf:"two-pass.ts fillOneBody + fill prompt",
+  note:"MERGED (#1030) · bodies are what the user runs — highest user-visible quality lever",
+  branch:"israel/ttm-319-ws22-rewrite-the-bodyfill-prompt-skill-creator-principles", blk:[]},
+
+ {id:320,s:"WS3",ws:"3.1",size:"M",stream:"eng",cp:true,lin:"done",t:"In-path build-ready quality gate",
+  surf:"promote quality-checks.ts → auto/in-path at end of full-gen",
+  note:"MERGED (#1028) · structured targeted failures, not a wall · presentation = WS8.2",
+  branch:"israel/ttm-320-ws31-in-path-build-ready-quality-gate", blk:[315,316,317]},
+
+ {id:321,s:"WS4",ws:"4.1",size:"L",stream:"eng",tag:"found",lin:"done",t:"Bundle data model (connectors / sub-agents / assets)",
+  surf:"migration + types + Zod + db accessors (unified bundle jsonb vs discrete — decide)",
+  note:"MERGED (#1031) · FOUNDATION — now unblocks 4.2/4.3 (and 4.5 once 331 lands) + WS6",
+  branch:"israel/ttm-321-ws41-bundle-data-model-connectors-sub-agents-assets", blk:[]},
+ {id:322,s:"WS4",ws:"4.2",size:"L",stream:"eng",tag:"found",lin:"done",t:"Extend Skill IR + adapters for the bundle",
+  surf:"SkillIR + skill-md/copilot/gpt/gemini adapters; capability matrix + WarningCodes",
+  note:"MERGED (#1034) · bundle now portable output · unblocks 328 + 332",
+  branch:"israel/ttm-322-ws42-extend-skill-ir-adapters-for-the-bundle", blk:[321]},
+ {id:323,s:"WS4",ws:"4.3",size:"M",stream:"eng",tag:"moat",lin:"done",t:"Connector grounding from the Landscape stack",
+  surf:"org-context.ts getOrgContextForAI configuredTools → structured connector-requirement suggestions",
+  note:"MERGED (#1033) · feeds the WS4.6 composer (326)",
+  branch:"israel/ttm-323-ws43-connector-grounding-from-the-landscape-stack", blk:[321]},
+ {id:324,s:"WS4",ws:"4.4",size:"M",stream:"eng",cp:true,lin:"done",t:"Knowledge binding-detection (propose context_bindings)",
+  surf:"propose context_bindings from org_context_assets (no hand-attach)",
+  note:"MERGED (#1029) · cheapest bundle slice — context[] already in IR · shipped earliest of WS4",
+  branch:"israel/ttm-324-ws44-knowledge-binding-detection-propose-context_bindings", blk:[]},
+ {id:325,s:"WS4",ws:"4.5",size:"M",stream:"eng",tag:"moat",lin:"done",t:"Sub-agent / sub-skill reuse from the org library",
+  surf:"org skill library (skills.ts listForOrg/listForTeam) + shareable prefs (7.1)",
+  note:"MERGED (#1035) · THE MOAT — completes the WS4 proposer set · unblocks 326",
+  branch:"israel/ttm-325-ws45-sub-agent-sub-skill-reuse-from-the-org-library", blk:[321,331]},
+ {id:326,s:"WS4",ws:"4.6",size:"M",stream:"eng",lin:"done",t:"Build-time composition orchestration",
+  surf:"full-gen.ts post-fill: run proposers, write assembled set onto the row",
+  note:"MERGED (#1036) · the bundle now composes at build · unblocks 327 + 329",
+  branch:"israel/ttm-326-ws46-build-time-composition-orchestration", blk:[323,324,325]},
+
+ {id:327,s:"WS5",ws:"5.1",size:"M",stream:"eng",lin:"done",t:"Freeze the IR + slim publishSkill to pure serialization",
+  surf:"move deciding steps into compose; publish = buildSkillIR → adapters → store → flip",
+  note:"MERGED (#1039) · publish-thin enforced · IR is the freeze line",
+  branch:"israel/ttm-327-ws51-freeze-the-ir-slim-publishskill-to-pure-serialization", blk:[326]},
+ {id:328,s:"WS5",ws:"5.2",size:"S",stream:"eng",lin:"done",t:"Build-time capability-warning preview",
+  surf:"adapter degradation/CapabilityWarning surfaced once target_harnesses chosen",
+  note:"MERGED (#1038) · \"won't fit Copilot\" shown while building",
+  branch:"israel/ttm-328-ws52-build-time-capability-warning-preview", blk:[322]},
+
+ {id:329,s:"WS6",ws:"6.1",size:"M",stream:"eng",lin:"done",t:"Trial tool-provisioning (equip the trial with the bundle)",
+  surf:"/api/try: tools-less streamText → tool-equipped run (AI-SDK tools)",
+  note:"MERGED (#1041) · trial now exercises the bundle · unblocks 330",
+  branch:"israel/ttm-329-ws61-trial-tool-provisioning-equip-the-trial-with-the-bundle", blk:[321,326]},
+ {id:330,s:"WS6",ws:"6.2",size:"M",stream:"eng",lin:"done",t:"Connector mock layer for trials",
+  surf:"mock-provider.ts behind bundle-tools.ts + persisted mocked_tools signal (WS8.4)",
+  note:"DELIVERED in #1041 (built full during WS6.1 brainstorm, not stubbed) · unblocks 336",
+  branch:"israel/ttm-330-ws62-connector-mock-layer-for-trials", blk:[329]},
+
+ {id:331,s:"WS7",ws:"7.1",size:"L",stream:"eng",tag:"found",lin:"done",t:"Org-aggregated shareable employee preferences",
+  surf:"aggregate studio_onboarding_profile signals at org level (governance/consent)",
+  note:"MERGED (#1032) · unblocks the moat leg 4.5 (325)",
+  branch:"israel/ttm-331-ws71-org-aggregated-shareable-employee-preferences", blk:[]},
+ {id:332,s:"WS7",ws:"7.2",size:"M",stream:"eng",lin:"done",t:"Test scaffolding (IR snapshots + adapter goldens + round-trip)",
+  surf:"core/skill-export __tests__ + agents synthesis tests",
+  note:"MERGED (#1037) · guards the JSONB boundary that has no compiler help",
+  branch:"israel/ttm-332-ws72-test-scaffolding-ir-snapshots-adapter-goldens-round", blk:[315,316,317,322]},
+
+ {id:333,s:"WS8",ws:"8.1",size:"M",stream:"ux",tag:"defer",lin:"todo",t:"Field editor surfaces (description / when_to_use / guardrails / expected_output)",
+  surf:"step-1 editable-but-pre-filled authoring surfaces for the new fields",
+  note:"RE-PARENTED to TTM-289 — owned by the overhaul (edits the step-1 surface 289 reshapes); seeds its findings session",
+  branch:"israel/ttm-333-ws81-field-editor-surfaces-description-when_to_use", blk:[315,316,317]},
+ {id:334,s:"WS8",ws:"8.2",size:"S",stream:"ux",lin:"done",t:"Build-ready gate presentation",
+  surf:"small targeted suggested-fixes inline, never a validation dump",
+  note:"MERGED (#1040) · closed the live-gate gap · first WS8 surface in",
+  branch:"israel/ttm-334-ws82-build-ready-gate-presentation", blk:[320]},
+ {id:335,s:"WS8",ws:"8.3",size:"M",stream:"ux",lin:"done",t:"Compose panel \"What your skill plugs into\"",
+  surf:"optional, skippable-in-one-click connectors/knowledge/agents list, accept-all default",
+  note:"MERGED (#1043) · the primary net-new UX · TTM-311 build complete",
+  branch:"israel/ttm-335-ws83-compose-panel-what-your-skill-plugs-into", blk:[326]},
+ {id:336,s:"WS8",ws:"8.4",size:"S",stream:"ux",lin:"done",t:"Trial \"mocked\" badge",
+  surf:"non-alarming badge: which connector, real wiring set up at publish",
+  note:"MERGED (#1042) · reassurance framing · consumes the #1041 mocked_tools signal",
+  branch:"israel/ttm-336-ws84-trial-mocked-badge", blk:[330]},
+
+ {id:337,s:"DEF",ws:"D1",size:"L",stream:"eng",tag:"defer",lin:"todo",t:"Description-optimization loop (TATOMA-internal)",
+  surf:"skill-creator run_loop.py analog: train/held-out trigger evals, select rewrites",
+  note:"DEFERRED — detached from 311, now standalone in the project backlog · revisit once the library is large enough that skills compete to trigger",
+  branch:"israel/ttm-337-d1-deferred-description-optimization-loop-tatoma-internal", blk:[]},
+];
+
+const KEY="ttm311-ws-tracker-v17"; // 2026-06-09: 335 merged (#1043) — TTM-311 BUILD COMPLETE (21/23). 333→TTM-289, 337 deferred. Next: TTM-289 findings session.
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{};
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function cardState(id){
+  if(!state.cards[id]){ const t=T.find(x=>x.id==id); state.cards[id]={status:(t&&t.lin)||"todo",agent:"",notes:""}; }
+  return state.cards[id];
+}
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+function isDone(id){return (state.cards[id]&&state.cards[id].status)==="done";}
+function readiness(t){
+  const pend=t.blk.filter(b=>!isDone(b));
+  if(pend.length) return {ok:false,label:"BLOCKED by "+pend.map(x=>"TTM-"+x).join(", ")};
+  return {ok:true,label:"READY"};
+}
+function pickPriority(t){
+  const st=cardState(t.id).status;
+  if(st==="done") return 3;
+  if(st==="wip") return 0;
+  return readiness(t).ok ? 1 : 2;
+}
+function pendingCount(t){ return t.blk.filter(b=>!isDone(b)).length; }
+function byPickup(a,b){
+  const pa=pickPriority(a), pb=pickPriority(b);
+  if(pa!==pb) return pa-pb;
+  if(pa===1){ if(a.cp!==b.cp) return a.cp?-1:1; } // ready: critical-path first
+  if(pa===2){ const d=pendingCount(a)-pendingCount(b); if(d) return d; }
+  return a.id-b.id;
+}
+const SIZ={S:"S",M:"M",L:"L"};
+
+function render(){
+  const board=document.getElementById("board");
+  board.innerHTML="";
+  const readyOnly=document.getElementById("readyOnly").checked;
+  const cpOnly=document.getElementById("cpOnly").checked;
+  const hideUx=document.getElementById("hideUx").checked;
+  const af=document.getElementById("agentFilter").value.trim().toLowerCase();
+  let done=0, total=0;
+  T.forEach(t=>{ total++; if(isDone(t.id)) done++; });
+  document.getElementById("progtxt").textContent=`${done}/${total} done`;
+  document.getElementById("barfill").style.width=(total?done/total*100:0)+"%";
+
+  for(const sk of Object.keys(STREAMS)){
+    if(hideUx && STREAMS[sk].ux) continue;
+    const lane=document.createElement("div");
+    lane.className="lane"+(STREAMS[sk].ux?" ux":"")+(STREAMS[sk].def?" def":"");
+    const items=T.filter(t=>t.s===sk).sort(byPickup);
+    const dn=items.filter(t=>isDone(t.id)).length;
+    lane.innerHTML=`<h3><span>${STREAMS[sk].name}</span><small>${STREAMS[sk].sub}<br>${dn}/${items.length}</small></h3>`;
+    let pick=0;
+    items.forEach(t=>{
+      const cs=cardState(t.id), rd=readiness(t);
+      if(readyOnly && (!rd.ok || cs.status==="done")) return;
+      if(cpOnly && !t.cp) return;
+      if(af && !(cs.agent||"").toLowerCase().includes(af)) return;
+      const n = cs.status==="done" ? "" : `<span class="pick">#${++pick}</span> `;
+      const c=document.createElement("div");
+      c.className="card s-"+cs.status; c.id="card-"+t.id;
+      const tags=[`<span class="tag t-size">${SIZ[t.size]}</span>`,
+        `<span class="tag t-${t.stream}">${t.stream}</span>`,
+        t.cp?'<span class="tag t-cp">crit path</span>':'',
+        t.tag==="found"?'<span class="tag t-found">foundation</span>':'',
+        t.tag==="moat"?'<span class="tag t-moat">moat</span>':'',
+        t.tag==="defer"?'<span class="tag t-defer">deferred</span>':'',
+        t.c6?'<span class="tag t-c6">Cycle 6</span>':''].join('');
+      c.innerHTML=`
+        <div class="top">
+          <span class="id">${n}TTM-${t.id} · WS${t.ws}</span>
+          <button class="st st-${cs.status}" data-st="${t.id}">${cs.status}</button>
+        </div>
+        <div class="ti">${t.t}</div>
+        <div class="tags">${tags}</div>
+        <div>${rd.ok?'<span class="badge b-ready">READY</span>':'<span class="badge b-block">'+rd.label+'</span>'}</div>
+        <div class="meta"><span class="k">seam</span> ${t.surf}</div>
+        <div class="meta"><span class="k">note</span> ${t.note}</div>
+        <input class="agent" placeholder="agent / who…" data-ag="${t.id}" value="${(cs.agent||"").replace(/"/g,'&quot;')}"/>
+        <textarea class="notes" placeholder="where it's at / handoff…" data-nt="${t.id}">${cs.notes||""}</textarea>
+        <div class="links">
+          <a href="${LINEAR}TTM-${t.id}" target="_blank">Linear ↗</a>
+          <button data-pr="${t.id}" title="copy kickoff prompt">copy prompt</button>
+          <button data-co="${t.id}" title="copy fetch+checkout">copy checkout</button>
+          <button data-cp="${t.branch}">branch</button>
+        </div>`;
+      lane.appendChild(c);
+    });
+    board.appendChild(lane);
+  }
+  bind();
+}
+function bind(){
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const id=b.dataset.st;cardState(id).status=NEXT[cardState(id).status];save();render();});
+  document.querySelectorAll("[data-ag]").forEach(i=>i.onchange=()=>{cardState(i.dataset.ag).agent=i.value;save();});
+  document.querySelectorAll("[data-nt]").forEach(x=>x.onchange=()=>{cardState(x.dataset.nt).notes=x.value;save();});
+  document.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>copy(b.dataset.cp,b));
+  document.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.pr);
+    copy(`hey dear friend, can you please help me take a look at and tackle TTM-${t.id} (WS${t.ws}) — ${t.t} (${LINEAR}TTM-${t.id})`,b);
+  });
+  document.querySelectorAll("[data-co]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.co);
+    copy(`git fetch origin && git checkout ${t.branch}`,b);
+  });
+}
+function copy(txt,btn){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent="copied";setTimeout(()=>btn.textContent=o,900);});}
+
+document.querySelectorAll("[data-jump]").forEach(ch=>ch.onclick=()=>{const el=document.getElementById("card-"+ch.dataset.jump);if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid var(--salmon)";setTimeout(()=>el.style.outline="",1400);}});
+
+["readyOnly","cpOnly","hideUx"].forEach(id=>document.getElementById(id).onchange=render);
+document.getElementById("agentFilter").oninput=render;
+document.getElementById("copyState").onclick=()=>navigator.clipboard.writeText(JSON.stringify(state,null,2));
+document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all statuses, agents & notes?")){state={cards:{}};save();render();}};
+render();
+</script>
+</body>
+</html>

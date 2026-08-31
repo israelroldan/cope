@@ -97,7 +97,7 @@ UI, copy, sprint scope — move fast, try it, revert if wrong. Equity splits, le
 
 ## 10. The portfolio is one system
 
-Tatoma client work generates patterns. Patterns become Palu Labs experiments. Experiments that stick become StudyStars features or Pimpi products. Nothing is siloed.
+Tatoma client work generates patterns. Patterns become experiments across Palú Labs trade names — Kimbi Games, Pimpi Apps, StudyStars, Literary Sculptor. Validated trade names graduate to their own BVs under Jolie Invest. Nothing is siloed, and nothing rots in place.
 
 **Why:** Cross-pollination is the compound interest of running multiple ventures. A competency rubric written for StudyStars becomes a Tatoma deliverable template. A Tatoma AI pipeline pattern becomes the backbone of TLOM's content generation.
 

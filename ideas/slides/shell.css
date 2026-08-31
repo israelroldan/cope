@@ -1,0 +1,241 @@
+/* ════════════════════════════════════════════════════════════════════ */
+/* SHELL.CSS — Shared Design System & Slide Engine                      */
+/* All 8 decks + index.html                                              */
+/* ════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #F6FAEB;
+  --fg: #1D021F;
+  --card: #FFFFFF;
+  --primary: #FF8E7D;
+  --secondary: #4F2035;
+  --muted: #A397A3;
+  --muted-fg: #4C3C47;
+  --dark-magenta: #1E001E;
+  --salmon: #FF8C7D;
+  --mint: #0EE17E;
+  --ms-blue: #4A7CDB;
+  --border: rgba(163,151,163,0.25);
+  --radius: 0.75rem;
+  --font-serif: "Canela", Georgia, "Times New Roman", serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "TSTARMonoRound", "Courier New", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Slide engine ── */
+.deck { position: relative; width: 100vw; height: 100vh; }
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 3.5rem 5.5rem 5rem;
+  opacity: 0; transform: translateY(24px); pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(.25,.46,.45,.94),
+              transform 0.5s cubic-bezier(.25,.46,.45,.94);
+  overflow-y: auto;
+}
+.slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.slide.exit-up { opacity: 0; transform: translateY(-24px); }
+
+.slide.section-divider {
+  justify-content: center; align-items: center; text-align: center;
+}
+.slide.section-divider h1 { font-size: clamp(3rem, 6vw, 5.5rem); }
+
+/* UCA slide — vertically centered, tighter top/bottom padding for the tall card */
+.uca-slide { padding-top: 2.4rem; padding-bottom: 4.5rem; justify-content: center; }
+
+/* ── Typography ── */
+h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 100; line-height: 1.15; }
+h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
+h2 { font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+h3 { font-size: clamp(1.4rem, 2.2vw, 1.8rem); margin-bottom: 0.6rem; }
+h4 { font-size: clamp(1rem, 1.5vw, 1.2rem); margin-bottom: 0.4rem; }
+
+p, li { font-size: clamp(0.95rem, 1.3vw, 1.15rem); line-height: 1.6; color: var(--muted-fg); }
+strong { font-weight: 600; color: var(--fg); }
+
+.mono-label {
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--muted); margin-bottom: 0.6rem; display: block;
+}
+
+/* ── TStarMonoRound runs visually thin — boost perceived weight wherever mono is used ── */
+.mono-label,
+.chip,
+.nav-info,
+.nav-help,
+.deck-nav a,
+.speaker-note strong,
+.logo-area span,
+/* deck-local mono elements (kept here so it works across all decks) */
+.p-num,
+.p-tag,
+.slot-tag,
+.uc-num,
+.timeline-time,
+.demo-label,
+.demo-surface,
+.demo-file,
+.copy-btn,
+.reset-btn,
+.canvas-step-num,
+.canvas-step-pair {
+  -webkit-text-stroke: 0.35px currentColor;
+  font-synthesis: weight;
+}
+
+.chip {
+  display: inline-block; padding: 0.25rem 0.8rem;
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  border-radius: 999px;
+  background: var(--dark-magenta); color: var(--salmon);
+}
+.chip.mint { background: rgba(14,225,126,0.12); color: #08924f; }
+.chip.salmon-bg { background: rgba(255,140,125,0.15); color: #b84a3b; }
+.chip.muted-bg { background: rgba(163,151,163,0.15); color: var(--muted-fg); }
+.chip.ms-bg { background: rgba(74,124,219,0.14); color: #2d57a8; }
+.chip.purple-bg { background: rgba(79,32,53,0.15); color: var(--secondary); }
+
+/* ── Cards ── */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem 1.7rem;
+  box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,0,30,0.06); }
+.card h3 { margin-bottom: 0.4rem; }
+.card p, .card li { font-size: 0.92rem; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.grid-4-tight { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+/* ── Lists ── */
+ul { list-style: none; padding: 0; }
+ul li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+ul li::before {
+  content: ""; position: absolute; left: 0; top: 0.6rem;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--salmon);
+}
+
+.big-number {
+  font-family: var(--font-serif); font-weight: 100;
+  font-size: 3.2rem; line-height: 1; color: var(--fg); margin-bottom: 0.2rem;
+}
+
+/* ── Pullquote ── */
+.pullquote {
+  font-family: var(--font-serif); font-weight: 100;
+  font-size: clamp(1.3rem, 2.2vw, 1.85rem); line-height: 1.35;
+  color: var(--fg); max-width: 46rem;
+  border-left: 3px solid var(--salmon);
+  padding: 0.4rem 0 0.4rem 1.5rem;
+  margin: 0.8rem 0;
+}
+
+/* ── Speaker notes ── */
+.speaker-note {
+  display: none; margin-top: 1.2rem; padding: 1rem 1.2rem;
+  background: rgba(30,0,30,0.04); border-radius: var(--radius);
+  border-left: 3px solid var(--salmon);
+  font-size: 0.85rem; color: var(--muted-fg); line-height: 1.55;
+}
+.speaker-note.visible { display: block; }
+.speaker-note strong {
+  font-size: 0.7rem; font-family: var(--font-mono);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--salmon); display: block; margin-bottom: 0.3rem;
+}
+
+/* ── Fixed elements ── */
+.logo-area {
+  position: fixed; top: 1.2rem; left: 1.5rem;
+  display: flex; align-items: center; gap: 0.6rem; z-index: 100;
+}
+.logo-area img { width: 24px; height: 24px; border-radius: 5px; }
+.logo-area span {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+}
+
+.nav-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 1.5rem; z-index: 100;
+  background: linear-gradient(transparent, rgba(246,250,235,0.95));
+}
+.nav-dots { display: flex; gap: 5px; }
+.nav-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted); opacity: 0.3;
+  cursor: pointer; transition: all 0.25s ease; border: none;
+}
+.nav-dot.active { opacity: 1; background: var(--salmon); transform: scale(1.3); }
+.nav-dot.visited { opacity: 0.5; }
+.nav-info {
+  font-family: var(--font-mono); font-size: 0.6rem;
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+}
+.nav-help {
+  font-family: var(--font-mono); font-size: 0.55rem;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); opacity: 0.45;
+}
+
+/* ── Inter-deck navigation (injected by shell.js) ── */
+.deck-nav {
+  position: fixed; top: 1rem; right: 1.5rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  z-index: 100;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.deck-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.deck-nav a:hover {
+  color: var(--salmon);
+  border-color: var(--salmon);
+  background: rgba(255,255,255,0.9);
+}
+.deck-nav-index {
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.deck-nav-spacer { width: 0; }
+
+@media (max-width: 900px) {
+  .slide { padding: 2rem 1.5rem 4rem; }
+  .two-col, .grid-2, .grid-3, .grid-4-tight, .grid-4 { grid-template-columns: 1fr; }
+  .deck-nav a { max-width: 6rem; font-size: 0.55rem; }
+}

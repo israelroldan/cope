@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Studio v2 High-Prio Sweep</title>
+<style>
+  :root{
+    --serif:"Canela",Georgia,"Times New Roman",serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"TSTARMonoRound",ui-monospace,"SF Mono",Menlo,monospace;
+
+    --bg:#faf6f4; --fg:#1d0a14; --card:#fff; --muted:#f3e3dc; --muted-fg:#6e5b61;
+    --border:#ecdcd5; --chip:rgba(29,10,20,.05);
+    --primary:#ff8c7d; --secondary:#1f0a16; --on-secondary:#fbefe9;
+    --open:#8a8194;  --open-soft:#efe9ee;
+    --wip:#c08a3e;   --wip-soft:#f6ecd9;
+    --done:#3f7d5a;  --done-soft:#e1efe5;
+    --gap:#b86a55;   --gap-soft:#f6e4dd;
+    --tone-olive:#e8e6cb; --tone-sage:#d1dcc5; --tone-blush:#f7e2da; --tone-muted:#f3e3dc;
+    --shadow:0 1px 2px rgba(29,10,20,.05);
+  }
+  body.dark{
+    --bg:#1a0511; --fg:#fbefe9; --card:#2b1220; --muted:#3a1f2e; --muted-fg:#c9b6bf;
+    --border:#43293a; --chip:rgba(251,239,233,.08); --secondary:#0f030b;
+    --open:#a99bab;  --open-soft:#3a2c38;
+    --wip:#e0a95c;   --wip-soft:#4a3419;
+    --done:#7fbf98;  --done-soft:#1d3a2a;
+    --gap:#e2937b;   --gap-soft:#4a241a;
+    --shadow:0 1px 3px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.5;
+    transition:background .25s,color .25s}
+  h1,h2,h3{font-family:var(--serif);font-weight:300;letter-spacing:-.015em;margin:0}
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+  button,input,textarea{font-family:inherit;color:inherit}
+
+  /* 1 · chrome */
+  .chrome{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--border);
+    padding:16px 28px 14px;display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .chrome h1{font-size:27px;line-height:1.1}
+  .statline{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-top:6px;display:flex;align-items:center;gap:10px}
+  .pbar{width:120px;height:4px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .pbar > i{display:block;height:100%;background:var(--primary);transition:width .35s}
+  .ctrls{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;
+    border:1px solid var(--border);border-radius:99px;padding:6px 13px;background:transparent;
+    color:var(--muted-fg);cursor:pointer;white-space:nowrap}
+  .pill:hover{border-color:var(--fg);color:var(--fg)}
+  .pill.on{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+  input.pill{width:100px;text-transform:none;letter-spacing:0;cursor:text}
+  input.pill:focus{outline:none;border-color:var(--primary)}
+
+  .wrap{padding:20px 28px 90px;max-width:1760px;margin:0 auto}
+  .eyebrow{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted-fg);margin:0 0 9px}
+
+  /* 2 · spotlight */
+  .spot{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:22px}
+  .tile{border-radius:12px;padding:10px 12px;border:1px solid var(--border);background:var(--card);
+    cursor:pointer;transition:transform .2s,box-shadow .2s;min-width:0}
+  .tile:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(29,10,20,.12)}
+  .tile .le{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .mn{font-family:var(--mono);font-size:12.5px;font-weight:700;margin-top:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .sb{font-size:13px;color:var(--muted-fg);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile.t-wip{border-color:var(--wip);background:var(--wip-soft)}
+  .tile.t-wip .le{color:var(--wip)}
+  .tile.t-cp{border-color:var(--primary)}
+  .tile.t-done{background:var(--done-soft);opacity:.8}
+  .tile.t-parked{background:var(--bg);opacity:.65}
+  .tile .warn{color:var(--gap);font-weight:700}
+
+  /* 3 · seam ledger */
+  .ledger{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:22px}
+  .lhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .lhead h2{font-size:19px}
+  .lsum{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted-fg)}
+  .lhead .pill{margin-left:auto}
+  .srow{display:flex;align-items:center;gap:9px;border-radius:11px;padding:8px 13px;margin-top:7px;
+    cursor:pointer;border:1px solid transparent;min-width:0}
+  .srow:hover{background:var(--chip)}
+  .srow.armed{border-color:var(--gap);background:var(--gap-soft)}
+  .srow.cleared{opacity:.45}
+  .spill{font-family:var(--mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    border-radius:99px;padding:3px 8px;white-space:nowrap}
+  .sp-armed{background:var(--gap);color:#fff}
+  .sp-live{background:var(--gap-soft);color:var(--gap)}
+  .sp-waiting{background:var(--open-soft);color:var(--open)}
+  .sp-cleared{background:var(--done-soft);color:var(--done)}
+  .sn{font-family:var(--mono);font-size:11px;font-weight:700}
+  .sfile{font-family:var(--mono);font-size:11px;color:var(--muted-fg);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-width:270px}
+  .tchip{font-family:var(--mono);font-size:9.5px;font-weight:700;border-radius:99px;padding:2px 7px;cursor:pointer;white-space:nowrap}
+  .tc-todo{background:var(--open-soft);color:var(--open)}
+  .tc-wip{background:var(--wip-soft);color:var(--wip)}
+  .tc-done{background:var(--done-soft);color:var(--done)}
+  .sverd{font-size:13px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sdetail{border-radius:9px;background:var(--gap-soft);padding:11px 14px;margin:6px 0 4px;font-size:12.5px;line-height:1.55}
+  .lempty{font-size:12px;font-style:italic;color:var(--muted-fg);padding:10px 2px}
+
+  /* 4 · wave map */
+  .board{display:grid;grid-template-columns:190px repeat(4,minmax(0,1fr));gap:13px;align-items:start}
+  .col{min-width:0}
+  .chead{font-family:var(--mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+    margin:0 2px 10px;display:flex;justify-content:space-between;gap:6px}
+  .cempty{border:1px dashed var(--border);border-radius:12px;padding:16px 8px;text-align:center;
+    font-size:11.5px;font-style:italic;color:var(--muted-fg)}
+
+  .card{background:var(--card);border-radius:13px;padding:13px 15px 12px;margin-bottom:9px;box-shadow:var(--shadow);
+    overflow:hidden;cursor:pointer;border-top:4px solid transparent;transition:box-shadow .2s,transform .2s}
+  .card:hover{box-shadow:0 6px 20px rgba(29,10,20,.13)}
+  .card.cp{border-top-color:var(--primary)}
+  .card.s-done{opacity:.55}
+  .ctop{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .cid{font-family:var(--mono);font-size:12px;font-weight:700}
+  .pick{font-family:var(--mono);font-size:9.5px;background:var(--secondary);color:var(--on-secondary);
+    border-radius:99px;padding:2px 7px}
+  .urg{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--wip-soft);color:var(--wip);
+    border-radius:99px;padding:2px 7px;letter-spacing:.06em}
+  .stat-c{margin-left:auto;border:0;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center}
+  .dot0{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--open);background:transparent;
+    transition:border-color .15s,background .15s}
+  .stat-c:hover .dot0{border-color:var(--wip);background:var(--wip-soft)}
+  .stat-l{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;border-radius:99px;padding:3px 9px}
+  .stat-l::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor}
+  .sl-wip{background:var(--wip-soft);color:var(--wip)}
+  .sl-done{background:var(--done-soft);color:var(--done)}
+  .ctitle{font-family:var(--serif);font-size:15.5px;line-height:1.3;letter-spacing:-.01em;margin:9px 0 8px}
+  .cmeta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .lane-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;color:#1d0a14}
+  .seam-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;
+    background:var(--gap-soft);color:var(--gap)}
+  .blk-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;
+    background:var(--open-soft);color:var(--open)}
+  .ag-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;background:var(--muted);color:var(--muted-fg)}
+
+  .exp{margin-top:11px;padding-top:11px;border-top:1px solid var(--border);cursor:default}
+  .surf{font-family:var(--mono);font-size:10px;background:var(--chip);border-radius:8px;padding:9px 11px;
+    max-height:110px;overflow:auto;line-height:1.5;margin-top:8px}
+  .surf .k,.nk{display:block;font-family:var(--mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-bottom:4px}
+  .note{border-left:3px solid var(--gap);padding-left:10px;font-size:12px;line-height:1.55;color:var(--muted-fg);margin-top:10px}
+  .deliv{font-size:12px;font-style:italic;color:var(--done);margin-top:8px}
+  .agi{width:100%;font-family:var(--mono);font-size:11px;padding:7px 12px;border:1px solid var(--border);
+    border-radius:99px;background:var(--bg);margin-top:11px}
+  .agi:focus,.nts:focus{outline:none;border-color:var(--primary)}
+  .nts{width:100%;min-height:36px;font-size:11.5px;padding:8px 11px;border:1px dashed var(--border);
+    border-radius:10px;background:var(--bg);margin-top:7px;resize:vertical}
+  .arow{display:flex;align-items:center;gap:11px;margin-top:12px}
+  .disp{width:44px;height:44px;flex-shrink:0;border-radius:99px;border:0;background:var(--primary);color:#1d0a14;
+    font-size:18px;cursor:pointer;transition:transform .2s}
+  .disp:hover{transform:scale(1.07)}
+  .ahint{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg)}
+  .lnk{margin-left:auto;font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--border);
+    border-radius:99px;padding:4px 9px;color:var(--muted-fg)}
+  .lnk:hover{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+
+  /* 5 · dispatch drawer */
+  .scrim{position:fixed;inset:0;background:rgba(29,10,20,.45);z-index:40}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:390px;background:var(--secondary);color:var(--on-secondary);
+    padding:26px;box-shadow:-12px 0 40px rgba(0,0,0,.3);z-index:41;overflow-y:auto}
+  .dtop{display:flex;align-items:center;gap:8px}
+  .deye{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--primary)}
+  .dx{margin-left:auto;background:transparent;border:0;color:var(--on-secondary);font-size:16px;cursor:pointer;opacity:.7}
+  .dx:hover{opacity:1}
+  .drawer h2{font-size:25px;margin-top:14px}
+  .dsub{font-size:13.5px;opacity:.75;margin-top:4px;line-height:1.45}
+  .warn{border-radius:10px;padding:11px 13px;margin-top:12px;font-size:12.5px;line-height:1.5}
+  .w-armed{background:var(--gap);color:#fff}
+  .w-soft{background:var(--gap-soft);color:#1d0a14}
+  .w-blk{background:var(--wip-soft);color:#1d0a14}
+  .step{border:1px solid rgba(251,239,233,.22);border-radius:11px;padding:11px 13px;margin-top:11px;
+    display:flex;align-items:center;gap:10px}
+  .step .sl{font-family:var(--mono);font-size:10.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cpy{font-family:var(--mono);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    background:var(--primary);color:#1d0a14;border:0;border-radius:99px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+  .stepin{background:transparent;border:0;border-bottom:1px solid rgba(251,239,233,.4);color:var(--on-secondary);
+    font-family:var(--mono);font-size:11px;padding:3px 0;flex:1;min-width:0}
+  .stepin:focus{outline:none;border-bottom-color:var(--primary)}
+  .markwip{width:100%;margin-top:18px;background:var(--primary);color:#1d0a14;border:0;border-radius:12px;
+    padding:14px;font-family:var(--mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
+  .markwip:hover{filter:brightness(1.05)}
+  .dfoot{display:flex;align-items:center;gap:8px;margin-top:14px}
+  .ghost{font-family:var(--mono);font-size:9.5px;background:transparent;border:1px solid rgba(251,239,233,.3);
+    color:var(--on-secondary);border-radius:99px;padding:5px 10px;cursor:pointer}
+  .ghost:hover{background:rgba(251,239,233,.1)}
+  .dfoot a{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--on-secondary);opacity:.75;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="chrome">
+  <div>
+    <h1>Studio v2 High-Prio Sweep <span style="opacity:.45">— 10 High tickets from Maarten's 21 Jul review · 4 lanes</span></h1>
+    <div class="statline"><span id="stats"></span><span class="pbar"><i id="pfill"></i></span></div>
+  </div>
+  <div class="ctrls">
+    <button class="pill" id="cpBtn">crit path</button>
+    <input class="pill" id="agFilter" placeholder="agent…"/>
+    <button class="pill" id="themeBtn">◐ dark</button>
+    <button class="pill" id="copyBtn">copy state</button>
+    <button class="pill" id="resetBtn">reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="eyebrow">Next up, per lane · click a tile to act</p>
+  <div class="spot" id="spot"></div>
+
+  <div class="ledger">
+    <div class="lhead">
+      <h2>Seams</h2>
+      <span class="lsum" id="lsum"></span>
+      <button class="pill" id="quietBtn"></button>
+    </div>
+    <div id="srows"></div>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<div id="overlay"></div>
+
+<script>
+/* ══ CONFIG — retarget for a different tracker/workspace ══ */
+const CFG={
+  prefix:"TTM",                                            // issue key prefix
+  url:id=>`https://linear.app/tatoma/issue/TTM-${id}`,     // issue link
+  worktree:(id,branch)=>`git fetch origin && git worktree add ../cp-ttm-${id} -b ${branch} origin/main`,
+  prompt:(id,title)=>`hey dear friend, can you please help me take a look at and tackle ${CFG.prefix}-${id} — ${title} (${CFG.url(id)})`,
+};
+
+/* ══ SEED — regenerated from Linear by the tracker skill. Never hand-edit render code. ══ */
+const STREAMS = {
+  P: { name: "Prompt panel", tone: "var(--tone-olive)" },
+  R: { name: "Refine flow", tone: "var(--tone-blush)" },
+  L: { name: "Library handoff", tone: "var(--tone-sage)" },
+  S: { name: "Standalone surfaces", tone: "var(--tone-muted)" },
+};
+
+const T = [
+  // ---- Lane P: the orange prompt panel (generate → guidance → score) ----
+  { id: 938, s: "P", t: "Generation: live 'this is what we are doing' progress in the right panel",
+    surf: "plays/try/prompt-plan-card.tsx, plays/try/task-try-surface.tsx, messages/en/studio.json",
+    note: "Lane P order: 938 → 942 → 945; all three edit prompt-plan-card.tsx. SEAM2: P lane owns prompt-plan-card/task-try-surface — R's 951 consumes, never edits. SEAM3: i18n keys append-only under a P-lane namespace; status copy names its object (house style).",
+    branch: "israel/ttm-938-prompt-generation-show-live-this-is-what-we-are-doing",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "During generation the right panel opens and narrates real stages; doubles as intro to the two-panel UI." },
+  { id: 942, s: "P", t: "Result panel: clarify copy action, expandability, visual identity",
+    surf: "plays/try/prompt-plan-card.tsx, plays/try/task-try-surface.tsx, messages/en/studio.json",
+    note: "Lane P order: 938 → 942 → 945. SEAM2: after this lands, R's 951 can build on the panel (951 is soft-dep'd here). Align prompt presentation with the prompts-library look. SEAM3 i18n.",
+    branch: "israel/ttm-942-prompt-result-panel-clarify-copy-action-expandability-and",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "A first-time user knows to copy/expand without help; actions visually distinct from chat bubbles; panel matches library prompt styling." },
+  { id: 945, s: "P", t: "Quality score: own prompts score too low — recalibrate or restyle",
+    surf: "plays/task-prompt-detail.tsx, plays/try/prompt-plan-card.tsx",
+    note: "Lane P order: 938 → 942 → 945. SEAM1: shares task-prompt-detail.tsx with 948 (R) — different regions (score block ~166-195 vs refine wiring); THIS card lands first, 948 rebases. Investigate why generated prompts score low before touching visuals.",
+    branch: "israel/ttm-945-prompt-quality-score-our-own-prompts-score-too-low-revisit",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Root cause of low self-scores understood; metric recalibrated and/or presentation restyled so fresh prompts stop looking poor." },
+
+  // ---- Lane R: the refine journey (structural decision first) ----
+  { id: 948, s: "R", t: "Collapse the two colliding refine journeys into one path",
+    surf: "plays/task-prompt-detail.tsx, plays/task-prompt-refine-panel.tsx, refinement/refinement-panel.tsx",
+    note: "Lane R order: 948 → 953 → 951 → 956 — structural decision first (which refine path survives) shapes the other three. SEAM1: rebase onto 945's task-prompt-detail.tsx changes (score block, different region).",
+    branch: "israel/ttm-948-two-refine-journeys-collide-refine-this-prompt-in-the-modal",
+    blk: [], soft: [945], cp: true, size: "M",
+    deliver: "Exactly one refine path from the builder; the modal's 'refine this prompt' routes into it or disappears in this context." },
+  { id: 953, s: "R", t: "Refine screen cleanup: chips, 'that is enough', scroll behavior, send icon",
+    surf: "refinement/conversational-refinement.tsx, refinement/refinement-panel.tsx, messages/en/studio.json",
+    note: "Lane R order: 948 → 953 → 951 → 956; this, 951 and 956 all rewrite conversational-refinement.tsx. Fixed-height thread + floating input; add send icon. SEAM3 i18n ('that is enough' key ~1757).",
+    branch: "israel/ttm-953-refine-screen-dotted-suggestion-chips-that-is-enough-link",
+    blk: [], soft: [], cp: true, size: "M",
+    deliver: "Stable chat layout (fixed height, floating input, send icon); suggestion chips and 'that is enough' read as designed UI." },
+  { id: 951, s: "R", t: "Make the chat-to-prompt relationship visible while refining",
+    surf: "refinement/conversational-refinement.tsx, plays/task-prompt-refine-panel.tsx, refinement/refinement-panel.tsx",
+    note: "Lane R order: third. SEAM2: do NOT edit prompt-plan-card.tsx / task-try-surface.tsx — P lane owns them; consume props/events from the panel and land after 942. Design-heavy: highlight what the chat is changing on the right.",
+    branch: "israel/ttm-951-refine-via-chat-make-the-chat-to-prompt-relationship-visible",
+    blk: [], soft: [942], cp: true, size: "L",
+    deliver: "While refining, changes to the prompt are visibly attributable to the conversation (highlight/animate the affected section)." },
+  { id: 956, s: "R", t: "Refine outcome: three options read as the same action",
+    surf: "refinement/conversational-refinement.tsx, messages/en/studio.json",
+    note: "Lane R order: last — a labels + hierarchy pass on whatever outcome step survives 948/953/951. Distinct self-explanatory labels; recommended action visually primary.",
+    branch: "israel/ttm-956-refine-outcome-the-two-buttons-text-link-read-as-the-same",
+    blk: [], soft: [], cp: true, size: "S",
+    deliver: "Each outcome option has a distinct label; hierarchy shows the recommended action; redundant options merged." },
+
+  // ---- Lane L: save → library handoff (cross-app) ----
+  { id: 922, s: "L", t: "After 'saved to library': navigate there, first-time intro, glow on saved prompt",
+    surf: "plays/try/save-to-library.tsx, prompts: library/library-detail-page.tsx, messages/en/studio.json",
+    note: "Cross-app: the save box lives in apps/studio, the landing + intro popup in apps/prompts. No file overlap with P lane (save-to-library.tsx is its own file). SEAM3 i18n: keys in both apps, own namespace.",
+    branch: "israel/ttm-922-after-saved-to-library-navigate-there-first-time-intro-popup",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Saving navigates to the library; first-ever visit shows a one-time intro; the just-saved prompt glows on arrival." },
+
+  // ---- Lane S: standalone one-card surfaces (one worktree, commit per ticket) ----
+  { id: 920, s: "S", t: "Home rooms: fix jumpy expansion animation, add expand affordance",
+    surf: "home/room-stage.tsx, home/playbook-rooms.tsx, home/room-rail-card.tsx, home/room-preview-card.tsx",
+    note: "Lane S order: 920 → 941 (unrelated surfaces sharing one worktree; commit per ticket). Reproduce the jumpy cases first — HANDOFF_TRANSITION in room-stage.tsx ~82/162/219-276. No seams.",
+    branch: "israel/ttm-920-home-rooms-expansion-animation-sometimes-jumps-expand",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Room expand/collapse never visibly jumps; sections carry a subtle clickable/expandable affordance." },
+  { id: 941, s: "S", t: "AI readiness quiz: rework true/false answer + feedback visuals",
+    surf: "academy: evaluate/knowledge-probe.tsx, academy: evaluate/binary-stack.tsx",
+    note: "Lane S order: 920 → 941. Academy-only surface, zero overlap with studio lanes. Kill the green-border-on-wrong-answer contradiction; check both knowledge-probe and the binary-stack variant.",
+    branch: "israel/ttm-941-ai-readiness-quiz-rework-truefalse-answer-feedback-visuals",
+    blk: [], soft: [], cp: false, size: "M",
+    deliver: "Selected / correct / incorrect states are distinct and consistent; answered chips stop looking like live buttons; explanation sits below the answer." },
+];
+
+const SEAMS = [
+  { n: 1, file: "plays/task-prompt-detail.tsx",
+    cards: [945, 948],
+    verdict: "Land 945 first; 948 rebases (different regions).",
+    detail: "945 edits the quality-score block (~lines 166-195); 948 rewires the refine action (TaskPromptRefinePanel import at :16, refinePanel wiring at :248). Different regions of the same file, so land-first-then-rebase: 945 (small, contained) lands, then 948 rebases and single-owns the refine wiring. Encoded as 948 soft-dep 945." },
+  { n: 2, file: "plays/try/prompt-plan-card.tsx + plays/try/task-try-surface.tsx",
+    cards: [938, 942, 951],
+    verdict: "P lane single-owns both files; 951 consumes, lands after 942.",
+    detail: "938 and 942 rewrite the orange panel back to back (that is Lane P's ordering). 951 wants to highlight prompt changes on the right during refine — the temptation is to edit prompt-plan-card directly. Instead: P lane owns prompt-plan-card.tsx and task-try-surface.tsx; 951 builds on the refine-panel side and consumes props/events, landing after 942 (soft dep)." },
+  { n: 3, file: "messages/en/studio.json",
+    cards: [938, 942, 953, 956, 922],
+    verdict: "Append-only, one namespaced key block per lane.",
+    detail: "Three lanes add i18n keys to the same catalogue. Coordinate the namespace, not the file: P lane appends under the playbook/panel namespace, R lane under refinement.*, L lane under its library-handoff namespace (plus keys in apps/prompts). All additions append-only; any merge conflict is a trivial both-sides-keep. No key renames in this sweep." },
+];
+
+
+/* ══ STATE ══ */
+const KEY="ttm-studio-v2-highprio-console-v1"; // bump on re-seed from Linear
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function cs(id){if(!state.cards[id])state.cards[id]={status:"todo",agent:"",notes:""};return state.cards[id];}
+const st=id=>cs(id).status;
+const card=id=>T.find(x=>x.id==id);
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+/* ephemeral */
+let expanded=null, drawerId=null, openSeam=null, showQuiet=false, cpOnly=false, agQ="";
+
+/* ══ COMPUTED ══ */
+const deps=t=>[...(t.blk||[]),...(t.soft||[])];
+const waveMemo=new Map();
+function wave(t,seen=new Set()){
+  if(waveMemo.has(t.id))return waveMemo.get(t.id);
+  if(seen.has(t.id))return 0;                       // cycle guard
+  seen.add(t.id);
+  const pend=deps(t).filter(d=>st(d)!=="done");
+  const w=pend.length?1+Math.max(...pend.map(d=>{const c=card(d);return c?wave(c,seen):0})):0;
+  waveMemo.set(t.id,w);return w;
+}
+function column(t){
+  const s=st(t.id);
+  if(s==="done")return "DONE";
+  if(s==="wip")return "IN FLIGHT";
+  const w=wave(t);
+  return w===0?"START NOW":w===1?"ONE STEP AWAY":"LATER";
+}
+const unblocks=t=>T.filter(x=>st(x.id)!=="done"&&deps(x).includes(t.id)).length;
+function sortCol(a,b){
+  if(!!a.cp!==!!b.cp)return a.cp?-1:1;
+  const ua=a.tag==="urgent",ub=b.tag==="urgent";
+  if(ua!==ub)return ua?-1:1;
+  const d=unblocks(b)-unblocks(a); if(d)return d;
+  return a.id-b.id;
+}
+/* seam state machine */
+function seamState(sm){
+  const open=sm.cards.filter(id=>st(id)!=="done");
+  const wip=sm.cards.filter(id=>st(id)==="wip");
+  if(open.length<=1)return "cleared";
+  if(wip.length>=2)return "armed";
+  if(wip.length===1)return "live";
+  return "waiting";
+}
+const RANK={armed:0,live:1,waiting:2,cleared:3};
+const seamsOf=id=>SEAMS.filter(s=>s.cards.includes(id));
+
+/* ══ RENDER ══ */
+function visible(t){
+  if(cpOnly&&!t.cp)return false;
+  if(agQ&&!(cs(t.id).agent||"").toLowerCase().includes(agQ))return false;
+  return true;
+}
+function render(){
+  waveMemo.clear();
+  const done=T.filter(t=>st(t.id)==="done").length;
+  const wip=T.filter(t=>st(t.id)==="wip").length;
+  const ready=T.filter(t=>st(t.id)==="todo"&&wave(t)===0).length;
+  const blocked=T.filter(t=>st(t.id)==="todo"&&wave(t)>0).length;
+  document.getElementById("stats").textContent=`${done}/${T.length} done · ${wip} in flight · ${ready} ready · ${blocked} blocked`;
+  document.getElementById("pfill").style.width=(done/T.length*100)+"%";
+  renderSpot();renderLedger();renderBoard();renderDrawer();
+}
+
+/* 2 · spotlight */
+function renderSpot(){
+  const el=document.getElementById("spot");el.innerHTML="";
+  for(const k of Object.keys(STREAMS)){
+    const S=STREAMS[k];
+    const mine=T.filter(t=>t.s===k);
+    const wips=mine.filter(t=>st(t.id)==="wip");
+    const ready=mine.filter(t=>st(t.id)==="todo"&&wave(t)===0).sort(sortCol);
+    const openN=mine.filter(t=>st(t.id)!=="done").length;
+    let cls="",mn="",sb="",act=null;
+    if(wips.length){
+      cls="t-wip";
+      mn="wip: "+wips.map(t=>t.id).join(", ");
+      const names=wips.map(t=>cs(t.id).agent).filter(Boolean);
+      sb=names.length?names.join(", "):`<span class="warn">no agent!</span>`;
+      act={kind:"jump",id:wips[0].id};
+    }else if(ready.length){
+      const t=ready[0];
+      cls=t.cp?"t-cp":"";
+      mn="#1 · "+t.id;
+      sb=t.cp?"crit path":t.tag==="urgent"?"urgent":unblocks(t)?`unblocks ${unblocks(t)}`:"quick win";
+      act={kind:"dispatch",id:t.id};
+    }else if(!openN){
+      cls="t-done";mn="done ✓";sb="lane closed";
+    }else{
+      cls="t-parked";
+      const nx=mine.filter(t=>st(t.id)!=="done").sort((a,b)=>wave(a)-wave(b))[0];
+      mn="parked";
+      sb=nx?`${nx.id} awaits ${deps(nx).filter(d=>st(d)!=="done").join(", ")}`:"—";
+      act=nx?{kind:"jump",id:nx.id}:null;
+    }
+    const d=document.createElement("div");
+    d.className="tile "+cls;
+    d.innerHTML=`<div class="le">${k} · ${S.name}</div><div class="mn">${mn}</div><div class="sb">${sb}</div>`;
+    if(act)d.onclick=()=>act.kind==="dispatch"?openDrawer(act.id):jump(act.id);
+    el.appendChild(d);
+  }
+}
+
+/* 3 · seam ledger */
+function renderLedger(){
+  const rows=document.getElementById("srows");rows.innerHTML="";
+  const withState=SEAMS.map(s=>({...s,state:seamState(s)}))
+    .sort((a,b)=>RANK[a.state]-RANK[b.state]||a.n-b.n);
+  const c={armed:0,live:0,waiting:0,cleared:0};withState.forEach(s=>c[s.state]++);
+  document.getElementById("lsum").textContent=`${c.armed} armed · ${c.live} live · ${c.waiting} waiting · ${c.cleared} cleared`;
+  const quiet=withState.filter(s=>s.state==="waiting"||s.state==="cleared").length;
+  const qb=document.getElementById("quietBtn");
+  qb.textContent=showQuiet?"collapse":`show ${quiet} quiet`;
+  qb.onclick=()=>{showQuiet=!showQuiet;renderLedger();};
+
+  const shown=withState.filter(s=>showQuiet||s.state==="armed"||s.state==="live"||s.n===openSeam);
+  if(!shown.length){
+    rows.innerHTML=`<div class="lempty">No seam is live — nothing to coordinate right now. They surface here the moment two sides are in flight.</div>`;
+    return;
+  }
+  shown.forEach(s=>{
+    const r=document.createElement("div");
+    r.className="srow "+s.state;
+    r.innerHTML=`<span class="spill sp-${s.state}">${s.state}</span>
+      <span class="sn">S${s.n}</span>
+      <span class="sfile" title="${s.file}">${s.file}</span>
+      ${s.cards.map(id=>`<span class="tchip tc-${st(id)}" data-jump="${id}">${id}</span>`).join("")}
+      <span class="sverd" title="${s.verdict.replace(/"/g,"&quot;")}">${s.verdict}</span>`;
+    r.onclick=e=>{if(e.target.dataset.jump)return;openSeam=openSeam===s.n?null:s.n;renderLedger();};
+    rows.appendChild(r);
+    if(openSeam===s.n){
+      const d=document.createElement("div");d.className="sdetail";d.textContent=s.detail||s.verdict;
+      rows.appendChild(d);
+    }
+  });
+  rows.querySelectorAll("[data-jump]").forEach(c=>c.onclick=e=>{e.stopPropagation();jump(+c.dataset.jump);});
+}
+
+/* 4 · board */
+const COLS=[["DONE","var(--done)"],["IN FLIGHT","var(--wip)"],["START NOW","var(--fg)"],
+            ["ONE STEP AWAY","var(--muted-fg)"],["LATER","var(--muted-fg)"]];
+function renderBoard(){
+  const b=document.getElementById("board");b.innerHTML="";
+  COLS.forEach(([name,col])=>{
+    const items=T.filter(t=>column(t)===name&&visible(t)).sort(sortCol);
+    const d=document.createElement("div");d.className="col";
+    const count=name==="DONE"?`${T.filter(t=>st(t.id)==="done").length}/${T.length}`:items.length;
+    d.innerHTML=`<div class="chead" style="color:${col}"><span>${name}</span><span>${count}</span></div>`;
+    if(!items.length){d.insertAdjacentHTML("beforeend",`<div class="cempty">nothing here</div>`);}
+    items.forEach((t,i)=>d.appendChild(cardEl(t,name==="START NOW"?i+1:null)));
+    b.appendChild(d);
+  });
+}
+function cardEl(t,pick){
+  const s=st(t.id),c=cs(t.id),ex=expanded===t.id;
+  const el=document.createElement("div");
+  el.className="card"+(t.cp?" cp":"")+(s==="done"?" s-done":"");
+  el.id="card-"+t.id;
+  const sms=seamsOf(t.id).filter(x=>seamState(x)!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const spend=(t.soft||[]).filter(d=>st(d)!=="done");
+  const statCtl=s==="todo"
+    ? `<button class="stat-c" data-st="${t.id}" aria-label="Mark in progress"><span class="dot0"></span></button>`
+    : `<button class="stat-c" data-st="${t.id}"><span class="stat-l sl-${s}">${s}</span></button>`;
+  el.innerHTML=`
+    <div class="ctop">
+      ${pick?`<span class="pick">#${pick}</span>`:""}
+      <span class="cid">${CFG.prefix}-${t.id}</span>
+      ${t.tag==="urgent"?`<span class="urg">⚡ urgent</span>`:""}
+      ${statCtl}
+    </div>
+    <div class="ctitle">${t.t}</div>
+    <div class="cmeta">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}" title="${STREAMS[t.s].name}">${t.s}</span>
+      ${sms.length?`<span class="seam-p">${sms.length} seam${sms.length>1?"s":""}</span>`:""}
+      ${pend.length?`<span class="blk-p">← ${pend.join(", ")}</span>`:""}
+      ${spend.length?`<span class="blk-p">after ${spend.join(", ")}</span>`:""}
+      ${c.agent?`<span class="ag-p">${c.agent}</span>`:""}
+    </div>
+    ${ex?expandedHTML(t,c,sms):""}`;
+  el.onclick=e=>{if(e.target.closest("[data-st]")||e.target.closest(".exp"))return;
+    expanded=expanded===t.id?null:t.id;render();};
+  el.querySelector("[data-st]").onclick=e=>{e.stopPropagation();cs(t.id).status=NEXT[s];save();render();};
+  if(ex){
+    el.querySelector(".agi").onchange=e=>{cs(t.id).agent=e.target.value;save();render();};
+    el.querySelector(".nts").onchange=e=>{cs(t.id).notes=e.target.value;save();};
+    el.querySelector(".disp").onclick=e=>{e.stopPropagation();openDrawer(t.id);};
+    el.querySelectorAll("[data-seam]").forEach(x=>x.onclick=e=>{
+      e.stopPropagation();openSeam=+x.dataset.seam;showQuiet=true;renderLedger();
+      document.querySelector(".ledger").scrollIntoView({behavior:"smooth",block:"center"});});
+  }
+  return el;
+}
+function expandedHTML(t,c,sms){
+  return `<div class="exp">
+    <div class="cmeta" style="margin-bottom:9px">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}">${t.s} · ${STREAMS[t.s].name}</span>
+      ${sms.map(s=>`<span class="seam-p" data-seam="${s.n}" style="cursor:pointer">S${s.n}</span>`).join("")}
+    </div>
+    <div class="surf"><span class="k">surface</span>${t.surf}</div>
+    <div class="note"><span class="nk">note</span>${t.note}</div>
+    ${t.deliver?`<div class="deliv">▸ ${t.deliver}</div>`:""}
+    <input class="agi" placeholder="agent / who…" value="${(c.agent||"").replace(/"/g,"&quot;")}"/>
+    <textarea class="nts" placeholder="where it's at / handoff notes…">${c.notes||""}</textarea>
+    <div class="arow">
+      <button class="disp" title="Dispatch">→</button>
+      <span class="ahint">dispatch</span>
+      <a class="lnk" href="${CFG.url(t.id)}" target="_blank" onclick="event.stopPropagation()">Linear ↗</a>
+    </div>
+  </div>`;
+}
+
+/* 5 · drawer */
+function openDrawer(id){drawerId=id;expanded=id;render();}
+function renderDrawer(){
+  const o=document.getElementById("overlay");
+  if(drawerId===null){o.innerHTML="";return;}
+  const t=card(drawerId),c=cs(t.id);
+  const sms=seamsOf(t.id).map(s=>({...s,state:seamState(s)})).filter(s=>s.state!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const prompt=CFG.prompt(t.id,t.t);
+  const wt=CFG.worktree(t.id,t.branch);
+  o.innerHTML=`
+    <div class="scrim" id="scrim"></div>
+    <div class="drawer">
+      <div class="dtop"><span class="deye">Dispatch</span><button class="dx" id="dx">✕</button></div>
+      <h2>${CFG.prefix}-${t.id}</h2>
+      <p class="dsub">${t.t}</p>
+      ${pend.length?`<div class="warn w-blk"><b>Blocked</b> — still awaits ${pend.map(x=>CFG.prefix+"-"+x).join(", ")}. Dispatch anyway only if you mean it.</div>`:""}
+      ${sms.map(s=>`<div class="warn ${s.state==="armed"?"w-armed":"w-soft"}"><b>S${s.n}${s.state==="armed"?" · ARMED":""} —</b> ${s.verdict}</div>`).join("")}
+      <div class="step"><span class="sl">1 · kickoff prompt</span><button class="cpy" data-c="prompt">copy</button></div>
+      <div class="step"><span class="sl">2 · git worktree add…</span><button class="cpy" data-c="wt">copy</button></div>
+      <div class="step"><span class="sl" style="flex:0 0 auto">3 · agent</span>
+        <input class="stepin" id="dag" placeholder="who's on it?" value="${(c.agent||"").replace(/"/g,"&quot;")}"/></div>
+      <button class="markwip" id="mw">Mark wip &amp; close →</button>
+      <div class="dfoot">
+        <button class="ghost" data-c="br">copy branch name</button>
+        <a href="${CFG.url(t.id)}" target="_blank">Linear ↗</a>
+      </div>
+    </div>`;
+  const close=()=>{drawerId=null;render();};
+  document.getElementById("scrim").onclick=close;
+  document.getElementById("dx").onclick=close;
+  document.getElementById("dag").onchange=e=>{cs(t.id).agent=e.target.value;save();};
+  document.getElementById("mw").onclick=()=>{cs(t.id).status="wip";save();close();};
+  o.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+    const txt=b.dataset.c==="prompt"?prompt:b.dataset.c==="wt"?wt:t.branch;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const old=b.textContent;b.textContent="copied ✓";setTimeout(()=>b.textContent=old,1100);});
+  });
+}
+
+/* ══ NAV / CHROME ══ */
+function jump(id){
+  drawerId=null;expanded=id;render();
+  const el=document.getElementById("card-"+id);
+  if(!el)return;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-150,behavior:"smooth"});
+  el.style.outline="2px solid var(--primary)";el.style.outlineOffset="2px";
+  setTimeout(()=>el.style.outline="",1400);
+}
+function applyTheme(){
+  const dark=state.themeOverride==="dark";
+  document.body.classList.toggle("dark",dark);
+  document.getElementById("themeBtn").textContent=dark?"☀ warm":"◐ dark";
+}
+document.getElementById("cpBtn").onclick=e=>{cpOnly=!cpOnly;e.target.classList.toggle("on",cpOnly);render();};
+document.getElementById("agFilter").oninput=e=>{agQ=e.target.value.trim().toLowerCase();render();};
+document.getElementById("themeBtn").onclick=()=>{
+  state.themeOverride=state.themeOverride==="dark"?"warm":"dark";save();applyTheme();};
+document.getElementById("copyBtn").onclick=e=>{
+  navigator.clipboard.writeText(JSON.stringify(state.cards,null,2)).then(()=>{
+    e.target.textContent="copied ✓";setTimeout(()=>e.target.textContent="copy state",1100);});};
+document.getElementById("resetBtn").onclick=()=>{
+  if(confirm("Reset all statuses, agents & notes?")){state={cards:{},themeOverride:state.themeOverride};save();render();}};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&drawerId!==null){drawerId=null;render();}});
+
+applyTheme();render();
+</script>
+</body>
+</html>

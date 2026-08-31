@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Cycle 6 — one-day plan (discovery-first)</title>
+<style>
+  :root{
+    --bg:#f6faeb; --fg:#1d021f; --card:#fff; --salmon:#ff8e7d; --mint:#cdeccd;
+    --muted:#a397a3; --eggplant:#4c3c47; --magenta:#1E001E;
+    --todo:#c9c2cb; --wip:#e9a23b; --done:#3ba55d; --blocked:#d9534f; --ready:#2e7d32;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.45}
+  a{color:inherit}
+  header{position:sticky;top:0;z-index:20;background:var(--magenta);color:var(--bg);padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.01em}
+  .timer{font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:8px}
+  .bar{width:160px;height:7px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
+  .bar > i{display:block;height:100%;background:var(--salmon)}
+  header button,.tool button{font-family:var(--sans);font-size:11px;border:0;border-radius:6px;padding:4px 9px;cursor:pointer;background:rgba(255,255,255,.16);color:var(--bg)}
+  .tool{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#fff7f5;border-bottom:1px solid #f0d9d4;position:sticky;top:39px;z-index:19}
+  .tool button{background:#fff;color:var(--fg);border:1px solid var(--muted)}
+  .tool label{font-size:11px;display:inline-flex;gap:5px;align-items:center}
+  .wrap{padding:14px 16px 60px}
+  .panel{background:var(--card);border:1px solid rgba(163,151,163,.45);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+  .panel h2{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);color:var(--eggplant)}
+  .seam{padding:8px 10px;border-left:3px solid var(--salmon);background:rgba(255,142,125,.07);border-radius:0 8px 8px 0;margin:8px 0}
+  .seam b{font-family:var(--mono);font-size:11px}
+  .phase{display:grid;grid-template-columns:90px 1fr;gap:10px;margin:6px 0;align-items:start}
+  .phase .when{font-family:var(--mono);font-size:11px;color:var(--eggplant);text-transform:uppercase;letter-spacing:.08em;padding-top:2px}
+  .phase .what{padding:6px 10px;border-left:3px solid var(--mint);background:rgba(205,236,205,.18);border-radius:0 8px 8px 0}
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:1px 6px;border-radius:5px;background:rgba(29,2,31,.07);margin:1px 2px;cursor:pointer}
+  .chip.hot{background:var(--salmon)}
+  ul.rules{margin:4px 0 0;padding-left:18px} ul.rules li{margin:3px 0}
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start}
+  @media(max-width:1100px){.board{grid-template-columns:repeat(2,1fr)}}
+  .lane{background:rgba(255,255,255,.5);border:1px solid rgba(163,151,163,.4);border-radius:12px;padding:8px}
+  .lane > h3{margin:2px 4px 8px;font-size:12px;display:flex;justify-content:space-between;align-items:baseline}
+  .lane > h3 small{font-weight:400;color:var(--eggplant);font-size:10.5px;font-family:var(--mono)}
+  .card{background:var(--card);border:1px solid rgba(163,151,163,.5);border-radius:10px;padding:9px;margin-bottom:8px;border-left:4px solid var(--todo)}
+  .card.s-wip{border-left-color:var(--wip)} .card.s-done{border-left-color:var(--done);opacity:.62}
+  .card.kind-spike{border-left-style:dashed}
+  .card.kind-umbrella{background:repeating-linear-gradient(135deg,#fff,#fff 8px,#fbf6fb 8px,#fbf6fb 16px)}
+  .card .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .card .id{font-family:var(--mono);font-weight:700;font-size:11px}
+  .st{font-family:var(--mono);font-size:10px;border:0;border-radius:5px;padding:2px 7px;cursor:pointer;color:#fff;text-transform:uppercase;letter-spacing:.06em}
+  .st-todo{background:var(--todo);color:var(--fg)} .st-wip{background:var(--wip)} .st-done{background:var(--done)}
+  .card .ti{font-weight:600;margin:5px 0 4px;font-size:12.5px;line-height:1.3}
+  .kindtag{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.09em;padding:1px 5px;border-radius:4px;background:rgba(76,60,71,.1);color:var(--eggplant)}
+  .pri{font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700}
+  .pri-high{background:rgba(217,83,79,.13);color:var(--blocked)} .pri-med{background:rgba(233,162,59,.16);color:#9a6a13} .pri-low{background:rgba(163,151,163,.18);color:var(--eggplant)}
+  .meta{font-size:11px;color:var(--eggplant);margin:3px 0}
+  .meta .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .badge{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:4px;font-weight:700}
+  .b-ready{background:rgba(46,125,50,.14);color:var(--ready)} .b-block{background:rgba(217,83,79,.13);color:var(--blocked)}
+  .deliver{font-size:10.5px;color:var(--ready);margin-top:3px;font-style:italic}
+  .pick{font-family:var(--mono);font-size:10px;background:var(--fg);color:var(--bg);border-radius:4px;padding:1px 5px}
+  .agent{width:100%;font-size:11px;padding:3px 6px;border:1px solid var(--muted);border-radius:6px;margin:4px 0;font-family:var(--mono)}
+  .notes{width:100%;min-height:30px;font-size:11px;padding:4px 6px;border:1px dashed var(--muted);border-radius:6px;resize:vertical;font-family:var(--sans);margin-top:2px}
+  .links{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .links a,.links button{font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--muted);border-radius:5px;padding:2px 6px;background:#fff;color:var(--fg);cursor:pointer}
+  .ext{font-size:10.5px;color:var(--blocked);margin-top:3px}
+  .legend{font-family:var(--mono);font-size:10.5px;color:var(--eggplant)}
+  .empty{font-size:11px;color:var(--muted);text-align:center;padding:14px 6px;border:1px dashed var(--muted);border-radius:8px;font-style:italic}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cycle 6 · one-day plan <span style="opacity:.6;font-weight:400">— discovery-first</span></h1>
+  <div class="timer">
+    <span id="elapsed">0:00:00</span> / 8:00:00
+    <span class="bar"><i id="barfill" style="width:0%"></i></span>
+    <button id="resetTimer">reset timer</button>
+  </div>
+  <div style="margin-left:auto" class="legend">click status to cycle · everything autosaves locally</div>
+</header>
+
+<div class="tool">
+  <label><input type="checkbox" id="readyOnly"/> ready only</label>
+  <label>agent <input id="agentFilter" placeholder="filter…" style="width:90px;font-size:11px"/></label>
+  <span style="margin-left:auto"></span>
+  <button id="copyState">copy state JSON</button>
+  <button id="resetAll">reset all</button>
+</div>
+
+<div class="wrap">
+  <div class="panel" style="border-color:rgba(217,83,79,.4);background:rgba(217,83,79,.05)">
+    <h2 style="color:var(--blocked)">Deferred to Cycle 7 — TTM-304 distribution channel</h2>
+    <p style="margin:2px 0 0">The distribution channel <b>can't be built until the artifact shape is final</b>. The 313→311 stream is redefining how a skeleton becomes a full skill — i.e. it sets the <code>SKILL.md</code> / published-bundle shape that 304 packages and serves. Building distribution on a shape that's about to change is building on sand. <b>304 moved to Cycle 7, blockedBy <span class="chip hot" data-jump="311">311</span>.</b> It returns once the builder stream lands.</p>
+  </div>
+
+  <div class="panel" style="border-color:rgba(59,165,93,.5);background:rgba(59,165,93,.06)">
+    <h2 style="color:var(--done)">Where things stand — rename landed first, as planned</h2>
+    <p style="margin:2px 0 8px"><b>Rename DONE, builder discovery DONE.</b> <span class="chip hot" data-jump="312">312</span> + <span class="chip hot" data-jump="310">310</span> + <span class="chip hot" data-jump="314">314</span> (#1021) landed clean surfaces this morning; the <span class="chip hot" data-jump="313">313</span> spike then decomposed the builder into <b>~22 child issues under <span class="chip hot" data-jump="311">311</span> across WS1–WS8</b> (sizes + deps + critical path). <b><span class="chip hot" data-jump="315">315</span> (WS1.1, the description spine) is already In Review with a PR.</b> Plus the P0 <code>/home</code> ENOENT was hotfixed (#1023, confirmed). The builder is now a multi-day workstream effort, not a one-day card — see the note below about a dedicated tracker.</p>
+    <div class="phase"><div class="when">Done</div><div class="what"><b>Rename + cleanup + discovery.</b> 312 mapped, 310 executed, 314 deleted dead code (#1021), 313 spec'd the builder + spun off WS1–WS8. P0 hotfix #1023 landed.</div></div>
+    <div class="phase"><div class="when">Now</div><div class="what"><b>Builder execution begins.</b> <span class="chip hot" data-jump="315">315</span> (WS1.1) in review. The critical-path spine — WS1 (315/316/317) → WS2 (318/319) → WS3 (320) — is next. In parallel: the <span class="chip hot" data-jump="309">309</span> decision.</div></div>
+    <div class="phase"><div class="when">Next</div><div class="what"><b>Pull WS issues into the cycle</b> as they're picked up (only 315 is in Cycle 6 so far; WS4 bundle model 321→322 is the foundation slice). 309 small build or punt.</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>Coordination seams — where the tracks collide</h2>
+    <div class="seam" style="border-left-color:var(--done);background:rgba(59,165,93,.06)"><b>1 · RESOLVED — uca-synthesis/ + actions.ts</b> — the 310↔311 collision is gone: the rename (<span class="chip hot" data-jump="310">310</span>) landed FIRST, so <span class="chip hot" data-jump="311">311</span> now builds on clean <code>Skill</code> surfaces. The doomed-code that 311 would replace was deleted in <span class="chip hot" data-jump="314">314</span> (#1021), not renamed.</div>
+    <div class="seam"><b>2 · TTM-309</b> — isolated (client-portal <code>upsertOrgProfile</code> + <code>packages/agents/tone-voice</code>). No seam. Safe to run anytime by anyone.</div>
+  </div>
+
+  <div class="panel">
+    <h2>Ordering &amp; the discovery rule</h2>
+    <ul class="rules">
+      <li><b>Rename is DONE</b> — 312 + 310 landed first (clean surfaces). The rename-first plan paid off; seam 1 is closed.</li>
+      <li><b>313 spike is DONE</b> — it spec'd the builder and spun off ~22 child issues (WS1–WS8) under <span class="chip" data-jump="311">311</span>. The discovery-first plan delivered the workstreams.</li>
+      <li><b>311 is now a multi-day WS1–8 effort</b> — not a one-day card. Critical path: WS1 (description/fields) → WS2 (prompts) → WS3 (gate); WS4.1 bundle model is the foundation. <b>This deserves its own parallel-workstreams tracker</b> (like the TTM-224→240 one).</li>
+      <li><b>Only 315 is in Cycle 6</b> (In Review). Pull the rest of WS1–8 in from backlog as they're picked up.</li>
+      <li><b>309 is a decision before it's code</b> — answer "any auto-behavior? which shape?" (recommended: stale-hint, no clobber) then build small or punt.</li>
+      <li><b>304 is out</b> — deferred to Cycle 7 behind the artifact shape (311). Don't build distribution on a moving target.</li>
+    </ul>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+const LINEAR="https://linear.app/tatoma/issue/";
+const STREAMS={
+  DISC:{name:"Discovery — DONE",sub:"both spikes landed"},
+  REN:{name:"Rename track — DONE",sub:"312 + 310 + 314 all landed"},
+  BLD:{name:"Builder track — WS1–8",sub:"311 → ~22 issues · 315 in review"},
+  CTX:{name:"Context asset",sub:"309 — decision-gated"},
+};
+// kind: spike | umbrella | build | item ; pri: high|med|low ; blk = TTM ids that must be done first
+const T=[
+ {id:313,s:"DISC",kind:"spike",pri:"high",lin:"done",t:"Define the skeleton→skill builder (Anthropic skill-builder approach)",
+  surf:"read-only: Anthropic skill-builder + agents synthesis + actions.ts (now Skill-named)",
+  note:"DONE (#1022) · spec'd the builder on skill-creator principles + spun off WS1–WS8 (~22 issues) under 311",
+  deliver:"output: spike doc (10-skeleton-skill-builder-spike.md) + WS1–8 child issues",
+  branch:"israel/ttm-313-spike-define-the-skeletonskill-builder-anthropic-skill",
+  doc:"docs/uca-skill-redesign/10-skeleton-skill-builder-spike.md", blk:[]},
+ {id:312,s:"REN",kind:"spike",pri:"high",lin:"done",t:"Map the full UCA→Skill rename surface + safe sequencing",
+  surf:"read-only: migrations + ~251 files + /use-cases route tree",
+  note:"DONE · mapped surface + sequencing (rename-first) · surfaced the 314 cleanup",
+  deliver:"output: rename map doc + child issues under TTM-310",
+  branch:"israel/ttm-312-spike-map-the-full-ucaskill-rename-surface-safe-sequencing",
+  doc:"docs/uca-skill-redesign/", blk:[]},
+ {id:310,s:"REN",kind:"umbrella",pri:"high",lin:"done",t:"UCA → Skill rename — DB + code cleanup (execution)",
+  surf:"7 tables + FKs/RLS/indexes, ~251 ref files, ~161 path renames, /use-cases→/skills, database.ts regen",
+  note:"DONE · rename executed first (as planned) → clean Skill surfaces for 311",
+  deliver:"landed — codebase is on Skill naming",
+  branch:"israel/ttm-310-uca-skill-rename-db-code-cleanup-umbrella",
+  doc:"", blk:[]},
+ {id:314,s:"REN",kind:"item",pri:"med",lin:"done",t:"Delete dead UCA-era batch/card agents + enrich route (cleanup)",
+  surf:"deprecated batch/direct-interview path: 7 dead card agents + enrich route (zero live callers)",
+  note:"DONE (#1021) · surfaced by the 312 spike + liveness audit · doomed code deleted, not renamed · live single-task arc untouched",
+  deliver:"landed — dead UCA batch/card cluster removed",
+  branch:"israel/ttm-314-delete-dead-uca-era-batchcard-agents-enrich-route-cleanup",
+  doc:"", blk:[]},
+ {id:311,s:"BLD",kind:"umbrella",pri:"high",lin:"todo",t:"Skeleton → full skill: Anthropic skill-builder approach (umbrella)",
+  surf:"WS1 fields · WS2 prompts · WS3 gate · WS4 bundle · WS5 publish · WS6 trial · WS7 org signals · WS8 UX",
+  note:"DECOMPOSED into ~22 children (316–337) across WS1–WS8 · only 315 in Cycle 6 so far · multi-day effort — wants its own workstreams tracker",
+  deliver:"critical path: WS1 (315/316/317) → WS2 (318/319) → WS3 (320); WS4.1 (321) is the bundle foundation",
+  branch:"israel/ttm-311-skeleton-full-skill-adopt-an-anthropic-skill-builder",
+  doc:"", blk:[]},
+ {id:315,s:"BLD",kind:"item",pri:"high",lin:"wip",t:"WS1.1 — description as the spine (first-class authored + gated)",
+  surf:"skeleton agent authors description w/ trigger language (mig 064) + build-time description quality check",
+  note:"IN REVIEW (PR open) · WS1.1 · CRITICAL PATH · the whole marketplace-trigger story rides on description",
+  deliver:"description authored with trigger language, not backfilled from metadata.summary",
+  branch:"israel/ttm-315-ws11-description-as-the-spine-first-class-authored-gated",
+  doc:"", blk:[]},
+ {id:309,s:"CTX",kind:"item",pri:"low",lin:"todo",t:"tone_voice context asset: optional auto-draft/resync",
+  surf:"migration tone_voice_input_hash on org_context_assets, packages/agents/tone-voice, client-portal upsertOrgProfile",
+  note:"DECIDE FIRST: any auto-behaviour? which shape? (rec: stale-hint, no clobber) · isolated, no seam",
+  deliver:"decision → small build or punt · respect no-clobber on admin-curated bodies",
+  branch:"israel/ttm-309-tone_voice-context-asset-optional-auto-draftresync-from",
+  doc:"", blk:[]},
+];
+
+const KEY="ttm-cycle6-tracker-v3"; // bumped: seeded from Linear status 2026-06-08 ~11:45 (313 done, 311 decomposed WS1-8, 315 in review, P0 #1023 fixed)
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{}; // id -> {status,agent,notes}
+if(!state.timerStart) state.timerStart=Date.now();
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function cardState(id){
+  if(!state.cards[id]){ const t=T.find(x=>x.id==id); state.cards[id]={status:(t&&t.lin)||"todo",agent:"",notes:""}; }
+  return state.cards[id];
+}
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+function isDone(id){return (state.cards[id]&&state.cards[id].status)==="done";}
+function readiness(t){
+  const pend=t.blk.filter(b=>!isDone(b));
+  if(t.ext) return {ok:false,label:"BLOCKED: "+t.ext};
+  if(pend.length) return {ok:false,label:"AWAITS spike "+pend.map(x=>"TTM-"+x).join(", ")};
+  return {ok:true,label:"READY"};
+}
+function pickPriority(t){
+  const st=cardState(t.id).status;
+  if(st==="done") return 3;
+  if(st==="wip") return 0;
+  return readiness(t).ok ? 1 : 2;
+}
+function pendingCount(t){ return t.blk.filter(b=>!isDone(b)).length + (t.ext?1:0); }
+function byPickup(a,b){
+  const pa=pickPriority(a), pb=pickPriority(b);
+  if(pa!==pb) return pa-pb;
+  if(pa===2){ const d=pendingCount(a)-pendingCount(b); if(d) return d; }
+  return a.id-b.id;
+}
+const PRItag={high:"pri-high",med:"pri-med",low:"pri-low"};
+const PRIlbl={high:"HIGH",med:"MED",low:"LOW"};
+
+function render(){
+  const board=document.getElementById("board");
+  board.innerHTML="";
+  const readyOnly=document.getElementById("readyOnly").checked;
+  const af=document.getElementById("agentFilter").value.trim().toLowerCase();
+  for(const sk of Object.keys(STREAMS)){
+    const lane=document.createElement("div");lane.className="lane";
+    lane.innerHTML=`<h3>${STREAMS[sk].name}<small>${STREAMS[sk].sub}</small></h3>`;
+    let pick=0, shown=0;
+    T.filter(t=>t.s===sk).sort(byPickup).forEach(t=>{
+      const cs=cardState(t.id), rd=readiness(t);
+      if(readyOnly && (!rd.ok || cs.status==="done")) return;
+      if(af && !(cs.agent||"").toLowerCase().includes(af)) return;
+      shown++;
+      const n = cs.status==="done" ? "" : `<span class="pick">#${++pick}</span> `;
+      const c=document.createElement("div");
+      c.className="card s-"+cs.status+" kind-"+t.kind; c.id="card-"+t.id;
+      c.innerHTML=`
+        <div class="top">
+          <span class="id">${n}TTM-${t.id}</span>
+          <span><span class="kindtag">${t.kind}</span> <span class="pri ${PRItag[t.pri]}">${PRIlbl[t.pri]}</span>
+          <button class="st st-${cs.status}" data-st="${t.id}">${cs.status}</button></span>
+        </div>
+        <div class="ti">${t.t}</div>
+        <div>${rd.ok?'<span class="badge b-ready">READY</span>':'<span class="badge b-block">'+rd.label+'</span>'}</div>
+        <div class="meta"><span class="k">surface</span> ${t.surf}</div>
+        <div class="meta"><span class="k">note</span> ${t.note}</div>
+        ${t.deliver?`<div class="deliver">▸ ${t.deliver}</div>`:""}
+        ${t.ext?`<div class="ext">⚠ ${t.ext}</div>`:""}
+        <input class="agent" placeholder="agent / who…" data-ag="${t.id}" value="${(cs.agent||"").replace(/"/g,'&quot;')}"/>
+        <textarea class="notes" placeholder="where it's at / handoff notes…" data-nt="${t.id}">${cs.notes||""}</textarea>
+        <div class="links">
+          <a href="${LINEAR}TTM-${t.id}" target="_blank">Linear ↗</a>
+          <button data-pr="${t.id}" title="copy the kickoff prompt for an agent">copy prompt</button>
+          <button data-co="${t.id}" title="copy fetch+checkout for this branch">copy checkout</button>
+          <button data-cp="${t.branch}">branch</button>
+          ${t.doc?`<button data-cs="${t.doc}">doc path</button>`:""}
+        </div>`;
+      lane.appendChild(c);
+    });
+    if(!shown){ const e=document.createElement("div"); e.className="empty"; e.textContent="fills in from the spike output"; lane.appendChild(e); }
+    board.appendChild(lane);
+  }
+  bind();
+}
+function bind(){
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const id=b.dataset.st;cardState(id).status=NEXT[cardState(id).status];save();render();});
+  document.querySelectorAll("[data-ag]").forEach(i=>i.onchange=()=>{cardState(i.dataset.ag).agent=i.value;save();});
+  document.querySelectorAll("[data-nt]").forEach(x=>x.onchange=()=>{cardState(x.dataset.nt).notes=x.value;save();});
+  document.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>copy(b.dataset.cp,b));
+  document.querySelectorAll("[data-cs]").forEach(b=>b.onclick=()=>copy(b.dataset.cs,b));
+  document.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.pr);
+    const ref=t.doc?t.doc:(LINEAR+"TTM-"+t.id);
+    copy(`hey dear friend, can you please help me take a look at and tackle TTM-${t.id} — ${t.t} (${ref})`,b);
+  });
+  document.querySelectorAll("[data-co]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.co);
+    copy(`git fetch origin && git checkout ${t.branch}`,b);
+  });
+}
+function copy(txt,btn){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent="copied";setTimeout(()=>btn.textContent=o,900);});}
+
+document.querySelectorAll("[data-jump]").forEach(ch=>ch.onclick=()=>{const el=document.getElementById("card-"+ch.dataset.jump);if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid var(--salmon)";setTimeout(()=>el.style.outline="",1400);}});
+
+document.getElementById("readyOnly").onchange=render;
+document.getElementById("agentFilter").oninput=render;
+document.getElementById("resetTimer").onclick=()=>{state.timerStart=Date.now();save();};
+document.getElementById("copyState").onclick=()=>navigator.clipboard.writeText(JSON.stringify(state,null,2));
+document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all statuses, agents, notes & timer?")){state={cards:{},timerStart:Date.now()};save();render();}};
+
+function tick(){
+  const ms=Date.now()-state.timerStart, s=Math.floor(ms/1000);
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
+  document.getElementById("elapsed").textContent=`${h}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  document.getElementById("barfill").style.width=Math.min(100,ms/(8*3600*1000)*100)+"%";
+}
+setInterval(tick,1000);tick();
+render();
+</script>
+</body>
+</html>

@@ -185,7 +185,7 @@ Tatoma is the pattern engine. Client work produces reusable patterns:
 |--------------------|--------------------|
 | AI content pipeline architecture | TLOM/Pimpi Learn content generation |
 | Multi-tenant data model | Any future SaaS product |
-| Prompt library design | Palu Labs experiments |
+| Prompt library design | Palú Labs trade-name experiments |
 | Academy/learning platform patterns | Pimpi Learn, StudyStars |
 | Compliance/governance frameworks | TLOM, any regulated product |
 | Client AI adoption playbooks | Potential standalone product |

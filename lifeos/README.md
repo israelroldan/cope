@@ -3,13 +3,13 @@
 > The universal briefing. Any AI assistant, any new collaborator, any moment of
 > scattered energy — start here.
 >
-> Last reviewed: 2026-03-23
+> Last reviewed: 2026-04-21
 
 ---
 
 ## Identity
 
-Israel Roldan. Software engineer, product builder, founder. 18+ years full-stack, currently running a portfolio of ventures from the Netherlands through Jolie Invest BV (holding).
+Israel Roldan. Software engineer, product builder, founder. 18+ years full-stack, currently running a portfolio of ventures from the Netherlands under two legal structures: Palú Labs (ZZP handelsnaam, ~10 years old, umbrella for side projects and trade names) and Jolie Invest BV (personal holding, holds the Tatoma equity stake).
 
 Mexican roots, Belgian career origins, Dutch permanent residence, English-language tech world. These aren't identity conflicts — they're perspective multipliers.
 
@@ -17,7 +17,7 @@ Languages: Spanish (native), English (fluent, primary work language), Dutch (int
 
 Based in Bakel/Gemert, North Brabant. Family of four.
 
-Currently CTO at TATOMA BV. Previously: Director of Product Operations & Applied AI at GoodHabitz, senior engineering roles at Schuberg Philis, Passionate People, others. Those patterns directly feed current work — prior art, not ancient history.
+Currently Co-Founder & CTO at TATOMA BV (day job, 10% equity held via Jolie Invest BV). Previously: Director of Product Operations & Applied AI at GoodHabitz, senior engineering roles at Schuberg Philis, Passionate People, others. Those patterns directly feed current work — prior art, not ancient history.
 
 Self-description: "the D in R&D." Doesn't write research papers — ships prototypes, proves concepts, turns ambiguity into working products.
 
@@ -50,17 +50,23 @@ Full version with reasoning: [principles.md](principles.md)
 The portfolio is one interconnected system, not five separate companies.
 Full details: [portfolio.md](portfolio.md)
 
-**TATOMA BV** (primary) — Dutch AI consultancy. Co-founded with Sander Kok and Maarten van den Heuvel-Erp. Israel is CTO. Multi-tenant SaaS platform (Academy, Prompts, Workbench, Client Portal). Revenue-generating. → Generates patterns and revenue.
+**TATOMA BV** (day job) — Dutch AI consultancy. Co-Founded with Sander Kok and Maarten van den Heuvel-Erp. Israel is Co-Founder & CTO, holds 10% equity via Jolie Invest BV (not personally). Multi-tenant SaaS platform (Academy, Prompts, Workbench, Client Portal). Revenue-generating. → Generates patterns and revenue. Pays the bills.
 
-**StudyStars / The Library of Me → Pimpi Learn** — EdTech concepts (competency framework, content pipeline, self-reflection) folding into the Pimpi universe as Pimpi Learn. Original team disengaged; self-directed model replaces cohort/facilitator model. → Content pipeline and compliance architecture transfer to Pimpi.
+**Palú Labs** (5-9) — ZZP handelsnaam, ~10 years old. The umbrella under which all personal trade names currently operate. Also the legal publisher of record for all apps shipped so far (EU DSA trader, KvK registration). Trade names below are all currently registered as handelsnamen on the same KvK:
 
-**Pimpi** — Familyware. Tools for the real logistics and emotional texture of raising kids. Sparks (missions) + Card (stamp economy). Kid agency, no guilt, post-it aesthetic. → Born from lived experience.
+- **Kimbi Games** — game studio. Creative control of game IP. Snackjes! shipped 2026. Investor-ready candidate for BV spin-off.
+- **Pimpi Apps** — self-service/product-led familyware. Sparks live (free), Card in private alpha. Post-it aesthetic.
+- **StudyStars / The Library of Me** — B2B/webinar EdTech direction, possibly for older kids. Distinct from Pimpi Apps (product-led, kid-facing) by going more facilitator/adult-facing. Name kept around because the direction still has room.
+- **The Literary Sculptor** (literarysculptor.com) — compositional fiction-development toolkit. Previously known as The Book Doctor.
+- Secondary: freelance engineering and advisory under Palú Labs directly.
 
-**Palu Labs** — Experimentation vehicle under Jolie Invest BV. Freelance, side projects, incubation. → Proving ground. Graduates or dies quietly.
+Each trade name graduates (its own BV under Jolie Invest) or parks quietly. No zombies.
 
-**Cope** — Personal AI infrastructure. MCP server, specialist agents, LifeOS integration. → Connective tissue across everything.
+**Jolie Invest BV** — personal holding company (in oprichting from 2026-04). Currently holds the 10% Tatoma stake. Parent entity for any future BV spin-offs out of Palú Labs' trade names.
 
-**Flow:** Tatoma clients → patterns → Palu Labs experiments → graduates to StudyStars/Pimpi. Cope orchestrates all of it.
+**Cope** — Personal AI infrastructure. MCP server, specialist agents, LifeOS integration. → Connective tissue across everything. Not a commercial venture.
+
+**Flow:** Tatoma client work generates patterns → patterns feed Palú Labs trade-name experiments → validated trade names can graduate to their own BVs under Jolie Invest. Cope orchestrates the pipeline.
 
 ---
 
@@ -98,7 +104,7 @@ Full details: [working-style.md](working-style.md)
 
 **Stack:** TypeScript, React/Next.js, Expo/React Native, Supabase, Vercel, Turborepo. Runtime and package manager: Bun. Full details: [stack.md](stack.md)
 
-**Finance:** Jolie Invest BV (holding) → TATOMA BV. Banks: Bunq (daily), ABN AMRO (savings), ICS (credit). YNAB for budgets. Full details: [finance.md](finance.md)
+**Finance:** Two parallel structures — Jolie Invest BV (holding, 10% Tatoma BV stake) and Palú Labs (ZZP, all personal trade names and side income). Banks: Bunq (daily), ABN AMRO (savings), ICS (credit). YNAB for budgets. Full details: [finance.md](finance.md)
 
 **AI Infrastructure:** Claude Code (primary dev env), MCP integrations (Magister, Slack, Calendar, Gmail, YNAB, Omi), cope-agent specialist delegation. Full details in Cope section of [portfolio.md](portfolio.md).
 

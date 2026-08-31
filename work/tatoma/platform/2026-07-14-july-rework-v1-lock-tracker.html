@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>July Studio Rework — locking v1</title>
+<style>
+  /* Design language lifted from the Binders app (apps/binders: globals.css +
+     components/binder/ui.tsx + app/(my)/my). The vocabulary, one-to-one:
+       SectionShell (rounded-3xl, room tone, p-8)   -> panels and lanes
+       white sub-card (rounded-xl, p-5, shadow-sm)  -> ticket cards
+       StatCard (mono eyebrow + big serif value)    -> the rollups
+       accent bar (h-1 bg-primary, top of card)     -> critical path
+       StatusChip (dot + mono label)                -> todo / wip / done
+       IconButton (size-11 near-black circle)       -> dispatch the card
+     Fonts degrade gracefully; the real faces are not available standalone. */
+  :root{
+    --serif:"Canela",Georgia,"Times New Roman",serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"TSTARMonoRound",ui-monospace,"SF Mono",Menlo,monospace;
+
+    --bg:#faf6f4; --fg:#1d0a14; --card:#fff;
+    --muted:#f3e3dc; --muted-fg:#6e5b61; --border:#ecdcd5; --input:#e4d2cb;
+    --primary:#ff8c7d; --secondary:#1f0a16; --on-secondary:#fbefe9;
+    --surface-dark:#1a0511;
+
+    --room-olive:#e8e6cb; --room-sage:#d1dcc5; --room-blush:#f7e2da;
+
+    --open:#8a8194;      --open-soft:#efe9ee;      /* todo */
+    --gathering:#c08a3e; --gathering-soft:#f6ecd9; /* wip */
+    --ready:#3f7d5a;     --ready-soft:#e1efe5;     /* done / ready */
+    --review:#7a4f6d;    --review-soft:#efe2ec;
+    --gap:#b86a55;       --gap-soft:#f6e4dd;       /* blocked / seams */
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.5}
+  h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;margin:0}
+  a{color:inherit}
+  code{font-family:var(--mono);font-size:.92em;background:rgba(29,10,20,.05);padding:1px 5px;border-radius:5px}
+  .meta-label{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+
+  /* Slim chrome. The real title lives in the page, at full serif scale. */
+  .chrome{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--border);
+    display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:11px 28px}
+  .chrome label{font-size:11.5px;display:inline-flex;gap:6px;align-items:center;color:var(--muted-fg)}
+  .chrome input[type=text]{font-size:11.5px;padding:5px 11px;border:1px solid var(--input);
+    border-radius:99px;font-family:var(--mono);width:110px;background:var(--bg)}
+  .chrome button{font-size:11px;border:1px solid var(--border);border-radius:99px;padding:6px 12px;
+    cursor:pointer;background:var(--card);color:var(--fg);font-family:var(--sans)}
+  .chrome button:hover{background:var(--muted)}
+
+  .wrap{padding:44px 28px 80px;max-width:1720px;margin:0 auto}
+
+  /* The /mine title block: 4xl-5xl serif + muted subtitle, generous air. */
+  .title{margin-bottom:34px}
+  .title h1{font-size:44px;line-height:1.05}
+  @media(min-width:768px){.title h1{font-size:52px}}
+  .title p{margin:10px 0 0;color:var(--muted-fg);font-size:15px;max-width:70ch}
+
+  /* StatCard row — mono eyebrow, big serif value. */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:26px}
+  .stat{position:relative;overflow:hidden;border-radius:14px;background:var(--card);padding:20px;
+    box-shadow:0 1px 2px rgba(29,10,20,.05)}
+  .stat.accent::before{content:"";position:absolute;inset-inline:0;top:0;height:4px;background:var(--primary)}
+  .stat .k{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;font-size:10px;color:var(--muted-fg)}
+  .stat .v{font-family:var(--serif);font-size:34px;line-height:1;margin-top:10px;letter-spacing:-.02em}
+  .stat .v small{font-size:16px;color:var(--muted-fg)}
+  .track{height:5px;border-radius:99px;background:var(--muted);overflow:hidden;margin-top:12px}
+  .track > i{display:block;height:100%;background:var(--primary);transition:width .35s}
+
+  /* SectionShell — rounded-3xl, room tone, generous padding. */
+  .shell{border-radius:24px;padding:28px 32px;margin-bottom:16px}
+  .shell.plain{background:var(--card);border:1px solid var(--border)}
+  .shell.olive{background:var(--room-olive)} .shell.sage{background:var(--room-sage)}
+  .shell.blush{background:var(--room-blush)} .shell.muted{background:var(--muted)}
+  .shell > h2{font-size:28px}
+  .shell > .desc{margin:8px 0 0;color:rgba(29,10,20,.65);line-height:1.6;max-width:72ch}
+  .shell .body{margin-top:22px}
+
+  /* Seams. Every one ends in a verdict. */
+  .seam{background:var(--card);border-radius:14px;padding:18px 20px;margin-top:12px;
+    box-shadow:0 1px 2px rgba(29,10,20,.05)}
+  .seam .who{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--gap);
+    text-transform:uppercase;letter-spacing:.08em}
+  .seam .what{margin-top:7px;line-height:1.6}
+  .seam .verdict{margin-top:11px;padding:9px 14px;border-radius:10px;background:var(--gap-soft);
+    color:var(--fg);line-height:1.55}
+  .seam .verdict b{font-weight:700}
+  .chip{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;
+    border-radius:99px;background:var(--secondary);color:var(--on-secondary);margin:0 2px;cursor:pointer}
+  .chip:hover{background:var(--primary);color:var(--fg)}
+  ul.rules{margin:0;padding-left:18px;line-height:1.7} ul.rules li{margin:7px 0}
+
+  /* Board */
+  .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;align-items:start}
+  .lane{border-radius:24px;padding:18px}
+  .lane.olive{background:var(--room-olive)} .lane.sage{background:var(--room-sage)}
+  .lane.blush{background:var(--room-blush)} .lane.muted{background:var(--muted)}
+  .lane.deferred{background:transparent;border:1px dashed var(--border);opacity:.75}
+  .lane > .lh{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin:6px 8px 16px}
+  .lane > .lh h3{font-size:22px;line-height:1.15}
+  .lane > .lh .sub{display:block;font-family:var(--mono);font-size:9.5px;text-transform:uppercase;
+    letter-spacing:.1em;color:rgba(29,10,20,.45);margin-top:5px}
+  .lane > .lh .roll{font-family:var(--mono);font-size:11px;color:rgba(29,10,20,.5);white-space:nowrap;padding-top:4px}
+
+  /* Card — the white sub-card. Accent bar on top = critical path. */
+  .card{position:relative;overflow:hidden;background:var(--card);border-radius:14px;padding:18px 20px;
+    margin-bottom:11px;box-shadow:0 1px 2px rgba(29,10,20,.05);transition:box-shadow .2s,transform .2s}
+  .card:hover{box-shadow:0 6px 20px rgba(29,10,20,.10);transform:translateY(-1px)}
+  .card.cp::before{content:"";position:absolute;inset-inline:0;top:0;height:4px;background:var(--primary)}
+  .card.s-done{opacity:.55}
+  .card .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card .id{font-family:var(--mono);font-weight:700;font-size:12px;letter-spacing:.02em}
+  .pick{font-family:var(--mono);font-size:10px;background:var(--secondary);color:var(--on-secondary);
+    border-radius:99px;padding:2px 7px;margin-right:5px}
+  .card .ti{font-family:var(--serif);font-size:17px;line-height:1.28;margin:10px 0 9px;letter-spacing:-.01em}
+
+  /* The bold row: big circular dispatch button + the meta beside it. */
+  .act{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .iconbtn{display:inline-flex;flex-shrink:0;width:44px;height:44px;align-items:center;justify-content:center;
+    border:0;border-radius:99px;background:var(--secondary);color:var(--on-secondary);cursor:pointer;
+    font-size:17px;transition:transform .2s}
+  .iconbtn:hover{transform:scale(1.06)}
+  .iconbtn.copied{background:var(--ready)}
+  .act .hint{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg)}
+
+  /* StatusChip — dot + mono label */
+  .st{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.09em;border:0;border-radius:99px;padding:4px 10px;cursor:pointer}
+  .st::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor}
+  .st-todo{background:var(--open-soft);color:var(--open)}
+  .st-wip{background:var(--gathering-soft);color:var(--gathering)}
+  .st-done{background:var(--ready-soft);color:var(--ready)}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.09em;padding:3px 9px;border-radius:99px;margin-right:4px}
+  .b-ready{background:var(--ready-soft);color:var(--ready)}
+  .b-block{background:var(--gap-soft);color:var(--gap)}
+  .b-cp{background:var(--gathering-soft);color:var(--gathering)}
+  .tag{font-family:var(--mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;
+    padding:3px 8px;border-radius:99px;background:var(--review-soft);color:var(--review)}
+
+  .meta{font-size:11.5px;color:var(--muted-fg);margin:8px 0;line-height:1.55}
+  .meta .k{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+    color:rgba(110,91,97,.6);display:block;margin-bottom:2px}
+  .deliver{font-size:11.5px;color:var(--ready);margin-top:7px;font-style:italic}
+  .agent{width:100%;font-size:11px;padding:7px 12px;border:1px solid var(--border);border-radius:99px;
+    margin:12px 0 6px;font-family:var(--mono);background:var(--bg)}
+  .agent:focus{outline:none;border-color:var(--primary)}
+  .notes{width:100%;min-height:34px;font-size:11.5px;padding:8px 11px;border:1px dashed var(--border);
+    border-radius:10px;resize:vertical;font-family:var(--sans);background:var(--bg)}
+  .notes:focus{outline:none;border-style:solid;border-color:var(--primary)}
+  .links{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .links a,.links button{font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--border);
+    border-radius:99px;padding:4px 9px;background:transparent;color:var(--muted-fg);cursor:pointer}
+  .links a:hover,.links button:hover{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+  .empty{font-size:11.5px;color:var(--muted-fg);text-align:center;padding:22px 8px;
+    border:1px dashed rgba(29,10,20,.15);border-radius:14px;font-style:italic}
+  .boardwrap{position:relative}
+  #depsvg{position:absolute;inset:0;pointer-events:none;z-index:5}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <label><input type="checkbox" id="readyOnly"/> ready only</label>
+  <label><input type="checkbox" id="cpOnly"/> critical path</label>
+  <label><input type="checkbox" id="showDeps"/> show deps</label>
+  <label>agent <input type="text" id="agentFilter" placeholder="filter…"/></label>
+  <span class="meta-label" style="font-size:9.5px;color:var(--muted-fg);margin-left:auto">click status to cycle · autosaves locally</span>
+  <button id="copyState">copy state</button>
+  <button id="resetAll">reset all</button>
+</div>
+
+<div class="wrap">
+
+  <div class="title">
+    <h1>July Studio Rework — locking v1</h1>
+    <p>Eighteen open tickets, seven lanes, one release. We are taking expansion off the screens, making the rooms the only home layout, rebuilding the task page around a conversation that leads, and fixing the three ways a prompt currently escapes us. A multi-day epic — run the lanes as parallel worktrees and manage the seams below.</p>
+  </div>
+
+  <!-- Rollups. StatCard: mono eyebrow + big serif value. accent = the headline one. -->
+  <div class="stats">
+    <div class="stat accent"><div class="k">progress</div><div class="v" id="progv">0<small>/0</small></div>
+      <div class="track"><i id="barfill"></i></div></div>
+    <div class="stat"><div class="k">in flight</div><div class="v" id="wipv">0</div></div>
+    <div class="stat"><div class="k">ready to pick up</div><div class="v" id="readyv">0</div></div>
+    <div class="stat"><div class="k">blocked</div><div class="v" id="blockv">0</div></div>
+    <div class="stat"><div class="k">lanes</div><div class="v" id="lanev">0</div></div>
+  </div>
+
+  <!-- FRAMING — what this is / where things stand. Rewrite as work lands. -->
+  <section class="shell plain">
+    <h2>What this is</h2>
+    <p class="desc">The July Studio Rework is one release with four independent stories running through it: <b>lock the v1 surface</b> (take doors, elevation and the Beyond-prompts room off the screens without killing the code), <b>the rooms become the only home</b> (pre-loop and post-loop collapse into one layout, with per-room shrunk states and a real expanded Academy room), <b>the task page becomes a conversation that leads</b> (panes swap, two cards trade places, generation moves off the home modal), and <b>a prompt stops escaping us</b> (metadata gets generated, regeneration versions instead of minting, saving becomes a conscious act).</p>
+    <p class="desc" style="margin-top:12px">The lanes are cut by <b>surface</b>, not by Linear parent — so most collisions fall <i>inside</i> a lane where one agent owns them. What is left across lanes is the eleven seams below. Every one has a verdict. Nothing here gets serialized just because it collides.</p>
+  </section>
+
+  <!-- SEAMS — where the lanes collide. Every seam ENDS IN A VERDICT. -->
+  <section class="shell blush">
+    <h2>Coordination seams</h2>
+    <p class="desc">Where the lanes touch the same file. Each one has a resolution: collision gets managed, not dodged by serializing the board. Mirrored into every affected card's note as <code>SEAM&lt;n&gt;</code>.</p>
+    <div class="body">
+
+      <div class="seam">
+        <div class="who">1 · home/playbook-rooms.tsx + home/room-stage.tsx</div>
+        <div class="what">Foundation's <span class="chip" data-jump="847">TTM-847</span> drops the <code>skills</code> entry from the <code>rooms: RoomDescriptor[]</code> array (<code>:176</code>). Home's <span class="chip" data-jump="848">TTM-848</span> (rail becomes per-room), <span class="chip" data-jump="850">TTM-850</span> (learning gains a <code>focused</code> slot at <code>:148</code>) and <span class="chip" data-jump="851">TTM-851</span> (always render rooms) all rewrite the same array and the same <code>RoomStage</code> contract.</div>
+        <div class="verdict"><b>Land 847 first; the Home lane rebases and then single-owns the array.</b> 847 is a pure deletion of one array entry — get it in on day one. After that, <code>playbook-rooms.tsx</code> has exactly one owner (the Home agent) and 848/850/851/853 sequence inside that lane, not across the board.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">2 · plays/try/task-try-surface.tsx</div>
+        <div class="what"><span class="chip" data-jump="847">TTM-847</span> guts it (imports <code>:12,:16</code>, <code>copiedLocal</code>/<code>useDoorAnalysisPoll</code> <code>:74-75</code>, props <code>:44,:52</code>, <code>&lt;Doors&gt;</code> render <code>:234</code>, <code>&lt;Whisper&gt;</code> <code>:228</code>). Task-flow's <span class="chip" data-jump="861">TTM-861</span> flips the grid classNames (<code>:141,:142,:192,:213-214,:227</code>), <span class="chip" data-jump="864">TTM-864</span> rebuilds it as two cards, <span class="chip" data-jump="855">TTM-855</span> adds the no-prompt state. Prompt-lifecycle's <span class="chip" data-jump="862">TTM-862</span> re-points the version switcher (<code>:143-172</code>).</div>
+        <div class="verdict"><b>Sub-sequence at the head, then parallel: 847 → then 862 and 861 in parallel (disjoint regions) → 864 last.</b> 847 only removes lines; 862 touches the switcher block; 861 touches only classNames. They do not overlap. 864 rebuilds the file and rebases onto whatever landed. <b>Nobody implements a swap or a stack as a conditional wrapper tree</b> — that remounts the children, aborts the in-flight SSE and kills the <code>layoutId="try-guide"</code> FLIP.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">3 · app/(main)/tasks/[id]/page.tsx</div>
+        <div class="what"><span class="chip" data-jump="847">TTM-847</span> removes the <code>harness</code>/<code>initialAnalysis</code> plumbing (<code>:87-89</code>, <code>:120</code>, <code>:124</code>) but must KEEP <code>resolveHarness</code>/<code>harnessDisplayName</code> for the GuidePanel's <code>toolName</code>. <span class="chip" data-jump="862">TTM-862</span> rewrites the version-switcher hydration (<code>:69-80</code>). <span class="chip" data-jump="855">TTM-855</span>/<span class="chip" data-jump="864">TTM-864</span> add the third render state (<code>:114-130</code>) and delete the vestigial <code>?stalled=1</code> (<code>:42</code>).</div>
+        <div class="verdict"><b>Land-first-then-rebase: 847 → 862 → the Task lane.</b> Three disjoint regions of one file. The only real trap is 847 over-deleting: <code>lib/discover/doors/resolve-harness.ts</code> and <code>harness-signal.ts</code> are NOT door-only — only <code>ALLOWED_DOOR_KINDS</code> inside them is.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">4 · packages/database/src/plays.ts</div>
+        <div class="what"><span class="chip" data-jump="847">TTM-847</span> removes <code>doorAnalysisDoorSchema</code>/<code>playDoorAnalysisSchema</code> (<code>:63-70</code>), <code>PlayRow.door_analysis</code> (<code>:93</code>), <code>savePlayDoorAnalysis</code> (<code>:206-220</code>). <span class="chip" data-jump="862">TTM-862</span> retires <code>appendPromptVersion</code> (<code>:241-270</code>). <span class="chip" data-jump="864">TTM-864</span> adds the persisted transcript + action plan to the play row.</div>
+        <div class="verdict"><b>Land-first-then-rebase in the order 847 → 862 → 864.</b> Three disjoint regions of one module, each attached to a migration — see SEAM7. No single-own needed; just do not let two lanes reformat the file.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">5 · packages/database/src/prompts.ts — the Get*PromptsAsync predicate family</div>
+        <div class="what"><span class="chip" data-jump="863">TTM-863</span> must add the new <code>listed</code> gate to all four copies of the visible-prompts predicate (<code>GetPersonalPromptsAsync :260-279</code>, <code>GetAllOrgPromptsAsync :281-299</code>, <code>GetLibraryPromptsAsync :240-258</code>, <code>GetOrgPromptsAsync :306-322</code>). <span class="chip" data-jump="857">TTM-857</span> adds a task-link filter to the same four. <span class="chip" data-jump="856">TTM-856</span> only touches <code>GetStuckRefinementPrompts</code> (<code>:584-593</code>) — disjoint.</div>
+        <div class="verdict"><b>Single-own the predicate: 863 owns it and extracts the shared "visible prompts" helper it proposes; 857 rebases and adds its filter on top of the helper.</b> This is the third consumer of a predicate that has already drifted across three copies (<code>packages/database</code>, <code>apps/mcp</code>, the extension routes) — extract it once, in 863, and make 857 the first customer. 856 needs no coordination.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">6 · packages/ui/src/ui/prompt-detail/prompt-detail.tsx</div>
+        <div class="what"><span class="chip" data-jump="858">TTM-858</span> moves <code>QualityBadge</code> out of the footer (<code>:663-675</code>) to the byline row (<code>:515-527</code>), makes the byline scope-aware and hides Comments (<code>:640</code>) on private prompts. <span class="chip" data-jump="857">TTM-857</span> lands "See related task" in the footer slot 858 frees. Task-flow's <span class="chip" data-jump="864">TTM-864</span> mounts this same shared component as Card B on the Studio task page.</div>
+        <div class="verdict"><b>Single-own: the Prompt-chrome lane owns the file. 864 consumes it and must not fork or inline-copy it.</b> 858 drives all three changes off capability + scope props (scope is <code>ownerUserId</code> first, then <code>libraryId</code> — never "null library_id" as a private proxy). 864's Card B passes those props from the Studio host. <b>Agree the prop contract in the 858 PR before 864 builds Card B.</b></div>
+      </div>
+
+      <div class="seam">
+        <div class="who">7 · packages/database/supabase/migrations — the number</div>
+        <div class="what">FOUR migrations are in flight across four lanes. Latest on <code>main</code> is <code>137_adaptive_form_fields_invalidation.sql</code>. <span class="chip" data-jump="847">TTM-847</span> drops <code>plays.door_analysis</code>. <span class="chip" data-jump="863">TTM-863</span> adds <code>prompts_items.listed</code>. <span class="chip" data-jump="864">TTM-864</span> adds the play transcript + action plan columns. <span class="chip" data-jump="857">TTM-857</span> adds <code>prompts_items.task_id</code> — but only if option 1 wins over the GIN-on-<code>plays.prompt_ids</code> route.</div>
+        <div class="verdict"><b>Coordinate the number. Reserved: 138 = 847, 139 = 863, 140 = 864, 141 = 857 (if needed).</b> Whoever slips re-checks <code>ls packages/database/supabase/migrations | tail -1</code> immediately before committing and takes the next free number. Two hard rules: 863's <code>listed</code> must default existing rows to <b>true</b> or every prompt in production vanishes from every library; 847's drop of <code>door_analysis</code> is <b>optional</b> — decide it deliberately, do not drop by reflex.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">8 · apps/studio/messages/{en,nl,da}/studio.json</div>
+        <div class="what"><span class="chip" data-jump="847">TTM-847</span> deletes the <code>try.doors*</code> / <code>doorStubToast</code> block (en <code>:1759-1767</code>) and must NOT touch <code>:412-416</code> (<code>doorLearn</code>/<code>doorPromptOnly</code>/<code>doorSkill</code> — different surface). <span class="chip" data-jump="854">TTM-854</span> rewrites <code>app.buildTaskModal</code>. <span class="chip" data-jump="864">TTM-864</span> re-authors the guide copy and removes the whisper string. <span class="chip" data-jump="851">TTM-851</span>/<span class="chip" data-jump="848">TTM-848</span>/<span class="chip" data-jump="850">TTM-850</span> add room copy.</div>
+        <div class="verdict"><b>Land 847's deletions first; everyone else edits only their own key block and never reformats or re-sorts the file.</b> Conflicts here are mechanical — resolve by taking both sides. All three locales move together in the same commit. House rules: no em dashes in strings, TATOMA speaks as "we", Dutch is informal (je/jij/jouw).</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">9 · home/focused-profile.tsx</div>
+        <div class="what">Home's <span class="chip" data-jump="848">TTM-848</span> removes the back link (<code>:80</code>); <span class="chip" data-jump="851">TTM-851</span> has to make it host the onboarding course CTA it does not have today. Academy-recap's <span class="chip" data-jump="852">TTM-852</span> re-cuts the lesson recap to be a view of this exact component — and its leading option is lifting it into <code>packages/ui</code>.</div>
+        <div class="verdict"><b>Sub-sequence, not parallel: the Home lane single-owns <code>focused-profile.tsx</code>; 852 waits until 848 and 851 have settled its shape, then does the shared lift as its own commit.</b> Do not lift a component into <code>packages/ui</code> while another lane is still reshaping it. Note 852 chose the lift <i>because</i> Studio and Academy already drifted (that is literally TTM-849) — so a read-only re-port is the wrong answer twice.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">10 · apps/prompts/.../library/my-prompts-view.tsx</div>
+        <div class="what">Libraries' <span class="chip" data-jump="859">TTM-859</span> passes <code>onDelete</code>/<code>onEdit</code> into <code>LibraryCard</code> at <code>:266-271</code> (which is the whole fix — the gate at <code>LibraryCard :74</code> is <code>canEdit &amp;&amp; (onEdit || onDelete)</code>). Prompt-chrome's <span class="chip" data-jump="857">TTM-857</span> adds the "linked to tasks" filter to the library filter set, which this view consumes.</div>
+        <div class="verdict"><b>Land 859 first; 857 rebases.</b> 859 is a handful of lines and a day-one quick win; different region of the same file. No reason to gate either lane on the other.</div>
+      </div>
+
+      <div class="seam">
+        <div class="who">11 · the S2S create-prompt seam</div>
+        <div class="what"><span class="chip" data-jump="856">TTM-856</span> rewrites what <code>skipRefinement</code> means on the receiver (<code>apps/prompts/.../s2s/create-prompt/route.ts :113,:127</code>) and must fix the stored <code>originalPrompt</code> at the same time, or the 15-minute sweep starts rewriting power-prompt bodies. <span class="chip" data-jump="862">TTM-862</span> stops calling <code>createFinalPromptViaS2S</code> from regenerate. <span class="chip" data-jump="855">TTM-855</span> splits the caller into promote + generate.</div>
+        <div class="verdict"><b>Single-own the receiver: 856 owns <code>s2s/create-prompt/route.ts</code> and the <code>originalPrompt</code> storage. 862 and 855 only change <i>who calls</i> the helper — neither touches the route.</b> The route change and the <code>originalPrompt</code> change must be in the same commit; ship them apart and the safety net becomes the bug.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ORDERING — waves, critical path, worktree plan, quick wins. -->
+  <section class="shell olive">
+    <h2>Ordering &amp; dispatch</h2>
+    <div class="body">
+      <ul class="rules">
+        <li><b>Critical path (accent bar):</b> <code>847 → 861 → 864 → 855</code>. It is the deepest hard chain and it gates the release. 847 is a big deletion that unblocks two lanes by file; 861 is classNames-only and should land the same day; 864 is the biggest single build in the epic (one continuous transcript, persisted, a phase machine that spans intake and debrief); 855 is the payoff.</li>
+        <li><b>Day one, in parallel, no coordination needed:</b> <span class="chip" data-jump="847">847</span> (Foundation, start immediately — it unblocks two lanes), <span class="chip" data-jump="849">849</span> (Home, small, unblocks 850), <span class="chip" data-jump="862">862</span> (URGENT, Prompt lifecycle), <span class="chip" data-jump="856">856</span> (Prompt chrome), <span class="chip" data-jump="859">859</span> + <span class="chip" data-jump="860">860</span> (Libraries — both are quick wins, ship them and be done).</li>
+        <li><b>Quick wins to bank early:</b> 860 (one conditional <code>backHref</code>), 859 (pass two props), 849 (port a query gate that already exists in Academy), 854's button label (shippable alone; leave <code>body</code>/<code>building</code> until 855 settles what the modal is for).</li>
+        <li><b>Second wave, once 847 has merged:</b> the Home lane rebases and takes the rooms array; the Task lane starts 861. 852 stays parked until 848 and 851 settle <code>focused-profile.tsx</code> (SEAM9).</li>
+        <li><b>Worktrees:</b> run the seven lanes as parallel worktrees off <code>main</code>. One PR per lane, a commit per ticket. <code>git fetch origin &amp;&amp; git worktree add ../cp-ttm-&lt;id&gt; -b &lt;branch&gt; origin/main</code></li>
+        <li><b>Migration hygiene:</b> four migrations in flight. Reserved 138/139/140/141 (SEAM7) — re-check with <code>ls packages/database/supabase/migrations | tail -1</code> right before committing.</li>
+        <li><b>The one footgun that appears in three tickets:</b> never render a pane, card or room in two different conditional wrapper trees to move it. Toggle classNames on stable elements. A remount aborts the in-flight <code>/api/discover/try-debrief</code> SSE stream (data loss — the transcript persists only once <code>hasEnough</code> flips), wipes <code>useTryFlow</code> state, and breaks the framer <code>layoutId</code> FLIP.</li>
+        <li><b>Parked by 847, do not pick up:</b> TTM-828, 832, 833, 834, 816, 808. The code stays in the tree; the surfaces come off.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="boardwrap"><svg id="depsvg"></svg><div class="board" id="board"></div></div>
+</div>
+
+<script>
+const LINEAR="https://linear.app/tatoma/issue/";
+
+// Lanes = the unit of dispatch (one worktree, one agent, one PR).
+// Cut by SURFACE, not by Linear parent — so the heavy collisions
+// (playbook-rooms.tsx, task-try-surface.tsx, prompt-detail.tsx) fall
+// INSIDE a lane with one owner, and only 11 seams survive across lanes.
+const STREAMS={
+  F:{name:"Foundation",sub:"lock the v1 surface · unblocks 2 lanes",tone:"olive"},
+  H:{name:"Home rooms",sub:"studio/…/features/home · rooms array + focus",tone:"sage"},
+  T:{name:"Task page flow",sub:"plays/try + power-prompt pipeline",tone:"muted"},
+  L:{name:"Prompt lifecycle",sub:"how a prompt is written & saved",tone:"sage"},
+  P:{name:"Prompt chrome",sub:"packages/ui prompt-detail + enrichment",tone:"olive"},
+  Q:{name:"Libraries",sub:"prompts app · quick wins",tone:"muted"},
+  R:{name:"Academy recap",sub:"apps/academy · downstream of the room",tone:"muted"},
+};
+
+// CORE: {id, s, t, surf, note, branch, blk:[]}
+//   surf = THE FILES THIS TOUCHES. Read out of the code, not the ticket prose.
+//          Several ticket paths were WRONG and are corrected here:
+//            use-try-flow.ts     -> components/features/plays/try/ (not lib/discover/try/)
+//            conveyor.ts         -> src/lib/home/ (not src/lib/discover/)
+//            studio-welcome-modal / module-embedded-assessment -> features/onboarding/
+//            my-prompts-view.tsx -> features/library/ (not features/my-prompts/)
+const T=[
+ // ── F · Foundation ────────────────────────────────────────────────────────
+ {id:847,s:"F",t:"Lock the v1 surface: remove the Beyond-prompts room AND the expansion doors",
+  surf:"home/playbook-rooms.tsx :176, plays/try/{doors,door-card,use-door-analysis-poll,whisper}.tsx, plays/try/task-try-surface.tsx :12,:16,:44,:52,:74-75,:234, app/(main)/tasks/[id]/page.tsx :87-89,:120,:124, lib/discover/try/actions.ts :5,:20, lib/discover/doors/{analyze-doors,run-door-analysis,rank-doors,door-suggestions}.ts, api/discover/door-analysis/route.ts, packages/agents/src/agents/door-analysis/*, packages/agents/src/index.ts, packages/database/src/plays.ts :63-70,:93,:206-220, lib/home/resolve-playbook-copy.ts, lib/home/playbook-copy-state.ts :27, messages/{en,nl,da}/studio.json :1759-1767, migration 138 (drop plays.door_analysis)",
+  note:"SEAM1 playbook-rooms.tsx · land FIRST, Home rebases. SEAM2/3/4 task-try-surface + tasks page + plays.ts · pure deletion, goes first. SEAM7 migration 138 (the drop is OPTIONAL — decide deliberately). SEAM8 studio.json: delete try.doors* ONLY, do NOT touch :412-416. KEEP resolve-harness.ts + harness-signal.ts (GuidePanel toolName) and doors/types.ts (TryOutcome). actions.ts:20 is the line that stops the LLM billing.",
+  branch:"israel/ttm-847-lock-the-v1-surface-remove-the-beyond-prompts-room-and-the",blk:[],cp:true,size:"L",
+  deliver:"doors + Beyond-prompts off the screens; the door-analysis LLM call stops firing on every first copy"},
+
+ // ── H · Home rooms ────────────────────────────────────────────────────────
+ {id:849,s:"H",t:"Studio course queries are stale vs Academy's per-locale publication gate",
+  surf:"apps/studio/src/lib/learn/queries.ts :230-236,:297-314, apps/studio/src/lib/learn/org-visibility.ts, apps/studio/src/app/api/discover/learning-summary/route.ts :31-46 (reference: apps/academy/src/lib/learn/queries.ts :244-266,:325-350 + lesson-visibility.ts)",
+  note:"No seam — this file is touched by nobody else. Quick win, day one, and it unblocks 850. Port the two-layer gate (container.published master + per-locale courses.published/listed) + en fallback; DROP the retired container.listed filter. Decide consciously whether to lift the predicate into packages/database (there is no learn domain module today).",
+  branch:"israel/ttm-849-studio-course-queries-are-stale-vs-academys-per-locale",blk:[],size:"S",
+  deliver:"drafts stop leaking to nl/da learners; English-only courses stop vanishing"},
+ {id:851,s:"H",t:"Pre-loop home becomes the rooms layout (profile room expanded by default)",
+  surf:"app/(main)/home/page.tsx :50,:124,:222, home/playbook-rooms.tsx, home/home-dashboard.tsx, home/home-conveyor.tsx, lib/home/conveyor.ts :59,:99,:107,:162, home/kennismaking-course.tsx :99-136, home/focused-profile.tsx, onboarding/studio-welcome-modal.tsx :18, onboarding/module-embedded-assessment.tsx, apps/academy/.../recap/playbook-home-preview.tsx :36, messages/{en,nl,da}/studio.json",
+  note:"SEAM1 playbook-rooms.tsx · rebase on 847. SEAM8 studio.json. SEAM9 focused-profile.tsx · Home owns it, 852 waits. Mostly a DELETION: HomeDashboard can only ever render computeHomeLayout's first branch, so the done/activated branches, KennismakingDoneCard, LearnDoneCard, computeProfilePlacement are all dead. StudioWelcomeModal previews a home that will no longer exist — re-cut or remove it, do not let it ship.",
+  branch:"israel/ttm-851-studio-home-oobe-the-pre-loop-home-becomes-the-rooms-layout",blk:[],soft:[847],size:"L",
+  deliver:"one home layout for everyone; the rows conveyor is gone"},
+ {id:848,s:"H",t:"A focused room shouldn't fully collapse the others (per-room shrunk states, no back button)",
+  surf:"home/room-stage.tsx :16,:32,:69,:77-83,:91-101,:149, home/room-rail-card.tsx :9, home/playbook-rooms.tsx (rail slots :106,:126,:157,:196), home/focused-profile.tsx :80, home/playbook-learning-room.tsx, home/playbook-tasks-room.tsx",
+  note:"SEAM1 playbook-rooms.tsx · rebase on 847 (one fewer rail occupant). SEAM9 focused-profile.tsx · removing the back link at :80 is this card's; 852 waits on it. WATCH: rail cards are wrapped in a &lt;button onClick={focus(null)}&gt; — a rail holding real readings links or task tiles CANNOT stay inside a button (nested-interactive). The whole-card target has to go. Keep the rooms server components.",
+  branch:"israel/ttm-848-studio-home-a-focused-room-shouldnt-fully-collapse-the",blk:[],soft:[847],size:"M",
+  deliver:"RoomDescriptor.rail becomes a room-authored node, like content already is"},
+ {id:850,s:"H",t:"Expanded state for the Academy room (all your learning + a peek at the catalogue)",
+  surf:"home/playbook-rooms.tsx :147-148 (learning descriptor + new focused slot), app/(main)/home/page.tsx :50 (widen focused to admit 'learning'), home/playbook-learning-room.tsx :125, lib/learn/queries.ts (getCourses :293, getLessons :318, getEmployeeProgress :369), lib/learn/org-visibility.ts :14, packages/database/src/studio-journey-state.ts :111",
+  note:"SEAM1 playbook-rooms.tsx. Hard-blocked on 849 — reusing the stale getCourses would put the draft-leak + English-only bugs on the home page. Build the focused slot CONDITIONALLY (see the comment at playbook-rooms :134-137): a catalogue payload serialised into every home RSC stream is much worse than the profile one. Product call still open: full grid vs bounded teaser.",
+  branch:"israel/ttm-850-studio-home-expanded-state-for-the-academy-room-all-your",blk:[849],size:"M"},
+ {id:853,s:"H",t:"Onboarding course close transitions the expanded room from context to tasks",
+  surf:"onboarding/module-embedded-assessment.tsx :140-159 (handleSignal), home/room-stage.tsx :32,:69,:77-83, app/(main)/home/page.tsx :117-118,:213-221",
+  note:"Hard-blocked on 851 — without the pre-loop rooms there is no from-state to animate out of. The mechanism is ALREADY BUILT: the transition is focus(null), and RoomStage's framer layout FLIP (0.48s) already animates context shrinking while tasks grows. THE TRAP: the FLIP needs both states mounted. Sequence refresh (mounts the rooms, still ?room=profile) THEN focus(null). Bake the unfocus into the refresh and nothing animates. Reduced motion must still read.",
+  branch:"israel/ttm-853-studio-home-closing-the-onboarding-course-transitions-the",blk:[851],size:"S"},
+
+ // ── T · Task page flow ────────────────────────────────────────────────────
+ {id:861,s:"T",t:"Task page: swap the panes (guide/conversation left, prompt right) + room feeling",
+  surf:"plays/try/task-try-surface.tsx :135-141,:142,:192,:213-214,:227, plays/try/guide-panel.tsx :48,:51, app/(main)/tasks/[id]/page.tsx :93-109, home/playbook-tasks-room.tsx :88-91 (the salmon tone to carry over)",
+  note:"SEAM2 task-try-surface.tsx · disjoint from 862's :143-172, so the two can run in parallel once 847 lands. classNames ONLY — do NOT implement the swap as a conditional wrapper tree (remount aborts the try-debrief SSE = data loss, wipes useTryFlow, breaks layoutId FLIP). DOM order will stop matching visual order: fix with a STATIC JSX reorder, never order-* utilities. Continuity pass, not a re-theme.",
+  branch:"israel/ttm-861-task-page-swap-the-panes-so-the-guideconversation-is-on-the",blk:[],soft:[847],cp:true,size:"M",
+  deliver:"the conversation leads the page — the prerequisite for 855's no-prompt-yet arrival"},
+ {id:864,s:"T",t:"Task page: the two-card lifecycle (conversation and prompt trade places; stacked on return)",
+  surf:"plays/try/task-try-surface.tsx, plays/try/guide-panel.tsx :48, plays/try/whisper.tsx (delete), plays/try/use-try-flow.ts :26-36 (derivePhase), home/idea-intake/use-idea-intake.ts + idea-intake-panel.tsx, packages/agents/src/agents/power-prompt/generate-power-prompt.ts :94-99,:204, packages/database/src/plays.ts (transcript + action plan), app/(main)/tasks/[id]/page.tsx, packages/ui/.../prompt-detail.tsx (Card B mount), migration 140",
+  note:"SEAM2 task-try-surface.tsx · lands LAST in the file, rebases on 847+862+861. SEAM4 plays.ts. SEAM6 prompt-detail.tsx · CONSUME 858's capability props, do NOT fork the component. SEAM7 migration 140 (a 4th migration the epic-level count missed). Biggest piece: two hooks/two message arrays must become ONE persisted transcript, and derivePhase must grow the pre-prompt states. Ship WITH 847 or the page has a hole where the doors were.",
+  branch:"israel/ttm-864-task-page-the-two-card-lifecycle-conversation-and-prompt",blk:[],soft:[847,861],cp:true,size:"L",
+  deliver:"one continuous thread per task; actionPlan + tips added to the power-prompt generator output"},
+ {id:855,s:"T",t:"Move power-prompt generation off the home modal (route immediately, clarify, then generate)",
+  surf:"api/discover/power-prompt/route.ts :68, lib/discover/pack/build-power-prompt.ts :48,:52-75,:77-124, lib/discover/idea/build-prompt-from-conversation.ts :128-130, lib/discover/idea/build-idea-intake-system-prompt.ts :15-25, api/discover/idea-intake/route.ts :47-49, home/idea-intake/use-idea-intake.ts, plays/build-task-modal.tsx, plays/try/task-try-surface.tsx :88-114, app/(main)/tasks/[id]/page.tsx :42,:114-130, plays/use-pack-builder.ts, api/discover/{propose-pack,build-pack}/route.ts (delete), lib/discover/pack/create-final-prompt-s2s.ts",
+  note:"SEAM2/3 task-try-surface + tasks page. SEAM11 create-prompt seam · 856 owns the receiver; this card only changes the caller. A REWIRE, not a rebuild: generatePowerPrompt already accepts PowerPromptIntake (:94-99) and buildPromptFromConversation already passes it. Split promote (no LLM) from generate. The intake agent's brief must be rewritten for the we-already-know-a-lot case or it re-asks what is sitting in captured_state. after()→completeOnboarding must still fire on the right half.",
+  branch:"israel/ttm-855-move-power-prompt-generation-off-the-home-modal-route-to-the",blk:[861,864],cp:true,size:"L",
+  deliver:"no 30s hostage-taking on home; promoted-but-promptless becomes a legitimate resting state"},
+ {id:854,s:"T",t:"Build-task modal: recast the \"Build it\" copy around discovering how AI improves the task",
+  surf:"plays/build-task-modal.tsx :32, messages/{en,nl,da}/studio.json (app.buildTaskModal: eyebrow/body/build/building/cancel/error/retry)",
+  note:"SEAM8 studio.json · own key block only, all three locales together. Quick win: the BUTTON LABEL is shippable alone, today. Do NOT polish body (\"This takes a moment\") or building (\"Writing your prompt\") until 855 settles what the modal is for — both describe a state that is about to stop existing. No em dashes; TATOMA says \"we\"; Dutch informal.",
+  branch:"israel/ttm-854-build-task-modal-recast-the-build-it-copy-around-discovering",blk:[],soft:[855],size:"S"},
+
+ // ── L · Prompt lifecycle ──────────────────────────────────────────────────
+ {id:862,s:"L",t:"Regenerate mints a NEW prompt row instead of a version of the same prompt",
+  surf:"api/discover/regenerate-prompt/route.ts :57,:105-111, lib/discover/pack/create-final-prompt-s2s.ts, packages/database/src/plays.ts :241-270 (appendPromptVersion), packages/database/src/prompt-item-versions.ts :103 (CreateVersionAsync), packages/database/src/prompts.ts :333-357, app/(main)/tasks/[id]/page.tsx :69-80, plays/try/task-try-surface.tsx :143-172 (the version switcher), lib/discover/pack/get-pack-prompts.ts",
+  note:"URGENT. SEAM2/3 · disjoint regions from 861, so both can run once 847 lands. SEAM4 plays.ts. SEAM11 · point at the EDIT seam (CreateVersionAsync + UPDATE same row), do not touch the s2s route — that is 856's. THE REAL WORK is re-pointing the version switcher at the prompt_versions TABLE instead of distinct prompts_items rows. Watch TTM-846: CreateVersionAsync has a TOCTOU race on version_number with no unique constraint — a new writer makes it likelier. Decide what to do about rows already orphaned in prod.",
+  branch:"israel/ttm-862-regenerating-a-prompt-from-the-debrief-mints-a-new-prompt",blk:[],tag:"urgent",size:"M",
+  deliver:"one row per prompt; refining three times stops leaving four near-identical prompts in the library"},
+ {id:863,s:"L",t:"Conscious save-to-library: the debrief gate unlocks listing and sharing (new `listed` flag)",
+  surf:"migration 139 (prompts_items.listed, DEFAULT TRUE for existing rows), packages/database/src/prompts.ts :240-258,:260-279,:281-299,:306-322 (all four predicate copies), apps/prompts/src/lib/mcp/prompts.ts :46-47, apps/mcp/src/queries/prompts.ts (the standalone MCP's own duplicate), apps/prompts/src/app/api/extension/prompts/** (inline .eq('status','published')), plays/try/use-try-flow.ts :26-36 (receipt phase), plays/try/task-try-surface.tsx",
+  note:"SEAM5 prompts.ts · THIS CARD OWNS the predicate family and extracts the shared visible-prompts helper; 857 builds on it. SEAM7 migration 139 — default existing rows listed=TRUE or every prod prompt vanishes from every library. The predicate is duplicated in THREE places (database, standalone MCP, extension routes); miss one and unlisted prompts keep leaking to exactly the integration this feature exists to gate. Do NOT overload `status` (that is the moderation/proposal concept). Sharing = moving the prompt out of the user's ownership today — decide whether v1 ships move-as-share or waits on TTM-841.",
+  branch:"israel/ttm-863-conscious-save-to-library-the-debrief-gate-unlocks-listing",blk:[862],size:"L",
+  deliver:"the library stops filling with machine output the user never chose"},
+
+ // ── P · Prompt chrome & metadata ──────────────────────────────────────────
+ {id:856,s:"P",t:"Prompt metadata is never generated for Studio-created prompts",
+  surf:"apps/prompts/src/app/api/s2s/create-prompt/route.ts :113,:127, apps/prompts/src/app/api/cron/refine-stuck-prompts/route.ts :62-74, apps/prompts/src/lib/prompts/refine-prompt.ts :114-150, apps/prompts/src/app/api/prompts/[id]/route.ts :277,:301-310, packages/database/src/prompts.ts :584-593 (GetStuckRefinementPrompts), apps/studio/src/app/api/prompts/[id]/route.ts :145-148,:170",
+  note:"SEAM11 · THIS CARD OWNS s2s/create-prompt/route.ts. Root cause verified: skipRefinement conflates \"don't rewrite my body\" with \"don't enrich\" — metadata and quality scoring never touch the body. Fix: always set refinementStatus 'pending'; after() → runPromptRefinement when !skip, runPromptEnrichment({scoreQuality:true}) when skip. FIX THE STORED originalPrompt IN THE SAME COMMIT — the sweep branches on body===originalPrompt, so making these rows visible without it makes the safety net rewrite the power-prompt body. Also decide defect 2 (Studio PATCH permanently destroys the badge).",
+  branch:"israel/ttm-856-prompt-metadata-is-never-generated-for-studio-created",blk:[],size:"M",
+  deliver:"the 15-min cron becomes a real safety net for S2S rows instead of blind to them"},
+ {id:858,s:"P",t:"Prompt modal chrome: quality badge to the header, scope-aware byline, no Comments on private",
+  surf:"packages/ui/src/ui/prompt-detail/prompt-detail.tsx :355-357 (showQuality gate), :515-527 (byline), :640 (Comments), :663-675 (QualityBadge in footer), packages/database/src/prompt-access.ts :103-105 (the private predicate)",
+  note:"SEAM6 prompt-detail.tsx · THIS LANE OWNS the file; agree the capability + scope prop contract here, in this PR, because 864 mounts the same component as Card B. Land 856 first or the new header slot is empty on exactly the prompts we care most about. Private = ownerUserId != null — do NOT use \"null library_id\" as a proxy (a loose org prompt also has a null library; that is the TTM-814 trap). Decide the stranded-comments case.",
+  branch:"israel/ttm-858-prompt-modal-chrome-quality-badge-to-the-header-scope-aware",blk:[],soft:[856],size:"S"},
+ {id:857,s:"P",t:"Prompt ↔ task backlink + a \"linked to tasks\" filter",
+  surf:"migration 141 (prompts_items.task_id) OR a GIN index on plays.prompt_ids, packages/database/src/prompts.ts (the four predicates), packages/database/src/plays.ts (prompt_ids), packages/ui/src/ui/prompt-detail/prompt-detail.tsx :637-687 (footer), apps/prompts/.../library/components/advanced-filters.tsx, apps/prompts/.../library/my-prompts-view.tsx",
+  note:"SEAM5 prompts.ts · rebase on 863's extracted predicate, add the filter on top. SEAM6 prompt-detail.tsx · the footer slot 858 frees; the task link must be a HOST CAPABILITY, not a hardcoded Prompts route (Studio mounts this on a task page and should not link back to the task you are already on). SEAM10 my-prompts-view.tsx · after 859. SEAM7 migration 141 only if option 1 wins. DECIDE THE DIRECTION FIRST: prompts_items has NO task_id/play_id/back-reference of any kind — the only link is plays.prompt_ids, and the Prompts app cannot follow it. Option 1 is pragmatic, option 2 is correct. 20 minutes of thought, not a coin flip.",
+  branch:"israel/ttm-857-prompt-task-backlink-see-related-task-in-the-prompt-modal-a",blk:[],soft:[858,863],size:"M"},
+
+ // ── Q · Libraries ─────────────────────────────────────────────────────────
+ {id:859,s:"Q",t:"Personal libraries cannot be deleted from the UI (the API and the dialog already exist)",
+  surf:"apps/prompts/.../library/my-prompts-view.tsx :266-271, apps/prompts/.../library/components/LibraryCard.tsx :74,:91-105, apps/prompts/.../library/libraries-overview.tsx :203,:481,:586 (DeleteLibraryDialog), apps/prompts/.../library/library-detail-page.tsx, api/libraries/[id]/route.ts :111,:139-143 (DELETE already branches personal → owner check + TrashLibraryAsync)",
+  note:"SEAM10 my-prompts-view.tsx · land BEFORE 857; it is a handful of lines. QUICK WIN. The whole gap is that my-prompts-view passes only library/onSelect/showVisibilityBadge, so LibraryCard's gate at :74 (canEdit && (onEdit || onDelete)) is false. Route works, dialog works, nothing calls them. Dialog copy must say the prompts SURVIVE and land in My Prompts (library_id is ON DELETE SET NULL, and personal delete is a soft trash anyway). Check trashed-library prompts stop rendering under a library that is gone.",
+  branch:"israel/ttm-859-personal-libraries-cannot-be-deleted-from-the-ui-the-api-and",blk:[],size:"S"},
+ {id:860,s:"Q",t:"Back from a library always lands on /libraries, which does not contain personal libraries",
+  surf:"apps/prompts/.../library/library-detail-page.tsx :55,:64-68,:74,:95 (backHref hardcoded twice), packages/ui/src/ui/page-heading.tsx :57-59, apps/prompts/.../library/libraries-overview.tsx :200-203 (why /libraries is the wrong destination)",
+  note:"QUICK WIN, no seam. One conditional: currentLibrary.visibility === 'personal' → /mine, else /libraries. Visibility is already resolved at :55 and simply never consulted. The wrinkle: the loading branch (:64-68) renders the back-link placeholder BEFORE currentLibrary resolves — the href must tolerate the pre-fetch state, not flicker or point somewhere wrong for a frame. Fix the not-found branch (:95) too.",
+  branch:"israel/ttm-860-back-from-a-library-always-lands-on-libraries-which-does-not",blk:[],size:"S"},
+
+ // ── R · Academy recap ─────────────────────────────────────────────────────
+ {id:852,s:"R",t:"Recap tiles: re-cut the intermediate lesson recap to match the expanded context room",
+  surf:"apps/academy/.../learn/recap/recap-tiles-row.tsx :59,:105-127 (nextLessonCta), apps/academy/.../learn/tracked-summary.tsx :24,:113,:165, apps/academy/src/lib/learn/recap/resolver.ts :186, apps/studio/.../home/focused-profile.tsx :70-179 (the design being ported), packages/ui (ArchetypeGridTile + RecapTilesGrid — the lift target), apps/academy/.../learn/course-recap-screen.tsx (the 'tiles' layout there is ALREADY dead code)",
+  note:"SEAM9 focused-profile.tsx · the Home lane owns it. WAIT for 848 + 851 to settle its shape, then do the packages/ui lift as its own commit. Scope is precisely AttemptSummary — CourseRecapScreen's tiles layout is already dead (migration 102 flipped kennismaking to layout:'next-steps'). nextLessonCta MUST SURVIVE: it hosts the primary Next button that posts lesson-advanced. The room has no equivalent, so this cannot be a pure copy of FocusedProfile. lockReason copy (\"Available on your home dashboard\") stops making sense once the recap IS that layout. Empty/up-next states matter more here — this runs mid-course.",
+  branch:"israel/ttm-852-recap-tiles-re-cut-the-intermediate-lesson-recap-to-match",blk:[],soft:[848,851],size:"M"},
+];
+
+const KEY="ttm-july-rework-v1-lock-tracker-v1"; // 2026-07-14 · seeded from Linear (all 18 in Backlog)
+
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{};
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function cardState(id){
+  if(!state.cards[id]){const t=T.find(x=>x.id==id);state.cards[id]={status:(t&&t.lin)||"todo",agent:"",notes:""};}
+  return state.cards[id];
+}
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+const isDone=id=>(state.cards[id]&&state.cards[id].status)==="done";
+
+function readiness(t){
+  if(t.ext) return {ok:false,label:"blocked: "+t.ext};
+  const pend=t.blk.filter(b=>!isDone(b));
+  if(pend.length) return {ok:false,label:"awaits "+pend.map(x=>"TTM-"+x).join(", ")};
+  return {ok:true,label:"ready"};
+}
+// Pick-up order within a lane: in-progress -> ready -> blocked (soonest to
+// unblock first) -> done. Lower = pick up sooner. Crit path wins among ready.
+function pickPriority(t){
+  const st=cardState(t.id).status;
+  if(st==="done") return 3;
+  if(st==="wip") return 0;
+  return readiness(t).ok?1:2;
+}
+const pending=t=>t.blk.filter(b=>!isDone(b)).length+(t.ext?1:0);
+function byPickup(a,b){
+  const pa=pickPriority(a),pb=pickPriority(b);
+  if(pa!==pb) return pa-pb;
+  if(pa===1&&!!a.cp!==!!b.cp) return a.cp?-1:1;
+  if(pa===2){const d=pending(a)-pending(b); if(d) return d;}
+  return a.id-b.id;
+}
+
+function render(){
+  const board=document.getElementById("board");board.innerHTML="";
+  const readyOnly=document.getElementById("readyOnly").checked;
+  const cpOnly=document.getElementById("cpOnly").checked;
+  const af=document.getElementById("agentFilter").value.trim().toLowerCase();
+  let done=0,total=0,wip=0,rdy=0,blk=0;
+
+  for(const sk of Object.keys(STREAMS)){
+    const S=STREAMS[sk];
+    const lane=document.createElement("div");
+    lane.className="lane "+(S.tone||"muted");
+    const items=T.filter(t=>t.s===sk);
+    const dn=items.filter(t=>isDone(t.id)).length;
+    done+=dn;total+=items.length;
+    items.forEach(t=>{const st=cardState(t.id).status;
+      if(st==="wip") wip++; else if(st!=="done"){ readiness(t).ok?rdy++:blk++; }});
+    lane.innerHTML=`<div class="lh"><h3>${S.name}<span class="sub">${S.sub||""}</span></h3>
+      <span class="roll">${dn}/${items.length}</span></div>`;
+    let pick=0,shown=0;
+    items.sort(byPickup).forEach(t=>{
+      const cs=cardState(t.id),rd=readiness(t);
+      if(readyOnly&&(!rd.ok||cs.status==="done")) return;
+      if(cpOnly&&!t.cp) return;
+      if(af&&!(cs.agent||"").toLowerCase().includes(af)) return;
+      shown++;
+      const n=cs.status==="done"?"":`<span class="pick">#${++pick}</span>`;
+      const c=document.createElement("div");
+      c.className="card s-"+cs.status+(t.cp?" cp":"");c.id="card-"+t.id;
+      c.innerHTML=`
+        <div class="top">
+          <span class="id">${n}TTM-${t.id}</span>
+          <span>${t.size?`<span class="tag">${t.size}</span> `:""}${t.tag?`<span class="tag">${t.tag}</span> `:""}
+          <button class="st st-${cs.status}" data-st="${t.id}">${cs.status}</button></span>
+        </div>
+        <div class="ti">${t.t}</div>
+        <div>${rd.ok?'<span class="badge b-ready">ready</span>':'<span class="badge b-block">'+rd.label+'</span>'}
+             ${t.cp?'<span class="badge b-cp">crit path</span>':""}</div>
+        <div class="meta"><span class="k">surface</span>${t.surf}</div>
+        <div class="meta"><span class="k">note</span>${t.note}</div>
+        ${t.deliver?`<div class="deliver">▸ ${t.deliver}</div>`:""}
+        <div class="act">
+          <button class="iconbtn" data-pr="${t.id}" aria-label="Copy the dispatch prompt" title="Copy the dispatch prompt">→</button>
+          <span class="hint">dispatch to an agent</span>
+        </div>
+        <input class="agent" placeholder="agent / who…" data-ag="${t.id}" value="${(cs.agent||"").replace(/"/g,"&quot;")}"/>
+        <textarea class="notes" placeholder="where it's at / handoff notes…" data-nt="${t.id}">${cs.notes||""}</textarea>
+        <div class="links">
+          <a href="${LINEAR}TTM-${t.id}" target="_blank">Linear ↗</a>
+          <button data-wt="${t.id}">worktree</button>
+          <button data-cp="${t.branch}">branch</button>
+          ${t.doc?`<button data-cs="${t.doc}">doc path</button>`:""}
+        </div>`;
+      lane.appendChild(c);
+    });
+    if(!shown){const e=document.createElement("div");e.className="empty";e.textContent="nothing here";lane.appendChild(e);}
+    board.appendChild(lane);
+  }
+  document.getElementById("progv").innerHTML=`${done}<small>/${total}</small>`;
+  document.getElementById("barfill").style.width=(total?done/total*100:0)+"%";
+  document.getElementById("wipv").textContent=wip;
+  document.getElementById("readyv").textContent=rdy;
+  document.getElementById("blockv").textContent=blk;
+  document.getElementById("lanev").textContent=Object.keys(STREAMS).length;
+  bind();drawDeps();
+}
+
+function bind(){
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const id=b.dataset.st;cardState(id).status=NEXT[cardState(id).status];save();render();});
+  document.querySelectorAll("[data-ag]").forEach(i=>i.onchange=()=>{cardState(i.dataset.ag).agent=i.value;save();render();});
+  document.querySelectorAll("[data-nt]").forEach(x=>x.onchange=()=>{cardState(x.dataset.nt).notes=x.value;save();});
+  document.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>copy(b.dataset.cp,b));
+  document.querySelectorAll("[data-cs]").forEach(b=>b.onclick=()=>copy(b.dataset.cs,b));
+  document.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.pr);
+    const ref=t.doc?t.doc:(LINEAR+"TTM-"+t.id);
+    copyIcon(`hey dear friend, can you please help me take a look at and tackle TTM-${t.id} — ${t.t} (${ref})`,b);
+  });
+  document.querySelectorAll("[data-wt]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.wt);
+    copy(`git fetch origin && git worktree add ../cp-ttm-${t.id} -b ${t.branch} origin/main`,b);
+  });
+}
+function copy(txt,btn){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent="copied";setTimeout(()=>btn.textContent=o,900);});}
+function copyIcon(txt,btn){navigator.clipboard.writeText(txt).then(()=>{btn.textContent="✓";btn.classList.add("copied");
+  setTimeout(()=>{btn.textContent="→";btn.classList.remove("copied");},1000);});}
+
+// Dependency overlay: solid = blocks, dashed = land together (soft).
+function drawDeps(){
+  const svg=document.getElementById("depsvg");svg.innerHTML="";
+  if(!document.getElementById("showDeps").checked) return;
+  const wrap=document.querySelector(".boardwrap").getBoundingClientRect();
+  svg.setAttribute("width",wrap.width);svg.setAttribute("height",wrap.height);
+  svg.innerHTML=`<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b86a55"/></marker></defs>`;
+  const at=id=>{const el=document.getElementById("card-"+id);if(!el)return null;
+    const r=el.getBoundingClientRect();return{x:r.left-wrap.left+r.width/2,y:r.top-wrap.top+r.height/2};};
+  const line=(a,b,dash)=>{const p=at(a),q=at(b);if(!p||!q)return;
+    svg.insertAdjacentHTML("beforeend",`<line x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" stroke="#b86a55" stroke-width="1.5" opacity=".5" ${dash?'stroke-dasharray="5 4"':'marker-end="url(#arr)"'}/>`);};
+  T.forEach(t=>{(t.blk||[]).forEach(b=>line(b,t.id,false));(t.soft||[]).forEach(s=>line(s,t.id,true));});
+}
+
+document.querySelectorAll("[data-jump]").forEach(ch=>ch.onclick=()=>{
+  const el=document.getElementById("card-"+ch.dataset.jump);
+  if(el){el.scrollIntoView({behavior:"smooth",block:"center"});
+    el.style.outline="2px solid var(--primary)";el.style.outlineOffset="2px";
+    setTimeout(()=>el.style.outline="",1400);}});
+["readyOnly","cpOnly","showDeps"].forEach(i=>document.getElementById(i).onchange=render);
+document.getElementById("agentFilter").oninput=render;
+document.getElementById("copyState").onclick=()=>navigator.clipboard.writeText(JSON.stringify(state,null,2));
+document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all statuses, agents & notes?")){state={cards:{}};save();render();}};
+window.addEventListener("resize",drawDeps);
+render();
+</script>
+</body>
+</html>

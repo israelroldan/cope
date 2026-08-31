@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Studio follow-ups — eval loop + polish</title>
+<style>
+  :root{
+    --bg:#f6faeb; --fg:#1d021f; --card:#fff; --salmon:#ff8e7d; --mint:#cdeccd;
+    --muted:#a397a3; --eggplant:#4c3c47; --magenta:#1E001E;
+    --todo:#c9c2cb; --wip:#e9a23b; --done:#3ba55d; --blocked:#d9534f; --ready:#2e7d32;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.45}
+  a{color:inherit}
+  header{position:sticky;top:0;z-index:20;background:var(--magenta);color:var(--bg);padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.01em}
+  .timer{font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:8px}
+  .bar{width:160px;height:7px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
+  .bar > i{display:block;height:100%;background:var(--salmon)}
+  header button,.tool button{font-family:var(--sans);font-size:11px;border:0;border-radius:6px;padding:4px 9px;cursor:pointer;background:rgba(255,255,255,.16);color:var(--bg)}
+  .tool{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#fff7f5;border-bottom:1px solid #f0d9d4;position:sticky;top:39px;z-index:19}
+  .tool button{background:#fff;color:var(--fg);border:1px solid var(--muted)}
+  .tool label{font-size:11px;display:inline-flex;gap:5px;align-items:center}
+  .wrap{padding:14px 16px 60px}
+  .panel{background:var(--card);border:1px solid rgba(163,151,163,.45);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+  .panel h2{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);color:var(--eggplant)}
+  .seam{padding:8px 10px;border-left:3px solid var(--salmon);background:rgba(255,142,125,.07);border-radius:0 8px 8px 0;margin:8px 0}
+  .seam b{font-family:var(--mono);font-size:11px}
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:1px 6px;border-radius:5px;background:rgba(29,2,31,.07);margin:1px 2px;cursor:pointer}
+  .chip.hot{background:var(--salmon)}
+  ul.rules{margin:4px 0 0;padding-left:18px} ul.rules li{margin:3px 0}
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:start;position:relative}
+  @media(max-width:900px){.board{grid-template-columns:repeat(1,1fr)}}
+  .lane{background:rgba(255,255,255,.5);border:1px solid rgba(163,151,163,.4);border-radius:12px;padding:8px}
+  .lane > h3{margin:2px 4px 8px;font-size:12px;display:flex;justify-content:space-between;align-items:baseline}
+  .lane > h3 small{font-weight:400;color:var(--eggplant);font-size:10.5px;font-family:var(--mono)}
+  .card{background:var(--card);border:1px solid rgba(163,151,163,.5);border-radius:10px;padding:9px;margin-bottom:8px;border-left:4px solid var(--todo)}
+  .card.s-wip{border-left-color:var(--wip)} .card.s-done{border-left-color:var(--done);opacity:.62}
+  .card .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .card .id{font-family:var(--mono);font-weight:700;font-size:11px}
+  .st{font-family:var(--mono);font-size:10px;border:0;border-radius:5px;padding:2px 7px;cursor:pointer;color:#fff;text-transform:uppercase;letter-spacing:.06em}
+  .st-todo{background:var(--todo);color:var(--fg)} .st-wip{background:var(--wip)} .st-done{background:var(--done)}
+  .card .ti{font-weight:600;margin:5px 0 4px;font-size:12.5px;line-height:1.3}
+  .meta{font-size:11px;color:var(--eggplant);margin:3px 0}
+  .meta .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .badge{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:4px;font-weight:700}
+  .b-ready{background:rgba(46,125,50,.14);color:var(--ready)} .b-block{background:rgba(217,83,79,.13);color:var(--blocked)}
+  .prio{font-family:var(--mono);font-size:9px;padding:1px 5px;border-radius:4px;margin-left:4px;background:rgba(29,2,31,.06);color:var(--eggplant)}
+  .prio.p3{background:rgba(233,162,59,.18);color:#8a5a00}
+  .pick{font-family:var(--mono);font-size:10px;background:var(--fg);color:var(--bg);border-radius:4px;padding:1px 5px}
+  .agent{width:100%;font-size:11px;padding:3px 6px;border:1px solid var(--muted);border-radius:6px;margin:4px 0;font-family:var(--mono)}
+  .notes{width:100%;min-height:30px;font-size:11px;padding:4px 6px;border:1px dashed var(--muted);border-radius:6px;resize:vertical;font-family:var(--sans);margin-top:2px}
+  .links{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .links a,.links button{font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--muted);border-radius:5px;padding:2px 6px;background:#fff;color:var(--fg);cursor:pointer}
+  .ext{font-size:10.5px;color:var(--blocked);margin-top:3px}
+  .legend{font-family:var(--mono);font-size:10.5px;color:var(--eggplant)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Studio follow-ups · eval loop + polish</h1>
+  <div class="timer">
+    <span id="elapsed">0:00:00</span> / 8:00:00
+    <span class="bar"><i id="barfill" style="width:0%"></i></span>
+    <button id="resetTimer">reset timer</button>
+  </div>
+  <div style="margin-left:auto" class="legend">9 open · TTM-279–287 · click status to cycle · autosaves locally</div>
+</header>
+
+<div class="tool">
+  <label><input type="checkbox" id="readyOnly"/> ready only</label>
+  <label>agent <input id="agentFilter" placeholder="filter…" style="width:90px;font-size:11px"/></label>
+  <label><input type="checkbox" id="depsMode"/> show deps</label>
+  <span class="legend" id="depsLegend" style="display:none">solid → blocks · dashed → land together</span>
+  <span style="margin-left:auto"></span>
+  <button id="copyState">copy state JSON</button>
+  <button id="resetAll">reset all</button>
+</div>
+
+<div class="wrap">
+  <div class="panel">
+    <h2>What's left</h2>
+    <ul class="rules">
+      <li><b>One real initiative + a polish tail.</b> The evaluation loop (<span class="chip hot" data-jump="279">279</span>–<span class="chip hot" data-jump="282">282</span>, from the <a href="https://linear.app/tatoma/issue/TTM-272" target="_blank">TTM-272</a> brainstorm) is the only Medium-priority body of work — it makes Evaluate consequential. The rest are P4 polish/bug follow-ups from the shipped work-surface + versioning.</li>
+      <li><b>Parent spread:</b> A = under TTM-272 · B = TTM-257/171 · C = TTM-257. Different parents, one work board.</li>
+      <li><b>Eval-loop spec exists:</b> `docs/superpowers/specs/2026-06-02-user-driven-evaluation-loop-design.md` — all four A cards reference it.</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>Coordination seams</h2>
+    <div class="seam"><b>1 · experiment-narrative.tsx</b> — Stream A's <span class="chip hot" data-jump="282">282</span> (build-step Continue gating + thin Evaluate) and ALL of Stream B (<span class="chip hot" data-jump="285">285</span> <span class="chip hot" data-jump="283">283</span> <span class="chip hot" data-jump="284">284</span>) touch this file. The main cross-lane collision — sequence A's 282 vs B, or single-own the file.</div>
+    <div class="seam"><b>2 · last_eval migration (059)</b> — the migration is folded into <span class="chip hot" data-jump="279">279</span> (the first writer of the column) so the lane is a clean DAG; <span class="chip hot" data-jump="282">282</span>'s gating only READS it. (Linear's 282 still nominally scopes the migration — align if you want board ≡ Linear.) Confirm the number with `ls packages/database/supabase/migrations | tail`.</div>
+    <div class="seam"><b>3 · copy-port (286)</b> — fix the diff-pairing bug in the Prompts original, then re-port the file VERBATIM to studio's `version-diff-content.tsx` (TTM-261 copy-port rule: byte-identical, no hand-rewrite).</div>
+  </div>
+
+  <div class="panel">
+    <h2>Ordering, quick wins &amp; worktrees</h2>
+    <ul class="rules">
+      <li><b>Lead with A (the only P3 initiative).</b> Foundations <span class="chip" data-jump="279">279</span> (pulse + last_eval migration) and <span class="chip" data-jump="281">281</span> (primitives) run in parallel → <span class="chip" data-jump="280">280</span> (intervention, needs both) → <span class="chip" data-jump="282">282</span> (gating) is the TERMINAL payoff that consumes the verdict. Critical ≠ depended-upon: 282 is the culmination, so nothing depends on it.</li>
+      <li><b>B is one owner</b> (shared experiment-narrative.tsx): <span class="chip" data-jump="285">285</span> is brainstorm-first and likely subsumes <span class="chip" data-jump="283">283</span> (same framing-duplication concern); <span class="chip" data-jump="284">284</span> is an independent quick win (keep it in-memory, no DB).</li>
+      <li><b>Quick wins to bank (all P4):</b> <span class="chip" data-jump="284">284</span> (tips memoize), <span class="chip" data-jump="287">287</span> (history vs-current), <span class="chip" data-jump="286">286</span> (diff pairing). None blocked.</li>
+      <li><b>Worktrees:</b> A and B both edit experiment-narrative.tsx (seam 1) — if run in parallel worktrees, land one's narrative change and rebase the other. C is isolated (history panel + prompts diff).</li>
+    </ul>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+const LINEAR="https://linear.app/tatoma/issue/";
+const STREAMS={
+  A:{name:"A · Evaluation loop",sub:"pulse · intervention · gating"},
+  B:{name:"B · Skill-detail polish",sub:"creation order · dedup · tips"},
+  C:{name:"C · History & diff",sub:"vs-current · diff pairing"},
+};
+// blockedBy = TTM ids that must be done; ext = caveat; prio 3|4
+const T=[
+ {id:281,s:"A",prio:3,t:"Eval server actions + agent-primitive extensions",surf:"@tatomahq/agents (generateUcaTrialQuestions, iterateUca), new experiment-loop server action (port apply-with-ai pattern)",note:"FOUNDATION of A · feed transcript + signals + role/profile (fetched server-side) · enables 280",branch:"israel/ttm-281-evaluation-server-actions-agent-primitive-extensions",spec:"(Linear issue)",blk:[]},
+ {id:279,s:"A",prio:3,t:"In-runner eval pulse + last_eval migration (forced choice, verdict persist)",surf:"migration 059 (last_eval), use-try-chat.ts, runner-panel.tsx, uca_trial_runs.reflection + studio_loop_state.last_eval",note:"FOUNDATION of A · owns the last_eval column (first writer) · trigger off hasSucceeded + count (N=2) · reverses TTM-229 placement",branch:"israel/ttm-279-in-runner-evaluation-pulse-trigger-forced-choice-ui-verdict",spec:"(Linear issue)",blk:[]},
+ {id:282,s:"A",prio:3,t:"Loop gating on positive eval + thin Evaluate step",surf:"lib/experiment/actions.ts (advanceEvaluated/advanceAdopted), experiment-narrative.tsx, step-evaluate.tsx",note:"TERMINAL — the payoff: gating READS the verdict 279 writes · nothing depends on it because it's the culmination, not a foundation · SEAM1 experiment-narrative w/B",branch:"israel/ttm-282-loop-gating-on-positive-eval-thin-evaluate-step-last_eval",spec:"(Linear issue)",blk:[279]},
+ {id:280,s:"A",prio:3,t:"'Needs adjustments' intervention + AI-adjust / manual / skip fork",surf:"runner-panel.tsx, prompt editor (TTM-257 Level B, done), feedback_conversation",note:"needs 281 (server actions) + 279 (the pulse) · reuse TTM-87/88 primitives + apply-with-ai pattern, not the discover routes",branch:"israel/ttm-280-needs-adjustments-intervention-capture-ai-adjust-manual-skip",spec:"(Linear issue)",blk:[279,281]},
+
+ {id:285,s:"B",prio:3,t:"Re-sequence guided creation flow (skeleton ordering)",surf:"experiment-narrative.tsx, step-job-context.tsx",note:"brainstorm-first · refine-framing + 'Build it' currently buried below shimmering steps · define skeleton vs built layouts · SEAM1 experiment-narrative",branch:"israel/ttm-285-fix-guided-skill-building-creation-flow-order-the-refine",spec:"(Linear issue)",blk:[]},
+ {id:283,s:"B",prio:4,t:"Reconcile task-before/after duplication (document vs step 1)",surf:"experiment-narrative.tsx, step-job-context.tsx",note:"overlaps 285 (same framing duplication) — resolve ordering first; likely folds into 285",branch:"israel/ttm-283-skill-work-surface-reconcile-task-beforeafter-framing",spec:"(Linear issue)",blk:[285]},
+ {id:284,s:"B",prio:4,t:"Memoize skill tips (stop re-billing Haiku on reopen)",surf:"skill-tips-panel.tsx, experiment-narrative.tsx, generate-skill-tips.ts",note:"QUICK WIN · lift tips to the page / invalidate on edit · keep in-memory (no DB) · independent",branch:"israel/ttm-284-skill-tips-memoize-so-reopening-the-panel-doesnt-re-bill-a",spec:"(Linear issue)",blk:[]},
+
+ {id:287,s:"C",prio:4,t:"Skill history 'vs Current' reflects the live skill",surf:"skill-history-panel.tsx (fetch live UCA on open, or include current in versions GET)",note:"QUICK WIN · current side is the stale page-load prop after an optimistic edit · version-to-version is fine",branch:"israel/ttm-287-studio-skill-history-make-vs-current-compare-reflect-the",spec:"(Linear issue)",blk:[]},
+ {id:286,s:"C",prio:4,t:"Prompts side-by-side diff pairing fix (+ re-port to studio)",surf:"apps/prompts .../version-diff/version-diff-content.tsx → re-port verbatim to studio copy",note:"QUICK WIN · SEAM3 copy-port · fix in Prompts original then byte-identical re-port to studio (TTM-261 rule)",branch:"israel/ttm-286-prompts-fix-side-by-side-diff-pairing-when-added-lines",spec:"(Linear issue)",blk:[]},
+];
+
+const KEY="ttm-followups-tracker-v1";
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{};
+if(!state.timerStart) state.timerStart=Date.now();
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function cardState(id){return state.cards[id]||(state.cards[id]={status:"todo",agent:"",notes:""});}
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+function isDone(id){return (state.cards[id]&&state.cards[id].status)==="done";}
+function readiness(t){
+  const pend=t.blk.filter(b=>!isDone(b));
+  if(t.ext) return {ok:false,label:"BLOCKED: "+t.ext};
+  if(pend.length) return {ok:false,label:"BLOCKED by "+pend.map(x=>"TTM-"+x).join(", ")};
+  return {ok:true,label:"READY"};
+}
+function pickPriority(t){
+  const st=cardState(t.id).status;
+  if(st==="done") return 3;
+  if(st==="wip") return 0;
+  return readiness(t).ok ? 1 : 2;
+}
+function pendingCount(t){ return t.blk.filter(b=>!isDone(b)).length + (t.ext?1:0); }
+function byPickup(a,b){
+  const pa=pickPriority(a), pb=pickPriority(b);
+  if(pa!==pb) return pa-pb;
+  if(pa===2){ const d=pendingCount(a)-pendingCount(b); if(d) return d; }
+  if((a.prio||4)!==(b.prio||4)) return (a.prio||4)-(b.prio||4);
+  return a.id-b.id;
+}
+
+function drawDeps(){
+  const board=document.getElementById("board");
+  const old=document.getElementById("depsvg"); if(old) old.remove();
+  if(!state.deps) return;
+  const NS="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(NS,"svg");
+  svg.id="depsvg";
+  svg.setAttribute("width",board.scrollWidth); svg.setAttribute("height",board.scrollHeight);
+  svg.style.cssText="position:absolute;left:0;top:0;pointer-events:none;z-index:5;overflow:visible";
+  const defs=document.createElementNS(NS,"defs");
+  defs.innerHTML='<marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,3 L0,6 Z" fill="#ff8e7d"/></marker>';
+  svg.appendChild(defs);
+  const rectOf=id=>{const el=document.getElementById("card-"+id); return el?{x:el.offsetLeft,y:el.offsetTop,w:el.offsetWidth,h:el.offsetHeight}:null;};
+  const border=(r,fx,fy)=>{const cx=r.x+r.w/2,cy=r.y+r.h/2,dx=fx-cx,dy=fy-cy; if(!dx&&!dy)return{x:cx,y:cy}; const sx=dx?(r.w/2)/Math.abs(dx):1e9,sy=dy?(r.h/2)/Math.abs(dy):1e9,s=Math.min(sx,sy); return{x:cx+dx*s,y:cy+dy*s};};
+  const draw=(srcId,dstId,soft)=>{const a=rectOf(srcId),b=rectOf(dstId); if(!a||!b)return; const acx=a.x+a.w/2,acy=a.y+a.h/2,bcx=b.x+b.w/2,bcy=b.y+b.h/2; const p1=border(a,bcx,bcy),p2=border(b,acx,acy); const path=document.createElementNS(NS,"path"); path.setAttribute("d",`M${p1.x},${p1.y} L${p2.x},${p2.y}`); path.setAttribute("fill","none"); path.setAttribute("stroke",soft?"#a397a3":"#ff8e7d"); path.setAttribute("stroke-width",soft?1.5:2); path.setAttribute("opacity",soft?0.5:0.8); if(soft)path.setAttribute("stroke-dasharray","4 3"); else path.setAttribute("marker-end","url(#arr)"); svg.appendChild(path);};
+  T.forEach(t=>{(t.blk||[]).forEach(b=>draw(b,t.id,false));(t.soft||[]).forEach(b=>draw(b,t.id,true));});
+  board.appendChild(svg);
+}
+
+function render(){
+  const board=document.getElementById("board");
+  board.innerHTML="";
+  const readyOnly=document.getElementById("readyOnly").checked;
+  const af=document.getElementById("agentFilter").value.trim().toLowerCase();
+  for(const sk of Object.keys(STREAMS)){
+    const lane=document.createElement("div");lane.className="lane";
+    lane.innerHTML=`<h3>${STREAMS[sk].name}<small>${STREAMS[sk].sub}</small></h3>`;
+    let pick=0;
+    T.filter(t=>t.s===sk).sort(byPickup).forEach(t=>{
+      const cs=cardState(t.id), rd=readiness(t);
+      if(readyOnly && (!rd.ok || cs.status==="done")) return;
+      if(af && !(cs.agent||"").toLowerCase().includes(af)) return;
+      const n = cs.status==="done" ? "" : `<span class="pick">#${++pick}</span> `;
+      const c=document.createElement("div");
+      c.className="card s-"+cs.status; c.id="card-"+t.id;
+      c.innerHTML=`
+        <div class="top">
+          <span class="id">${n}TTM-${t.id}<span class="prio ${t.prio===3?'p3':''}">P${t.prio}</span></span>
+          <button class="st st-${cs.status}" data-st="${t.id}">${cs.status}</button>
+        </div>
+        <div class="ti">${t.t}</div>
+        <div>${rd.ok?'<span class="badge b-ready">READY</span>':'<span class="badge b-block">'+rd.label+'</span>'}</div>
+        <div class="meta"><span class="k">surface</span> ${t.surf}</div>
+        <div class="meta"><span class="k">note</span> ${t.note}</div>
+        ${t.ext?`<div class="ext">⚠ ${t.ext}</div>`:""}
+        <input class="agent" placeholder="agent / who…" data-ag="${t.id}" value="${(cs.agent||"").replace(/"/g,'&quot;')}"/>
+        <textarea class="notes" placeholder="where it's at / handoff notes…" data-nt="${t.id}">${cs.notes||""}</textarea>
+        <div class="links">
+          <a href="${LINEAR}TTM-${t.id}" target="_blank">Linear ↗</a>
+          <button data-pr="${t.id}" title="copy the kickoff prompt for an agent">copy prompt</button>
+          <button data-co="${t.id}" title="copy git worktree create for this branch">copy worktree</button>
+          <button data-cp="${t.branch}">branch</button>
+        </div>`;
+      lane.appendChild(c);
+    });
+    board.appendChild(lane);
+  }
+  bind();
+  drawDeps();
+}
+function bind(){
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const id=b.dataset.st;cardState(id).status=NEXT[cardState(id).status];save();render();});
+  document.querySelectorAll("[data-ag]").forEach(i=>i.onchange=()=>{cardState(i.dataset.ag).agent=i.value;save();});
+  document.querySelectorAll("[data-nt]").forEach(x=>x.onchange=()=>{cardState(x.dataset.nt).notes=x.value;save();});
+  document.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>copy(b.dataset.cp,b));
+  document.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.pr);
+    copy(`hey dear friend, can you please help me take a look at and tackle TTM-${t.id} — ${t.t} (${LINEAR}TTM-${t.id})`,b);
+  });
+  document.querySelectorAll("[data-co]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.co);
+    copy(`git fetch origin && git worktree add ../cp-ttm-${t.id} -b ${t.branch} origin/main`,b);
+  });
+}
+function copy(txt,btn){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent="copied";setTimeout(()=>btn.textContent=o,900);});}
+
+document.querySelectorAll("[data-jump]").forEach(ch=>ch.onclick=()=>{const el=document.getElementById("card-"+ch.dataset.jump);if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid var(--salmon)";setTimeout(()=>el.style.outline="",1400);}});
+
+document.getElementById("readyOnly").onchange=render;
+document.getElementById("agentFilter").oninput=render;
+const depsBox=document.getElementById("depsMode"),depsLeg=document.getElementById("depsLegend");
+depsBox.checked=!!state.deps; depsLeg.style.display=state.deps?"inline":"none";
+depsBox.onchange=()=>{state.deps=depsBox.checked;depsLeg.style.display=state.deps?"inline":"none";save();drawDeps();};
+window.addEventListener("resize",drawDeps);
+document.getElementById("resetTimer").onclick=()=>{state.timerStart=Date.now();save();};
+document.getElementById("copyState").onclick=()=>navigator.clipboard.writeText(JSON.stringify(state,null,2));
+document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all statuses, agents, notes & timer?")){state={cards:{},timerStart:Date.now()};save();render();}};
+
+function tick(){
+  const ms=Date.now()-state.timerStart, s=Math.floor(ms/1000);
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
+  document.getElementById("elapsed").textContent=`${h}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  document.getElementById("barfill").style.width=Math.min(100,ms/(8*3600*1000)*100)+"%";
+}
+setInterval(tick,1000);tick();
+render();
+</script>
+</body>
+</html>

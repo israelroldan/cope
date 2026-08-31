@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workshop Decks — Tatoma × Crowe Foederer</title>
+
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #F6FAEB;
+    color: #1D021F;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 3rem 2rem;
+  }
+
+  .container {
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center; margin-bottom: 3rem;
+  }
+
+  header h1 {
+    font-family: "Canela", Georgia, serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 100;
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+  }
+
+  header p {
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    color: #4C3C47;
+    max-width: 52rem;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .decks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .deck-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(163,151,163,0.25);
+    border-radius: 0.75rem;
+    padding: 1.6rem;
+    transition: all 0.3s cubic-bezier(.25,.46,.45,.94);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+  .deck-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(30,0,30,0.08);
+  }
+
+  .deck-time {
+    font-family: "TSTARMonoRound", monospace;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #A397A3;
+    margin-bottom: 0.6rem;
+  }
+
+  .deck-title {
+    font-family: "Canela", Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 100;
+    line-height: 1.2;
+    color: #1D021F;
+    margin-bottom: 0.5rem;
+  }
+
+  .deck-subtitle {
+    font-size: 0.88rem;
+    color: #4C3C47;
+    line-height: 1.5;
+    flex-grow: 1;
+    margin-bottom: 1rem;
+  }
+
+  .deck-badge {
+    display: inline-block;
+    padding: 0.25rem 0.8rem;
+    margin-right: 0.4rem;
+    margin-bottom: 0.8rem;
+    font-family: "TSTARMonoRound", monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border-radius: 999px;
+    background: rgba(79,32,53,0.15);
+    color: #4F2035;
+  }
+
+  .deck-badge.claude {
+    background: rgba(79,32,53,0.15);
+    color: #4F2035;
+  }
+
+  .deck-badge.copilot {
+    background: rgba(74,124,219,0.14);
+    color: #2d57a8;
+  }
+
+  .deck-badge.architecture {
+    background: rgba(163,151,163,0.15);
+    color: #4C3C47;
+  }
+
+  .deck-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: "TSTARMonoRound", monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #FF8C7D;
+    text-decoration: none;
+  }
+
+  .deck-link::after {
+    content: "→";
+  }
+
+  footer {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #A397A3;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(163,151,163,0.25);
+  }
+
+  @media (max-width: 900px) {
+    .decks-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>AI for M&A Advisory</h1>
+    <p>A hands-on working session with six use cases. Select a deck below to begin.</p>
+  </header>
+
+  <div class="decks-grid">
+    <a href="00-presentation.html" class="deck-card">
+      <div class="deck-time">12:30 – 13:00 · 30 minutes</div>
+      <div class="deck-title">Welcome & Why Claude</div>
+      <div class="deck-subtitle">Context, capabilities, patterns. The spine of the session.</div>
+      <div><span class="deck-badge claude">Intro</span></div>
+      <div class="deck-link">Start</div>
+    </a>
+
+    <a href="01-uc1-im-review.html" class="deck-card">
+      <div class="deck-time">13:00 – 13:35 · 35 minutes</div>
+      <div class="deck-title">UC1 · IM Review</div>
+      <div class="deck-subtitle">33-page IM analyzed from a buyer's perspective in under two minutes.</div>
+      <div><span class="deck-badge claude">Claude</span></div>
+      <div class="deck-link">Enter</div>
+    </a>
+
+    <a href="02-uc2-biedingsbrief-termsheet.html" class="deck-card">
+      <div class="deck-time">13:35 – 14:15 · 40 minutes</div>
+      <div class="deck-title">UC2 · Biedingsbrief vs. Term Sheet</div>
+      <div class="deck-subtitle">Cross-document discrepancy check. EUR 150K earn-out gap surfaced.</div>
+      <div><span class="deck-badge claude">Claude</span></div>
+      <div class="deck-link">Enter</div>
+    </a>
+
+    <a href="03-transition.html" class="deck-card">
+      <div class="deck-time">14:15 – 14:35 · 20 minutes</div>
+      <div class="deck-title">Transition</div>
+      <div class="deck-subtitle">Same patterns, different building blocks. Into your stack.</div>
+      <div><span class="deck-badge copilot">Bridge</span></div>
+      <div class="deck-link">Enter</div>
+    </a>
+
+    <a href="04-uc3-cijferopstelling-build.html" class="deck-card">
+      <div class="deck-time">14:35 – 15:45 · 60 minutes</div>
+      <div class="deck-title">UC3 · Cijferopstelling Build</div>
+      <div class="deck-subtitle">PDF annual report → Excel template, end-to-end. Built live.</div>
+      <div><span class="deck-badge copilot">Copilot Studio</span></div>
+      <div class="deck-link">Enter</div>
+    </a>
+
+    <a href="05-uc4-uc5-template-fillers.html" class="deck-card">
+      <div class="deck-time">15:45 – 16:30 · 45 minutes</div>
+      <div class="deck-title">UC4 + UC5 · Template Fillers</div>
+      <div class="deck-subtitle">Waarderingsmodel & Teaser. Pattern exploration paired work.</div>
+      <div><span class="deck-badge copilot">Exploration</span></div>
+      <div class="deck-link">Enter</div>
+    </a>
+
+    <a href="06-uc6-auditfiles-architecture.html" class="deck-card">
+      <div class="deck-time">16:30 – 16:50 · 20 minutes</div>
+      <div class="deck-title">UC6 · Audit Files Architecture</div>
+      <div class="deck-subtitle">88 MB XML, 99K GL lines. Preprocessing pipeline sketched. Real engineering.</div>
+      <div><span class="deck-badge architecture">Architecture</span></div>
+      <div class="deck-link">Enter</div>
+    </a>
+
+    <a href="07-closing.html" class="deck-card">
+      <div class="deck-time">16:50 – 17:00 · 10 minutes</div>
+      <div class="deck-title">Wrap-up & Next Steps</div>
+      <div class="deck-subtitle">Four hours in. Six use cases explored. One pilot to pick.</div>
+      <div><span class="deck-badge copilot">Closing</span></div>
+      <div class="deck-link">Enter</div>
+    </a>
+  </div>
+
+  <footer>
+    <p>Tatoma × Crowe Foederer · April 14, 2026<br>
+    Navigate: arrow keys · N = notes · F = fullscreen</p>
+  </footer>
+</div>
+
+</body>
+</html>

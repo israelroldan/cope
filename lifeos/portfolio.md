@@ -8,16 +8,19 @@
 ## How It Connects
 
 ```
-Tatoma (clients) → patterns & revenue
+Tatoma BV (day job, 10% stake) → patterns & revenue
        ↓
-Palu Labs (experiments) → validates patterns
+Palú Labs (ZZP umbrella, 5-9) → experiments across trade names:
+    Kimbi Games · Pimpi Apps · StudyStars/TLOM · Literary Sculptor
        ↓
-StudyStars / Pimpi (products) → receives graduated experiments
+Graduation: validated trade name → own BV under Jolie Invest
        ↑
 Cope (infrastructure) → orchestrates everything
 ```
 
-Each venture feeds the others. A competency rubric from StudyStars becomes a Tatoma deliverable template. A Tatoma AI pipeline pattern becomes TLOM's content generation backbone. Cope's MCP integrations serve both personal life and product development.
+Each venture feeds the others. A competency rubric from StudyStars becomes a Tatoma deliverable template. A Tatoma AI pipeline pattern becomes a Pimpi or TLOM content generation backbone. Cope's MCP integrations serve both personal life and product development.
+
+Palú Labs is the **incubator / publisher of record** for everything shipped on the 5-9 side. Kimbi Games, Pimpi Apps, StudyStars/The Library of Me, and The Literary Sculptor are all currently *handelsnamen* (trade names) on the same KvK registration. When a trade name earns investor interest or operational complexity beyond what ZZP exposure can absorb, it graduates to a standalone BV that sits under Jolie Invest BV (sibling to the Tatoma stake).
 
 ---
 
@@ -54,21 +57,30 @@ Each venture feeds the others. A competency rubric from StudyStars becomes a Tat
 
 ---
 
-## StudyStars / The Library of Me → Pimpi Learn
+## StudyStars / The Library of Me (Palú Labs trade name)
 
-> **Pivot (2026-03-23):** TLOM's core concepts (competency-based learning,
-> content pipeline, self-reflection) are being absorbed into the Pimpi universe
-> as **Pimpi Learn**. Education consultant and sales/PM partner disengaged.
-> Cohort/facilitator model dropped. Self-directed model adopted.
+> **Status update (2026-04-21):** Name kept around because the direction still
+> has room. Positioning is being split from Pimpi Apps: StudyStars/TLOM leans
+> B2B / webinar-based / older kids / more focused, while Pimpi Apps stays
+> self-service / online / product-led / younger. The two are explicitly
+> sibling brands under Palú Labs, not one folding into the other.
+>
+> An earlier (March 2026) plan folded TLOM concepts into Pimpi Learn after
+> the original team disengaged. That plan is partially reversed: the shared
+> concepts (competency framework, content pipeline, compliance architecture)
+> still travel freely between the two brands as patterns, but the StudyStars/
+> TLOM brand remains distinct and active-but-quiet.
 
-**What (original):** EdTech platform for pre-teens to young adults. Cohort-based curriculum where children design their own operating system for life through Socratic-cycle modules that produce student-authored artifacts, up to hardcover printed books.
+**Domains:** studystars.net (canonical), thelibraryofme.com (sibling site).
+
+**What:** EdTech for pre-teens and young adults. Competency-based, cohort or webinar-friendly, designed around student-authored artifacts (workbooks, printed books). Sells through facilitators and institutions, not consumer app stores — the opposite flank from Pimpi.
 
 **Role:** Solo founder-engineer. Owns every product, architecture, and brand decision.
 
 **Team:**
-- Education expert — module designer, gold-standard content author, AI draft reviewer (part-time 10-15h/week sprint, 5-8h ops)
-- Sales/PM partner
-- Contract facilitators — warm, organized, follow scripts (not pedagogical experts)
+- Original education expert — disengaged (2026-03).
+- Original sales/PM partner — disengaged (2026-03).
+- No contract facilitators active. Future B2B delivery TBD.
 
 **Pedagogical model:** Competency-based, 7 competencies (Critical Thinking, Adaptability, Systems Thinking, etc.), three program tiers (Starter → Achiever → Champion), three rubric levels (Emerging → Developed → Advanced). Aligned with OECD Learning Compass 2030. Observe-map-design-test-codify cycle per module.
 
@@ -80,7 +92,7 @@ Each venture feeds the others. A competency rubric from StudyStars becomes a Tat
 
 **Market:** Tiger parents and expat families in EMEA/LATAM. NL, UK, Mexico research.
 
-**Sibling:** Pimpi. Different brand, different tech, same philosophy (kid agency, no guilt, artifacts over scores).
+**Sibling:** Pimpi Apps. Different brand, different audience, same philosophical core (kid agency, no guilt, artifacts over scores). Where Pimpi goes product-led and consumer-direct, StudyStars goes facilitator-led and B2B-friendly.
 
 ---
 
@@ -115,26 +127,51 @@ Each venture feeds the others. A competency rubric from StudyStars becomes a Tat
 
 ---
 
-## Palu Labs (ZZP handelsnaam)
+## Kimbi Games (Palú Labs trade name)
 
-**What:** Israel's personal consultancy and experimentation vehicle. Operates as handelsnaam under his ZZP (eenmanszaak), not a BV — decision 2026-04-13 to keep operations under ZZP for now rather than opening a werk-BV. Publishes Pimpi products, Snackjes/Snackbak, isro.me/print, and invoices freelance engineering/consultancy.
+**What:** Indie game studio under the Palú Labs ZZP umbrella. Creative control of all game IP. First shipped title: **Snackjes!** (2026) — a Dutch snackbar game for iOS, rebranded from the earlier Snackbak Automatiek concept.
+
+**Site:** `kimbigames.com`.
+
+**Current state:** Snackjes! shipped and live on the App Store via Palú Labs as EU DSA trader. v1.0 published April 2026, Koningsdag seasonal event planned April 25-28.
+
+**Brand rule — logo color:** The Kimbi logo takes on the main color of each game it represents. On the studio site it cycles through the full color wheel as a demonstration; for any specific game context it renders in that game's primary color. Snackjes! orange `#E07406` is the anchor hue.
+
+**Team credits (Snackjes!):**
+- Design & Illustrations: Amélie R., Philipe R. (Kimbi Games)
+- Idea, Development & Sounds: Palú Labs × Kimbi Games
+- Special Thanks: Mónica Larios (Kimbi Games)
+- Early Testers: Sander K., Maarten vd H., Beatriz L.
+
+**Future:** Likely the first Palú Labs trade name to graduate to its own BV. Investor/buyer interest in the Snackjes IP is the triggering condition — at that point Kimbi Games BV becomes the publisher of record and Palú Labs drops out of the Snackjes credit lockup.
+
+**Stack:** Expo/React Native (mobile), Next.js 15 + Tailwind v4 (website), Supabase (multiplayer Snackstrijd), Resend (contact), next-intl (EN/ES/NL).
+
+---
+
+## Palú Labs (ZZP handelsnaam)
+
+**What:** Israel's personal incubator, publisher of record, and experimentation vehicle. ZZP (eenmanszaak) with handelsnamen, not a BV — decision 2026-04-13 to keep operations on ZZP rather than opening a werk-BV. The trader of record under EU DSA for all apps shipped on the 5-9 side.
+
+**Trade names currently registered:**
+- **Kimbi Games** — game studio. Creative control of game IP. Snackjes! shipped 2026. Investor-ready candidate for BV spin-off. See `kimbigames.com`.
+- **Pimpi Apps** — self-service / product-led familyware. Sparks live, Card in alpha. Full section below.
+- **StudyStars / The Library of Me** — EdTech, B2B/webinar direction. Full section above. Domains: `studystars.net`, `thelibraryofme.com`.
+- **The Literary Sculptor** (`literarysculptor.com`) — compositional fiction-development toolkit using research-to-deliverable-to-insight pipeline pattern. Previously called The Book Doctor.
+
+**Secondary:** Freelance engineering and advisory invoiced directly under Palú Labs (not under a specific trade name).
 
 **Corporate context:**
-- **Jolie Invest BV** — holding (in oprichting, 2026-04-13). Being set up primarily to receive the Tatoma BV share transfer. No werk-BV subsidiary for now.
-- **Palu Labs** — ZZP handelsnaam, not incorporated. May migrate to a werk-BV under Jolie Invest later if Pimpi revenue, product liability, or a co-founder joining makes incorporation worthwhile.
+- **Jolie Invest BV** — personal holding (in oprichting, 2026-04-13). Holds the 10% Tatoma BV stake. No werk-BV subsidiary yet.
+- **Palú Labs** — ZZP handelsnaam, not incorporated. Any trade name above may migrate to its own werk-BV under Jolie Invest when investor interest, product liability, or co-founder dynamics make incorporation worthwhile. Kimbi Games is the most likely first spin-off.
 
 **Open risks (conscious trade-off):**
-- Personal liability for Pimpi/Snackjes/print products — not shielded by BV
-- Israel's personal name appears on KvK uittreksel as owner of "Palu Labs" handelsnaam (app stores, privacy policies, and formal legal docs still surface the personal name even when public-facing branding says "Palu Labs")
+- Personal liability for all Palú Labs trade-name products — not shielded by BV.
+- Israel's personal name appears on KvK uittreksel as owner of "Palú Labs" handelsnaam. App stores, privacy policies, and formal legal docs surface the personal name even when public-facing branding says "Palú Labs" or one of the trade names.
 
-**Role:** Proving ground + publishing vehicle. Most experiments won't graduate. Track which ones generate energy and learning, not just which ones "succeed."
+**Role:** Proving ground + publishing vehicle + brand family home. Most experiments won't graduate. Track which ones generate energy and learning, not just which ones "succeed."
 
-**Known experiments:**
-- Snackbak — physics game with Dutch snack theming. Canvas, collision detection, 3D transforms, SVG optimization.
-- The Book Doctor — compositional fiction-development toolkit using research-to-deliverable-to-insight pipeline pattern.
-- Various freelance engineering work.
-
-**Principle:** When an experiment shows product-market signal, it graduates to its own venture. When it doesn't, it dies quietly. No zombie projects.
+**Principle:** When a trade name shows investor signal, IP value, or operational complexity beyond ZZP absorption, it graduates to its own BV under Jolie Invest. When it doesn't, it parks quietly. No zombie projects.
 
 ---
 

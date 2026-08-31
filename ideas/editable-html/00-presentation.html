@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome & Why Claude — Tatoma × Crowe Foederer</title>
+
+<!-- Tatoma fonts -->
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/canela/stylesheet.css">
+<link rel="stylesheet" href="https://hub.tatoma.eu/fonts/tstarmonoround/stylesheet.css">
+
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="canvas.css">
+<style>
+.timeline { display: flex; flex-direction: column; max-width: 54rem; }
+.timeline-item {
+    display: grid; grid-template-columns: 90px 1.5rem 1fr;
+    align-items: start; padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+.timeline-item:last-child { border-bottom: none; }
+.timeline-time {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.06em; color: var(--muted); padding-top: 0.15rem;
+  }
+.timeline-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    margin-top: 0.25rem; justify-self: center;
+  }
+.timeline-dot.purple { background: var(--secondary); }
+.timeline-dot.blue { background: var(--ms-blue); }
+.timeline-dot.salmon { background: var(--salmon); }
+.timeline-dot.muted { background: var(--muted); }
+.timeline-content h4 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 0.95rem; margin-bottom: 0.1rem;
+  }
+.timeline-content p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+
+    font-family: var(--font-mono); font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); margin-top: 0.6rem; padding-top: 0.5rem;
+    border-top: 1px dashed var(--border); display: block;
+  }
+
+  /* ── Timeline ── */
+  .timeline { display: flex; flex-direction: column; max-width: 54rem; }
+
+  .timeline-item {
+    display: grid; grid-template-columns: 90px 1.5rem 1fr;
+    align-items: start; padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .timeline-item:last-child { border-bottom: none; }
+
+  .timeline-time {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.06em; color: var(--muted); padding-top: 0.15rem;
+  }
+
+  .timeline-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    margin-top: 0.25rem; justify-self: center;
+  }
+
+  .timeline-dot.purple { background: var(--secondary); }
+
+  .timeline-dot.blue { background: var(--ms-blue); }
+
+  .timeline-dot.salmon { background: var(--salmon); }
+
+  .timeline-dot.muted { background: var(--muted); }
+
+  .timeline-content h4 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 0.95rem; margin-bottom: 0.1rem;
+  }
+
+  .timeline-content p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+.pattern-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-top: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+  }
+.pattern-card.ms { border-top-color: var(--ms-blue); }
+.pattern-card .p-num {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+.pattern-card.ms .p-num { color: var(--ms-blue); }
+.pattern-card h3 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 1rem; margin-bottom: 0.35rem;
+  }
+.pattern-card .flow-line {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--muted-fg); margin-bottom: 0.5rem; letter-spacing: 0.02em;
+  }
+.pattern-card p { font-size: 0.82rem; margin: 0; line-height: 1.45; }
+.pattern-card .lands-in {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); margin-top: 0.6rem; padding-top: 0.5rem;
+    border-top: 1px dashed var(--border); display: block;
+  }
+
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: 3.2rem; line-height: 1; color: var(--fg); margin-bottom: 0.2rem;
+  }
+
+  /* ── Pattern card (compact, for 4-up grid) ── */
+  .pattern-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-top: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.2rem;
+  }
+
+  .pattern-card.ms { border-top-color: var(--ms-blue); }
+
+  .pattern-card .p-num {
+    font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--salmon); display: block; margin-bottom: 0.3rem;
+  }
+
+  .pattern-card.ms .p-num { color: var(--ms-blue); }
+
+  .pattern-card h3 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 1rem; margin-bottom: 0.35rem;
+  }
+
+  .pattern-card .flow-line {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--muted-fg); margin-bottom: 0.5rem; letter-spacing: 0.02em;
+  }
+
+  .pattern-card p { font-size: 0.82rem; margin: 0; line-height: 1.45; }
+
+  .pattern-card .lands-in {
+    font-family: var(--font-mono); font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); margin-top: 0.6rem; padding-top: 0.5rem;
+    border-top: 1px dashed var(--border); display: block;
+  }
+.surface-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 0.7rem;
+  }
+.surface-card.mint-l { border-left-color: var(--mint); }
+.surface-card.muted-l { border-left-color: var(--muted); }
+.surface-card h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+.surface-card p { font-size: 0.87rem; margin: 0; line-height: 1.45; }
+
+    font-family: var(--font-serif); font-weight: 100;
+    font-size: clamp(1.3rem, 2.2vw, 1.85rem); line-height: 1.35;
+    color: var(--fg); max-width: 46rem;
+    border-left: 3px solid var(--salmon);
+    padding: 0.4rem 0 0.4rem 1.5rem;
+    margin: 0.8rem 0;
+  }
+
+  /* ── Surfaces (3 Claude surfaces) ── */
+  .surface-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--salmon);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .surface-card.mint-l { border-left-color: var(--mint); }
+
+  .surface-card.muted-l { border-left-color: var(--muted); }
+
+  .surface-card h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+
+  .surface-card p { font-size: 0.87rem; margin: 0; line-height: 1.45; }
+.session-map { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.7rem; max-width: 58rem; }
+.session-map { grid-template-columns: repeat(2, 1fr); }
+
+    font-family: var(--font-mono); font-size: 0.58rem; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--muted);
+    display: inline-block;
+    margin-right: 0.3rem;
+  }
+
+  /* ── Session map (six canvases) ── */
+  .session-map { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.7rem; max-width: 58rem; }
+ grid-template-columns: 1fr; }
+    .session-map { grid-template-columns: repeat(2, 1fr); }
+.session-slot {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.9rem 0.9rem;
+    position: relative;
+  }
+.session-slot.claude { border-top: 3px solid var(--secondary); }
+.session-slot.ms { border-top: 3px solid var(--ms-blue); }
+.session-slot.arch { border-top: 3px solid var(--muted); }
+.session-slot .uc-num {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--muted); display: block; margin-bottom: 0.25rem;
+  }
+.session-slot h4 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 0.85rem; margin-bottom: 0.3rem; line-height: 1.2;
+  }
+.session-slot p { font-size: 0.72rem; margin: 0; line-height: 1.35; color: var(--muted-fg); }
+.session-slot .slot-tag {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); display: block; margin-top: 0.4rem;
+  }
+ display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.7rem; max-width: 58rem; }
+  .session-slot {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.9rem 0.9rem;
+    position: relative;
+  }
+
+  .session-slot.claude { border-top: 3px solid var(--secondary); }
+
+  .session-slot.ms { border-top: 3px solid var(--ms-blue); }
+
+  .session-slot.arch { border-top: 3px solid var(--muted); }
+
+  .session-slot .uc-num {
+    font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 0.12em; color: var(--muted); display: block; margin-bottom: 0.25rem;
+  }
+
+  .session-slot h4 {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: 0.85rem; margin-bottom: 0.3rem; line-height: 1.2;
+  }
+
+  .session-slot p { font-size: 0.72rem; margin: 0; line-height: 1.35; color: var(--muted-fg); }
+
+  .session-slot .slot-tag {
+    font-family: var(--font-mono); font-size: 0.55rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); display: block; margin-top: 0.4rem;
+  }
+</style>
+</head>
+<body>
+
+</head>
+<body>
+
+<div class="logo-area">
+  <img src="https://hub.tatoma.eu/tatoma-icon.png" alt="Tatoma" onerror="this.style.display='none'">
+  <span>Tatoma × Crowe Foederer · Welcome</span>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 0 · TITLE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider active">
+    <span class="mono-label">April 14, 2026 · 12:30 – 17:00</span>
+    <h1>AI for M&A Advisory</h1>
+    <p style="max-width:36rem; margin:0 auto; text-align:center; font-size:1.1rem;">
+      A hands-on working session. Your data, our tools, four hours to find the pilot.
+    </p>
+    <div style="display:flex; gap:0.5rem; margin-top:1.8rem; justify-content:center;">
+      <span class="chip">Tatoma</span>
+      <span class="chip muted-bg">Crowe Foederer</span>
+    </div>
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Quick intros — one sentence each. "You know M&amp;A better than we do. We know the AI side. Today we bring those together — not to show you a product, but to find the one use case worth piloting."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 1 · THE ARC -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">The afternoon</span>
+    <h2>Three movements, one outcome</h2>
+    <p style="max-width:42rem; margin-bottom:1.3rem;">We show, we build, we pick. By 17:00 you walk out with a ranked shortlist and a pilot on the calendar.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="timeline-time">12:30</span>
+        <div class="timeline-dot salmon"></div>
+        <div class="timeline-content"><h4>Welcome · Why Claude · the patterns</h4><p>Context, capabilities, the spine of the session</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">13:00</span>
+        <div class="timeline-dot purple"></div>
+        <div class="timeline-content"><h4>UC1 — IM Review <span class="chip purple-bg" style="font-size:0.52rem; margin-left:0.3rem;">Claude · live demo</span></h4><p>33-page IM, buyer's perspective, on Project Faraday</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">13:35</span>
+        <div class="timeline-dot purple"></div>
+        <div class="timeline-content"><h4>UC2 — Biedingsbrief vs. Term Sheet <span class="chip purple-bg" style="font-size:0.52rem; margin-left:0.3rem;">Claude · live demo</span></h4><p>Cross-document discrepancy check on Van Grunsven</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">14:15</span>
+        <div class="timeline-dot muted"></div>
+        <div class="timeline-content"><h4>Transition — into your stack</h4><p>Same patterns, different building blocks</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">14:35</span>
+        <div class="timeline-dot blue"></div>
+        <div class="timeline-content"><h4>UC3 — Cijferopstelling <span class="chip ms-bg" style="font-size:0.52rem; margin-left:0.3rem;">Copilot Studio · live build</span></h4><p>PDF annual report → Excel template, end-to-end</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">15:45</span>
+        <div class="timeline-dot blue"></div>
+        <div class="timeline-content"><h4>UC4 + UC5 — Waarderingsmodel &amp; Teaser <span class="chip ms-bg" style="font-size:0.52rem; margin-left:0.3rem;">Exploration</span></h4><p>Template fillers, paired because they share a pattern</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">16:30</span>
+        <div class="timeline-dot muted"></div>
+        <div class="timeline-content"><h4>UC6 — Auditfiles <span class="chip muted-bg" style="font-size:0.52rem; margin-left:0.3rem;">Architecture</span></h4><p>88 MB XML files — the engineering use case</p></div>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-time">16:50</span>
+        <div class="timeline-dot salmon"></div>
+        <div class="timeline-content"><h4>Wrap-up — priorities &amp; the pilot</h4><p>Pick one. Commit to a date. Go.</p></div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "Not a presentation to lean back in. You'll be asking questions, trying prompts, filling in canvases with us. The goal of today is not to be impressed — it's to pick the one use case worth piloting."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 2 · SECTION: WHY CLAUDE -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Section 1 · 10 minutes</span>
+    <h1>Why Claude?</h1>
+    <p style="max-width:30rem; margin:0 auto; text-align:center;">
+      Our tool of choice for knowledge work. Why it matters for M&amp;A.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 3 · CLAUDE CAPABILITIES -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">About Claude</span>
+    <h2>It reads the way a consultant reads</h2>
+    <p style="max-width:42rem; margin-bottom:1.3rem;">
+      Built by Anthropic. Not keyword scanning — contextual reasoning over long, complex documents. Give it a 33-page IM and it comes back with analysis you can take seriously.
+    </p>
+
+    <div class="grid-2" style="max-width:54rem;">
+      <div class="card">
+        <span class="mono-label">Long documents</span>
+        <div class="big-number">1M</div>
+        <p>tokens of context — roughly 2,000 pages, a full deal room in one pass. No chunking, no "did it actually see page 27?" — every term, footnote, and annex stays in working memory while it reasons.</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">Methodology, not prompt</span>
+        <div class="big-number" style="font-size:2.2rem;">Follows a rubric</div>
+        <p>Hand it your review checklist, playbook, or template. It applies the same rigor to file 1 and file 29 — consistent, not paraphrased, not shortcut on the last one.</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">Honest about uncertainty</span>
+        <div class="big-number" style="font-size:2.2rem;">Flags gaps</div>
+        <p>Says "the IM doesn't disclose customer concentration" instead of filling it in with a confident guess. Weak normalization justifications, inconsistently defined terms — surfaced, not hidden.</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">Dutch language</span>
+        <div class="big-number">NL</div>
+        <p>Reads and writes Dutch fluently. Annual reports, jaarrekening terminology, templates — no translation step. (For dense legal reasoning we still sometimes prompt in English and have it answer in Dutch.)</p>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Keep it grounded. "You know ChatGPT, Copilot. Good tools. But for work where accuracy and nuance matter, Claude is in a different league. The difference isn't speed — it's quality of analysis." If asked about the 1M number: that's Sonnet 4.5/4.6 today; Opus and Haiku sit at 200K. For M&amp;A it's the Sonnet class we use.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4 · THE THREE SURFACES -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">Where you work with Claude</span>
+    <h2>Three surfaces, one tool</h2>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div>
+        <p>At Tatoma, Claude is how we work every day. Contract analysis, financial documentation, proposals, report reviews. What took a day takes an hour — with better structure.</p>
+        <p style="margin-top:0.9rem;">Three interfaces, each tuned for a different kind of work. Same model underneath, different ergonomics.</p>
+      </div>
+      <div>
+        <div class="surface-card">
+          <span class="chip" style="margin-bottom:0.4rem;">Claude Chat</span>
+          <h3>Quick analysis &amp; reasoning</h3>
+          <p>Upload a document, get insight. The conversational surface — where UC1 and UC2 live this afternoon.</p>
+        </div>
+        <div class="surface-card mint-l">
+          <span class="chip mint" style="margin-bottom:0.4rem;">Claude Cowork</span>
+          <h3>File-heavy work</h3>
+          <p>Desktop tool with folder access and a sandboxed shell. Reads docs, fills templates, creates deliverables. A capable junior with perfect attention to detail.</p>
+        </div>
+        <div class="surface-card muted-l">
+          <span class="chip muted-bg" style="margin-bottom:0.4rem;">Claude Code</span>
+          <h3>Technical workflows</h3>
+          <p>Terminal-native agent for developers. Data pipelines, parsing large files, building systems — the engineering layer.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Honest about limits — AI output is a strong first draft, never a final answer. Today's demos use Chat (UC1, UC2). Cowork is what we'd use for UC3–5 in our world; Code is how we'd tackle UC6. You'll see the parallels when we get to Copilot Studio — Microsoft's stack has its own version of these three layers.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 4b · THE AGENTIC LAYER -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">What makes it a colleague, not a chat box</span>
+    <h2>The agentic layer</h2>
+    <p style="max-width:46rem; margin-bottom:1.2rem;">
+      Claude doesn't just answer — it works. Reads files, writes and runs code, fills templates, browses, searches. And when wired up, it plugs into your stack. Three layers make that possible.
+    </p>
+
+    <div class="grid-3" style="max-width:60rem;">
+      <div class="card">
+        <span class="mono-label">Native tool use</span>
+        <h3 style="font-size:1.2rem;">What Claude does on its own</h3>
+        <p>Write &amp; run code. Read, edit, create files. Browse the web. Produce structured output — Excel, Word, slide decks. You don't pick the tool — you state the goal, Claude picks the tool and reports back with the work done.</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">Skills</span>
+        <h3 style="font-size:1.2rem;">Your methodology, encoded</h3>
+        <p>A skill is a reusable capability bundle — your review rubric, your template library, your house style — packaged once so every analyst runs the same rigor. These slides were built by the <code style="font-family:var(--font-mono); font-size:0.82em;">pptx</code> skill, step by step.</p>
+      </div>
+      <div class="card">
+        <span class="mono-label">MCPs &amp; connections</span>
+        <h3 style="font-size:1.2rem;">Plugged into your stack</h3>
+        <p>MCP (Model Context Protocol) is the standardized connector layer. DMS, CRM, mail, databases, Notion, Slack, SharePoint. Claude reads and acts across them. This is where AI-as-assistant becomes AI-as-colleague.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:1.2rem; max-width:46rem; font-size:0.92rem;">
+      Put differently: <strong>tool use</strong> is what Claude can do, <strong>skills</strong> are how you teach it your way, and <strong>MCPs</strong> are what you connect it to. Stack the three and you get a working agent, not a smarter search box.
+    </p>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Point of this slide: Claude isn't a chat box. "Agentic workflow" = tool use + skills + MCPs, stacked. UC3 onwards we switch to Copilot Studio — that's Microsoft's equivalent stack inside their environment: actions (tool use), topics &amp; knowledge (skills), connectors (MCPs). Same thinking, different letters. If anyone asks what MCP is: an open protocol Anthropic published — Microsoft, Google, and others have since adopted it. Your DMS vendor probably has one or will soon.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 5 · SECTION: HOW WE'LL WORK -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Section 2 · 15 minutes</span>
+    <h1>How we'll work<br>together today</h1>
+    <p style="max-width:32rem; margin:0 auto; text-align:center;">
+      Two spines run through the afternoon. One is about <em>what</em> works. The other is about <em>what stays</em> when we're done.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 6 · THE FOUR PATTERNS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">Spine 1 — what works</span>
+    <h2>Four patterns, six use cases</h2>
+    <p style="max-width:44rem; margin-bottom:1.2rem;">Every use case today is one of four patterns. Learn the patterns, and the use cases stop being six separate problems — they become four variations of work you already understand.</p>
+
+    <div class="grid-4-tight" style="max-width:58rem;">
+      <div class="pattern-card">
+        <span class="p-num">Pattern 1 · Analyze</span>
+        <div class="flow-line">doc → insight</div>
+        <h3>Document Analysis</h3>
+        <p>One document in. Structured reasoning out. Risks, questions, assessments.</p>
+        <span class="lands-in">→ UC1 · IM Review</span>
+      </div>
+      <div class="pattern-card">
+        <span class="p-num">Pattern 2 · Compare</span>
+        <div class="flow-line">doc + doc → diff</div>
+        <h3>Cross-Doc Comparison</h3>
+        <p>Two versions of a deal document. Discrepancies, who benefits, what's material.</p>
+        <span class="lands-in">→ UC2 · NBO ↔ Term Sheet</span>
+      </div>
+      <div class="pattern-card ms">
+        <span class="p-num">Pattern 3 · Fill</span>
+        <div class="flow-line">source + template → output</div>
+        <h3>Template Filling</h3>
+        <p>Source document + empty template. Right data, right cells, flagged gaps.</p>
+        <span class="lands-in">→ UC3 · UC4 · UC5</span>
+      </div>
+      <div class="pattern-card ms">
+        <span class="p-num">Pattern 4 · Extract</span>
+        <div class="flow-line">mess → structure</div>
+        <h3>Data Extraction</h3>
+        <p>Messy, unstructured input. Clean, analyzable structured data at the other end.</p>
+        <span class="lands-in">→ UC6 · Audit files</span>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      Structure: patterns 1 and 2 we show in Claude — part 1 this afternoon. Patterns 3 and 4 we build in Copilot Studio — part 2. Same thinking, different stack. "These aren't Claude features — they're work patterns. They show up in every AI platform worth using. Pattern 1 and 2 are the easiest to show well; patterns 3 and 4 are where the real engineering lives — that's the afternoon."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 7 · INTRODUCE THE UC ASSET CANVAS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide uca-slide">
+    <div style="max-width:68rem; margin:0 auto 1.1rem; width:100%;">
+      <span class="mono-label" style="color:var(--salmon);">Spine 2 — what stays</span>
+      <h2 style="margin-bottom:0.3rem;">The Use-Case Asset Canvas</h2>
+      <p style="max-width:46rem; font-size:0.98rem;">Every use case today gets one of these. Ten rows. Filled together, live, as we work. A demo impresses for an hour. A filled canvas is what your team uses next Tuesday — and the Tuesday after that.</p>
+    </div>
+
+    <div class="uca-card">
+      <div class="uca-grid">
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M17 11l2 2 4-4"/></svg>
+          <div><div class="uca-label"><span class="uca-num">01</span>Who it's for</div><div class="uca-hint">The primary user — role, context, seniority</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+          <div><div class="uca-label"><span class="uca-num">02</span>What problem it solves</div><div class="uca-hint">The pain today — measured in hours, errors, or missed signal</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div><div class="uca-label"><span class="uca-num">03</span>When to use it</div><div class="uca-hint">Where in the deal lifecycle — intake, DD, IC prep, negotiation</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.8" fill="currentColor"/><circle cx="7" cy="17" r="0.8" fill="currentColor"/></svg>
+          <div><div class="uca-label"><span class="uca-num">04</span>Where it runs</div><div class="uca-hint">Today's surface → production surface. Claude Chat, Cowork, Copilot Studio, custom</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M13 9l3 3-3 3"/></svg>
+          <div><div class="uca-label"><span class="uca-num">05</span>Required inputs</div><div class="uca-hint">The exact data &amp; format — what has to be ready before you press go</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M10 14l3 3 5-5"/></svg>
+          <div><div class="uca-label"><span class="uca-num">06</span>Expected output</div><div class="uca-hint">The deliverable — shape, format, quality bar. This is what the demo validates.</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c1 1 1.5 2 1.5 3.5h5c0-1.5 .5-2.5 1.5-3.5A6 6 0 0 0 12 3z"/></svg>
+          <div><div class="uca-label"><span class="uca-num">07</span>Examples &amp; tips</div><div class="uca-hint">Prompts that worked. Edge cases. Known gotchas. House style notes.</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><div class="uca-label"><span class="uca-num">08</span>Owner &amp; status</div><div class="uca-hint">Who owns it at Crowe. Prototype · pilot · in production.</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h8M8 11h6"/></svg>
+          <div><div class="uca-label"><span class="uca-num">09</span>Related learning</div><div class="uca-hint">Which other UCs it feeds into. How the six fit together.</div></div>
+        </div>
+        <div class="uca-row">
+          <svg class="uca-icon" style="color:var(--mint);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V16"/><path d="M9 20V12"/><path d="M14 20V8"/><path d="M19 20V4"/></svg>
+          <div><div class="uca-label"><span class="uca-num">10</span>Quality &amp; reuse signals</div><div class="uca-hint">How we'll know it's working — reuse count, senior time saved, client-facing yes/no</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "Today's output isn't the demo — it's this canvas, filled in six times. Each UC gets one. You'll see the blank canvas, we'll fill rows as we go, and by the end of the afternoon you have six of these to take home. Demos fade. Canvases travel."
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 8 · SESSION MAP — SIX CANVASES -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">What leaves the room</span>
+    <h2>Six canvases. One library.</h2>
+    <p style="max-width:44rem; margin-bottom:1.3rem;">Here's what today looks like from the canvas angle. Six use cases, six filled assets — the starter library for AI at Crowe's M&amp;A practice.</p>
+
+    <div class="session-map">
+      <div class="session-slot claude">
+        <span class="uc-num">UC1</span>
+        <h4>IM Review</h4>
+        <p>Buyer's-perspective read of a 33-page IM</p>
+        <span class="slot-tag">Claude · demo</span>
+      </div>
+      <div class="session-slot claude">
+        <span class="uc-num">UC2</span>
+        <h4>Bid ↔ Term Sheet</h4>
+        <p>Clause-by-clause discrepancy check</p>
+        <span class="slot-tag">Claude · demo</span>
+      </div>
+      <div class="session-slot ms">
+        <span class="uc-num">UC3</span>
+        <h4>Cijferopstelling</h4>
+        <p>Annual report PDF → Excel template</p>
+        <span class="slot-tag">Copilot · build</span>
+      </div>
+      <div class="session-slot ms">
+        <span class="uc-num">UC4</span>
+        <h4>Waarderingsmodel</h4>
+        <p>DCF + ValuePlan model fillers</p>
+        <span class="slot-tag">Copilot · explore</span>
+      </div>
+      <div class="session-slot ms">
+        <span class="uc-num">UC5</span>
+        <h4>Teaser</h4>
+        <p>IM content → 3-slide teaser PPTX</p>
+        <span class="slot-tag">Copilot · explore</span>
+      </div>
+      <div class="session-slot arch">
+        <span class="uc-num">UC6</span>
+        <h4>Audit Files</h4>
+        <p>88 MB XAF → structured summary</p>
+        <span class="slot-tag">Architecture</span>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:1.3rem; max-width:58rem;">
+      <div>
+        <p class="pullquote">
+          A demo impresses for an hour. A filled canvas is what your team uses next Tuesday.
+        </p>
+      </div>
+      <div>
+        <p style="font-size:0.92rem;">At the end of today you can:</p>
+        <ul style="margin-top:0.4rem;">
+          <li>Rank the six by value, effort, and appetite</li>
+          <li>Pick one as a 4-week pilot</li>
+          <li>Hand the other five to your team with enough context to keep exploring</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 9 · SECTION: LET'S SEE IT WORK -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide section-divider">
+    <span class="mono-label">Section 3 · 60 minutes</span>
+    <h1>Let's see it work</h1>
+    <p style="max-width:32rem; margin:0 auto; text-align:center;">
+      Two Claude demos on your data. You judge the reasoning. We fill the canvases together.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- 10 · UP NEXT: UC1 -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="slide">
+    <span class="mono-label">13:00 · Up next</span>
+    <h2>UC1 — IM Review on Project Faraday</h2>
+    <p style="max-width:44rem; margin-bottom:1.3rem;">Your real 33-page Information Memorandum. Not test data, not pre-processed. Claude reads it exactly as it landed in Bram's inbox, and we build the buyer's-perspective review together.</p>
+
+    <div class="grid-2" style="max-width:54rem; margin-bottom:1.3rem;">
+      <div class="card" style="border-top:3px solid var(--secondary);">
+        <span class="mono-label">Format · 35 min</span>
+        <h3 style="font-size:1.25rem;">Demo · hands-on · canvas</h3>
+        <p>8 min live demo, 12 min hands-on for Bram &amp; Marieke to try their own prompts, 15 min to fill in the UC1 canvas together.</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--salmon);">
+        <span class="mono-label">What you'll judge</span>
+        <h3 style="font-size:1.25rem;">Was the reasoning useful?</h3>
+        <p>Not "was it fast" — speed is obvious. The question is whether the analysis would hold up in an internal buyer memo.</p>
+      </div>
+    </div>
+
+    <div class="card" style="max-width:54rem; background:rgba(255,140,125,0.05); border-color:var(--salmon);">
+      <p style="color:var(--fg);"><strong>One ground rule for the whole afternoon:</strong> push back. If an output looks plausible but wrong, say so. If a canvas row feels incomplete, call it out. The value of today comes from you disagreeing with us in real time — not from polite nods.</p>
+    </div>
+
+    <div class="speaker-note">
+      <strong>Speaker note</strong>
+      "During every demo, you try things yourselves. Your own questions, your own prompts. And every time we land on something useful, it goes straight into the canvas. Ready? Let's start."
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ── Nav bar ── -->
+<div class="nav-bar">
+  <div class="nav-dots" id="navDots"></div>
+  <div class="nav-info" id="navInfo">1 / 12</div>
+  <div class="nav-help">← → &nbsp;·&nbsp; N = notes &nbsp;·&nbsp; F = fullscreen</div>
+</div>
+
+<script src="shell.js" defer></script>
+<script src="canvas.js" defer></script>
+</body>
+</html>

@@ -16,8 +16,10 @@
 | Tatoma (equity) | Future / uncertain | Small position, identified legal risks |
 | Pimpi Sparks | EUR 0 | Live, free |
 | Pimpi Card | EUR 0 | Private alpha |
-| StudyStars / TLOM | EUR 0 | Pre-revenue. Education consultant + sales partner losing interest. |
-| Palu Labs | EUR 0 | Experiments only |
+| Kimbi Games / Snackjes! | EUR 0 | Published on App Store, not monetised yet |
+| StudyStars / TLOM | EUR 0 | Pre-revenue. Education consultant + sales partner disengaged. |
+| Literary Sculptor | EUR 0 | Parked |
+| Palú Labs freelance | EUR 0 | Available but secondary |
 | Cope | EUR 0 | Internal infrastructure |
 
 **Target:** At least one secondary income stream generating EUR 500-1000/mo

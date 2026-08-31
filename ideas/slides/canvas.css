@@ -1,0 +1,218 @@
+/* ════════════════════════════════════════════════════════════════════ */
+/* CANVAS.CSS — UC Asset Canvas & Demo Components                         */
+/* Shared by: intro, UC1, UC2, UC3, UC4/5, UC6                           */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/* ── Demo box (Claude demo container) ── */
+.demo-box {
+  background: var(--card);
+  border: 2px solid var(--salmon);
+  border-radius: var(--radius);
+  padding: 0;
+  margin-top: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(255,140,125,0.1);
+}
+.demo-box-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.8rem 1.2rem;
+  background: rgba(255,140,125,0.06);
+  border-bottom: 1px solid rgba(255,140,125,0.15);
+}
+.demo-box-header .demo-label {
+  font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--salmon);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.demo-box-header .demo-label::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--salmon); animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.demo-box-body { padding: 1rem 1.2rem; }
+.demo-box-body .demo-files {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;
+}
+.demo-file {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.7rem; border-radius: 6px;
+  background: rgba(30,0,30,0.04); font-size: 0.78rem; color: var(--muted-fg);
+  font-family: var(--font-mono); letter-spacing: 0.02em;
+}
+.demo-file::before { content: "📄"; font-size: 0.7rem; }
+
+.demo-prompt {
+  position: relative;
+  background: var(--fg); color: rgba(246,250,235,0.92);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem 1rem;
+  font-size: 0.78rem; line-height: 1.6;
+  font-family: var(--font-mono); letter-spacing: 0.01em;
+  max-height: 13rem; overflow-y: auto;
+}
+.demo-prompt::-webkit-scrollbar { width: 6px; }
+.demo-prompt::-webkit-scrollbar-thumb { background: rgba(246,250,235,0.2); border-radius: 3px; }
+.demo-prompt .p-tag {
+  display: block;
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  color: rgba(246,250,235,0.4);
+  margin-bottom: 0.7rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(246,250,235,0.1);
+  padding-right: 3.5rem;
+}
+.demo-prompt .prompt-text {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.copy-btn {
+  position: absolute; top: 0.55rem; right: 0.55rem;
+  background: rgba(255,140,125,0.22); border: none; border-radius: 6px;
+  padding: 0.35rem 0.7rem; cursor: pointer;
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--salmon); transition: background 0.2s;
+  z-index: 2;
+}
+.copy-btn:hover { background: rgba(255,140,125,0.4); }
+.copy-btn.copied { background: rgba(14,225,126,0.3); color: #0EE17E; }
+
+.demo-surface {
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+  margin-top: 0.6rem; display: block;
+}
+
+/* ── UC Asset Canvas ── */
+.uca-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--salmon);
+  border-radius: var(--radius);
+  padding: 1.8rem 2rem;
+  box-shadow: 0 1px 3px rgba(30,0,30,0.04);
+  max-width: 68rem;
+  margin: 0 auto;
+  width: 100%;
+}
+.uca-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 2.5rem;
+}
+.uca-row {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: 0.9rem;
+  align-items: start;
+  padding: 0.35rem 0;
+}
+.uca-icon {
+  width: 1.7rem; height: 1.7rem;
+  color: var(--salmon);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+.uca-icon.mint-icon { color: var(--mint); }
+.uca-label {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--fg);
+  line-height: 1.25;
+}
+.uca-hint {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--muted-fg);
+  line-height: 1.45;
+  margin-top: 0.15rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 900px) {
+  .uca-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Canvas-step header (anchors each slide to a canvas row) ── */
+.canvas-step {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding-bottom: 0.9rem; margin-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+.canvas-step-num {
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.15em; color: var(--salmon);
+  background: rgba(255,140,125,0.1); border-radius: 4px;
+  padding: 0.3rem 0.55rem;
+}
+.canvas-step-icon { width: 1.4rem; height: 1.4rem; color: var(--salmon); flex-shrink: 0; }
+.canvas-step-icon.mint-icon { color: var(--mint); }
+.canvas-step-label {
+  font-family: var(--font-sans); font-size: 1rem; font-weight: 500;
+  color: var(--fg);
+}
+.canvas-step-pair {
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  margin-left: auto;
+}
+
+/* ── Validate block (hypothesis + questions per row) ── */
+.validate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.validate-block { }
+.validate-block h3 {
+  font-family: var(--font-sans); font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.5rem;
+}
+.validate-block .hypothesis {
+  background: var(--card); border: 1px solid var(--border);
+  border-left: 3px solid var(--salmon);
+  border-radius: 8px; padding: 0.9rem 1.1rem;
+  margin-bottom: 0.9rem; font-size: 0.95rem;
+}
+.validate-block ul.questions { margin-top: 0.3rem; }
+.validate-block ul.questions li {
+  font-size: 0.9rem; color: var(--muted-fg);
+  padding-left: 1.1rem; margin-bottom: 0.35rem;
+}
+.validate-block ul.questions li::before {
+  width: 4px; height: 4px; top: 0.55rem; background: var(--muted);
+}
+
+/* ── Mini-canvas row for slide headers ── */
+.mini-canvas-nav {
+  display: flex; gap: 0.35rem; justify-content: center;
+  margin-top: 0.8rem; flex-wrap: wrap;
+}
+.mini-canvas-dot {
+  width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: rgba(163,151,163,0.15); color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+}
+.mini-canvas-dot.done { background: rgba(255,140,125,0.2); color: var(--salmon); }
+.mini-canvas-dot.active { background: var(--salmon); color: #fff; transform: scale(1.15); }
+.mini-canvas-dot.mint-done { background: rgba(14,225,126,0.2); color: #08924f; }
+
+/* ── Editable canvas cells ── */
+[contenteditable="true"] { outline: none; transition: background 0.15s ease, box-shadow 0.15s ease; cursor: text; border-radius: 4px; }
+.uca-hint[contenteditable="true"] { padding: 0.15rem 0.35rem; margin: -0.15rem -0.35rem; }
+.uca-hint[contenteditable="true"]:hover { background: rgba(255,140,125,0.06); }
+.uca-hint[contenteditable="true"]:focus { background: rgba(255,140,125,0.12); box-shadow: inset 0 -1px 0 var(--salmon); }
+.hypothesis[contenteditable="true"]:hover { background: rgba(255,140,125,0.04); }
+.hypothesis[contenteditable="true"]:focus { box-shadow: 0 0 0 2px rgba(255,140,125,0.3); }
+.uca-hint.edited, .hypothesis.edited { position: relative; }
+.uca-hint.edited::before { content: ""; position: absolute; left: -0.6rem; top: 0.45rem; width: 4px; height: 4px; border-radius: 50%; background: var(--mint); }
+.reset-btn { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; transition: all 0.15s ease; }
+.reset-btn:hover { color: var(--salmon); border-color: var(--salmon); }
+
+@media (max-width: 900px) {
+  .validate-grid { grid-template-columns: 1fr; }
+}

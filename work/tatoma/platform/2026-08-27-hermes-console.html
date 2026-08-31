@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Hermes</title>
+<style>
+  :root{
+    --serif:"Canela",Georgia,"Times New Roman",serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:"TSTARMonoRound",ui-monospace,"SF Mono",Menlo,monospace;
+
+    --bg:#faf6f4; --fg:#1d0a14; --card:#fff; --muted:#f3e3dc; --muted-fg:#6e5b61;
+    --border:#ecdcd5; --chip:rgba(29,10,20,.05);
+    --primary:#ff8c7d; --secondary:#1f0a16; --on-secondary:#fbefe9;
+    --open:#8a8194;  --open-soft:#efe9ee;
+    --wip:#c08a3e;   --wip-soft:#f6ecd9;
+    --done:#3f7d5a;  --done-soft:#e1efe5;
+    --gap:#b86a55;   --gap-soft:#f6e4dd;
+    --tone-olive:#e8e6cb; --tone-sage:#d1dcc5; --tone-blush:#f7e2da; --tone-muted:#f3e3dc;
+    --shadow:0 1px 2px rgba(29,10,20,.05);
+  }
+  body.dark{
+    --bg:#1a0511; --fg:#fbefe9; --card:#2b1220; --muted:#3a1f2e; --muted-fg:#c9b6bf;
+    --border:#43293a; --chip:rgba(251,239,233,.08); --secondary:#0f030b;
+    --open:#a99bab;  --open-soft:#3a2c38;
+    --wip:#e0a95c;   --wip-soft:#4a3419;
+    --done:#7fbf98;  --done-soft:#1d3a2a;
+    --gap:#e2937b;   --gap-soft:#4a241a;
+    --shadow:0 1px 3px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.5;
+    transition:background .25s,color .25s}
+  h1,h2,h3{font-family:var(--serif);font-weight:300;letter-spacing:-.015em;margin:0}
+  .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em}
+  button,input,textarea{font-family:inherit;color:inherit}
+
+  /* 1 · chrome */
+  .chrome{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--border);
+    padding:16px 28px 14px;display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .chrome h1{font-size:27px;line-height:1.1}
+  .statline{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-top:6px;display:flex;align-items:center;gap:10px}
+  .pbar{width:120px;height:4px;border-radius:99px;background:var(--muted);overflow:hidden}
+  .pbar > i{display:block;height:100%;background:var(--primary);transition:width .35s}
+  .ctrls{margin-left:auto;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .pill{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;
+    border:1px solid var(--border);border-radius:99px;padding:6px 13px;background:transparent;
+    color:var(--muted-fg);cursor:pointer;white-space:nowrap}
+  .pill:hover{border-color:var(--fg);color:var(--fg)}
+  .pill.on{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+  input.pill{width:100px;text-transform:none;letter-spacing:0;cursor:text}
+  input.pill:focus{outline:none;border-color:var(--primary)}
+
+  .wrap{padding:20px 28px 90px;max-width:1760px;margin:0 auto}
+  .eyebrow{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+    color:var(--muted-fg);margin:0 0 9px}
+
+  /* 2 · spotlight */
+  .spot{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;margin-bottom:22px}
+  .tile{border-radius:12px;padding:10px 12px;border:1px solid var(--border);background:var(--card);
+    cursor:pointer;transition:transform .2s,box-shadow .2s;min-width:0}
+  .tile:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(29,10,20,.12)}
+  .tile .le{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .mn{font-family:var(--mono);font-size:12.5px;font-weight:700;margin-top:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .sb{font-size:13px;color:var(--muted-fg);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile.t-wip{border-color:var(--wip);background:var(--wip-soft)}
+  .tile.t-wip .le{color:var(--wip)}
+  .tile.t-cp{border-color:var(--primary)}
+  .tile.t-done{background:var(--done-soft);opacity:.8}
+  .tile.t-parked{background:var(--bg);opacity:.65}
+  .tile .warn{color:var(--gap);font-weight:700}
+
+  /* 3 · seam ledger */
+  .ledger{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:22px}
+  .lhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .lhead h2{font-size:19px}
+  .lsum{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted-fg)}
+  .lhead .pill{margin-left:auto}
+  .srow{display:flex;align-items:center;gap:9px;border-radius:11px;padding:8px 13px;margin-top:7px;
+    cursor:pointer;border:1px solid transparent;min-width:0}
+  .srow:hover{background:var(--chip)}
+  .srow.armed{border-color:var(--gap);background:var(--gap-soft)}
+  .srow.cleared{opacity:.45}
+  .spill{font-family:var(--mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    border-radius:99px;padding:3px 8px;white-space:nowrap}
+  .sp-armed{background:var(--gap);color:#fff}
+  .sp-live{background:var(--gap-soft);color:var(--gap)}
+  .sp-waiting{background:var(--open-soft);color:var(--open)}
+  .sp-cleared{background:var(--done-soft);color:var(--done)}
+  .sn{font-family:var(--mono);font-size:11px;font-weight:700}
+  .sfile{font-family:var(--mono);font-size:11px;color:var(--muted-fg);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;max-width:270px}
+  .tchip{font-family:var(--mono);font-size:9.5px;font-weight:700;border-radius:99px;padding:2px 7px;cursor:pointer;white-space:nowrap}
+  .tc-todo{background:var(--open-soft);color:var(--open)}
+  .tc-wip{background:var(--wip-soft);color:var(--wip)}
+  .tc-done{background:var(--done-soft);color:var(--done)}
+  .sverd{font-size:13px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sdetail{border-radius:9px;background:var(--gap-soft);padding:11px 14px;margin:6px 0 4px;font-size:12.5px;line-height:1.55}
+  .lempty{font-size:12px;font-style:italic;color:var(--muted-fg);padding:10px 2px}
+
+  /* 4 · wave map */
+  .board{display:grid;grid-template-columns:190px repeat(4,minmax(0,1fr));gap:13px;align-items:start}
+  .col{min-width:0}
+  .chead{font-family:var(--mono);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+    margin:0 2px 10px;display:flex;justify-content:space-between;gap:6px}
+  .cempty{border:1px dashed var(--border);border-radius:12px;padding:16px 8px;text-align:center;
+    font-size:11.5px;font-style:italic;color:var(--muted-fg)}
+
+  .card{background:var(--card);border-radius:13px;padding:13px 15px 12px;margin-bottom:9px;box-shadow:var(--shadow);
+    overflow:hidden;cursor:pointer;border-top:4px solid transparent;transition:box-shadow .2s,transform .2s}
+  .card:hover{box-shadow:0 6px 20px rgba(29,10,20,.13)}
+  .card.cp{border-top-color:var(--primary)}
+  .card.s-done{opacity:.55}
+  .ctop{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .cid{font-family:var(--mono);font-size:12px;font-weight:700}
+  .pick{font-family:var(--mono);font-size:9.5px;background:var(--secondary);color:var(--on-secondary);
+    border-radius:99px;padding:2px 7px}
+  .urg{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--wip-soft);color:var(--wip);
+    border-radius:99px;padding:2px 7px;letter-spacing:.06em}
+  .stat-c{margin-left:auto;border:0;background:transparent;cursor:pointer;padding:0;display:flex;align-items:center}
+  .dot0{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--open);background:transparent;
+    transition:border-color .15s,background .15s}
+  .stat-c:hover .dot0{border-color:var(--wip);background:var(--wip-soft)}
+  .stat-l{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;border-radius:99px;padding:3px 9px}
+  .stat-l::before{content:"";width:6px;height:6px;border-radius:99px;background:currentColor}
+  .sl-wip{background:var(--wip-soft);color:var(--wip)}
+  .sl-done{background:var(--done-soft);color:var(--done)}
+  .ctitle{font-family:var(--serif);font-size:15.5px;line-height:1.3;letter-spacing:-.01em;margin:9px 0 8px}
+  .cmeta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+  .lane-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;color:#1d0a14}
+  .seam-p{font-family:var(--mono);font-size:9px;font-weight:700;border-radius:99px;padding:2px 7px;
+    background:var(--gap-soft);color:var(--gap)}
+  .blk-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;
+    background:var(--open-soft);color:var(--open)}
+  .ag-p{font-family:var(--mono);font-size:9px;border-radius:99px;padding:2px 7px;background:var(--muted);color:var(--muted-fg)}
+
+  .exp{margin-top:11px;padding-top:11px;border-top:1px solid var(--border);cursor:default}
+  .surf{font-family:var(--mono);font-size:10px;background:var(--chip);border-radius:8px;padding:9px 11px;
+    max-height:110px;overflow:auto;line-height:1.5;margin-top:8px}
+  .surf .k,.nk{display:block;font-family:var(--mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--muted-fg);margin-bottom:4px}
+  .note{border-left:3px solid var(--gap);padding-left:10px;font-size:12px;line-height:1.55;color:var(--muted-fg);margin-top:10px}
+  .deliv{font-size:12px;font-style:italic;color:var(--done);margin-top:8px}
+  .agi{width:100%;font-family:var(--mono);font-size:11px;padding:7px 12px;border:1px solid var(--border);
+    border-radius:99px;background:var(--bg);margin-top:11px}
+  .agi:focus,.nts:focus{outline:none;border-color:var(--primary)}
+  .nts{width:100%;min-height:36px;font-size:11.5px;padding:8px 11px;border:1px dashed var(--border);
+    border-radius:10px;background:var(--bg);margin-top:7px;resize:vertical}
+  .arow{display:flex;align-items:center;gap:11px;margin-top:12px}
+  .disp{width:44px;height:44px;flex-shrink:0;border-radius:99px;border:0;background:var(--primary);color:#1d0a14;
+    font-size:18px;cursor:pointer;transition:transform .2s}
+  .disp:hover{transform:scale(1.07)}
+  .ahint{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted-fg)}
+  .lnk{margin-left:auto;font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--border);
+    border-radius:99px;padding:4px 9px;color:var(--muted-fg)}
+  .lnk:hover{background:var(--secondary);color:var(--on-secondary);border-color:var(--secondary)}
+
+  /* 5 · dispatch drawer */
+  .scrim{position:fixed;inset:0;background:rgba(29,10,20,.45);z-index:40}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:390px;background:var(--secondary);color:var(--on-secondary);
+    padding:26px;box-shadow:-12px 0 40px rgba(0,0,0,.3);z-index:41;overflow-y:auto}
+  .dtop{display:flex;align-items:center;gap:8px}
+  .deye{font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--primary)}
+  .dx{margin-left:auto;background:transparent;border:0;color:var(--on-secondary);font-size:16px;cursor:pointer;opacity:.7}
+  .dx:hover{opacity:1}
+  .drawer h2{font-size:25px;margin-top:14px}
+  .dsub{font-size:13.5px;opacity:.75;margin-top:4px;line-height:1.45}
+  .warn{border-radius:10px;padding:11px 13px;margin-top:12px;font-size:12.5px;line-height:1.5}
+  .w-armed{background:var(--gap);color:#fff}
+  .w-soft{background:var(--gap-soft);color:#1d0a14}
+  .w-blk{background:var(--wip-soft);color:#1d0a14}
+  .step{border:1px solid rgba(251,239,233,.22);border-radius:11px;padding:11px 13px;margin-top:11px;
+    display:flex;align-items:center;gap:10px}
+  .step .sl{font-family:var(--mono);font-size:10.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cpy{font-family:var(--mono);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+    background:var(--primary);color:#1d0a14;border:0;border-radius:99px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+  .stepin{background:transparent;border:0;border-bottom:1px solid rgba(251,239,233,.4);color:var(--on-secondary);
+    font-family:var(--mono);font-size:11px;padding:3px 0;flex:1;min-width:0}
+  .stepin:focus{outline:none;border-bottom-color:var(--primary)}
+  .markwip{width:100%;margin-top:18px;background:var(--primary);color:#1d0a14;border:0;border-radius:12px;
+    padding:14px;font-family:var(--mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
+  .markwip:hover{filter:brightness(1.05)}
+  .dfoot{display:flex;align-items:center;gap:8px;margin-top:14px}
+  .ghost{font-family:var(--mono);font-size:9.5px;background:transparent;border:1px solid rgba(251,239,233,.3);
+    color:var(--on-secondary);border-radius:99px;padding:5px 10px;cursor:pointer}
+  .ghost:hover{background:rgba(251,239,233,.1)}
+  .dfoot a{margin-left:auto;font-family:var(--mono);font-size:9.5px;color:var(--on-secondary);opacity:.75;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="chrome">
+  <div>
+    <h1>Hermes <span style="opacity:.45">— 4 worktrees off origin/develop · TTM-1205..1229</span></h1>
+    <div class="statline"><span id="stats"></span><span class="pbar"><i id="pfill"></i></span></div>
+  </div>
+  <div class="ctrls">
+    <button class="pill" id="cpBtn">crit path</button>
+    <input class="pill" id="agFilter" placeholder="agent…"/>
+    <button class="pill" id="themeBtn">◐ dark</button>
+    <button class="pill" id="copyBtn">copy state</button>
+    <button class="pill" id="resetBtn">reset</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="eyebrow">Next up, per lane · click a tile to act</p>
+  <div class="spot" id="spot"></div>
+
+  <div class="ledger">
+    <div class="lhead">
+      <h2>Seams</h2>
+      <span class="lsum" id="lsum"></span>
+      <button class="pill" id="quietBtn"></button>
+    </div>
+    <div id="srows"></div>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<div id="overlay"></div>
+
+<script>
+/* ══ CONFIG — retarget for a different tracker/workspace ══ */
+const CFG={
+  prefix:"TTM",                                            // issue key prefix
+  url:id=>`https://linear.app/tatoma/issue/TTM-${id}`,     // issue link
+  worktree:(id,branch)=>`git fetch origin && git worktree add ../hermes-ttm-${id} -b ${branch} origin/develop`,
+  recycle:(id,branch)=>`git fetch origin && git rebase origin/develop && pnpm install && cd packages/database && pnpm db:types`,
+  prompt:(id,title)=>`hey dear friend, can you please help me take a look at and tackle ${CFG.prefix}-${id} — ${title} (${CFG.url(id)})`,
+};
+
+/* ══ SEED — regenerated from Linear by the tracker skill. Never hand-edit render code. ══ */
+const STREAMS={
+  A:{name:"Spine · data model, notify(), delivery", tone:"var(--tone-olive)"},
+  B:{name:"Drip · engine, signals, journeys",       tone:"var(--tone-sage)"},
+  C:{name:"Consent · preferences, legal, GDPR",     tone:"var(--tone-blush)"},
+  D:{name:"Reach · integrations, producers, updates",tone:"var(--tone-muted)"},
+};
+
+const ORDER_A="Lane A order: 1205 → 1206 → 1207 → 1208 → 1209 → 1210.";
+const ORDER_B="Lane B order: 1219 → 1221 → 1218 → 1220 → 1222 → 1223.";
+const ORDER_C="Lane C order: 1211 → 1213 → 1212 → 1214 → 1216 → 1215 → 1217.";
+const ORDER_D="Lane D order: 1226 → 1227 → 1224 → 1225 → 1228 → 1229.";
+
+const T=[
+/* ══════════ A · SPINE ══════════ */
+{id:1205,s:"A",cp:true,size:"M",
+ t:"Scaffold apps/hermes with cron skeleton",
+ branch:"israel/ttm-1205-scaffold-appshermes-with-cron-skeleton",
+ surf:"apps/hermes/** (new, from apps/app-template) · apps/hermes/vercel.json · packages/config/src/apps.ts (APP_PORTS — next free is 3017) · packages/core/src/apps.ts (app registry) · turbo.json",
+ blk:[], soft:[],
+ note:ORDER_A+" You are #1 — and three other lanes are waiting on you, so land this in a day and do nothing clever. SEAM0 — confirm origin/develop has been fast-forwarded before you branch. SEAM3 — stub ALL FOUR crons as no-op 200 routes (drip-tick, weekly-send, delivery-retry, consent-sync) so B, C and D never touch apps/hermes/vercel.json. That is the single most valuable thing this card does. SEAM10 — you own packages/config/src/apps.ts and packages/core/src/apps.ts; B treats them as read-only. Cron route pattern: copy apps/hub/src/app/api/cron/gdpr-purge/route.ts (S2S-protected). No user-facing UI in v1.",
+ deliver:"apps/hermes deploys, /api/health green, four crons return 200 on schedule, and vercel.json is frozen for the rest of the project."},
+
+{id:1206,s:"A",cp:true,size:"S",
+ t:"Migration: notifications.category + backfill",
+ branch:"israel/ttm-1206-migration-notificationscategory-backfill",
+ surf:"packages/database/supabase/migrations/184_ttm1206_notifications_category.sql · packages/database/src/notifications/types.ts · packages/database/src/notifications/notification-service.ts (createNotificationRecords, L26) · packages/database/src/types/database.ts (generated)",
+ blk:[], soft:[],
+ note:ORDER_A+" You are #2, but you have no blockers — author alongside 1205. SEAM1 — migration number RESERVED: 184 (head after the develop fast-forward is 183_ttm1187_share_token_last_used.sql). Never grab a number at commit time. SEAM2 — merge in number order, regenerate types after each recycle onto develop. Making category required breaks exactly three call sites and no more: activity-comments/comment-notifications.ts, context-comments/comment-notifications.ts, and apps/client-portal/src/app/api/webhooks/resend/route.ts. Two of those belong to lane D (1224) and one to your own 1210 — pass 'transactional' at all three now so nothing is red, and let D refactor properly later.",
+ deliver:"Every notifications row has a category, org_digest is reserved in the enum, and createNotificationRecords will not compile without one."},
+
+{id:1207,s:"A",cp:true,size:"M",
+ t:"Migration: notification_deliveries ledger",
+ branch:"israel/ttm-1207-migration-notification_deliveries-ledger",
+ surf:"packages/database/supabase/migrations/185_ttm1207_notification_deliveries.sql · packages/database/src/notifications/deliveries.ts (new) · packages/database/src/notifications/index.ts · packages/database/src/types/database.ts (generated)",
+ blk:[], soft:[],
+ note:ORDER_A+" You are #3, no blockers — author alongside 1205 and 1206. SEAM1 — migration number RESERVED: 185. SEAM2 — merge in number order, regenerate types on recycle. The trailing-7-day cap query is the hot path: index on (user_id, created_at). Skipped rows are WRITTEN, not dropped — silence must be explainable (ISMS). Provider ids only, never message bodies. Put slack_personal, slack_org, teams_personal and teams_org in the channel enum NOW so lane D never needs a migration of its own. Add a pending status if 1208 takes the queue split described in its note.",
+ deliver:"A ledger that answers 'may I send?' in one indexed query and 'why was this silent?' for any user on any day."},
+
+{id:1208,s:"A",cp:true,size:"L",
+ t:"notify() entry point: matrix, preferences, cap, ledger",
+ branch:"israel/ttm-1208-notify-entry-point-matrix-preferences-cap-ledger",
+ surf:"apps/hermes/src/app/api/s2s/notify/route.ts (new) · apps/hermes/src/lib/notify.ts (new) · apps/hermes/src/lib/channel-matrix.ts (new) · packages/database/src/notifications/notify-client.ts (new) · packages/config/src/s2s.ts (moved) · packages/database/src/notifications/notification-service.ts",
+ blk:[1205,1206,1207,1211], soft:[],
+ note:ORDER_A+" You are #4 and the hub of the whole project: six cards across three lanes are blocked on you. ⚠ SEAM12 — THE TICKET'S PLAN DOES NOT COMPILE AS WRITTEN. It puts the typed client helper in packages/core, but @tatomahq/core already depends on @tatomahq/database, so the producers in packages/database (1224, 1225) cannot import it without a cycle. Fix: move getS2SHeaders from packages/core/src/s2s.ts into @tatomahq/config (zero-dep, and it already imports only getEnvironment from there), then put the typed notify client at packages/database/src/notifications/notify-client.ts. Do that move FIRST, in its own commit, and merge it ahead of the rest — it is a repo-wide import change and all four lanes rebase over it. SEAM5 — you SINGLE-OWN notify.ts and the matrix; 1222, 1224, 1225, 1226 and 1229 are callers only. SEAM8 — read notification-preferences.ts (lane C's 1211), never extend it. Enforce matrix → preference → drip suppression → trailing-7-day cap INSIDE notify(), never per producer (the PRD's noise-regression risk). Consider writing pending ledger rows and letting 1209's cron drain them: it decouples the write path from provider latency and retry falls out for free.",
+ deliver:"One S2S call creates the center record and fans out correctly, the ledger explains every send and every silence, and tests cover matrix denial, opt-out, cap, suppression and the happy path."},
+
+{id:1209,s:"A",cp:true,size:"L",tag:"urgent",
+ t:"Outbound email sender via Resend + delivery-retry cron",
+ branch:"israel/ttm-1209-outbound-email-sender-via-resend-delivery-retry-cron",
+ surf:"apps/hermes/src/lib/channels/index.ts (new — the Channel interface) · apps/hermes/src/lib/channels/email.ts (new) · apps/hermes/src/app/api/cron/delivery-retry/route.ts (body only)",
+ blk:[1205,1208], soft:[],
+ note:ORDER_A+" You are #5. ⚠ SIZED WRONG IN THE TICKET — the platform has NO outbound email today. The only `resend` import in the entire repo is the INBOUND webhook at apps/client-portal/src/app/api/webhooks/resend/route.ts. So this card also carries sending domain and DNS, a template and render layer, locale selection from notification_translations, and List-Unsubscribe headers. It is an L, it is on the critical path, and lane D's 1229 cannot ship without it. SEAM4 — you DEFINE apps/hermes/src/lib/channels/index.ts, the interface every sender implements. Land that interface in its own early commit even if the email body lags, because lane D is blocked on the shape, not the implementation. SEAM3 — the cron is already stubbed; fill the body only. Retry keys on the ledger row: never double-send.",
+ deliver:"A real email leaves the platform in the right locale, its provider id lands on the ledger, and failed rows retry with backoff to a cutoff."},
+
+{id:1210,s:"A",size:"M",
+ t:"Move inbound email webhook into Hermes",
+ branch:"israel/ttm-1210-move-inbound-email-webhook-into-hermes",
+ surf:"apps/client-portal/src/app/api/webhooks/resend/route.ts (becomes a 307) · apps/hermes/src/app/api/webhooks/resend/route.ts (new) · packages/core/src/notifications/handlers.ts",
+ blk:[1205], soft:[1206],
+ note:ORDER_A+" You are #6, the tail — nothing is blocked on you, so this is the card to drop if the lane runs hot. ⚠ The design doc never says where this route lives: it is in CLIENT-PORTAL, not hub. Behaviour must be byte-identical: same routing target types, same idempotency on resend_email_id, same translations handling. Keep the client-portal route as a 307 through one Resend-config cycle, then delete in a follow-up. Repoint the Resend inbound webhook URL BEFORE removing the old route — this is the only card in the project that can silently break a path that is live in production today.",
+ deliver:"Inbound email lands in the center via hermes, the old URL still works, and nothing observable about the center changed."},
+
+/* ══════════ B · DRIP ══════════ */
+{id:1219,s:"B",size:"M",
+ t:"Journey definition format (slots, topics, fixed order)",
+ branch:"israel/ttm-1219-journey-definition-format-slots-topics-fixed-order",
+ surf:"apps/hermes/src/journeys/types.ts (new) · apps/hermes/src/journeys/index.ts (new)",
+ blk:[], soft:[],
+ note:ORDER_B+" SEAM0 — confirm origin/develop has been fast-forwarded before you branch. You are #1 with no blockers — this lane starts on day one. Your real job is to make the two DEFERRED open questions (slot count per topic, topic-to-conversion-point mapping) changeable later without engine changes. Typed config in the repo, not db-authored, for v1: reviewable and versioned. Write down why. Ordered slots over ~2 weeks, each bound to a topic (Context, Academy, Tasks, Prompts, plus the first-admin extras: complete org context, invite IT for SSO), each carrying variants per band with translations. Ship with PLACEHOLDER COPY so 1220 and 1222 can be built and tested long before 1223 writes a word.",
+ deliver:"A typed journey file the resolver executes and a copywriter fills in, where changing the slot count is a config edit and nothing else."},
+
+{id:1221,s:"B",size:"L",
+ t:"State signal providers + new conversion signals",
+ branch:"israel/ttm-1221-state-signal-providers-new-conversion-signals",
+ surf:"packages/database/src/studio-journey-state.ts · packages/database/src/profile-completion.ts · packages/database/src/learn/ · packages/database/src/prompts.ts · packages/database/src/prompt-grants.ts (read queries only)",
+ blk:[], soft:[],
+ note:ORDER_B+" You are #2, also with no blockers — author alongside 1219. SEAM11 — lane D's 1225 edits the MUTATION side of prompt-grants.ts while you add READ queries; different regions, whoever recycles second rebases. Reuse the signal family behind the Studio homepage arrow (apps/studio/src/components/features/home/perforation.tsx and its data path), then add the four conversion signals: saved a prompt, created a library, shared a prompt or library, earned a certificate. MUST be cheap at drip-tick scale — one batched call for N users, never a query per user per slot. This card de-risks the drip, so do not let it slide behind 1219.",
+ deliver:"One batched call returns a band (untouched / in progress / converted) per topic for N users, fast enough to sweep every enrolled user daily."},
+
+{id:1218,s:"B",size:"L",
+ t:"Drip enrollment + audience classification",
+ branch:"israel/ttm-1218-drip-enrollment-audience-classification",
+ surf:"packages/database/supabase/migrations/187_ttm1218_drip_enrollments.sql · apps/hermes/src/lib/enrollment.ts (new) · packages/database/src/types/database.ts (generated)",
+ blk:[1205], soft:[],
+ note:ORDER_B+" You are #3. ⚠ THE DESIGN DOC ASSUMES A HOOK THAT DOES NOT EXIST. 'Enrollment on account creation' has nowhere to attach: apps/hub/src/app/api/webhooks/workos/route.ts handles ONLY dsync.group.* events, there is no user.created handler, and the one alternative (api/onboarding/complete) fires on onboarding COMPLETION — which would silently exclude the users who abandon onboarding, i.e. exactly the drop-off cohort slot 1 exists to recover. SEAM7 resolution: DODGE THE FILE. Export ensureEnrollments() that sweeps users with no enrollment row created since the last run; 1222 calls it at the top of drip-tick. Idempotent, backfills day one, catches the abandoners, and leaves lane C sole owner of the onboarding route. SEAM1 — migration number RESERVED: 187. SEAM2 — 187 merges last of the four; regenerate types on recycle. Settle: multi-org users (enroll in the creating org), demo and clone accounts (exclude — see packages/database/src/demo-clone-registry.ts), re-enrollment on promotion to admin.",
+ deliver:"Every real new user is enrolled in the right variant within a day of creation, with no double enrollment on rerun and no demo clones in the set."},
+
+{id:1220,s:"B",size:"L",
+ t:"Send-time resolver: flag, state band, suppression predicates",
+ branch:"israel/ttm-1220-send-time-resolver-flag-state-band-suppression-predicates",
+ surf:"apps/hermes/src/lib/resolver.ts (new) · packages/core/src/apps.ts (feature-flag mapping, read-only)",
+ blk:[1219,1221], soft:[],
+ note:ORDER_B+" You are #4, and both your blockers are your own lane's first two cards — so this lane is self-sufficient right up to 1222. SEAM10 — packages/core/src/apps.ts is read-only for you; lane A owns it. Three predicates in order: (1) the org's feature flag for the slot's topic is off → skip, ledger flag_off; (2) resolve the band behind the contract 'band per topic per user' so the deferred conversion mapping can change without touching this file; (3) suppression and cap. THE CONTRACT BOUNDARY IS THE DELIVERABLE — the PRD's stated risk is that content and mapping land later and force an engine rewrite. Keep it a pure function over (user, org, slot, signals) with no db access inside, so the full band-by-flag matrix is trivially unit-testable.",
+ deliver:"Given a user, org and slot it returns exactly one of {skip + reason, message variant}, with tests covering every band by flag combination."},
+
+{id:1222,s:"B",size:"M",
+ t:"drip-tick cron + post-drip transition",
+ branch:"israel/ttm-1222-drip-tick-cron-post-drip-transition",
+ surf:"apps/hermes/src/app/api/cron/drip-tick/route.ts (body only) · apps/hermes/src/lib/enrollment.ts (caller)",
+ blk:[1208,1218,1220], soft:[1221],
+ note:ORDER_B+" You are #5, and your only cross-lane blocker is A's 1208 — recycle onto develop once notify() merges. SEAM3 — the cron is already stubbed; fill the body only. SEAM5 — you are a CALLER of notify(), you never edit it. SEAM7 — call ensureEnrollments() at the top of every run: that is where enrollment actually happens. Idempotent per (user, slot): key it, never rely on timing, a rerun must never double-send. Marking the enrollment completed after the last slot is what lifts drip suppression and hands the user to the weekly cap. Emit per-run counts of sent and skipped BY REASON — without that you cannot distinguish a working quiet day from a broken one.",
+ deliver:"A daily run that enrolls, resolves, sends and reports; rerunning changes nothing; the last slot visibly transitions the user to steady state."},
+
+{id:1223,s:"B",size:"L",
+ t:"Drip content: slot × state band × audience",
+ branch:"israel/ttm-1223-drip-content-slot-×-state-band-×-audience-needs-conversion",
+ surf:"apps/hermes/src/journeys/**/*.ts (copy) · EN + NL",
+ blk:[1219], soft:[1220],
+ note:ORDER_B+" You are #6 and the only card here that is not engineering — hand it to a writer, not a coding agent, and run it alongside the rest of the lane rather than at the end. ⚠ GATED ON TWO UNDECIDED QUESTIONS, not on code: slot count per topic and audience, and the topic-to-conversion-point mapping (design doc §12). Those are DECISIONS. Put them on an agenda in week one or the drip, the centerpiece of the project, cannot ship. Volume is the PRD's stated risk: 3 bands × 4+ topics × 3 audiences × 2 locales. Keep bands to three and share copy where bands coincide. Slot 1 doubles as welcome AND drop-off recovery (D5) — write it for someone who signed up yesterday and did nothing. The converted band must still say something (D14): congratulate and deepen, never silence. House style: no emojis, no em dashes, TATOMA 'we' voice, informal je/jij for NL.",
+ deliver:"Every slot has copy for every band and audience in EN and NL, and no message can nag about something the user already did."},
+
+/* ══════════ C · CONSENT ══════════ */
+{id:1211,s:"C",cp:true,size:"M",tag:"urgent",
+ t:"Consent & preference data model",
+ branch:"israel/ttm-1211-consent-preference-data-model",
+ surf:"packages/database/supabase/migrations/186_ttm1211_consent_preferences.sql · packages/database/src/notification-preferences.ts (new) · packages/database/src/types/database.ts (generated)",
+ blk:[], soft:[],
+ note:ORDER_C+" SEAM0 — confirm origin/develop has been fast-forwarded before you branch. You are #1 and you also sit on lane A's critical path: A's 1208 cannot start until you merge, so treat this as urgent even though nothing blocks you. Get it out inside week one. SEAM1 — migration number RESERVED: 186. SEAM2 — merge in number order, regenerate types on recycle. SEAM8 — you SINGLE-OWN packages/database/src/notification-preferences.ts: 1208 reads it, 1214 writes through it, 1216 reads it, 1217 purges it, and nobody extends it. Four things live here: per-user marketing consent (append-only, timestamped, provable), per-user category opt-outs, per-org marketing suppression, per-org connected Slack/Teams channel.",
+ deliver:"One module every consent and preference surface reads and writes through, with a consent history provable to an auditor."},
+
+{id:1213,s:"C",size:"M",tag:"urgent",
+ t:"T&C and privacy page updates for the notification streams",
+ branch:"israel/ttm-1213-tc-and-privacy-page-updates-for-the-notification-streams",
+ surf:"apps/hub/src/app/terms-of-service/ · apps/hub/src/app/privacy/ · apps/hub/src/app/privacy-policy/ · packages/core/src/legal/",
+ blk:[], soft:[],
+ note:ORDER_C+" You are #2 with no blockers, so start drafting on day one and let legal review run in the background for weeks. SEAM9 — this is not a compliance chore at the end, it HARD-BLOCKS two things: the first marketing send, and lane D's marketplace submissions (1228 needs published privacy and support URLs). Legal review is calendar time nobody can compress, and this is the cheapest unblock in the project. ⚠ There are TWO privacy routes in hub (/privacy and /privacy-policy) — establish which is canonical before editing both.",
+ deliver:"Published pages describing all four streams, the opt-out mechanics, the separate marketing consent and ledger retention, signed off by compliance."},
+
+{id:1212,s:"C",size:"S",
+ t:"Onboarding: marketing consent checkbox",
+ branch:"israel/ttm-1212-onboarding-marketing-consent-checkbox",
+ surf:"apps/hub/src/app/(onboarding)/onboarding/page.tsx · apps/hub/src/app/api/onboarding/complete/route.ts · packages/i18n/messages/*/hub.json",
+ blk:[1211], soft:[1213],
+ note:ORDER_C+" You are #3. SEAM7 — you are the SOLE owner of apps/hub/src/app/api/onboarding/complete/route.ts: lane B was going to hook drip enrollment here and has been redirected to a sweep instead, so nobody else touches this file. Unchecked by default is the compliant posture. Separate storage and separate wording from T&C acceptance (D3) — confirm final copy against 1213 before merging. The write must trigger the Resend sync path that 1216 owns.",
+ deliver:"A new signup's consent choice is stored with a timestamp and appears in the Resend audience within the sync window."},
+
+{id:1214,s:"C",size:"M",
+ t:"Hub profile: notification settings page",
+ branch:"israel/ttm-1214-hub-profile-notification-settings-page",
+ surf:"apps/hub/src/app/(main)/profile/page.tsx · apps/hub/src/app/api/profile/** · packages/i18n/messages/*/hub.json",
+ blk:[1211], soft:[1212],
+ note:ORDER_C+" You are #4. SEAM8 — write through packages/database/src/notification-preferences.ts; never add a parallel store. Only the opt-out-ABLE matrix cells appear as toggles: transactional escalation to email and to personal Slack/Teams, NBA beyond the center, product-update email, plus marketing consent. Center delivery is NOT switch-off-able and must not appear — a dead toggle is worse than no toggle. profile/page.tsx is currently a single file; expect to split it. This page also hosts the personal Slack/Teams connect button that lane D's 1226 wires up: leave a stub entry point so D never has to come back into your file.",
+ deliver:"A user can narrow what reaches them, the change takes effect on the next send, and marketing consent round-trips to Resend."},
+
+{id:1216,s:"C",size:"M",
+ t:"Resend audience sync + consent-sync reconciliation cron",
+ branch:"israel/ttm-1216-resend-audience-sync-consent-sync-reconciliation-cron",
+ surf:"apps/hermes/src/lib/resend-audience.ts (new) · apps/hermes/src/app/api/cron/consent-sync/route.ts (body only) · packages/database/src/notification-preferences.ts (read-only)",
+ blk:[1205,1211], soft:[1212],
+ note:ORDER_C+" You are #5, and this is the lane's only touch of apps/hermes — SEAM3 says the cron is already stubbed, so fill the body only and stay out of vercel.json. SEAM8 — read notification-preferences, never extend it. Two paths: an event-driven push on every consent change (1212, 1214 and 1217 call it) plus the cron reconciling the full set. Drift must be fixed in BOTH directions and every correction logged: an unlogged silent fix is indistinguishable from a bug. A suppressed org's users must be absent from the audience regardless of their individual consent.",
+ deliver:"Consented users are in the Resend audience, opt-outs are gone within a cycle, and the reconciliation log proves both."},
+
+{id:1215,s:"C",size:"M",
+ t:"Client-portal: org notification channel page",
+ branch:"israel/ttm-1215-client-portal-org-notification-channel-page",
+ surf:"apps/client-portal/src/app/(main)/notifications/page.tsx (new) · packages/core/src/sidebar-config.ts",
+ blk:[1211], soft:[1226],
+ note:ORDER_C+" You are #6. The page hosts the OAuth ENTRY POINT; the flow itself belongs to lane D's 1226. Build against a stub install URL so you never wait on D, then wire the real one when 1226 merges. The sidebar gate must mirror what the page enforces (admin) — see CLAUDE.md §Sections. Coordinate with the client-portal rework so it lands in the right shell. Shows connection state, the connected channel, and what will be posted there (v1: prompt library shares).",
+ deliver:"An org admin can see, connect and change the org channel, and understands what will appear in it."},
+
+{id:1217,s:"C",size:"M",
+ t:"GDPR purge cascade: notification data + Resend removal",
+ branch:"israel/ttm-1217-gdpr-purge-cascade-notification-data-resend-removal",
+ surf:"apps/hub/src/app/api/cron/gdpr-purge/route.ts · apps/hub/src/app/api/platform-admin/gdpr/[id]/purge/route.ts",
+ blk:[1207,1211], soft:[1216,1218],
+ note:ORDER_C+" You are #7, the tail, deliberately last so every table you purge already exists — but do NOT let it slip past the first real send. SEAM8 — purge through notification-preferences.ts, do not reach past it. FK order matters: children before parents, sequentially, no Promise.all (CLAUDE.md). Order: ledger rows → recipient records → drip enrollment and state → preferences → consent (retaining whatever minimal proof-of-erasure the ISMS requires) → Resend audience removal. Prior art and its pitfalls: docs/archive superpowers plan 2026-03-18-gdpr-purge-cascade-fix. Your soft dep on lane B's 1218 is the enrollment table — if it has not merged, purge what exists and leave a typed gap you fill on the next recycle.",
+ deliver:"Deleting a user removes every notification artefact including the Resend audience entry, verified end to end on a real record."},
+
+/* ══════════ D · REACH ══════════ */
+{id:1226,s:"D",size:"L",
+ t:"Slack app: OAuth, org + personal installs, senders",
+ branch:"israel/ttm-1226-slack-app-oauth-org-personal-installs-senders",
+ surf:"apps/hermes/src/app/api/slack/** (new) · apps/hermes/src/lib/channels/slack.ts (new) · apps/hermes/src/lib/channels/index.ts (consume only)",
+ blk:[1205], soft:[1208,1209],
+ note:ORDER_D+" SEAM0 — confirm origin/develop has been fast-forwarded before you branch. SEAM5 — you register senders through notify()'s channel registry and never edit notify.ts. You are #1 and your only hard blocker is A's scaffold, so this lane is productive from day two — build the OAuth and install flows long before notify() exists. SEAM4 — A's 1209 DEFINES apps/hermes/src/lib/channels/index.ts; you implement against it and never author it. If A has not landed the interface yet, code to the shape in 1209's note and rebase on recycle. New Slack app, separate from the bots feedback app (D15), but keep bots' principle: only hermes holds tokens, callers name what they announce (see packages/core/src/slack.ts postSlackNotice). Two installs: org (admin OAuth from 1215's page → channel picker → store on the org) and personal (user OAuth from the stub 1214 leaves in hub profile). Two senders: slack_org gets ONLY the org-shared column, slack_personal gets ONLY transactional and NBA — never product updates, never marketing.",
+ deliver:"An admin connects a channel and a user connects themselves; the right messages arrive in the right place and nothing else does."},
+
+{id:1224,s:"D",size:"M",
+ t:"Migrate comment producers onto notify()",
+ branch:"israel/ttm-1224-migrate-comment-producers-onto-notify",
+ surf:"packages/database/src/activity-comments/comment-notifications.ts · packages/database/src/context-comments/comment-notifications.ts",
+ blk:[1208], soft:[],
+ note:ORDER_D+" You are #3 — recycle onto develop the moment A's 1208 merges, because you establish the pattern 1225 copies. SEAM5 — caller only, via the notify client at packages/database/src/notifications/notify-client.ts (see 1208's SEAM12 note for why it lives there and not in packages/core). SEAM12 — if the getS2SHeaders move has not landed, stop and wait; do not work around it. This is a PURE REFACTOR: behaviour must be byte-identical. Preserve internal-note mention filtering to TATOMA members, reply notifications to parent authors, per-recipient action URLs (workbench vs client-portal), translations, and the fire-and-forget error posture. These two are the only direct-write producers in the codebase, so this card is what makes 'the matrix is enforced in exactly one place' true rather than aspirational.",
+ deliver:"Both comment paths route through notify(), the center behaves exactly as before, and escalation to email and Slack now works for free."},
+
+{id:1225,s:"D",size:"L",
+ t:"New transactional producers: assignments, shares, team addition",
+ branch:"israel/ttm-1225-new-transactional-producers-assignments-shares-team-addition",
+ surf:"packages/database/src/activity-assignments/mutations.ts · packages/database/src/prompt-grants.ts · packages/database/src/org-teams.ts · packages/database/src/prompt-scope.ts",
+ blk:[1208], soft:[1224],
+ note:ORDER_D+" You are #4. SEAM5 — caller of notify() only. SEAM12 — you depend on the getS2SHeaders move landing (see 1208); if it has not, stop and wait rather than working around it. SEAM11 — lane B's 1221 adds READ queries to prompt-grants.ts while you edit the mutation path; different regions, whoever recycles second rebases. ⚠ The design doc's §8 table calls these 'modules' but three of the four are FLAT FILES (prompt-grants.ts, org-teams.ts, prompt-scope.ts) — only activity-assignments is a directory. Four producers, none of which exist today: assignment → the assignee; prompt or library share → the grantee; team member added → the added member (existing members stay center-only); and the org_shared producer, library shared to the org → the org channel (D20), which is the v1 seed for the entire org-shared column of the matrix. Org-scope every query (CLAUDE.md).",
+ deliver:"All four events reach people where they work with opt-out respected, and the org channel has its first real content."},
+
+{id:1227,s:"D",size:"L",
+ t:"Teams app behind the shared channel abstraction",
+ branch:"israel/ttm-1227-teams-app-behind-the-shared-channel-abstraction",
+ surf:"apps/hermes/src/app/api/teams/** (new) · apps/hermes/src/lib/channels/teams.ts (new)",
+ blk:[1226], soft:[],
+ note:ORDER_D+" You are #2, moved up deliberately: your only blocker is 1226, so both integrations get built while lane A is still constructing notify(), and the project's calendar long pole starts as early as it possibly can. You are probably the largest single card in the project. SEAM4 — same Channel interface as email and Slack. If implementing Teams forces a change to channels/index.ts, that is not a merge problem, it is the discovery that the abstraction was Slack-shaped — raise it with lane A immediately rather than branching above the channel layer. That test IS this card's real deliverable. Graph API and bot registration mechanics differ substantially from Slack. Teams is first-class from day one (D15), but if AppSource review timing demands it, ship Slack first behind the same abstraction and let Teams follow. teams_org and teams_personal are already in the ledger enum from 1207, so nothing downstream should need a migration.",
+ deliver:"Teams delivers both installs through the same notify() path as Slack, with zero integration-specific branching above the channel layer."},
+
+{id:1228,s:"D",size:"M",tag:"urgent",
+ t:"Marketplace submissions: Slack directory + Teams AppSource",
+ branch:"israel/ttm-1228-marketplace-submissions-slack-directory-teams-appsource",
+ surf:"external: Slack app directory portal, Microsoft Partner Center · apps/hub/src/app/privacy-policy/ (linked URLs) · apps/hermes/manifest/**",
+ blk:[1213], soft:[1226],
+ note:ORDER_D+" You are #5 by lane position (unchanged) but ⚠ THIS CARD IS TWO CARDS AND SHOULD BE SPLIT IN LINEAR. Half of it — read the AppSource and Slack directory requirements and extract the constraints they impose on scopes, data handling and manifest — has NO dependencies and must happen in WEEK ONE, because those constraints shape how 1226 and 1227 are designed. Discovering them during review means rework. The other half, the actual submission, is genuinely last. The PRD names Teams/AppSource as the project's long pole, but that is CALENDAR risk sitting in Microsoft's review queue, not dependency depth, so no board will ever surface it as urgent on its own. SEAM9 — the submission needs published privacy and support URLs, which is why it hard-blocks on lane C's 1213.",
+ deliver:"Both listings submitted, with requirements captured early enough to have influenced the app design rather than surfacing during review."},
+
+{id:1229,s:"D",cp:true,size:"L",
+ t:"Product updates: flag filtering, re-voicing, weekly send",
+ branch:"israel/ttm-1229-product-updates-flag-filtering-re-voicing-weekly-send",
+ surf:"apps/hub/src/app/api/s2s/release-notes/route.ts · apps/hub/src/components/features/release-notes/ · apps/hermes/src/app/api/cron/weekly-send/route.ts (body only) · apps/hermes/src/lib/product-updates.ts (new)",
+ blk:[1208,1209], soft:[1222],
+ note:ORDER_D+" You are #6, the tail, and the last card on the longest dependency chain in the project — everything else finishing does not help if this has not started. SEAM3 — weekly-send is already stubbed; fill the body only. SEAM5 — caller of notify() with category product_update; the drip suppression that skips these OUTRIGHT (D21, not deferred, no noise backlog) lives in notify(), not here. Three real pieces hide in one ticket: map release items to apps and features, filter per the org's feature flags (no Academy news without Academy, nothing about deprecated Cards), and re-voice into TATOMA editorial style in EN and NL rather than shipping raw notes. If it sprawls, split at the re-voicing seam and ship filtering first.",
+ deliver:"A Monday send that reads like product communication, mentions nothing the org cannot use, and is silent for users still in a drip."},
+];
+
+const SEAMS=[
+{n:0, file:"origin/develop (the branch base itself)", cards:[1205,1211,1219,1226],
+ verdict:"PRECONDITION — fast-forward develop to main before any worktree is created.",
+ detail:"origin/develop is currently 1549 commits BEHIND origin/main and 0 ahead: its head is PR #1438 while main is at #1725. Branching four worktrees off it as it stands puts every lane on a months-old tree and turns each merge into archaeology. This is not a file collision; it is here because it must be true before the handoff and the seam ledger is the part of this board nobody can miss. The four attached cards are the four lane heads. Fix it, confirm `git rev-list --count origin/develop..origin/main` is 0, then create worktrees."},
+
+{n:1, file:"packages/database/supabase/migrations/ (numbering)", cards:[1206,1207,1211,1218],
+ verdict:"Reserve up front: 184=1206, 185=1207, 186=1211, 187=1218.",
+ detail:"Four migrations across three lanes (A, B, C). With parallel worktrees, taking the next free number at commit time is a race that only surfaces on merge, and migrations are forward-only so a landed mistake cannot be edited, only corrected on top. The numbers are assigned now and belong to those cards even if they land out of order. Head after the develop fast-forward is 183_ttm1187_share_token_last_used.sql."},
+
+{n:2, file:"packages/database/src/types/database.ts (generated)", cards:[1206,1207,1211,1218],
+ verdict:"Merge in migration-number order; regenerate on every recycle, never hand-merge.",
+ detail:"All four cards run pnpm db:types and rewrite the same generated file. A three-way merge of generated types is always wrong. The recycle protocol makes this cheap: when a lane rebases onto the new develop it discards its copy of database.ts and regenerates. The ledger arms the moment two of the four are in flight together, which is the signal to check who is merging first."},
+
+{n:3, file:"apps/hermes/vercel.json", cards:[1205,1209,1216,1222,1229],
+ verdict:"Dodge the file entirely — 1205 stubs all four crons up front; every later card fills a route body only.",
+ detail:"Five cards spread across all four lanes would otherwise each append to the same small JSON array in parallel: guaranteed conflicts, and a real chance of a silently dropped schedule nobody notices until a cron never fires. 1205's ticket already calls for no-op 200 stubs of drip-tick, weekly-send, delivery-retry and consent-sync; treating that as binding turns a four-lane collision into zero. After 1205 lands, apps/hermes/vercel.json is frozen for the project."},
+
+{n:4, file:"apps/hermes/src/lib/channels/index.ts (the Channel interface)", cards:[1209,1226,1227],
+ verdict:"Lane A single-owns the interface; lane D implements against it.",
+ detail:"1209 is the first sender, so it authors the Channel contract and Slack and Teams consume it. A should land the interface in its own early commit, ahead of the email body, because D is blocked on the SHAPE and not the implementation. If Teams (1227) cannot be expressed through the interface without changing it, that is the discovery that the abstraction was Slack-shaped: it goes back to A to fix in one place, never into per-integration branching above the channel layer."},
+
+{n:5, file:"apps/hermes/src/lib/notify.ts + the notify client", cards:[1208,1222,1224,1225,1226,1229],
+ verdict:"Hard blocker: 1208 single-owns notify() and the matrix; five cards across three lanes are callers only.",
+ detail:"This is the hub of the project and the place the product's promises are enforced: matrix, preferences, drip suppression, weekly cap. If any producer implements a rule locally 'just for now', the noise-regression risk the PRD names comes true and no ledger query can prove otherwise. The rule is mechanical and reviewable: exactly one file writes the rules, five files call it, and you can grep for the rule names to check."},
+
+{n:7, file:"apps/hub/src/app/api/onboarding/complete/route.ts", cards:[1212,1218],
+ verdict:"Lane B dodges the file — enrollment is a sweep inside drip-tick, not a hook on onboarding.",
+ detail:"The design doc says 'enrollment on account creation', but there is no such hook: the WorkOS webhook handles only dsync.group.* events, and onboarding/complete fires on COMPLETION, which would silently exclude the users who abandon onboarding, i.e. exactly the drop-off cohort the day-after message (D5) exists to recover. Resolving the seam by sweeping for un-enrolled users also fixes that hole, makes enrollment idempotent and backfillable, and leaves lane C sole owner of the onboarding route."},
+
+{n:8, file:"packages/database/src/notification-preferences.ts", cards:[1211,1208,1214,1216,1217],
+ verdict:"Lane C single-owns the module; lane A reads it, C's own cards write through it.",
+ detail:"Consent and preferences are read by notify() on every single send, written by the profile page, mirrored by the Resend sync and purged by GDPR. Because 1211 sits in lane C but gates lane A's 1208, it is the one cross-lane handoff that determines when the critical path can start, which is why it is first in C and marked crit-path and urgent. The append-only consent history is the compliance artefact: any consumer writing consent outside this module breaks provability."},
+
+{n:9, file:"apps/hub/src/app/privacy-policy/ + terms-of-service/", cards:[1213,1228],
+ verdict:"Hard blocker: 1228 is blk on 1213.",
+ detail:"Not a merge collision but a real dependency. The Slack directory and Microsoft AppSource submissions both require published privacy and support URLs, and legal review is calendar time nobody can compress. 1213 has zero code dependencies, which makes it the cheapest possible week-one start and the one that unblocks the project's stated long pole."},
+
+{n:10, file:"packages/core/src/apps.ts + packages/config/src/apps.ts", cards:[1205,1220],
+ verdict:"Lane A single-owns both registries; lane B reads the feature-flag mapping only.",
+ detail:"1205 registers hermes (app registry plus APP_PORTS, next free is 3017) and 1220 reads the topic-to-feature-flag mapping out of the same file. Read-only on one side makes this cheap. Note the CLAUDE.md warning that core's registry carries a drifted port field (TTM-1054): the authoritative ports live in packages/config, so register there and do not copy the number across."},
+
+{n:11, file:"packages/database/src/prompt-grants.ts", cards:[1221,1225],
+ verdict:"Land-first-then-rebase — different regions of the same file.",
+ detail:"1221 (lane B) adds read queries for the 'has shared a prompt or library' conversion signal; 1225 (lane D) adds a notify() producer on the mutation path. No behavioural conflict, purely a merge one: whoever recycles second rebases. The same shape applies more weakly to prompts.ts."},
+
+{n:12, file:"packages/core/src/s2s.ts → packages/config (getS2SHeaders move)", cards:[1208,1224,1225],
+ verdict:"Lane A lands the move alone, in its own commit, before 1208's logic — then all lanes recycle.",
+ detail:"TTM-1208 specifies the typed notify client in packages/core, but @tatomahq/core already depends on @tatomahq/database, so the producers in packages/database (1224, 1225) cannot import it without a dependency cycle. getS2SHeaders imports only getEnvironment from @tatomahq/config, which is zero-dependency, so moving it there is mechanical and lets the notify client live at packages/database/src/notifications/notify-client.ts where the producers can reach it. It is a repo-wide import change, which is exactly why it goes first and alone: every other lane picks it up on its next recycle instead of colliding with it mid-card."},
+];
+
+
+/* ══ STATE ══ */
+const KEY="ttm-hermes-console-v1"; // bump on re-seed from Linear
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function cs(id){if(!state.cards[id])state.cards[id]={status:"todo",agent:"",notes:""};return state.cards[id];}
+const st=id=>cs(id).status;
+const card=id=>T.find(x=>x.id==id);
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+/* ephemeral */
+let expanded=null, drawerId=null, openSeam=null, showQuiet=false, cpOnly=false, agQ="";
+
+/* ══ COMPUTED ══ */
+const deps=t=>[...(t.blk||[]),...(t.soft||[])];
+const waveMemo=new Map();
+function wave(t,seen=new Set()){
+  if(waveMemo.has(t.id))return waveMemo.get(t.id);
+  if(seen.has(t.id))return 0;                       // cycle guard
+  seen.add(t.id);
+  const pend=deps(t).filter(d=>st(d)!=="done");
+  const w=pend.length?1+Math.max(...pend.map(d=>{const c=card(d);return c?wave(c,seen):0})):0;
+  waveMemo.set(t.id,w);return w;
+}
+function column(t){
+  const s=st(t.id);
+  if(s==="done")return "DONE";
+  if(s==="wip")return "IN FLIGHT";
+  const w=wave(t);
+  return w===0?"START NOW":w===1?"ONE STEP AWAY":"LATER";
+}
+const unblocks=t=>T.filter(x=>st(x.id)!=="done"&&deps(x).includes(t.id)).length;
+function sortCol(a,b){
+  if(!!a.cp!==!!b.cp)return a.cp?-1:1;
+  const ua=a.tag==="urgent",ub=b.tag==="urgent";
+  if(ua!==ub)return ua?-1:1;
+  const d=unblocks(b)-unblocks(a); if(d)return d;
+  return a.id-b.id;
+}
+/* seam state machine */
+function seamState(sm){
+  const open=sm.cards.filter(id=>st(id)!=="done");
+  const wip=sm.cards.filter(id=>st(id)==="wip");
+  if(open.length<=1)return "cleared";
+  if(wip.length>=2)return "armed";
+  if(wip.length===1)return "live";
+  return "waiting";
+}
+const RANK={armed:0,live:1,waiting:2,cleared:3};
+const seamsOf=id=>SEAMS.filter(s=>s.cards.includes(id));
+
+/* ══ RENDER ══ */
+function visible(t){
+  if(cpOnly&&!t.cp)return false;
+  if(agQ&&!(cs(t.id).agent||"").toLowerCase().includes(agQ))return false;
+  return true;
+}
+function render(){
+  waveMemo.clear();
+  const done=T.filter(t=>st(t.id)==="done").length;
+  const wip=T.filter(t=>st(t.id)==="wip").length;
+  const ready=T.filter(t=>st(t.id)==="todo"&&wave(t)===0).length;
+  const blocked=T.filter(t=>st(t.id)==="todo"&&wave(t)>0).length;
+  document.getElementById("stats").textContent=`${done}/${T.length} done · ${wip} in flight · ${ready} ready · ${blocked} blocked`;
+  document.getElementById("pfill").style.width=(done/T.length*100)+"%";
+  renderSpot();renderLedger();renderBoard();renderDrawer();
+}
+
+/* 2 · spotlight */
+function renderSpot(){
+  const el=document.getElementById("spot");el.innerHTML="";
+  for(const k of Object.keys(STREAMS)){
+    const S=STREAMS[k];
+    const mine=T.filter(t=>t.s===k);
+    const wips=mine.filter(t=>st(t.id)==="wip");
+    const ready=mine.filter(t=>st(t.id)==="todo"&&wave(t)===0).sort(sortCol);
+    const openN=mine.filter(t=>st(t.id)!=="done").length;
+    let cls="",mn="",sb="",act=null;
+    if(wips.length){
+      cls="t-wip";
+      mn="wip: "+wips.map(t=>t.id).join(", ");
+      const names=wips.map(t=>cs(t.id).agent).filter(Boolean);
+      sb=names.length?names.join(", "):`<span class="warn">no agent!</span>`;
+      act={kind:"jump",id:wips[0].id};
+    }else if(ready.length){
+      const t=ready[0];
+      cls=t.cp?"t-cp":"";
+      mn="#1 · "+t.id;
+      sb=t.cp?"crit path":t.tag==="urgent"?"urgent":unblocks(t)?`unblocks ${unblocks(t)}`:"quick win";
+      act={kind:"dispatch",id:t.id};
+    }else if(!openN){
+      cls="t-done";mn="done ✓";sb="lane closed";
+    }else{
+      cls="t-parked";
+      const nx=mine.filter(t=>st(t.id)!=="done").sort((a,b)=>wave(a)-wave(b))[0];
+      mn="parked";
+      sb=nx?`${nx.id} awaits ${deps(nx).filter(d=>st(d)!=="done").join(", ")}`:"—";
+      act=nx?{kind:"jump",id:nx.id}:null;
+    }
+    const d=document.createElement("div");
+    d.className="tile "+cls;
+    d.innerHTML=`<div class="le">${k} · ${S.name}</div><div class="mn">${mn}</div><div class="sb">${sb}</div>`;
+    if(act)d.onclick=()=>act.kind==="dispatch"?openDrawer(act.id):jump(act.id);
+    el.appendChild(d);
+  }
+}
+
+/* 3 · seam ledger */
+function renderLedger(){
+  const rows=document.getElementById("srows");rows.innerHTML="";
+  const withState=SEAMS.map(s=>({...s,state:seamState(s)}))
+    .sort((a,b)=>RANK[a.state]-RANK[b.state]||a.n-b.n);
+  const c={armed:0,live:0,waiting:0,cleared:0};withState.forEach(s=>c[s.state]++);
+  document.getElementById("lsum").textContent=`${c.armed} armed · ${c.live} live · ${c.waiting} waiting · ${c.cleared} cleared`;
+  const quiet=withState.filter(s=>s.state==="waiting"||s.state==="cleared").length;
+  const qb=document.getElementById("quietBtn");
+  qb.textContent=showQuiet?"collapse":`show ${quiet} quiet`;
+  qb.onclick=()=>{showQuiet=!showQuiet;renderLedger();};
+
+  const shown=withState.filter(s=>showQuiet||s.state==="armed"||s.state==="live"||s.n===openSeam);
+  if(!shown.length){
+    rows.innerHTML=`<div class="lempty">No seam is live — nothing to coordinate right now. They surface here the moment two sides are in flight.</div>`;
+    return;
+  }
+  shown.forEach(s=>{
+    const r=document.createElement("div");
+    r.className="srow "+s.state;
+    r.innerHTML=`<span class="spill sp-${s.state}">${s.state}</span>
+      <span class="sn">S${s.n}</span>
+      <span class="sfile" title="${s.file}">${s.file}</span>
+      ${s.cards.map(id=>`<span class="tchip tc-${st(id)}" data-jump="${id}">${id}</span>`).join("")}
+      <span class="sverd" title="${s.verdict.replace(/"/g,"&quot;")}">${s.verdict}</span>`;
+    r.onclick=e=>{if(e.target.dataset.jump)return;openSeam=openSeam===s.n?null:s.n;renderLedger();};
+    rows.appendChild(r);
+    if(openSeam===s.n){
+      const d=document.createElement("div");d.className="sdetail";d.textContent=s.detail||s.verdict;
+      rows.appendChild(d);
+    }
+  });
+  rows.querySelectorAll("[data-jump]").forEach(c=>c.onclick=e=>{e.stopPropagation();jump(+c.dataset.jump);});
+}
+
+/* 4 · board */
+const COLS=[["DONE","var(--done)"],["IN FLIGHT","var(--wip)"],["START NOW","var(--fg)"],
+            ["ONE STEP AWAY","var(--muted-fg)"],["LATER","var(--muted-fg)"]];
+function renderBoard(){
+  const b=document.getElementById("board");b.innerHTML="";
+  COLS.forEach(([name,col])=>{
+    const items=T.filter(t=>column(t)===name&&visible(t)).sort(sortCol);
+    const d=document.createElement("div");d.className="col";
+    const count=name==="DONE"?`${T.filter(t=>st(t.id)==="done").length}/${T.length}`:items.length;
+    d.innerHTML=`<div class="chead" style="color:${col}"><span>${name}</span><span>${count}</span></div>`;
+    if(!items.length){d.insertAdjacentHTML("beforeend",`<div class="cempty">nothing here</div>`);}
+    items.forEach((t,i)=>d.appendChild(cardEl(t,name==="START NOW"?i+1:null)));
+    b.appendChild(d);
+  });
+}
+function cardEl(t,pick){
+  const s=st(t.id),c=cs(t.id),ex=expanded===t.id;
+  const el=document.createElement("div");
+  el.className="card"+(t.cp?" cp":"")+(s==="done"?" s-done":"");
+  el.id="card-"+t.id;
+  const sms=seamsOf(t.id).filter(x=>seamState(x)!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const spend=(t.soft||[]).filter(d=>st(d)!=="done");
+  const statCtl=s==="todo"
+    ? `<button class="stat-c" data-st="${t.id}" aria-label="Mark in progress"><span class="dot0"></span></button>`
+    : `<button class="stat-c" data-st="${t.id}"><span class="stat-l sl-${s}">${s}</span></button>`;
+  el.innerHTML=`
+    <div class="ctop">
+      ${pick?`<span class="pick">#${pick}</span>`:""}
+      <span class="cid">${CFG.prefix}-${t.id}</span>
+      ${t.tag==="urgent"?`<span class="urg">⚡ urgent</span>`:""}
+      ${statCtl}
+    </div>
+    <div class="ctitle">${t.t}</div>
+    <div class="cmeta">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}" title="${STREAMS[t.s].name}">${t.s}</span>
+      ${sms.length?`<span class="seam-p">${sms.length} seam${sms.length>1?"s":""}</span>`:""}
+      ${pend.length?`<span class="blk-p">← ${pend.join(", ")}</span>`:""}
+      ${spend.length?`<span class="blk-p">after ${spend.join(", ")}</span>`:""}
+      ${c.agent?`<span class="ag-p">${c.agent}</span>`:""}
+    </div>
+    ${ex?expandedHTML(t,c,sms):""}`;
+  el.onclick=e=>{if(e.target.closest("[data-st]")||e.target.closest(".exp"))return;
+    expanded=expanded===t.id?null:t.id;render();};
+  el.querySelector("[data-st]").onclick=e=>{e.stopPropagation();cs(t.id).status=NEXT[s];save();render();};
+  if(ex){
+    el.querySelector(".agi").onchange=e=>{cs(t.id).agent=e.target.value;save();render();};
+    el.querySelector(".nts").onchange=e=>{cs(t.id).notes=e.target.value;save();};
+    el.querySelector(".disp").onclick=e=>{e.stopPropagation();openDrawer(t.id);};
+    el.querySelectorAll("[data-seam]").forEach(x=>x.onclick=e=>{
+      e.stopPropagation();openSeam=+x.dataset.seam;showQuiet=true;renderLedger();
+      document.querySelector(".ledger").scrollIntoView({behavior:"smooth",block:"center"});});
+  }
+  return el;
+}
+function expandedHTML(t,c,sms){
+  return `<div class="exp">
+    <div class="cmeta" style="margin-bottom:9px">
+      <span class="lane-p" style="background:${STREAMS[t.s].tone}">${t.s} · ${STREAMS[t.s].name}</span>
+      ${sms.map(s=>`<span class="seam-p" data-seam="${s.n}" style="cursor:pointer">S${s.n}</span>`).join("")}
+    </div>
+    <div class="surf"><span class="k">surface</span>${t.surf}</div>
+    <div class="note"><span class="nk">note</span>${t.note}</div>
+    ${t.deliver?`<div class="deliv">▸ ${t.deliver}</div>`:""}
+    <input class="agi" placeholder="agent / who…" value="${(c.agent||"").replace(/"/g,"&quot;")}"/>
+    <textarea class="nts" placeholder="where it's at / handoff notes…">${c.notes||""}</textarea>
+    <div class="arow">
+      <button class="disp" title="Dispatch">→</button>
+      <span class="ahint">dispatch</span>
+      <a class="lnk" href="${CFG.url(t.id)}" target="_blank" onclick="event.stopPropagation()">Linear ↗</a>
+    </div>
+  </div>`;
+}
+
+/* 5 · drawer */
+function openDrawer(id){drawerId=id;expanded=id;render();}
+function renderDrawer(){
+  const o=document.getElementById("overlay");
+  if(drawerId===null){o.innerHTML="";return;}
+  const t=card(drawerId),c=cs(t.id);
+  const sms=seamsOf(t.id).map(s=>({...s,state:seamState(s)})).filter(s=>s.state!=="cleared");
+  const pend=(t.blk||[]).filter(d=>st(d)!=="done");
+  const prompt=CFG.prompt(t.id,t.t);
+  const wt=CFG.worktree(t.id,t.branch);
+  o.innerHTML=`
+    <div class="scrim" id="scrim"></div>
+    <div class="drawer">
+      <div class="dtop"><span class="deye">Dispatch</span><button class="dx" id="dx">✕</button></div>
+      <h2>${CFG.prefix}-${t.id}</h2>
+      <p class="dsub">${t.t}</p>
+      ${pend.length?`<div class="warn w-blk"><b>Blocked</b> — still awaits ${pend.map(x=>CFG.prefix+"-"+x).join(", ")}. Dispatch anyway only if you mean it.</div>`:""}
+      ${sms.map(s=>`<div class="warn ${s.state==="armed"?"w-armed":"w-soft"}"><b>S${s.n}${s.state==="armed"?" · ARMED":""} —</b> ${s.verdict}</div>`).join("")}
+      <div class="step"><span class="sl">1 · kickoff prompt</span><button class="cpy" data-c="prompt">copy</button></div>
+      <div class="step"><span class="sl">2 · git worktree add…</span><button class="cpy" data-c="wt">copy</button></div>
+      <div class="step"><span class="sl" style="flex:0 0 auto">3 · agent</span>
+        <input class="stepin" id="dag" placeholder="who's on it?" value="${(c.agent||"").replace(/"/g,"&quot;")}"/></div>
+      <button class="markwip" id="mw">Mark wip &amp; close →</button>
+      <div class="dfoot">
+        <button class="ghost" data-c="br">copy branch name</button>
+        <a href="${CFG.url(t.id)}" target="_blank">Linear ↗</a>
+      </div>
+    </div>`;
+  const close=()=>{drawerId=null;render();};
+  document.getElementById("scrim").onclick=close;
+  document.getElementById("dx").onclick=close;
+  document.getElementById("dag").onchange=e=>{cs(t.id).agent=e.target.value;save();};
+  document.getElementById("mw").onclick=()=>{cs(t.id).status="wip";save();close();};
+  o.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+    const txt=b.dataset.c==="prompt"?prompt:b.dataset.c==="wt"?wt:t.branch;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const old=b.textContent;b.textContent="copied ✓";setTimeout(()=>b.textContent=old,1100);});
+  });
+}
+
+/* ══ NAV / CHROME ══ */
+function jump(id){
+  drawerId=null;expanded=id;render();
+  const el=document.getElementById("card-"+id);
+  if(!el)return;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-150,behavior:"smooth"});
+  el.style.outline="2px solid var(--primary)";el.style.outlineOffset="2px";
+  setTimeout(()=>el.style.outline="",1400);
+}
+function applyTheme(){
+  const dark=state.themeOverride==="dark";
+  document.body.classList.toggle("dark",dark);
+  document.getElementById("themeBtn").textContent=dark?"☀ warm":"◐ dark";
+}
+document.getElementById("cpBtn").onclick=e=>{cpOnly=!cpOnly;e.target.classList.toggle("on",cpOnly);render();};
+document.getElementById("agFilter").oninput=e=>{agQ=e.target.value.trim().toLowerCase();render();};
+document.getElementById("themeBtn").onclick=()=>{
+  state.themeOverride=state.themeOverride==="dark"?"warm":"dark";save();applyTheme();};
+document.getElementById("copyBtn").onclick=e=>{
+  navigator.clipboard.writeText(JSON.stringify(state.cards,null,2)).then(()=>{
+    e.target.textContent="copied ✓";setTimeout(()=>e.target.textContent="copy state",1100);});};
+document.getElementById("resetBtn").onclick=()=>{
+  if(confirm("Reset all statuses, agents & notes?")){state={cards:{},themeOverride:state.themeOverride};save();render();}};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&drawerId!==null){drawerId=null;render();}});
+
+applyTheme();render();
+</script>
+</body>
+</html>

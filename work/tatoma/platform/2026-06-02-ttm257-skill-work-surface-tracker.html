@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TTM-257 · Skill detail work surface — sub-issues</title>
+<style>
+  :root{
+    --bg:#f6faeb; --fg:#1d021f; --card:#fff; --salmon:#ff8e7d; --mint:#cdeccd;
+    --muted:#a397a3; --eggplant:#4c3c47; --magenta:#1E001E;
+    --todo:#c9c2cb; --wip:#e9a23b; --done:#3ba55d; --blocked:#d9534f; --ready:#2e7d32;
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:13px;line-height:1.45}
+  a{color:inherit}
+  header{position:sticky;top:0;z-index:20;background:var(--magenta);color:var(--bg);padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.01em}
+  .timer{font-family:var(--mono);font-size:12px;display:flex;align-items:center;gap:8px}
+  .bar{width:160px;height:7px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden}
+  .bar > i{display:block;height:100%;background:var(--salmon)}
+  header button,.tool button{font-family:var(--sans);font-size:11px;border:0;border-radius:6px;padding:4px 9px;cursor:pointer;background:rgba(255,255,255,.16);color:var(--bg)}
+  .tool{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#fff7f5;border-bottom:1px solid #f0d9d4;position:sticky;top:39px;z-index:19}
+  .tool button{background:#fff;color:var(--fg);border:1px solid var(--muted)}
+  .tool label{font-size:11px;display:inline-flex;gap:5px;align-items:center}
+  .wrap{padding:14px 16px 60px}
+  .panel{background:var(--card);border:1px solid rgba(163,151,163,.45);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+  .panel h2{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-family:var(--mono);color:var(--eggplant)}
+  .seam{padding:8px 10px;border-left:3px solid var(--salmon);background:rgba(255,142,125,.07);border-radius:0 8px 8px 0;margin:8px 0}
+  .seam b{font-family:var(--mono);font-size:11px}
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:1px 6px;border-radius:5px;background:rgba(29,2,31,.07);margin:1px 2px;cursor:pointer}
+  .chip.hot{background:var(--salmon)}
+  ul.rules{margin:4px 0 0;padding-left:18px} ul.rules li{margin:3px 0}
+  .board{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:start;position:relative}
+  @media(max-width:1100px){.board{grid-template-columns:repeat(2,1fr)}}
+  .lane{background:rgba(255,255,255,.5);border:1px solid rgba(163,151,163,.4);border-radius:12px;padding:8px}
+  .lane > h3{margin:2px 4px 8px;font-size:12px;display:flex;justify-content:space-between;align-items:baseline}
+  .lane > h3 small{font-weight:400;color:var(--eggplant);font-size:10.5px;font-family:var(--mono)}
+  .card{background:var(--card);border:1px solid rgba(163,151,163,.5);border-radius:10px;padding:9px;margin-bottom:8px;border-left:4px solid var(--todo)}
+  .card.s-wip{border-left-color:var(--wip)} .card.s-done{border-left-color:var(--done);opacity:.62}
+  .card .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .card .id{font-family:var(--mono);font-weight:700;font-size:11px}
+  .st{font-family:var(--mono);font-size:10px;border:0;border-radius:5px;padding:2px 7px;cursor:pointer;color:#fff;text-transform:uppercase;letter-spacing:.06em}
+  .st-todo{background:var(--todo);color:var(--fg)} .st-wip{background:var(--wip)} .st-done{background:var(--done)}
+  .card .ti{font-weight:600;margin:5px 0 4px;font-size:12.5px;line-height:1.3}
+  .meta{font-size:11px;color:var(--eggplant);margin:3px 0}
+  .meta .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .badge{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:4px;font-weight:700}
+  .b-ready{background:rgba(46,125,50,.14);color:var(--ready)} .b-block{background:rgba(217,83,79,.13);color:var(--blocked)}
+  .pick{font-family:var(--mono);font-size:10px;background:var(--fg);color:var(--bg);border-radius:4px;padding:1px 5px}
+  .agent{width:100%;font-size:11px;padding:3px 6px;border:1px solid var(--muted);border-radius:6px;margin:4px 0;font-family:var(--mono)}
+  .notes{width:100%;min-height:30px;font-size:11px;padding:4px 6px;border:1px dashed var(--muted);border-radius:6px;resize:vertical;font-family:var(--sans);margin-top:2px}
+  .links{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+  .links a,.links button{font-family:var(--mono);font-size:9.5px;text-decoration:none;border:1px solid var(--muted);border-radius:5px;padding:2px 6px;background:#fff;color:var(--fg);cursor:pointer}
+  .ext{font-size:10.5px;color:var(--blocked);margin-top:3px}
+  .legend{font-family:var(--mono);font-size:10.5px;color:var(--eggplant)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Studio skill surfaces · detail + grid</h1>
+  <div class="timer">
+    <span id="elapsed">0:00:00</span> / 12:00:00
+    <span class="bar"><i id="barfill" style="width:0%"></i></span>
+    <button id="resetTimer">reset timer</button>
+  </div>
+  <div style="margin-left:auto" class="legend">embedded v1 · full-parity target · single-prompt-first · click status to cycle · autosaves locally</div>
+</header>
+
+<div class="tool">
+  <label><input type="checkbox" id="readyOnly"/> ready only</label>
+  <label>agent <input id="agentFilter" placeholder="filter…" style="width:90px;font-size:11px"/></label>
+  <label><input type="checkbox" id="depsMode"/> show deps</label>
+  <span class="legend" id="depsLegend" style="display:none">solid → blocks · dashed → land together</span>
+  <span style="margin-left:auto"></span>
+  <button id="copyState">copy state JSON</button>
+  <button id="resetAll">reset all</button>
+</div>
+
+<div class="wrap">
+  <div class="panel">
+    <h2>The spirit</h2>
+    <ul class="rules">
+      <li>Make `/skills/[id]` a real <b>work surface</b> like the Prompts detail page (edit/preview/tips/examples/copy/history/comments), at <b>two levels</b>: (A) the skill structure and (B) the prompts inside it.</li>
+      <li><b>Locked:</b> data model is skill-local/<b>embedded</b> (no prompts_items link, v1) · <b>full-parity</b> target incl. comments · structure-level gets inline edit + reorder/add-remove + preview + history + comments + sample-data/tips.</li>
+      <li><b>The consequence:</b> embedded + full-parity = we <b>build versioning/comments/examples infra fresh</b> (nothing to inherit). Ship the editing/preview surface first, layer the persistence-backed features after.</li>
+      <li><b>Simplification:</b> <span class="chip" data-jump="259">259</span> caps generation to a single-prompt chain (keep the multi-prompt branch) so Level B only handles one prompt for v1.</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>Coordination seams</h2>
+    <div class="seam"><b>1 · uca-step-card.tsx / uca-overview.tsx</b> — Level A structure edits (<span class="chip hot" data-jump="262">262</span> <span class="chip hot" data-jump="263">263</span>) and the Level B prompt editor (<span class="chip hot" data-jump="265">265</span> <span class="chip hot" data-jump="266">266</span> <span class="chip hot" data-jump="267">267</span> <span class="chip hot" data-jump="268">268</span>) both live in the step card. Biggest collision — give the step-card surface one owner, or sequence A before B.</div>
+    <div class="seam"><b>2 · the shell</b> <span class="chip hot" data-jump="260">260</span> — everything renders inside the Edit/Preview frame. Land it first; A and B both depend on it.</div>
+    <div class="seam"><b>3 · component strategy</b> <span class="chip hot" data-jump="261">261</span> — extract-vs-rebuild gates the Level B editor trio (265/266/267). Decide before building them.</div>
+    <div class="seam"><b>4 · infra (new tables)</b> <span class="chip hot" data-jump="269">269</span> <span class="chip hot" data-jump="270">270</span> <span class="chip hot" data-jump="271">271</span> — three new stores; coordinate migration numbers (`ls migrations | tail`) and each gets its own schema brainstorm.</div>
+    <div class="seam"><b>5 · skill-library.tsx (the grid)</b> — all four grid cards (<span class="chip hot" data-jump="274">274</span> <span class="chip hot" data-jump="275">275</span> <span class="chip hot" data-jump="276">276</span> <span class="chip hot" data-jump="277">277</span>) edit the same component, which ALSO renders inline on post-loop home. One owner for the grid; verify both surfaces. <span class="chip hot" data-jump="276">276</span> is blocked by <span class="chip hot" data-jump="278">278</span> (task↔UCA link, rides with <span class="chip hot" data-jump="259">259</span>).</div>
+  </div>
+
+  <div class="panel">
+    <h2>Ordering, quick wins &amp; worktrees</h2>
+    <ul class="rules">
+      <li><b>First wave (parallel, different surfaces):</b> <span class="chip" data-jump="259">259</span> (agents schema), <span class="chip" data-jump="260">260</span> (page shell), <span class="chip" data-jump="261">261</span> (component decision). These unblock the rest.</li>
+      <li><b>Then fan out:</b> Level A (262 → 263, 264) and Level B (265 → 266/267, 268) — but they share the step card (seam 1), so coordinate or single-own that file.</li>
+      <li><b>Infra last:</b> 269/270/271 are the heavy, persistence-backed phase. <span class="chip" data-jump="270">270</span> (versioning) is the single biggest chunk — revisit the embedded decision if its cost balloons.</li>
+      <li><b><span class="chip" data-jump="272">272</span> (eval loop)</b> is a brainstorm — run it in parallel anytime, but its output (loop back to editing) depends on the editing surface existing.</li>
+      <li><b>Grid lane (G · TTM-273):</b> 274/275/277 are mostly presentational and parallel-ish under one grid owner (seam 5); <span class="chip" data-jump="276">276</span> waits on <span class="chip" data-jump="278">278</span> (which rides with <span class="chip" data-jump="259">259</span>). All grid changes also surface on post-loop home.</li>
+      <li><b>Worktrees:</b> the foundation trio in three worktrees off main; A and B likely share an owner because of the step-card seam.</li>
+    </ul>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+const LINEAR="https://linear.app/tatoma/issue/";
+const STREAMS={
+  F:{name:"F · Foundation",sub:"single-prompt · shell · decision"},
+  A:{name:"A · Skill structure",sub:"edit · reorder · preview"},
+  B:{name:"B · Prompt surface",sub:"editor · frameworks · quality"},
+  C:{name:"C · Infra spine (later)",sub:"examples · versions · comments"},
+  D:{name:"D · Eval loop",sub:"brainstorm"},
+  G:{name:"G · Skills grid (TTM-273)",sub:"heading · profile · tasks · add"},
+};
+// blockedBy = TTM ids that must be done; ext = external/non-ticket caveat
+const T=[
+ {id:259,s:"F",t:"Constrain UCA generation to a single-prompt chain (keep multi-prompt code)",surf:"packages/agents/.../uca-synthesis/schema.ts (353/455/487), system-prompt-single-task.md",note:"FOUNDATION · cap chain to 1 via a constant; do NOT delete the multi-prompt branch",branch:"israel/ttm-259-constrain-uca-generation-to-a-single-prompt-chain-keep-the",spec:"(Linear issue)",blk:[]},
+ {id:260,s:"F",t:"Work-surface shell: Edit ↔ Preview + copy + tips frame",surf:"experiment-narrative.tsx, uca-detail/* (uca-overview, uca-step-card)",note:"FOUNDATION · the frame everything slots into · no new persistence · land early",branch:"israel/ttm-260-skill-detail-work-surface-shell-edit-preview-mode-copy-tips",spec:"(Linear issue)",blk:[]},
+ {id:261,s:"F",t:"Decide: extract Prompts-app editors to a shared package vs rebuild",surf:"(decision/spec) apps/prompts/.../prompts/* → @tatomahq/ui | @tatomahq/agents?",note:"GATES the Level B editor trio (265/266/267) · brainstorm → spec",branch:"israel/ttm-261-decide-extract-prompts-app-editor-components-to-a-shared",spec:"(Linear issue)",blk:[]},
+ {id:278,s:"F",t:"Stamp originating task id on the UCA — durable task↔skill link",surf:"synthesize-and-persist.ts, synthesize-picks, commitOnboardingActivation, UCA metadata",note:"FOUNDATION · land WITH 259 (same synthesis touch) · BLOCKS 276 · backfill: tolerate null source_task_id",branch:"israel/ttm-278-stamp-originating-task-id-on-the-uca-durable-taskskill-link",spec:"(Linear issue)",blk:[],soft:[259]},
+
+ {id:262,s:"A",t:"Inline edit of steps / titles / canvas rows / inputs-outputs",surf:"uca-step-card.tsx, uca-overview.tsx, canvas helpers, use-uca-mutations.ts",note:"SEAM1 step-card w/Level B · uses existing UCA PATCH",branch:"israel/ttm-262-skill-structure-inline-edit-of-steps-titles-canvas-rows",spec:"(Linear issue)",blk:[260]},
+ {id:263,s:"A",t:"Reorder / add / remove steps (and their prompts)",surf:"uca-step-card.tsx, uca-overview.tsx, canvas/prompt helpers",note:"SEAM1 step-card · after 262 · keep step_number/order consistent + multi-prompt-compatible",branch:"israel/ttm-263-skill-structure-reorder-add-remove-steps-and-their-prompts",spec:"(Linear issue)",blk:[262]},
+ {id:264,s:"A",t:"Whole-skill Preview mode (read vs edit)",surf:"experiment-narrative.tsx, uca-overview.tsx, uca-step-card.tsx",note:"the preview half of the shell toggle, at skill level",branch:"israel/ttm-264-skill-structure-whole-skill-preview-mode-read-vs-edit",spec:"(Linear issue)",blk:[260]},
+
+ {id:265,s:"B",t:"Structured editor + variable pills (replace body textarea)",surf:"uca-step-card.tsx + shared/rebuilt StructuredFieldEditor/PromptStructurer",note:"SEAM1 step-card w/Level A · needs 261 decision · single-prompt (259)",branch:"israel/ttm-265-prompt-structured-editor-variable-pills-replace-the-body",spec:"(Linear issue)",blk:[260,261]},
+ {id:266,s:"B",t:"Framework selection + AI refinement",surf:"uca-step-card.tsx + FrameworkSelector/ConversationalRefinement + agents",note:"after 265 · needs 261",branch:"israel/ttm-266-prompt-framework-selection-ai-refinement",spec:"(Linear issue)",blk:[265]},
+ {id:267,s:"B",t:"Quality-assessment badge",surf:"uca-step-card.tsx + QualityBadge + quality analyzer",note:"needs 261",branch:"israel/ttm-267-prompt-quality-assessment-badge",spec:"(Linear issue)",blk:[260,261]},
+ {id:268,s:"B",t:"Prompt preview (variable substitution) + copy",surf:"uca-step-card.tsx, variable-detection utils",note:"ties to the shell preview mode",branch:"israel/ttm-268-prompt-prompt-preview-variable-substitution-copy",spec:"(Linear issue)",blk:[260]},
+
+ {id:269,s:"C",t:"Examples / sample-data store + UI (skill + prompt level)",surf:"NEW store + uca-detail UI + runner",note:"new persistence (embedded — nothing to inherit) · own schema brainstorm · migration #",branch:"israel/ttm-269-infra-examples-sample-data-store-ui-skill-prompt-level",spec:"(Linear issue)",blk:[260]},
+ {id:270,s:"C",t:"Versioning store + history UI (skill + prompt level)",surf:"NEW versioning infra + history/restore UI",note:"HEAVIEST chunk · embedded · revisit data-model decision if cost balloons",branch:"israel/ttm-270-infra-versioning-store-history-ui-skill-prompt-level",spec:"(Linear issue)",blk:[260]},
+ {id:271,s:"C",t:"Comments store + UI (skill + prompt level)",surf:"NEW comments store + UI",note:"new persistence (embedded) · own schema brainstorm (threading/org-scope/notifications)",branch:"israel/ttm-271-infra-comments-store-ui-skill-prompt-level",spec:"(Linear issue)",blk:[260]},
+
+ {id:272,s:"D",t:"Brainstorm: user-driven evaluation loop — make Evaluate consequential",surf:"reflection-panel.tsx, step-evaluate.tsx, runner (use-try-chat), lib/experiment/actions.ts",note:"BRAINSTORM · today Evaluate is a dead-end (advanceEvaluated is unconditional) · in-place rating after N runner turns → adjustment interview",branch:"israel/ttm-272-brainstorm-the-user-driven-evaluation-loop-make-evaluate",spec:"(Linear issue)",blk:[]},
+
+ {id:274,s:"G",t:"Studio-home-style heading + My Skills / {Org} skills (coming soon)",surf:"skill-library.tsx (heading), skills/page.tsx (org name), studio.json",note:"SEAM5 grid skill-library.tsx · match home-headline style · org skills = coming-soon placeholder",branch:"israel/ttm-274-skills-studio-home-style-heading-my-skills-org-skills-coming",spec:"(Linear issue)",blk:[]},
+ {id:275,s:"G",t:"Collapsed context-profile callout, right of the heading row",surf:"skill-library.tsx, CollapsibleDoneCard, ProfileBlocks (+ profile fetch)",note:"SEAM5 grid skill-library.tsx · mirror prompts StarterCta placement · profile data NOT fetched here yet · coord w/274",branch:"israel/ttm-275-skills-collapsed-context-profile-callout-on-the-right-of-the",spec:"(Linear issue)",blk:[274]},
+ {id:276,s:"G",t:"Not-yet-converted tasks section below the grid → choreography → detail",surf:"skill-library.tsx, predicted-tasks query, synthesize-picks",note:"SEAM5 grid skill-library.tsx · NEEDS 278 (task↔UCA link) · click → synthesize-picks → choreography → /skills/[id]",branch:"israel/ttm-276-skills-not-yet-converted-tasks-section-below-the-grid-click",spec:"(Linear issue)",blk:[278]},
+ {id:277,s:"G",t:"Fixed first 'Add a skill' tile → /discover/build",surf:"skill-library.tsx (grid)",note:"SEAM5 grid skill-library.tsx · QUICK WIN · coordinate visual w/255 add-task placeholder",branch:"israel/ttm-277-skills-fixed-first-add-a-skill-tile-that-launches",spec:"(Linear issue)",blk:[]},
+];
+
+const KEY="ttm-257-tracker-v1";
+let state=JSON.parse(localStorage.getItem(KEY)||"{}");
+state.cards=state.cards||{}; // id -> {status,agent,notes}
+if(!state.timerStart) state.timerStart=Date.now();
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function cardState(id){return state.cards[id]||(state.cards[id]={status:"todo",agent:"",notes:""});}
+const NEXT={todo:"wip",wip:"done",done:"todo"};
+
+function isDone(id){return (state.cards[id]&&state.cards[id].status)==="done";}
+function readiness(t){
+  const pend=t.blk.filter(b=>!isDone(b));
+  if(t.ext) return {ok:false,label:"PENDING: not filed"};
+  if(pend.length) return {ok:false,label:"BLOCKED by "+pend.map(x=>"TTM-"+x).join(", ")};
+  return {ok:true,label:"READY"};
+}
+function pickPriority(t){
+  const st=cardState(t.id).status;
+  if(st==="done") return 3;
+  if(st==="wip") return 0;
+  return readiness(t).ok ? 1 : 2;
+}
+function pendingCount(t){ return t.blk.filter(b=>!isDone(b)).length + (t.ext?1:0); }
+function byPickup(a,b){
+  const pa=pickPriority(a), pb=pickPriority(b);
+  if(pa!==pb) return pa-pb;
+  if(pa===2){ const d=pendingCount(a)-pendingCount(b); if(d) return d; }
+  return a.id-b.id;
+}
+
+function drawDeps(){
+  const board=document.getElementById("board");
+  const old=document.getElementById("depsvg"); if(old) old.remove();
+  if(!state.deps) return;
+  const NS="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(NS,"svg");
+  svg.id="depsvg";
+  svg.setAttribute("width",board.scrollWidth); svg.setAttribute("height",board.scrollHeight);
+  svg.style.cssText="position:absolute;left:0;top:0;pointer-events:none;z-index:5;overflow:visible";
+  const defs=document.createElementNS(NS,"defs");
+  defs.innerHTML='<marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,3 L0,6 Z" fill="#ff8e7d"/></marker>';
+  svg.appendChild(defs);
+  const rectOf=id=>{const el=document.getElementById("card-"+id); return el?{x:el.offsetLeft,y:el.offsetTop,w:el.offsetWidth,h:el.offsetHeight}:null;};
+  const border=(r,fx,fy)=>{const cx=r.x+r.w/2,cy=r.y+r.h/2,dx=fx-cx,dy=fy-cy; if(!dx&&!dy)return{x:cx,y:cy}; const sx=dx?(r.w/2)/Math.abs(dx):1e9,sy=dy?(r.h/2)/Math.abs(dy):1e9,s=Math.min(sx,sy); return{x:cx+dx*s,y:cy+dy*s};};
+  const draw=(srcId,dstId,soft)=>{const a=rectOf(srcId),b=rectOf(dstId); if(!a||!b)return; const acx=a.x+a.w/2,acy=a.y+a.h/2,bcx=b.x+b.w/2,bcy=b.y+b.h/2; const p1=border(a,bcx,bcy),p2=border(b,acx,acy); const path=document.createElementNS(NS,"path"); path.setAttribute("d",`M${p1.x},${p1.y} L${p2.x},${p2.y}`); path.setAttribute("fill","none"); path.setAttribute("stroke",soft?"#a397a3":"#ff8e7d"); path.setAttribute("stroke-width",soft?1.5:2); path.setAttribute("opacity",soft?0.5:0.8); if(soft)path.setAttribute("stroke-dasharray","4 3"); else path.setAttribute("marker-end","url(#arr)"); svg.appendChild(path);};
+  T.forEach(t=>{(t.blk||[]).forEach(b=>draw(b,t.id,false));(t.soft||[]).forEach(b=>draw(b,t.id,true));});
+  board.appendChild(svg);
+}
+function render(){
+  const board=document.getElementById("board");
+  board.innerHTML="";
+  const readyOnly=document.getElementById("readyOnly").checked;
+  const af=document.getElementById("agentFilter").value.trim().toLowerCase();
+  for(const sk of Object.keys(STREAMS)){
+    const lane=document.createElement("div");lane.className="lane";
+    lane.innerHTML=`<h3>${STREAMS[sk].name}<small>${STREAMS[sk].sub}</small></h3>`;
+    let pick=0;
+    T.filter(t=>t.s===sk).sort(byPickup).forEach(t=>{
+      const cs=cardState(t.id), rd=readiness(t);
+      if(readyOnly && (!rd.ok || cs.status==="done")) return;
+      if(af && !(cs.agent||"").toLowerCase().includes(af)) return;
+      const n = cs.status==="done" ? "" : `<span class="pick">#${++pick}</span> `;
+      const c=document.createElement("div");
+      c.className="card s-"+cs.status; c.id="card-"+t.id;
+      c.innerHTML=`
+        <div class="top">
+          <span class="id">${n}TTM-${t.id}</span>
+          <button class="st st-${cs.status}" data-st="${t.id}">${cs.status}</button>
+        </div>
+        <div class="ti">${t.t}</div>
+        <div>${rd.ok?'<span class="badge b-ready">READY</span>':'<span class="badge b-block">'+rd.label+'</span>'}</div>
+        <div class="meta"><span class="k">surface</span> ${t.surf}</div>
+        <div class="meta"><span class="k">note</span> ${t.note}</div>
+        ${t.ext?`<div class="ext">⚠ ${t.ext}</div>`:""}
+        <input class="agent" placeholder="agent / who…" data-ag="${t.id}" value="${(cs.agent||"").replace(/"/g,'&quot;')}"/>
+        <textarea class="notes" placeholder="where it's at / handoff notes…" data-nt="${t.id}">${cs.notes||""}</textarea>
+        <div class="links">
+          <a href="${LINEAR}TTM-${t.id}" target="_blank">Linear ↗</a>
+          <button data-pr="${t.id}" title="copy the kickoff prompt for an agent">copy prompt</button>
+          <button data-co="${t.id}" title="copy git worktree create for this branch">copy worktree</button>
+          <button data-cp="${t.branch}">branch</button>
+        </div>`;
+      lane.appendChild(c);
+    });
+    board.appendChild(lane);
+  }
+  bind();
+  drawDeps();
+}
+function bind(){
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const id=b.dataset.st;cardState(id).status=NEXT[cardState(id).status];save();render();});
+  document.querySelectorAll("[data-ag]").forEach(i=>i.onchange=()=>{cardState(i.dataset.ag).agent=i.value;save();});
+  document.querySelectorAll("[data-nt]").forEach(x=>x.onchange=()=>{cardState(x.dataset.nt).notes=x.value;save();});
+  document.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>copy(b.dataset.cp,b));
+  document.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.pr);
+    copy(`hey dear friend, can you please help me take a look at and tackle TTM-${t.id} — ${t.t} (${LINEAR}TTM-${t.id})`,b);
+  });
+  document.querySelectorAll("[data-co]").forEach(b=>b.onclick=()=>{
+    const t=T.find(x=>x.id==b.dataset.co);
+    copy(`git fetch origin && git worktree add ../cp-ttm-${t.id} -b ${t.branch} origin/main`,b);
+  });
+}
+function copy(txt,btn){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent="copied";setTimeout(()=>btn.textContent=o,900);});}
+
+document.querySelectorAll("[data-jump]").forEach(ch=>ch.onclick=()=>{const el=document.getElementById("card-"+ch.dataset.jump);if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.style.outline="2px solid var(--salmon)";setTimeout(()=>el.style.outline="",1400);}});
+
+document.getElementById("readyOnly").onchange=render;
+document.getElementById("agentFilter").oninput=render;
+const depsBox=document.getElementById("depsMode"),depsLeg=document.getElementById("depsLegend");
+depsBox.checked=!!state.deps; depsLeg.style.display=state.deps?"inline":"none";
+depsBox.onchange=()=>{state.deps=depsBox.checked;depsLeg.style.display=state.deps?"inline":"none";save();drawDeps();};
+window.addEventListener("resize",drawDeps);
+document.getElementById("resetTimer").onclick=()=>{state.timerStart=Date.now();save();};
+document.getElementById("copyState").onclick=()=>navigator.clipboard.writeText(JSON.stringify(state,null,2));
+document.getElementById("resetAll").onclick=()=>{if(confirm("Reset all statuses, agents, notes & timer?")){state={cards:{},timerStart:Date.now()};save();render();}};
+
+function tick(){
+  const ms=Date.now()-state.timerStart, s=Math.floor(ms/1000);
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
+  document.getElementById("elapsed").textContent=`${h}:${String(m).padStart(2,"0")}:${String(ss).padStart(2,"0")}`;
+  document.getElementById("barfill").style.width=Math.min(100,ms/(12*3600*1000)*100)+"%";
+}
+setInterval(tick,1000);tick();
+render();
+</script>
+</body>
+</html>

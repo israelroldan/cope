@@ -1,7 +1,7 @@
 # Now
 
 > Living document. Current focus, active threads, and priorities.
-> Updated monthly. Last updated: 2026-03-23.
+> Updated monthly. Last updated: 2026-04-21.
 
 ---
 
@@ -32,11 +32,13 @@
 
 | Venture | Status | Current Focus |
 |---------|--------|---------------|
-| Tatoma | Active (primary) | Self-service appeal, UX improvements, client delivery |
-| Pimpi | Active | Sparks live (free), Card private alpha, Learn concept phase |
+| Tatoma | Active (day job, 10% stake) | Self-service appeal, UX improvements, client delivery |
+| Pimpi Apps | Active | Sparks live (free), Card private alpha, Learn concept phase |
+| Kimbi Games | Active — first ship | Snackjes! published 2026; Koningsdag event Apr 25-28; kimbigames.com just launched |
 | Cope | Active | LifeOS v1 shipped, agent infrastructure |
-| Palu Labs | Low activity | Snackbak, Book Doctor (parked) |
-| TLOM/StudyStars | Pivoting | Concepts folding into Pimpi Learn. Team disengaged. |
+| StudyStars / TLOM | Active-but-quiet | Name kept; B2B/webinar direction for older kids; no team currently |
+| Literary Sculptor | Parked | Previously The Book Doctor; literarysculptor.com live |
+| Palú Labs (umbrella) | Active | Host ZZP for all trade names above; website in flight at palu.io |
 
 ---
 
